@@ -1,0 +1,16 @@
+<Project>
+    <PropertyGroup>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)../.artifacts/Nuget/$(Configuration)</PackageOutputPath>
+        <OutputPathWithoutFramework>$(MSBuildThisFileDirectory)../.artifacts/bin/$(Configuration)</OutputPathWithoutFramework>
+        <OutputPath>$(OutputPathWithoutFramework)</OutputPath>
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../.artifacts/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
+        <IntermediateOutputPathWithoutFramework>$(BaseIntermediateOutputPath)</IntermediateOutputPathWithoutFramework>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)/$(Configuration)</IntermediateOutputPath>
+
+        <AtomUITestResultsRoot Condition="'$(IsTestProject)' == 'true' and '$(AtomUITestResultsRoot)' == ''">$(MSBuildThisFileDirectory)../.artifacts/TestResults</AtomUITestResultsRoot>
+        <AtomUITestResultsDirectory Condition="'$(IsTestProject)' == 'true' and '$(AtomUITestResultsDirectory)' == ''">$(AtomUITestResultsRoot)/$(MSBuildProjectName)</AtomUITestResultsDirectory>
+        <VSTestResultsDirectory Condition="'$(IsTestProject)' == 'true' and '$(VSTestResultsDirectory)' == ''">$(AtomUITestResultsDirectory)</VSTestResultsDirectory>
+        <VSTestBlameHangDumpType Condition="'$(IsTestProject)' == 'true' and '$(VSTestBlameHang)' == 'true' and '$(VSTestBlameHangDumpType)' == ''">none</VSTestBlameHangDumpType>
+        <VSTestBlameCrashDumpType Condition="'$(IsTestProject)' == 'true' and '$(VSTestBlameCrash)' == 'true' and '$(VSTestBlameCrashDumpType)' == ''">none</VSTestBlameCrashDumpType>
+    </PropertyGroup>
+</Project>

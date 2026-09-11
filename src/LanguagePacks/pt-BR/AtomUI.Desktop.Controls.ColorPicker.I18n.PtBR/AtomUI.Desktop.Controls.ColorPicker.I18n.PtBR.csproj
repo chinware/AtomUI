@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <PackageId>AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR</PackageId>
+        <Description>Static Brazilian Portuguese translations for AtomUI.Desktop.Controls.ColorPicker.</Description>
+        <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
+        <AtomUILanguageTag>pt-BR</AtomUILanguageTag>
+        <AtomUILanguageModuleId>AtomUI.Desktop.Controls.ColorPicker</AtomUILanguageModuleId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../../AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+        <ProjectReference Include="../../../AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj" />
+    </ItemGroup>
+</Project>

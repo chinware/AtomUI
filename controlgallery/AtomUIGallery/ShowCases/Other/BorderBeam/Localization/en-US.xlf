@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Wrap a card to emphasize an important workspace summary without changing the card interaction model.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Other</source>
+      </segment>
+    </unit>
+    <unit id="ComponentIntroducedVersion">
+      <segment>
+        <source>v6.0.5</source>
+      </segment>
+    </unit>
+    <unit id="CustomContainerContent">
+      <segment>
+        <source>Review task status, deployment health, and recent automation activity in one custom container.</source>
+      </segment>
+    </unit>
+    <unit id="CustomContainerDescription">
+      <segment>
+        <source>BorderBeam can decorate any Avalonia container. When the content does not implement IBorderBeamAwareControl, set matching BorderThickness and CornerRadius on BorderBeam.</source>
+      </segment>
+    </unit>
+    <unit id="CustomContainerTitle">
+      <segment>
+        <source>Custom container</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedColorCardDescription">
+      <segment>
+        <source>Stop positions use the public 0-100 input range.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedColorDescription">
+      <segment>
+        <source>Display six gradient beam palettes and switch between them.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedColorTitle">
+      <segment>
+        <source>Customized color</source>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardDescription">
+      <segment>
+        <source>The original pacing for most emphasized containers.</source>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="DurationDescription">
+      <segment>
+        <source>Use Duration to control how long the beam takes to complete one loop. The default is 6 seconds.</source>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardDescription">
+      <segment>
+        <source>A quick loop for temporary highlights and active modules.</source>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardTitle">
+      <segment>
+        <source>Fast</source>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardDescription">
+      <segment>
+        <source>A calmer loop for persistent panels and ambient surfaces.</source>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardTitle">
+      <segment>
+        <source>Slow</source>
+      </segment>
+    </unit>
+    <unit id="DurationTitle">
+      <segment>
+        <source>Duration</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardDescription">
+      <segment>
+        <source>Set BorderThickness to match the border width of this container.</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardTitle">
+      <segment>
+        <source>Custom line width</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthDescription">
+      <segment>
+        <source>Use BorderThickness to adjust the beam width. Its default value follows the shared border thickness token.</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthTitle">
+      <segment>
+        <source>Line width</source>
+      </segment>
+    </unit>
+    <unit id="MultipleBeamsCardDescription">
+      <segment>
+        <source>Set Count to distribute multiple beams evenly around the container border.</source>
+      </segment>
+    </unit>
+    <unit id="MultipleBeamsCardTitle">
+      <segment>
+        <source>Multiple beams</source>
+      </segment>
+    </unit>
+    <unit id="MultipleBeamsDescription">
+      <segment>
+        <source>Use Count to distribute multiple beams evenly along one container boundary.</source>
+      </segment>
+    </unit>
+    <unit id="MultipleBeamsTitle">
+      <segment>
+        <source>Multiple beams</source>
+      </segment>
+    </unit>
+    <unit id="NonUniformRadiusCardDescription">
+      <segment>
+        <source>The top corners keep a larger radius while the bottom corners remain square.</source>
+      </segment>
+    </unit>
+    <unit id="NonUniformRadiusDescription">
+      <segment>
+        <source>Set Outset to 0 when the decorated container clips its own corners.</source>
+      </segment>
+    </unit>
+    <unit id="NonUniformRadiusTitle">
+      <segment>
+        <source>Non-uniform radius</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, stays active independently of the global motion setting by default, and can use a solid color or gradient stops.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Draw an animated highlight along a container boundary.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardDescription">
+      <segment>
+        <source>Keeps the highlight shorter for dense card groups.</source>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardTitle">
+      <segment>
+        <source>Compact</source>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardDescription">
+      <segment>
+        <source>Uses the default 100px visible beam segment.</source>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Use BeamSize to control the size of the visible beam segment. The default is 100 device-independent pixels.</source>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardDescription">
+      <segment>
+        <source>Creates a longer highlight for wider feature panels.</source>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardTitle">
+      <segment>
+        <source>Extended</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverCardDescription">
+      <segment>
+        <source>The border beam appears when the pointer moves over this card.</source>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverCardTitle">
+      <segment>
+        <source>Hover over the card</source>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverDescription">
+      <segment>
+        <source>Hide the border beam by default, and reveal it when hovering over the container.</source>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverTitle">
+      <segment>
+        <source>Show on hover</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,50 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum NotificationShowCaseLangResourceKind
+{
+    BasicTitle,
+    BasicDescription,
+    DurationTitle,
+    DurationDescription,
+    WithIconTitle,
+    WithIconDescription,
+    PlacementTitle,
+    PlacementDescription,
+    CustomizedIconTitle,
+    CustomizedIconDescription,
+    ProgressTitle,
+    ProgressDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    ScenarioExamples,
+    ApiMethodManagerShow,
+    P2ContentShowNotification,
+    P2ContentOpenTheNotificationBox,
+    P2ContentSuccess,
+    P2ContentInfo,
+    P2ContentWarning,
+    P2ContentError,
+    P2ContentTop,
+    P2ContentBottom,
+    P2ContentTopleft,
+    P2ContentTopright,
+    P2ContentBottomleft,
+    P2ContentBottomright,
+    P2ContentPauseOnHover,
+    P2ContentDonTPauseOnHover,
+    P2NotificationTitle,
+    P2NotificationTopTitle,
+    P2NotificationBottomTitle,
+    P2NotificationTopLeftTitle,
+    P2NotificationTopRightTitle,
+    P2NotificationBottomLeftTitle,
+    P2NotificationBottomRightTitle,
+    P2NotificationHello,
+    P2NotificationContent,
+    P2NotificationNeverCloseContent
+}

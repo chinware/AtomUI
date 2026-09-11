@@ -7,14 +7,15 @@ description: Use when creating, completing, splitting, reviewing, or synchronizi
 
 ## Core Rule
 
-Treat [`docs/engineering/control-documentation-guidelines.md`](../../../docs/engineering/control-documentation-guidelines.md)
+Treat [`docs/engineering/contributing/control-documentation-guidelines.md`](../../../docs/engineering/contributing/control-documentation-guidelines.md)
 as the canonical documentation contract. Read it before editing. Do not copy its full rules into control documents or this skill.
 
 Also read:
 
-- `docs/engineering/control-development-guidelines.md` for API, theme, template, file-layout, and compatibility boundaries.
+- `docs/engineering/development/control-development-guidelines.md` for API, theme, template, file-layout, and compatibility boundaries.
+- `docs/engineering/contributing/mobile-documentation-guidelines.md` when the target is under `docs/controls/mobile` or the task concerns `AtomUI.Mobile.Controls`.
 - The target control's existing `overview.md`, `implementation.md`, `token.md`, `changelog.md`, source, Themes, tests, and Gallery surface.
-- `docs/engineering/aot-programming-guidelines.md` when the design involves reflection, dynamic discovery, binding paths, generators, or NativeAOT.
+- `docs/engineering/development/aot-programming-guidelines.md` when the design involves reflection, dynamic discovery, binding paths, generators, or NativeAOT.
 
 ## Classify the Document
 
@@ -47,6 +48,7 @@ State, data, lifecycle, and owner model:
 Token scope and consumers:
 Gallery API / Token / ShowCase coverage:
 Tests and platform/AOT validation:
+Platform evidence status (iOS / Android / Release / publication):
 Selected document type(s):
 Contradictions or missing evidence:
 ```
@@ -115,7 +117,7 @@ Position -> Principles -> Model/API -> Variant strategy -> Architecture/ownershi
 - Update `changelog.md` for actual design, API, theme, Token, or implementation-structure changes.
 - Update the category index when adding a new control directory.
 - Check Gallery API/Token tables and ShowCase examples when public usage changes.
-- Do not hand-edit generated files under `docs/AI/llms`; update their source documents or generator input.
+- Do not hand-edit generated files under `docs/AI/generated/llms`; update their source documents or generator input.
 
 ### 5. Review
 
@@ -143,6 +145,7 @@ Stop and reshape the document when any of these appear:
 - Generated LLMS output is edited directly.
 - A control-level document repeats global AOT, Token, Gallery, or documentation rules.
 - A new helper document has no independent audience, lifecycle, or ownership boundary.
+- A Mobile Control directory is created before Public API source, Theme, Contract/Headless tests, and Gallery API/Token/ShowCase evidence exist.
 
 ## Verification
 

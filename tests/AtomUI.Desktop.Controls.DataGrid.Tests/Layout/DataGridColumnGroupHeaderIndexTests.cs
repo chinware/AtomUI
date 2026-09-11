@@ -160,10 +160,10 @@ public class DataGridColumnGroupHeaderIndexTests
         {
             AutoGenerateColumns           = false,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-            ItemsSource = new[]
+            ItemsSource = new TestDataGridSource<GridRow>(new[]
             {
                 new GridRow("1", "Name", "20", "A", "B", "C", "D", "E")
-            },
+            }),
             SelectionMode = DataGridSelectionMode.Extended,
             Width         = 380,
             Height        = 260
@@ -201,10 +201,10 @@ public class DataGridColumnGroupHeaderIndexTests
         {
             AutoGenerateColumns           = false,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-            ItemsSource = new[]
+            ItemsSource = new TestDataGridSource<Issue225Row>(new[]
             {
                 new Issue225Row()
-            },
+            }),
             SelectionMode = DataGridSelectionMode.Extended
         };
 

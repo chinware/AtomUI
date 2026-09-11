@@ -1,4 +1,5 @@
 using AtomUI.Generator.Diagnostics;
+using AtomUI.Generator.LinkedRegistration.Model;
 using Microsoft.CodeAnalysis;
 
 namespace AtomUI.Generator;
@@ -21,10 +22,14 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                                 input.Right.GetOptions(input.Left).TryGetValue(
                                     "build_metadata.AdditionalFiles.Link",
                                     out var link);
+                                input.Right.GetOptions(input.Left).TryGetValue(
+                                    "build_metadata.AdditionalFiles.AtomUIRegistrationUnit",
+                                    out var explicitUnit);
                                 return ThemeAssetInfo.Create(
                                     input.Left,
                                     projectDirectory,
                                     link,
+                                    explicitUnit,
                                     token);
                             })
                             .Collect();
@@ -33,9 +38,32 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
 
         context.RegisterSourceOutput(input, static (productionContext, value) =>
         {
+            if (value.Left.Left.IsEmpty)
+            {
+                return;
+            }
+
             var compilation = value.Left.Right;
             var assemblyName = compilation.AssemblyName ?? "AtomUI";
             var controlCatalog = ThemeGeneratorOptions.GetControlCatalog(value.Right);
+            var packageId = LinkedRegistration.LinkedRegistrationOptions.GetPackageId(
+                value.Right,
+                assemblyName);
+            var registrationGranularity = LinkedRegistration.LinkedRegistrationOptions
+                .GetRegistrationGranularity(value.Right, out _);
+            var emitLinkedRegistration = LinkedRegistration
+                .ControlPackageRegistrationEntryDiscovery
+                .Discover(compilation)
+                .HasEntries;
+            value.Right.GlobalOptions.TryGetValue(
+                "build_property.AtomUIThemeAssetProjectDirectory",
+                out var projectDirectory);
+            var packageSharedPaths = LinkedRegistration.LinkedRegistrationOptions
+                .GetPackageSharedThemePaths(value.Right);
+            var reportFallbackDiagnostics = LinkedRegistration.LinkedRegistrationOptions
+                                                .IsLinkedPublish(value.Right) ||
+                                            LinkedRegistration.LinkedRegistrationOptions
+                                                .IsRegistrationStrict(value.Right);
             var globalTokenNames = compilation.GetTypeByMetadataName("AtomUI.Theme.Resources.SharedTokenKind")?
                                          .GetMembers()
                                          .OfType<IFieldSymbol>()
@@ -49,8 +77,18 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
             var sourceControls = ControlThemeModelBuilder
                                  .GetPublicControls(compilation.Assembly.GlobalNamespace)
                                  .ToArray();
+            var knownUnitIds = new HashSet<string>(
+                sourceControls.Select(control => GetControlUnitId(
+                    control,
+                    packageId,
+                    registrationGranularity,
+                    projectDirectory,
+                    value.Right)),
+                StringComparer.Ordinal);
             var resolved = new List<ResolvedThemeAssetInfo>();
-            var auxiliary = new List<ThemeAssetInfo>();
+            var unitOwned = new List<UnitOwnedThemeAssetInfo>();
+            var packageShared = new List<ThemeAssetInfo>();
+            var unknown = new List<ThemeAssetInfo>();
             var uniqueAssets = new List<ThemeAssetInfo>();
 
             foreach (var group in value.Left.Left.GroupBy(static item => item.AssetPath, StringComparer.Ordinal))
@@ -69,11 +107,31 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
 
             foreach (var asset in uniqueAssets.OrderBy(static item => item.AssetPath, StringComparer.Ordinal))
             {
+                if (packageSharedPaths.Contains(asset.AssetPath))
+                {
+                    if (asset.ControlTokenFamilies.Count != 0)
+                    {
+                        productionContext.ReportDiagnostic(Diagnostic.Create(
+                            AtomUIDiagnosticDescriptors.LinkedPackageDefinitionInvalid,
+                            asset.CreateLocation(),
+                            packageId,
+                            $"PackageShared theme '{asset.AssetPath}' references Control-owned token resources"));
+                        continue;
+                    }
+
+                    packageShared.Add(asset);
+                    continue;
+                }
+
                 var resolution = Resolve(
                     compilation,
                     sourceControls,
                     asset,
                     controlCatalog,
+                    packageId,
+                    registrationGranularity,
+                    projectDirectory,
+                    value.Right,
                     productionContext.ReportDiagnostic,
                     out var resolutionFailed);
                 if (resolution is not null)
@@ -82,16 +140,53 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                 }
                 else if (!resolutionFailed)
                 {
-                    auxiliary.Add(asset);
+                    var unitId = RegistrationUnitId.Create(
+                        packageId,
+                        registrationGranularity,
+                        asset.AssetPath,
+                        projectDirectory,
+                        asset.ControlCandidate ?? asset.FileName,
+                        asset.ExplicitUnit);
+                    if (knownUnitIds.Contains(unitId))
+                    {
+                        unitOwned.Add(new UnitOwnedThemeAssetInfo(asset, unitId));
+                    }
+                    else
+                    {
+                        unknown.Add(asset);
+                        if (reportFallbackDiagnostics)
+                        {
+                            productionContext.ReportDiagnostic(Diagnostic.Create(
+                                AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened,
+                                asset.CreateLocation(),
+                                asset.AssetPath,
+                                packageId));
+                        }
+                    }
                 }
+            }
+
+            foreach (var missingSharedPath in packageSharedPaths.Except(
+                         uniqueAssets.Select(static asset => asset.AssetPath),
+                         StringComparer.Ordinal))
+            {
+                productionContext.ReportDiagnostic(Diagnostic.Create(
+                    AtomUIDiagnosticDescriptors.LinkedPackageDefinitionInvalid,
+                    Location.None,
+                    packageId,
+                    $"PackageShared theme '{missingSharedPath}' is not an AvaloniaXaml input"));
             }
 
             new ThemeAssetManifestWriter(
                 productionContext,
                 assemblyName,
+                packageId,
                 resolved,
-                auxiliary,
-                globalTokenNames).Write();
+                unitOwned,
+                packageShared,
+                unknown,
+                globalTokenNames,
+                emitLinkedRegistration).Write();
         });
     }
 
@@ -100,6 +195,10 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
         IReadOnlyList<INamedTypeSymbol> sourceControls,
         ThemeAssetInfo asset,
         string controlCatalog,
+        string packageId,
+        RegistrationUnitGranularity registrationGranularity,
+        string? projectDirectory,
+        Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider,
         Action<Diagnostic> reportDiagnostic,
         out bool failed)
     {
@@ -154,10 +253,50 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                 referenced.Add(matches[0]);
             }
         }
+        var unitDependencies = new HashSet<INamedTypeSymbol>(
+            referenced,
+            SymbolEqualityComparer.Default);
+        foreach (var elementType in asset.ElementTypes)
+        {
+            var matches = ResolveCurrentAssemblyElementControls(
+                compilation,
+                sourceControls,
+                elementType).ToArray();
+            if (matches.Length == 1)
+            {
+                unitDependencies.Add(matches[0]);
+            }
+        }
+
+        var ownerUnitId = GetUnitId(
+            owner,
+            asset,
+            packageId,
+            registrationGranularity,
+            projectDirectory,
+            optionsProvider,
+            useAssetOverride: true);
+        var referencedUnitIds = unitDependencies
+            .Where(control => SymbolEqualityComparer.Default.Equals(
+                control.ContainingAssembly,
+                compilation.Assembly))
+            .Select(control => GetUnitId(
+                control,
+                asset,
+                packageId,
+                registrationGranularity,
+                projectDirectory,
+                optionsProvider,
+                useAssetOverride: SymbolEqualityComparer.Default.Equals(control, owner)))
+            .Where(unitId => !string.Equals(unitId, ownerUnitId, StringComparison.Ordinal))
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(static unitId => unitId, StringComparer.Ordinal)
+            .ToArray();
 
         return new ResolvedThemeAssetInfo(
             asset,
             new ThemeAssetControlIdentityInfo(controlCatalog, owner.Name),
+            ownerUnitId,
             referenced.Select(control => CreateIdentity(
                                   compilation,
                                   control,
@@ -166,7 +305,65 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                       .OrderBy(static identity => identity.Catalog, StringComparer.Ordinal)
                       .ThenBy(static identity => identity.Id, StringComparer.Ordinal)
                       .ToArray(),
+            referencedUnitIds,
             semanticPart);
+    }
+
+    private static string GetUnitId(
+        INamedTypeSymbol control,
+        ThemeAssetInfo asset,
+        string packageId,
+        RegistrationUnitGranularity registrationGranularity,
+        string? projectDirectory,
+        Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider,
+        bool useAssetOverride)
+    {
+        var sourceTree = control.DeclaringSyntaxReferences.FirstOrDefault()?.SyntaxTree;
+        var explicitUnit = GetExplicitUnit(sourceTree, optionsProvider);
+        if (useAssetOverride && string.IsNullOrWhiteSpace(explicitUnit))
+        {
+            explicitUnit = asset.ExplicitUnit;
+        }
+
+        return RegistrationUnitId.Create(
+            packageId,
+            registrationGranularity,
+            sourceTree?.FilePath ?? asset.AssetPath,
+            projectDirectory,
+            control.Name,
+            explicitUnit);
+    }
+
+    private static string GetControlUnitId(
+        INamedTypeSymbol control,
+        string packageId,
+        RegistrationUnitGranularity registrationGranularity,
+        string? projectDirectory,
+        Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider)
+    {
+        var sourceTree = control.DeclaringSyntaxReferences.FirstOrDefault()?.SyntaxTree;
+        return RegistrationUnitId.Create(
+            packageId,
+            registrationGranularity,
+            sourceTree?.FilePath,
+            projectDirectory,
+            control.Name,
+            GetExplicitUnit(sourceTree, optionsProvider));
+    }
+
+    private static string? GetExplicitUnit(
+        SyntaxTree? sourceTree,
+        Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider)
+    {
+        if (sourceTree is null)
+        {
+            return null;
+        }
+
+        optionsProvider.GetOptions(sourceTree).TryGetValue(
+            "build_metadata.Compile.AtomUIRegistrationUnit",
+            out var explicitUnit);
+        return explicitUnit;
     }
 
     private static ThemeAssetControlIdentityInfo CreateIdentity(
@@ -295,6 +492,94 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
         string name)
     {
         return ControlThemeModelBuilder.FindPublicControlsByName(compilation, sourceControls, name);
+    }
+
+    private static IEnumerable<INamedTypeSymbol> ResolveCurrentAssemblyElementControls(
+        Compilation compilation,
+        IReadOnlyList<INamedTypeSymbol> sourceControls,
+        ThemeAssetElementTypeReference reference)
+    {
+        var namespaces = GetCurrentAssemblyClrNamespaces(compilation.Assembly, reference.NamespaceUri);
+        if (namespaces.Count == 0)
+        {
+            return Array.Empty<INamedTypeSymbol>();
+        }
+
+        return sourceControls.Where(control =>
+            string.Equals(control.Name, reference.LocalName, StringComparison.Ordinal) &&
+            namespaces.Contains(
+                control.ContainingNamespace.IsGlobalNamespace
+                    ? string.Empty
+                    : control.ContainingNamespace.ToDisplayString()));
+    }
+
+    private static ISet<string> GetCurrentAssemblyClrNamespaces(
+        IAssemblySymbol assembly,
+        string xmlNamespace)
+    {
+        var namespaces = new HashSet<string>(StringComparer.Ordinal);
+        if (TryGetDirectClrNamespace(xmlNamespace, assembly.Name, out var directNamespace))
+        {
+            namespaces.Add(directNamespace);
+            return namespaces;
+        }
+
+        foreach (var attribute in assembly.GetAttributes())
+        {
+            if (attribute.AttributeClass?.ToDisplayString() !=
+                    "Avalonia.Metadata.XmlnsDefinitionAttribute" ||
+                attribute.ConstructorArguments.Length < 2 ||
+                attribute.ConstructorArguments[0].Value is not string declaredXmlNamespace ||
+                attribute.ConstructorArguments[1].Value is not string clrNamespace ||
+                !string.Equals(declaredXmlNamespace, xmlNamespace, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            namespaces.Add(clrNamespace);
+        }
+
+        return namespaces;
+    }
+
+    private static bool TryGetDirectClrNamespace(
+        string xmlNamespace,
+        string assemblyName,
+        out string clrNamespace)
+    {
+        const string usingPrefix = "using:";
+        const string clrNamespacePrefix = "clr-namespace:";
+        var prefixLength = xmlNamespace.StartsWith(usingPrefix, StringComparison.Ordinal)
+            ? usingPrefix.Length
+            : xmlNamespace.StartsWith(clrNamespacePrefix, StringComparison.Ordinal)
+                ? clrNamespacePrefix.Length
+                : 0;
+        if (prefixLength == 0)
+        {
+            clrNamespace = string.Empty;
+            return false;
+        }
+
+        var value = xmlNamespace.Substring(prefixLength);
+        var assemblySeparator = value.IndexOf(';');
+        if (assemblySeparator >= 0)
+        {
+            var qualifier = value.Substring(assemblySeparator + 1);
+            const string assemblyPrefix = "assembly=";
+            if (!qualifier.StartsWith(assemblyPrefix, StringComparison.Ordinal) ||
+                !string.Equals(
+                    qualifier.Substring(assemblyPrefix.Length),
+                    assemblyName,
+                    StringComparison.Ordinal))
+            {
+                clrNamespace = string.Empty;
+                return false;
+            }
+            value = value.Substring(0, assemblySeparator);
+        }
+
+        clrNamespace = value;
+        return clrNamespace.Length != 0;
     }
 
     private static bool TryParseTypeReference(

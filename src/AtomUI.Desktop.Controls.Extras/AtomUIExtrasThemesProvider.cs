@@ -6,6 +6,6 @@ internal class AtomUIExtrasThemesProvider : ControlThemesProvider
 {
     public AtomUIExtrasThemesProvider()
     {
-        Id = "AtomUI.Desktop.Controls.Extras";
+        Id = ExtrasThemeManagerBuilderExtensions.PackageId;
     }
 }

@@ -95,9 +95,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -111,18 +111,22 @@ public class DataGridDetailExpanderColumnRecycleTests
             window.Show();
             RunLayoutJobs();
 
+            var scrollStates = new List<string>();
             for (var i = 0; i < 80; i++)
             {
                 var previousOffset = grid.VerticalOffset;
                 grid.UpdateScroll(new Vector(0, -120));
                 RunLayoutJobs();
+                scrollStates.Add(GetRangeScrollState(grid));
                 if (MathUtils.AreClose(grid.VerticalOffset, previousOffset))
                 {
                     break;
                 }
             }
 
-            grid.DisplayData.FirstScrollingSlot.ShouldBeGreaterThan(23);
+            grid.DisplayData.FirstScrollingSlot.ShouldBeGreaterThan(
+                23,
+                string.Join(Environment.NewLine, scrollStates));
 
             ScrollUpUntilSlotIsVisible(grid, 23);
 
@@ -172,9 +176,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -240,9 +244,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -519,9 +523,9 @@ public class DataGridDetailExpanderColumnRecycleTests
                 grid.UpdateScroll(new Vector(0, 12));
                 RunLayoutJobs();
 
-                grid.GetRowDetailsVisibility(5).ShouldBeTrue();
-                grid.GetRowDetailsVisibility(13).ShouldBeTrue();
-                grid.GetRowDetailsVisibility(23).ShouldBeTrue();
+                grid.GetRowDetailsVisibility(DataGridRowKey.FromInt64(6)).ShouldBeTrue();
+                grid.GetRowDetailsVisibility(DataGridRowKey.FromInt64(14)).ShouldBeTrue();
+                grid.GetRowDetailsVisibility(DataGridRowKey.FromInt64(24)).ShouldBeTrue();
 
                 if (grid.DisplayData.FirstScrollingSlot <= 17)
                 {
@@ -671,9 +675,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -726,9 +730,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -767,9 +771,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -828,9 +832,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -863,9 +867,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(13, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 13, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -913,9 +917,9 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(80);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(5, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(11, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(23, true);
+        SetRowDetailsVisibility(grid, 5, true);
+        SetRowDetailsVisibility(grid, 11, true);
+        SetRowDetailsVisibility(grid, 23, true);
 
         var window = new Window
         {
@@ -1097,7 +1101,7 @@ public class DataGridDetailExpanderColumnRecycleTests
     {
         var rows = CreateOrders(20);
         var grid = CreateOrderGrid(rows);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(0, true);
+        SetRowDetailsVisibility(grid, 0, true);
 
         var window = new Window
         {
@@ -1128,8 +1132,8 @@ public class DataGridDetailExpanderColumnRecycleTests
                              .Select(index => new GridRow($"Row {index:00}"))
                              .ToArray();
         var grid = CreateDetailsTextGrid(rows, height: 92);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(0, true);
-        grid.NotifyRowDetailsVisibilityPropertyChanged(1, true);
+        SetRowDetailsVisibility(grid, 0, true);
+        SetRowDetailsVisibility(grid, 1, true);
 
         var window = new Window
         {
@@ -1227,12 +1231,12 @@ public class DataGridDetailExpanderColumnRecycleTests
             ToggleRowDetails(grid, 23);
             ScrollToBottom(grid);
 
-            grid.GetRowDetailsVisibility(5).ShouldBeTrue();
-            grid.GetRowDetailsVisibility(11).ShouldBeTrue();
-            grid.GetRowDetailsVisibility(23).ShouldBeTrue();
-            ReadRowDetailsHeightEstimate(grid, 5).ShouldBeGreaterThan(100);
-            ReadRowDetailsHeightEstimate(grid, 11).ShouldBeGreaterThan(100);
-            ReadRowDetailsHeightEstimate(grid, 23).ShouldBeGreaterThan(100);
+            grid.GetRowDetailsVisibility(DataGridRowKey.FromInt64(6)).ShouldBeTrue();
+            grid.GetRowDetailsVisibility(DataGridRowKey.FromInt64(12)).ShouldBeTrue();
+            grid.GetRowDetailsVisibility(DataGridRowKey.FromInt64(24)).ShouldBeTrue();
+            grid.GetRangeRowDetailsHeightEstimate(DataGridRowKey.FromInt64(6)).ShouldBeGreaterThan(100);
+            grid.GetRangeRowDetailsHeightEstimate(DataGridRowKey.FromInt64(12)).ShouldBeGreaterThan(100);
+            grid.GetRangeRowDetailsHeightEstimate(DataGridRowKey.FromInt64(24)).ShouldBeGreaterThan(100);
 
             for (double value = grid.VerticalScrollBar!.Value; value > 450; value -= 8)
             {
@@ -1305,12 +1309,21 @@ public class DataGridDetailExpanderColumnRecycleTests
         };
     }
 
+    private static void SetRowDetailsVisibility(
+        global::AtomUI.Desktop.Controls.DataGrid grid,
+        int dataIndex,
+        bool isVisible) =>
+        grid.NotifyRowDetailsVisibilityPropertyChanged(
+            DataGridRowKey.FromInt64(dataIndex + 1L),
+            dataIndex,
+            isVisible);
+
     private static global::AtomUI.Desktop.Controls.DataGrid CreateGrid(IReadOnlyList<GridRow> rows)
     {
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
             AutoGenerateColumns       = false,
-            ItemsSource                = rows,
+            ItemsSource                     = new TestDataGridSource<GridRow>(rows),
             RowDetailsVisibilityMode   = DataGridRowDetailsVisibilityMode.Collapsed,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
             VerticalScrollBarVisibility   = ScrollBarVisibility.Disabled
@@ -1337,7 +1350,7 @@ public class DataGridDetailExpanderColumnRecycleTests
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
             AutoGenerateColumns         = false,
-            ItemsSource                  = rows,
+            ItemsSource                       = new TestDataGridSource<GridRow>(rows),
             RowDetailsVisibilityMode     = DataGridRowDetailsVisibilityMode.Collapsed,
             IsMotionEnabled              = false,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
@@ -1366,7 +1379,7 @@ public class DataGridDetailExpanderColumnRecycleTests
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
             AutoGenerateColumns         = false,
-            ItemsSource                  = rows,
+            ItemsSource                       = new TestDataGridSource<OrderViewModel>(rows),
             RowDetailsVisibilityMode     = DataGridRowDetailsVisibilityMode.Collapsed,
             IsMotionEnabled              = false,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
@@ -1419,7 +1432,9 @@ public class DataGridDetailExpanderColumnRecycleTests
                 AutoGenerateColumns = false,
                 IsReadOnly          = true,
                 HeadersVisibility   = DataGridHeadersVisibility.None,
-                ItemsSource         = order?.Order.Items,
+                ItemsSource              = order is null
+                    ? null
+                    : new TestDataGridSource<OrderItem>(order.Order.Items),
                 Margin              = new Thickness(10, 0, 0, 0)
             };
 
@@ -1472,10 +1487,48 @@ public class DataGridDetailExpanderColumnRecycleTests
             var previousOffset = grid.VerticalOffset;
             grid.UpdateScroll(new Vector(0, 60));
             RunLayoutJobs();
-            grid.VerticalOffset.ShouldBeLessThan(previousOffset);
+            grid.VerticalOffset.ShouldBeLessThan(previousOffset, GetRangeScrollState(grid));
         }
 
-        throw new InvalidOperationException($"Slot {slot} did not become visible.");
+        throw new InvalidOperationException(
+            $"Slot {slot} did not become visible. {GetRangeScrollState(grid)}");
+    }
+
+    private static string GetRangeScrollState(global::AtomUI.Desktop.Controls.DataGrid grid) =>
+        $"offset={grid.VerticalOffset:0.##}, desired={ReadRangeDesiredOffset(grid):0.##}, " +
+        $"extent={grid.VerticalScrollBar?.Maximum + grid.CellsEstimatedHeight:0.##}, " +
+        $"first={grid.DisplayData.FirstScrollingSlot}, last={grid.DisplayData.LastScrollingSlot}, " +
+        $"h5={grid.GetRangeHeight(5):0.##}, o6={grid.GetRangeOffset(6):0.##}, " +
+        $"h23={grid.GetRangeHeight(23):0.##}, o23={grid.GetRangeOffset(23):0.##}, " +
+        $"row={grid.RowHeightEstimate:0.##}, details={grid.RowDetailsHeightEstimate:0.##}, " +
+        $"dir={ReadRangeScrollDirection(grid)}, target={ReadRangeScrollTarget(grid):0.##}, " +
+        $"pending={grid.HasPendingRangeViewport}, load={grid.LoadState}";
+
+    private static double ReadRangeDesiredOffset(global::AtomUI.Desktop.Controls.DataGrid grid)
+    {
+        var field = typeof(global::AtomUI.Desktop.Controls.DataGrid).GetField(
+            "_rangeDesiredOffset",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (double)field.GetValue(grid)!;
+    }
+
+    private static int ReadRangeScrollDirection(global::AtomUI.Desktop.Controls.DataGrid grid)
+    {
+        var field = typeof(global::AtomUI.Desktop.Controls.DataGrid).GetField(
+            "_rangeMeasurementScrollDirection",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (int)field.GetValue(grid)!;
+    }
+
+    private static double ReadRangeScrollTarget(global::AtomUI.Desktop.Controls.DataGrid grid)
+    {
+        var field = typeof(global::AtomUI.Desktop.Controls.DataGrid).GetField(
+            "_rangeMeasurementScrollTarget",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (double)field.GetValue(grid)!;
     }
 
     private static void ScrollToBottom(global::AtomUI.Desktop.Controls.DataGrid grid)

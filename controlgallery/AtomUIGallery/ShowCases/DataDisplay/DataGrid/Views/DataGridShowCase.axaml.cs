@@ -1,12 +1,10 @@
 using System.Collections;
-using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using DynamicData;
 using AtomDataGrid = AtomUI.Desktop.Controls.DataGrid;
 
 namespace AtomUIGallery.ShowCases.DataGrid;
@@ -24,11 +22,11 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
         if (DataContext is DataGridViewModel viewModel)
         {
             DataGridShowCaseDataSources.ClearAll(viewModel);
         }
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnDataContextChanged(EventArgs e)
@@ -41,7 +39,7 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
     {
         if (sender is AtomDataGrid dataGrid)
         {
-            SetExampleDataGridItemsSource(dataGrid);
+            SetExampleDataGridSource(dataGrid);
         }
     }
 
@@ -49,11 +47,11 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
     {
         foreach (var dataGrid in ExamplesContent.GetVisualDescendants().OfType<AtomDataGrid>())
         {
-            SetExampleDataGridItemsSource(dataGrid);
+            SetExampleDataGridSource(dataGrid);
         }
     }
 
-    private void SetExampleDataGridItemsSource(AtomDataGrid dataGrid)
+    private void SetExampleDataGridSource(AtomDataGrid dataGrid)
     {
         if (DataContext is not DataGridViewModel viewModel)
         {
@@ -74,65 +72,69 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
             case "ResetFilterAndSortGrid":
             case "HideColumnDataGrid":
                 DataGridShowCaseDataSources.EnsureBasicDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.BasicCaseDataSource;
+                dataGrid.ItemsSource = viewModel.BasicCaseDataSource?.Source;
                 break;
             case "FilterAndSortGrid":
             case "FilterInTreeGrid":
                 DataGridShowCaseDataSources.EnsureFilterAndSorterDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.FilterAndSorterDataSource;
+                dataGrid.ItemsSource = viewModel.FilterAndSorterDataSource?.Source;
                 break;
             case "MultiSorterDataGrid":
                 DataGridShowCaseDataSources.EnsureMultiSorterDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.MultiSorterDataSource;
+                dataGrid.ItemsSource = viewModel.MultiSorterDataSource?.Source;
                 break;
             case "ExpandableDataGrid":
             case "OrderSpecificColumnDataGrid":
             case "RowAndColumnHeaderDataGrid":
                 DataGridShowCaseDataSources.EnsureExpandableRowDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.ExpandableRowDataSource;
+                dataGrid.ItemsSource = viewModel.ExpandableRowDataSource?.Source;
                 break;
             case "GroupHeaderDataGrid":
                 DataGridShowCaseDataSources.EnsureGroupHeaderDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.GroupHeaderDataSource;
+                dataGrid.ItemsSource = viewModel.GroupHeaderDataSource?.Source;
                 break;
             case "FixedHeaderDataGrid":
                 DataGridShowCaseDataSources.EnsureFixedHeaderDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.FixedHeaderDataSource;
+                dataGrid.ItemsSource = viewModel.FixedHeaderDataSource?.Source;
                 break;
             case "FixedColumnsDataGrid1":
             case "FixedColumnsDataGrid2":
                 DataGridShowCaseDataSources.EnsureFixedColumnsDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.FixedColumnsDataSource;
+                dataGrid.ItemsSource = viewModel.FixedColumnsDataSource?.Source;
                 break;
             case "FixedColumnsAndHeadersDataGrid":
                 DataGridShowCaseDataSources.EnsureFixedColumnsAndHeadersDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.FixedColumnsAndHeadersDataSource;
+                dataGrid.ItemsSource = viewModel.FixedColumnsAndHeadersDataSource?.Source;
                 break;
             case "DragColumnDataGrid1":
             case "DragColumnDataGrid2":
             case "DragColumnDataGrid3":
                 DataGridShowCaseDataSources.EnsureDragColumnDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.DragColumnDataSource;
+                dataGrid.ItemsSource = viewModel.DragColumnDataSource?.Source;
                 break;
             case "DragRowDataGrid1":
                 DataGridShowCaseDataSources.EnsureDragRowDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.DragRowDataSource;
+                dataGrid.ItemsSource = viewModel.DragRowDataSource?.Source;
                 break;
             case "DragRowDataGrid2":
                 DataGridShowCaseDataSources.EnsureDragRowDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.DragRowManyDataSource;
+                dataGrid.ItemsSource = viewModel.DragRowManyDataSource?.Source;
                 break;
             case "CustomEmptyDataGrid":
                 DataGridShowCaseDataSources.EnsureCustomEmptyDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.CustomEmptyDataSource;
+                dataGrid.ItemsSource = viewModel.CustomEmptyDataSource?.Source;
                 break;
             case "EditableCellsDataGrid":
                 DataGridShowCaseDataSources.EnsureEditableCellsDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.EditableCellsDataSource;
+                dataGrid.ItemsSource = viewModel.EditableCellsDataSource?.Source;
                 break;
             case "BasicPagingCaseGrid":
                 DataGridShowCaseDataSources.EnsurePagingGridDataSource(viewModel);
-                dataGrid.ItemsSource = viewModel.PagingGridDataSource;
+                dataGrid.ItemsSource = viewModel.PagingGridDataSource?.Source;
+                break;
+            case "RemoteRangeDataGrid":
+                DataGridShowCaseDataSources.EnsureRemoteDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.RemoteDataSource;
                 break;
         }
 
@@ -192,7 +194,7 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
     private void HandleSortAgeBtnClick(object? sender, RoutedEventArgs? eventArgs)
     {
         FindNamedControlNearSender<AtomDataGrid>(sender, "ResetFilterAndSortGrid")
-            ?.Sort(1, ListSortDirection.Descending);
+            ?.SetSort(DataGridShowCaseFields.Age, DataGridSortDirection.Descending);
     }
 
     private void HandleClearFiltersBtnClick(object? sender, RoutedEventArgs? eventArgs)
@@ -205,7 +207,7 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
     {
         var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "ResetFilterAndSortGrid");
         dataGrid?.ClearFilters();
-        dataGrid?.ClearSort();
+        dataGrid?.ClearSorts();
     }
 
     private void HandleColumnVisibleChanged(object? sender, RoutedEventArgs e)
@@ -238,7 +240,7 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
         }
     }
 
-    private void HandleToggleEmptyGridItemsSource(object? sender, RoutedEventArgs? eventArgs)
+    private void HandleToggleEmptyGridSource(object? sender, RoutedEventArgs? eventArgs)
     {
         var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "CustomEmptyDataGrid");
         if (dataGrid is null)
@@ -253,7 +255,7 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
         else if (DataContext is DataGridViewModel viewModel)
         {
             DataGridShowCaseDataSources.EnsureCustomEmptyDataSource(viewModel);
-            dataGrid.ItemsSource = viewModel.CustomEmptyDataSource;
+            dataGrid.ItemsSource = viewModel.CustomEmptyDataSource?.Source;
         }
     }
 
@@ -274,13 +276,41 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
         }
 
         DataGridShowCaseDataSources.EnsureEditableCellsDataSource(viewModel);
-        viewModel.EditableCellsDataSource?.Add(new DataGridBaseInfo
+        viewModel.EditableCellsDataSource?.Rows.Add(new DataGridBaseInfo
         {
+            Key     = $"editable-new-{s_cellsEditableNewRowIndex}",
             Address = $"London, Park Lane no. {s_cellsEditableNewRowIndex}",
             Name    = $"Edward King {s_cellsEditableNewRowIndex}",
             Age     = 32
         });
         s_cellsEditableNewRowIndex++;
+    }
+
+    private void HandleReloadRemoteRangeSource(object? sender, RoutedEventArgs? eventArgs)
+    {
+        if (DataContext is DataGridViewModel viewModel)
+        {
+            DataGridShowCaseDataSources.EnsureRemoteDataSource(viewModel);
+            viewModel.RemoteDataSource?.Reload();
+        }
+    }
+
+    private void HandleFailRemoteRangeSource(object? sender, RoutedEventArgs? eventArgs)
+    {
+        if (DataContext is DataGridViewModel viewModel)
+        {
+            DataGridShowCaseDataSources.EnsureRemoteDataSource(viewModel);
+            viewModel.RemoteDataSource?.ReloadWithFailure();
+        }
+    }
+
+    private void HandleExpireRemoteRangeSnapshot(object? sender, RoutedEventArgs? eventArgs)
+    {
+        if (DataContext is DataGridViewModel viewModel)
+        {
+            DataGridShowCaseDataSources.EnsureRemoteDataSource(viewModel);
+            viewModel.RemoteDataSource?.ExpireSnapshot();
+        }
     }
 
     private void HandleRemoveRowCellsEditableGrid(object? sender, RoutedEventArgs? eventArgs)
@@ -290,9 +320,13 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
             return;
         }
 
-        FindNamedControlNearSender<AtomDataGrid>(sender, "EditableCellsDataGrid")
-            ?.CollectionView
-            ?.RemoveAt(index);
+        if (DataContext is DataGridViewModel viewModel &&
+            viewModel.EditableCellsDataSource is { } dataSource &&
+            index >= 0 &&
+            index < dataSource.Rows.Count)
+        {
+            dataSource.Rows.RemoveAt(index);
+        }
     }
 
     private void HandleTopPaginationAlignChanged(object? sender, OptionCheckedChangedEventArgs args)
@@ -375,6 +409,22 @@ internal static class DataGridShowCaseDataSources
 {
     public static void ClearAll(DataGridViewModel viewModel)
     {
+        viewModel.BasicCaseDataSource?.Dispose();
+        viewModel.FilterAndSorterDataSource?.Dispose();
+        viewModel.MultiSorterDataSource?.Dispose();
+        viewModel.ExpandableRowDataSource?.Dispose();
+        viewModel.GroupHeaderDataSource?.Dispose();
+        viewModel.FixedHeaderDataSource?.Dispose();
+        viewModel.FixedColumnsDataSource?.Dispose();
+        viewModel.FixedColumnsAndHeadersDataSource?.Dispose();
+        viewModel.DragColumnDataSource?.Dispose();
+        viewModel.DragRowDataSource?.Dispose();
+        viewModel.DragRowManyDataSource?.Dispose();
+        viewModel.CustomEmptyDataSource?.Dispose();
+        viewModel.EditableCellsDataSource?.Dispose();
+        viewModel.EditableRowsDataSource?.Dispose();
+        viewModel.PagingGridDataSource?.Dispose();
+        viewModel.RemoteDataSource?.Dispose();
         viewModel.BasicCaseDataSource              = null;
         viewModel.FilterAndSorterDataSource        = null;
         viewModel.MultiSorterDataSource            = null;
@@ -390,6 +440,7 @@ internal static class DataGridShowCaseDataSources
         viewModel.EditableCellsDataSource          = null;
         viewModel.EditableRowsDataSource           = null;
         viewModel.PagingGridDataSource             = null;
+        viewModel.RemoteDataSource                 = null;
     }
 
     public static void EnsureBasicDataSource(DataGridViewModel viewModel)
@@ -399,7 +450,6 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.BasicCaseDataSource = new();
         List<DataGridBaseInfo> items =
         [
             new DataGridBaseInfo
@@ -432,7 +482,9 @@ internal static class DataGridShowCaseDataSources
                 ]
             }
         ];
-        viewModel.BasicCaseDataSource.AddRange(items);
+        viewModel.BasicCaseDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureFilterAndSorterDataSource(DataGridViewModel viewModel)
@@ -442,7 +494,6 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.FilterAndSorterDataSource = new();
         List<DataGridBaseInfo> items =
         [
             new DataGridBaseInfo { Key = "1", Name = "John Brown", Age = 32, Address = "New York No. 1 Lake Park" },
@@ -450,7 +501,9 @@ internal static class DataGridShowCaseDataSources
             new DataGridBaseInfo { Key = "3", Name = "Joe Black", Age  = 32, Address = "Sydney No. 1 Lake Park" },
             new DataGridBaseInfo { Key = "4", Name = "Joe Red", Age    = 32, Address = "London No. 2 Lake Park" }
         ];
-        viewModel.FilterAndSorterDataSource.AddRange(items);
+        viewModel.FilterAndSorterDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureMultiSorterDataSource(DataGridViewModel viewModel)
@@ -460,15 +513,16 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.MultiSorterDataSource = new();
         List<MultiSorterDataType> items =
         [
             new MultiSorterDataType { Key = "1", Name = "John Brown", Chinese = 98, Math = 60, English = 70 },
             new MultiSorterDataType { Key = "2", Name = "Jim Green", Chinese  = 98, Math = 66, English = 89 },
             new MultiSorterDataType { Key = "3", Name = "Joe Black", Chinese  = 98, Math = 90, English = 70 },
-            new MultiSorterDataType { Key = "3", Name = "Jim Red", Chinese    = 88, Math = 99, English = 89 },
+            new MultiSorterDataType { Key = "4", Name = "Jim Red", Chinese    = 88, Math = 99, English = 89 },
         ];
-        viewModel.MultiSorterDataSource.AddRange(items);
+        viewModel.MultiSorterDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.MultiSorter);
     }
 
     public static void EnsureExpandableRowDataSource(DataGridViewModel viewModel)
@@ -478,7 +532,6 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.ExpandableRowDataSource = new();
         List<ExpandableRowDataType> items =
         [
             new ExpandableRowDataType
@@ -502,7 +555,9 @@ internal static class DataGridShowCaseDataSources
                 Description = "My name is Joe Black, I am 78 years old, London No. 2 Lake Park"
             }
         ];
-        viewModel.ExpandableRowDataSource.AddRange(items);
+        viewModel.ExpandableRowDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Expandable);
     }
 
     public static void EnsureGroupHeaderDataSource(DataGridViewModel viewModel)
@@ -512,7 +567,6 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.GroupHeaderDataSource = new();
         var items = new List<GroupHeaderDataType>();
         for (var i = 0; i < 6; i++)
         {
@@ -530,7 +584,9 @@ internal static class DataGridShowCaseDataSources
             });
         }
 
-        viewModel.GroupHeaderDataSource.AddRange(items);
+        viewModel.GroupHeaderDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.GroupHeader);
     }
 
     public static void EnsureFixedHeaderDataSource(DataGridViewModel viewModel)
@@ -540,7 +596,6 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.FixedHeaderDataSource = new();
         var items = new List<DataGridBaseInfo>();
         for (var i = 0; i < 30; i++)
         {
@@ -553,7 +608,9 @@ internal static class DataGridShowCaseDataSources
             });
         }
 
-        viewModel.FixedHeaderDataSource.AddRange(items);
+        viewModel.FixedHeaderDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureFixedColumnsDataSource(DataGridViewModel viewModel)
@@ -563,13 +620,14 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.FixedColumnsDataSource = new();
         List<DataGridBaseInfo> items =
         [
             new DataGridBaseInfo { Key = "1", Name = "John Brown", Age = 32, Address = "New York No. 1 Lake Park" },
             new DataGridBaseInfo { Key = "2", Name = "Jim Green", Age  = 42, Address = "London No. 1 Lake Park" },
         ];
-        viewModel.FixedColumnsDataSource.AddRange(items);
+        viewModel.FixedColumnsDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureFixedColumnsAndHeadersDataSource(DataGridViewModel viewModel)
@@ -579,7 +637,6 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.FixedColumnsAndHeadersDataSource = new();
         var items = new List<DataGridBaseInfo>();
         for (var i = 0; i < 30; i++)
         {
@@ -592,7 +649,9 @@ internal static class DataGridShowCaseDataSources
             });
         }
 
-        viewModel.FixedColumnsAndHeadersDataSource.AddRange(items);
+        viewModel.FixedColumnsAndHeadersDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureDragColumnDataSource(DataGridViewModel viewModel)
@@ -602,11 +661,11 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.DragColumnDataSource = new();
         var items = new List<DragColumnDataType>
         {
             new()
             {
+                Key     = "1",
                 Name    = "John Brown",
                 Gender  = "male",
                 Age     = 32,
@@ -615,6 +674,7 @@ internal static class DataGridShowCaseDataSources
             },
             new()
             {
+                Key     = "2",
                 Name    = "Jim Green",
                 Gender  = "female",
                 Age     = 42,
@@ -623,6 +683,7 @@ internal static class DataGridShowCaseDataSources
             },
             new()
             {
+                Key     = "3",
                 Name    = "Joe Black",
                 Gender  = "female",
                 Age     = 32,
@@ -631,6 +692,7 @@ internal static class DataGridShowCaseDataSources
             },
             new()
             {
+                Key     = "4",
                 Name    = "George Hcc",
                 Gender  = "male",
                 Age     = 20,
@@ -638,22 +700,25 @@ internal static class DataGridShowCaseDataSources
                 Address = "Sidney No. 1 Lake Park"
             }
         };
-        viewModel.DragColumnDataSource.AddRange(items);
+        viewModel.DragColumnDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.DragColumn);
     }
 
     public static void EnsureDragRowDataSource(DataGridViewModel viewModel)
     {
         if (viewModel.DragRowDataSource is null)
         {
-            viewModel.DragRowDataSource = new();
             List<DataGridBaseInfo> items =
             [
-                new DataGridBaseInfo { Name = "John Brown", Age  = 32, Address = "London No. 1 Lake Park" },
-                new DataGridBaseInfo { Name = "Jim Green", Age   = 42, Address = "London No. 1 Lake Park" },
-                new DataGridBaseInfo { Name = "Joe Black", Age   = 32, Address = "Sidney No. 1 Lake Park" },
-                new DataGridBaseInfo { Name = "George Hcc", Age  = 20, Address = "Sidney No. 1 Lake Park" }
+                new DataGridBaseInfo { Key = "drag-1", Name = "John Brown", Age  = 32, Address = "London No. 1 Lake Park" },
+                new DataGridBaseInfo { Key = "drag-2", Name = "Jim Green", Age   = 42, Address = "London No. 1 Lake Park" },
+                new DataGridBaseInfo { Key = "drag-3", Name = "Joe Black", Age   = 32, Address = "Sidney No. 1 Lake Park" },
+                new DataGridBaseInfo { Key = "drag-4", Name = "George Hcc", Age  = 20, Address = "Sidney No. 1 Lake Park" }
             ];
-            viewModel.DragRowDataSource.AddRange(items);
+            viewModel.DragRowDataSource = new(
+                items,
+                DataGridShowCaseSourceDescriptors.Base);
         }
 
         if (viewModel.DragRowManyDataSource is not null)
@@ -661,18 +726,20 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.DragRowManyDataSource = new();
         var manyItems = new List<DataGridBaseInfo>();
         for (var i = 0; i < 30; i++)
         {
             manyItems.Add(new DataGridBaseInfo
             {
+                Key     = $"drag-many-{i}",
                 Name    = "John Brown",
                 Age     = 32,
                 Address = $"London No. {i + 1} Lake Park"
             });
         }
-        viewModel.DragRowManyDataSource.AddRange(manyItems);
+        viewModel.DragRowManyDataSource = new(
+            manyItems,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureCustomEmptyDataSource(DataGridViewModel viewModel)
@@ -682,17 +749,18 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.CustomEmptyDataSource = new();
         List<DataGridBaseInfo> items =
         [
-            new DataGridBaseInfo { Name = "John Brown", Age = 32, Address = "London No. 1 Lake Park" },
-            new DataGridBaseInfo { Name = "Jim Green", Age  = 42, Address = "London No. 1 Lake Park" },
-            new DataGridBaseInfo { Name = "Joe Black", Age  = 32, Address = "Sidney No. 1 Lake Park" },
-            new DataGridBaseInfo { Name = "George Hcc", Age = 18, Address = "Sidney No. 1 Lake Park" },
-            new DataGridBaseInfo { Name = "Joe Black", Age  = 32, Address = "Sidney No. 1 Lake Park" },
-            new DataGridBaseInfo { Name = "George Hcc", Age = 44, Address = "Sidney No. 2 Lake Park" }
+            new DataGridBaseInfo { Key = "empty-1", Name = "John Brown", Age = 32, Address = "London No. 1 Lake Park" },
+            new DataGridBaseInfo { Key = "empty-2", Name = "Jim Green", Age  = 42, Address = "London No. 1 Lake Park" },
+            new DataGridBaseInfo { Key = "empty-3", Name = "Joe Black", Age  = 32, Address = "Sidney No. 1 Lake Park" },
+            new DataGridBaseInfo { Key = "empty-4", Name = "George Hcc", Age = 18, Address = "Sidney No. 1 Lake Park" },
+            new DataGridBaseInfo { Key = "empty-5", Name = "Joe Black", Age  = 32, Address = "Sidney No. 1 Lake Park" },
+            new DataGridBaseInfo { Key = "empty-6", Name = "George Hcc", Age = 44, Address = "Sidney No. 2 Lake Park" }
         ];
-        viewModel.CustomEmptyDataSource.AddRange(items);
+        viewModel.CustomEmptyDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureEditableCellsDataSource(DataGridViewModel viewModel)
@@ -702,13 +770,14 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.EditableCellsDataSource = new();
         List<DataGridBaseInfo> items =
         [
-            new DataGridBaseInfo { Name = "John Brown", Age = 32, Address = "London No. 1 Lake Park" },
-            new DataGridBaseInfo { Name = "Jim Green", Age  = 42, Address = "London No. 3 Lake Park" }
+            new DataGridBaseInfo { Key = "editable-1", Name = "John Brown", Age = 32, Address = "London No. 1 Lake Park" },
+            new DataGridBaseInfo { Key = "editable-2", Name = "Jim Green", Age  = 42, Address = "London No. 3 Lake Park" }
         ];
-        viewModel.EditableCellsDataSource.AddRange(items);
+        viewModel.EditableCellsDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsureEditableRowsDataSource(DataGridViewModel viewModel)
@@ -718,18 +787,20 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.EditableRowsDataSource = new();
         var items = new List<DataGridBaseInfo>();
         for (var i = 0; i < 30; i++)
         {
             items.Add(new DataGridBaseInfo
             {
+                Key     = $"editable-row-{i + 1}",
                 Name    = $"Edward {i + 1}",
                 Age     = 32,
                 Address = $"London Park no. {i + 1}"
             });
         }
-        viewModel.EditableRowsDataSource.AddRange(items);
+        viewModel.EditableRowsDataSource = new(
+            items,
+            DataGridShowCaseSourceDescriptors.Base);
     }
 
     public static void EnsurePagingGridDataSource(DataGridViewModel viewModel)
@@ -739,8 +810,16 @@ internal static class DataGridShowCaseDataSources
             return;
         }
 
-        viewModel.PagingGridDataSource = new();
-        viewModel.PagingGridDataSource.AddRange(RandomDataGenerator.GenerateRandomData(100));
+        viewModel.PagingGridDataSource = new(
+            RandomDataGenerator.GenerateRandomData(100),
+            DataGridShowCaseSourceDescriptors.Base);
+    }
+
+    public static void EnsureRemoteDataSource(DataGridViewModel viewModel)
+    {
+        viewModel.RemoteDataSource ??= new GalleryRemoteDataGridSource(
+            totalDataCount: 1_000_000,
+            latency: TimeSpan.FromMilliseconds(180));
     }
 }
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.CalendarControlLangResourceKind">
+    <unit id="Month">
+      <segment>
+        <source>Month</source>
+        <target state="translated">月</target>
+      </segment>
+    </unit>
+    <unit id="Week">
+      <segment>
+        <source>Week</source>
+        <target state="translated">周</target>
+      </segment>
+    </unit>
+    <unit id="Year">
+      <segment>
+        <source>Year</source>
+        <target state="translated">年</target>
+      </segment>
+    </unit>
+    <unit id="YearSuffix">
+      <segment>
+        <source></source>
+        <target state="translated">年</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

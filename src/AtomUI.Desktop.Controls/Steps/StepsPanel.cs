@@ -68,6 +68,7 @@ internal class StepsPanel : Panel
     {
         var width = 0d;
         var height = 0d;
+        var orientation = EffectiveOrientation;
 
         foreach (var child in Children)
         {
@@ -77,7 +78,7 @@ internal class StepsPanel : Panel
                 continue;
             }
 
-            if (Orientation == Orientation.Vertical)
+            if (orientation == Orientation.Vertical)
             {
                 width = Math.Max(width, child.DesiredSize.Width);
                 height += child.DesiredSize.Height;
@@ -100,7 +101,9 @@ internal class StepsPanel : Panel
             return finalSize;
         }
 
-        if (Orientation == Orientation.Vertical)
+        var orientation = EffectiveOrientation;
+
+        if (orientation == Orientation.Vertical)
         {
             if (Type == StepsType.Navigation)
             {
@@ -122,7 +125,8 @@ internal class StepsPanel : Panel
         switch (Type)
         {
             case StepsType.Navigation:
-                ArrangeNavigation(children, finalSize);
+            case StepsType.Panel:
+                ArrangeNavigation(children, finalSize, Type == StepsType.Panel);
                 break;
 
             default:
@@ -171,15 +175,22 @@ internal class StepsPanel : Panel
 
     private bool ShouldArrangeTitleVerticalItemsEqually()
     {
-        return StepsItemLayoutPanel.ResolveTitlePlacement(Type, Orientation, TitlePlacement) == Orientation.Vertical;
+        return StepsItemLayoutPanel.ResolveTitlePlacement(Type, EffectiveOrientation, TitlePlacement) == Orientation.Vertical;
     }
 
-    private static void ArrangeNavigation(IReadOnlyList<Control> children, Size finalSize)
+    private Orientation EffectiveOrientation => Type == StepsType.Panel ? Orientation.Horizontal : Orientation;
+
+    private static void ArrangeNavigation(
+        IReadOnlyList<Control> children,
+        Size finalSize,
+        bool panel = false)
     {
         var width = finalSize.Width / children.Count;
         var x = 0d;
-        foreach (var child in children)
+        for (var index = 0; index < children.Count; index++)
         {
+            var child = children[index];
+            child.ZIndex = panel ? children.Count - index : 0;
             child.Arrange(new Rect(x, 0, width, finalSize.Height));
             x += width;
         }

@@ -5,6 +5,7 @@ using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -13,6 +14,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -24,6 +26,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     internal static readonly StyledProperty<bool> IsModalProperty =
         Dialog.IsModalProperty.AddOwner<OverlayDialogPresenter>();
 
+    internal static readonly StyledProperty<bool> IsMaskClosableProperty =
+        Dialog.IsMaskClosableProperty.AddOwner<OverlayDialogPresenter>();
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         Dialog.IsMotionEnabledProperty.AddOwner<OverlayDialogPresenter>();
 
@@ -34,6 +39,12 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     {
         get => GetValue(IsModalProperty);
         set => SetValue(IsModalProperty, value);
+    }
+
+    internal bool IsMaskClosable
+    {
+        get => GetValue(IsMaskClosableProperty);
+        set => SetValue(IsMaskClosableProperty, value);
     }
 
     internal bool IsMotionEnabled
@@ -55,6 +66,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private readonly CompositeDisposable _bindings = new();
     private DialogOverlayLayer? _dialogLayer;
     private Window? _ownerWindow;
+    private IDisposable? _drawnChromeOverlaySuppression;
     private bool _ownerIsWayland;
     private MotionActor? _maskMotionActor;
     private MotionActor? _surfaceMotionActor;
@@ -90,6 +102,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         Content = _surface;
 
         _bindings.Add(Bind(IsModalProperty, dialog.GetObservable(Dialog.IsModalProperty)));
+        _bindings.Add(this.GetObservable(IsModalProperty)
+            .Subscribe(_ => UpdateDrawnChromeOverlaySuppression()));
+        _bindings.Add(Bind(IsMaskClosableProperty, dialog.GetObservable(Dialog.IsMaskClosableProperty)));
         _bindings.Add(Bind(IsMotionEnabledProperty, dialog.GetObservable(Dialog.IsMotionEnabledProperty)));
         _bindings.Add(dialog.GetObservable(Dialog.HostWidthProperty).Skip(1).Subscribe(HandleHostWidthChanged));
         _bindings.Add(dialog.GetObservable(Dialog.HostHeightProperty).Skip(1).Subscribe(HandleHostHeightChanged));
@@ -146,6 +161,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _ownerIsWayland = OperatingSystem.IsLinux() &&
                           _ownerWindow is { } ownerWindow &&
                           AbstractLinuxWindowChromeManager.IsWayland(ownerWindow);
+        UpdateDrawnChromeOverlaySuppression();
         _dialogLayer.Add(this);
         AttachOwnerGeometryBindings();
         UpdateLayerBounds(_dialogLayer.AvailableSize);
@@ -217,6 +233,11 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             {
                 CreateSurfaceMotion(isOpening: false).RunAsync(_surfaceMotionActor)
             };
+            if (_surface.SurfaceContentLayer is { } surfaceContentLayer)
+            {
+                motionTasks.Add(RunSurfaceContentCloseMotionAsync(surfaceContentLayer));
+            }
+
             if (IsModal && _maskMotionActor is not null)
             {
                 motionTasks.Add(new FadeOutMotion(MotionDuration, new CubicEaseIn())
@@ -229,6 +250,40 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface.DisconnectCompositionChildren();
         _surface.Dispose();
         RemoveFromDialogLayer();
+    }
+
+    private async Task RunSurfaceContentCloseMotionAsync(Control surfaceContentLayer)
+    {
+        var animation = new Animation
+        {
+            Duration = MotionDuration,
+            Easing = new LinearEasing(),
+            FillMode = FillMode.Forward,
+            Children =
+            {
+                new KeyFrame
+                {
+                    Cue = new Cue(0),
+                    Setters = { new Setter(Visual.OpacityProperty, 1d) }
+                },
+                new KeyFrame
+                {
+                    Cue = new Cue(1),
+                    Setters = { new Setter(Visual.OpacityProperty, 0d) }
+                }
+            }
+        };
+
+        try
+        {
+            await animation.RunAsync(surfaceContentLayer);
+        }
+        finally
+        {
+            // The surface is torn down immediately after all close motions;
+            // restore the live tree for re-use if teardown is interrupted.
+            surfaceContentLayer.Opacity = 1;
+        }
     }
 
     public ValueTask DisposeAsync()
@@ -301,6 +356,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         ReleaseDialogMask();
+        ReleaseDrawnChromeOverlaySuppression();
         Content = null;
         _ownerWindow = null;
         _ownerIsWayland = false;
@@ -323,6 +379,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void RemoveFromDialogLayer()
     {
+        ReleaseDrawnChromeOverlaySuppression();
         if (_dialogLayer is not { } dialogLayer)
         {
             return;
@@ -330,6 +387,23 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         dialogLayer.Remove(this);
         _dialogLayer = null;
+    }
+
+    private void UpdateDrawnChromeOverlaySuppression()
+    {
+        if (_dialogLayer is not null && IsModal && _ownerWindow is { } window)
+        {
+            _drawnChromeOverlaySuppression ??= window.SuppressDrawnChromeOverlay();
+            return;
+        }
+
+        ReleaseDrawnChromeOverlaySuppression();
+    }
+
+    private void ReleaseDrawnChromeOverlaySuppression()
+    {
+        _drawnChromeOverlaySuppression?.Dispose();
+        _drawnChromeOverlaySuppression = null;
     }
 
     internal void UpdateLayerBounds(Size layerSize)
@@ -694,8 +768,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             return;
         }
 
-        ResolveNormalSurfaceSizeConstraints(ownerBounds);
-        ClampActualSurfaceGeometry(ownerBounds);
+        ApplyNormalSurfaceSizeConstraints(ownerBounds);
     }
 
     private static double ResolveInitialSize(double value, double min, double max)
@@ -916,6 +989,11 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         e.Handled = true;
+        if (!IsMaskClosable)
+        {
+            return;
+        }
+
         HandleHostCloseRequested(this, EventArgs.Empty);
     }
 

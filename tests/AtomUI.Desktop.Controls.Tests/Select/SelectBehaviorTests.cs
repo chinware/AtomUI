@@ -13,6 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -26,6 +27,139 @@ public class SelectBehaviorTests
     static SelectBehaviorTests()
     {
         AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Pinned_Open_Request_Opens_Select_And_Its_Template_Popup()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var popup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            select.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_Select_Rejects_Business_Close_Request()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = GetVisualDescendant<Popup>(select, "PART_Popup");
+
+            select.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            select.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_Select_Detach_Closes_Popup_And_Reattach_Reopens_It()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+        var window = CreateWindow(select);
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            var visualLayerManager = window.Content.ShouldBeOfType<VisualLayerManager>();
+            var overlayPanel = visualLayerManager.Child.ShouldBeOfType<ScopeAwareOverlayLayerPanel>();
+
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            popup.IsOpen.ShouldBeTrue();
+
+            overlayPanel.Children.Remove(select);
+            Dispatcher.UIThread.RunJobs();
+
+            select.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+
+            overlayPanel.Children.Add(select);
+            Dispatcher.UIThread.RunJobs();
+
+            select.IsDropDownOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue(
+                $"selectAttached={select.IsAttachedToVisualTree()}, popupAttached={popup.IsAttachedToVisualTree()}, " +
+                $"popupPinned={popup.IsPopupPinnedOpen}, child={popup.Child is not null}, " +
+                $"placementTarget={popup.PlacementTarget?.GetType().Name ?? "null"}, " +
+                $"suspended={GetPrivateField<bool>(popup, "_isPinnedOpenSuspended")}, " +
+                $"trackedTarget={GetPrivateField<Control?>(popup, "_pinnedOpenTrackingTarget")?.GetType().Name ?? "null"}");
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            select.IsPopupPinnedOpen = false;
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
+    public void Pinned_Select_Template_Replacement_Closes_Old_Popup_And_Opens_New_Popup()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var oldPopup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            var template = select.Template;
+            template.ShouldNotBeNull();
+
+            select.Template = null;
+            select.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            oldPopup.IsOpen.ShouldBeFalse();
+
+            select.Template = template;
+            select.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            var newPopup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            newPopup.ShouldNotBeSameAs(oldPopup);
+            select.IsDropDownOpen.ShouldBeTrue();
+            newPopup.IsPopupPinnedOpen.ShouldBeTrue();
+            newPopup.IsOpen.ShouldBeTrue();
+        });
     }
 
     [Fact]
@@ -54,6 +188,66 @@ public class SelectBehaviorTests
         ];
 
         select.SelectedOption.ShouldBeSameAs(secondLucy);
+    }
+
+    [Fact]
+    public void OptionsSource_Replacement_Refreshes_Localized_Multiple_Tag_Layout()
+    {
+        var firstOption = new SelectOption
+        {
+            Header  = "A",
+            Content = "a"
+        };
+        var secondOption = new SelectOption
+        {
+            Header  = "B",
+            Content = "b"
+        };
+        var select = new Desktop.Controls.Select
+        {
+            Width              = 240,
+            Mode               = SelectMode.Multiple,
+            IsFilterEnabled    = true,
+            IsResponsiveTagMode = true,
+            MaxTagCount        = 1,
+            OptionsSource      = [firstOption, secondOption],
+            SelectedOptions    = [firstOption, secondOption]
+        };
+        var firstLocalizedOption = new SelectOption
+        {
+            Header  = "A much longer localized option",
+            Content = "a"
+        };
+        var secondLocalizedOption = new SelectOption
+        {
+            Header  = "B much longer localized option",
+            Content = "b"
+        };
+        var firstLocalizedHeader = (string)firstLocalizedOption.Header!;
+
+        ShowInWindow(select, () =>
+        {
+            var selectedOptionsBox = GetVisualDescendant<SelectResultOptionsBox>(select, "SelectedOptionsBox");
+            var maxCountPanel = GetVisualDescendant<SelectMaxTagAwarePanel>(select, "PART_MaxCountAwarePanel");
+
+            select.OptionsSource = [firstLocalizedOption, secondLocalizedOption];
+            Dispatcher.UIThread.RunJobs();
+
+            select.SelectedOptions.ShouldBe([firstLocalizedOption, secondLocalizedOption]);
+            selectedOptionsBox.GetVisualDescendants()
+                              .OfType<SelectTag>()
+                              .ShouldContain(tag => tag.Text == firstLocalizedHeader);
+
+            var infoTag = maxCountPanel.Children
+                                        .OfType<SelectRemainInfoTag>()
+                                        .Single();
+            var searchTextBox = GetTagsSearchTextBox(select);
+
+            infoTag.IsVisible.ShouldBeTrue();
+            infoTag.Bounds.Right.ShouldBeLessThanOrEqualTo(maxCountPanel.Bounds.Right + 0.001);
+            searchTextBox.Bounds.X.ShouldBeGreaterThanOrEqualTo(infoTag.Bounds.Right - 0.001);
+            searchTextBox.Bounds.Right.ShouldBeLessThanOrEqualTo(maxCountPanel.Bounds.Right + 0.001);
+        });
     }
 
     [Fact]
@@ -566,6 +760,381 @@ public class SelectBehaviorTests
     }
 
     [Fact]
+    public void Pointer_Move_And_Keyboard_Navigation_Share_One_Active_Candidate()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var lucy = new SelectOption { Header = "Lucy", Content = "lucy" };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [jack, lucy]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            var jackContainer = GetCandidateContainer(candidateList, 0);
+            var lucyContainer = GetCandidateContainer(candidateList, 1);
+
+            RaisePointerMoved(jackContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedIndex.ShouldBe(0);
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(jack);
+            jackContainer.IsCandidateSelected.ShouldBeTrue();
+            lucyContainer.IsCandidateSelected.ShouldBeFalse();
+            select.SelectedOption.ShouldBeNull();
+
+            RaiseCandidateKeyDown(candidateList, Key.Down);
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedIndex.ShouldBe(1);
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(lucy);
+            jackContainer.IsCandidateSelected.ShouldBeFalse();
+            lucyContainer.IsCandidateSelected.ShouldBeTrue();
+            select.SelectedOption.ShouldBeNull();
+
+            RaisePointerMoved(jackContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedIndex.ShouldBe(0);
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(jack);
+            jackContainer.IsCandidateSelected.ShouldBeTrue();
+            lucyContainer.IsCandidateSelected.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
+    public void Candidate_Direct_Properties_Keep_Index_Item_And_Projection_Consistent()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var lucy = new SelectOption { Header = "Lucy", Content = "lucy" };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [jack, lucy]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            var jackContainer = GetCandidateContainer(candidateList, 0);
+            var lucyContainer = GetCandidateContainer(candidateList, 1);
+
+            candidateList.CandidateSelectedItem = lucy;
+
+            candidateList.CandidateSelectedIndex.ShouldBe(1);
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(lucy);
+            jackContainer.IsCandidateSelected.ShouldBeFalse();
+            lucyContainer.IsCandidateSelected.ShouldBeTrue();
+
+            candidateList.CandidateSelectedIndex = 0;
+
+            candidateList.CandidateSelectedIndex.ShouldBe(0);
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(jack);
+            jackContainer.IsCandidateSelected.ShouldBeTrue();
+            lucyContainer.IsCandidateSelected.ShouldBeFalse();
+
+            candidateList.CandidateSelectedItem = new SelectOption();
+
+            candidateList.CandidateSelectedIndex.ShouldBe(-1);
+            candidateList.CandidateSelectedItem.ShouldBeNull();
+            jackContainer.IsCandidateSelected.ShouldBeFalse();
+            lucyContainer.IsCandidateSelected.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
+    public void Pointer_Move_Then_Enter_Commits_The_Pointer_Candidate()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var lucy = new SelectOption { Header = "Lucy", Content = "lucy" };
+        var select = new Desktop.Controls.Select
+        {
+            Width         = 240,
+            OptionsSource = [jack, lucy]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            RaiseCandidateKeyDown(candidateList, Key.Down);
+            RaisePointerMoved(GetCandidateContainer(candidateList, 1));
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(lucy);
+
+            RaiseCandidateKeyDown(candidateList, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            select.SelectedOption.ShouldBeSameAs(lucy);
+            select.IsDropDownOpen.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
+    public void PointerOver_Does_Not_Preserve_A_Second_Candidate_Highlight()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var lucy = new SelectOption { Header = "Lucy", Content = "lucy" };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [jack, lucy]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            var jackContainer = GetCandidateContainer(candidateList, 0);
+            var lucyContainer = GetCandidateContainer(candidateList, 1);
+            var defaultBg     = GetThemeResource<IBrush>(ListViewTokenKind.ItemBgColor);
+            var activeBg      = GetThemeResource<IBrush>(SelectTokenKind.OptionActiveBg);
+
+            RaisePointerMoved(jackContainer);
+            ((IPseudoClasses)jackContainer.Classes).Set(":pointerover", true);
+            Dispatcher.UIThread.RunJobs();
+
+            jackContainer.Background.ShouldBe(activeBg);
+
+            RaiseCandidateKeyDown(candidateList, Key.Down);
+            Dispatcher.UIThread.RunJobs();
+
+            jackContainer.IsCandidateSelected.ShouldBeFalse();
+            jackContainer.Background.ShouldBe(defaultBg);
+            lucyContainer.IsCandidateSelected.ShouldBeTrue();
+            lucyContainer.Background.ShouldBe(activeBg);
+        });
+    }
+
+    [Fact]
+    public void Committed_Selection_Visual_Overrides_Active_Candidate_Visual()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [jack],
+            SelectedOption  = jack
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            var container     = GetCandidateContainer(candidateList, 0);
+            var selectedBg    = GetThemeResource<IBrush>(SelectTokenKind.OptionSelectedBg);
+
+            RaisePointerMoved(container);
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(jack);
+            container.IsCandidateSelected.ShouldBeTrue();
+            container.IsSelected.ShouldBeTrue();
+            container.Background.ShouldBe(selectedBg);
+        });
+    }
+
+    [Fact]
+    public void Popup_Close_Filter_And_MaxCount_Invalidate_Active_Candidate()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var lucy = new SelectOption { Header = "Lucy", Content = "lucy" };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            Mode            = SelectMode.Multiple,
+            IsFilterEnabled = true,
+            Filter          = ValueFilterFactory.BuildFilter(ValueFilterMode.Contains),
+            MaxCount        = 2,
+            OptionsSource   = [jack, lucy],
+            SelectedOptions = [jack]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            RaisePointerMoved(GetCandidateContainer(candidateList, 1));
+            Dispatcher.UIThread.RunJobs();
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(lucy);
+
+            select.MaxCount = 1;
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedIndex.ShouldBe(-1);
+            candidateList.CandidateSelectedItem.ShouldBeNull();
+
+            select.MaxCount = 2;
+            RaisePointerMoved(GetCandidateContainer(candidateList, 1));
+            Dispatcher.UIThread.RunJobs();
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(lucy);
+
+            select.FilterValue = "jack";
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedIndex.ShouldBe(-1);
+            candidateList.CandidateSelectedItem.ShouldBeNull();
+
+            select.FilterValue = null;
+            Dispatcher.UIThread.RunJobs();
+            RaisePointerMoved(GetCandidateContainer(candidateList, 0));
+            Dispatcher.UIThread.RunJobs();
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(jack);
+
+            select.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedIndex.ShouldBe(-1);
+            candidateList.CandidateSelectedItem.ShouldBeNull();
+        });
+    }
+
+    [Fact]
+    public void Candidate_Projection_Is_Restored_After_Container_Context_Reset()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var select = new Desktop.Controls.Select
+        {
+            Width         = 240,
+            IsMotionEnabled = false,
+            OptionsSource = [jack]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            var container = GetCandidateContainer(candidateList, 0);
+            candidateList.TrySetCandidateItemSelected(jack).ShouldBeTrue();
+            container.IsCandidateSelected.ShouldBeTrue();
+
+            InvokeCandidateListHook(
+                candidateList,
+                "NotifyClearContainerForVirtualizingContext",
+                container);
+            container.IsCandidateSelected.ShouldBeFalse();
+
+            InvokeCandidateListHook(
+                candidateList,
+                "NotifyRestoreDefaultContext",
+                container,
+                jack);
+            container.IsCandidateSelected.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Navigation_Skips_Disabled_Hidden_And_Group_Candidates()
+    {
+        var disabled = new SelectOption
+        {
+            Header    = "Disabled",
+            Content   = "disabled",
+            Group     = "A",
+            IsEnabled = false
+        };
+        var selected = new SelectOption
+        {
+            Header  = "Selected",
+            Content = "selected",
+            Group   = "A"
+        };
+        var available = new SelectOption
+        {
+            Header  = "Available",
+            Content = "available",
+            Group   = "B"
+        };
+        var select = new Desktop.Controls.Select
+        {
+            Width                   = 240,
+            Mode                    = SelectMode.Multiple,
+            IsGroupEnabled          = true,
+            GroupPropertySelector   = value => (value as ISelectOption)?.Group,
+            IsHideSelectedOptions   = true,
+            OptionsSource           = [disabled, selected, available],
+            SelectedOptions         = [selected]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            RaiseCandidateKeyDown(candidateList, Key.Down);
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(available);
+
+            var groupContainer = candidateList.GetVisualDescendants()
+                                              .OfType<SelectCandidateListItem>()
+                                              .First(item => item.IsGroupItem);
+            RaisePointerMoved(groupContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(available);
+        });
+    }
+
+    [Fact]
+    public void Multiple_Mode_Enter_Toggles_Selection_And_Keeps_Active_Candidate()
+    {
+        var jack = new SelectOption { Header = "Jack", Content = "jack" };
+        var select = new Desktop.Controls.Select
+        {
+            Width         = 240,
+            Mode          = SelectMode.Multiple,
+            OptionsSource = [jack]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            RaisePointerMoved(GetCandidateContainer(candidateList, 0));
+            RaiseCandidateKeyDown(candidateList, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            select.SelectedOptions.ShouldNotBeNull();
+            select.SelectedOptions.ShouldContain(jack);
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(jack);
+            select.IsDropDownOpen.ShouldBeTrue();
+
+            RaiseCandidateKeyDown(candidateList, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            select.SelectedOptions.ShouldNotContain(jack);
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(jack);
+        });
+    }
+
+    [Fact]
     public void Tags_Mode_With_OptionsSource_Creates_Runtime_Option_Without_Mutating_User_Source()
     {
         var optionsSource = new List<ISelectOption>
@@ -843,6 +1412,13 @@ public class SelectBehaviorTests
         return descendant;
     }
 
+    private static T GetPrivateField<T>(object target, string fieldName)
+    {
+        var field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (T)field!.GetValue(target)!;
+    }
+
     private static T GetThemeResource<T>(object key)
     {
         var application = Application.Current;
@@ -903,6 +1479,56 @@ public class SelectBehaviorTests
         var candidateList = field.GetValue(select) as SelectCandidateList;
         candidateList.ShouldNotBeNull();
         return candidateList;
+    }
+
+    private static SelectCandidateListItem GetCandidateContainer(SelectCandidateList candidateList, int viewIndex)
+    {
+        var container = candidateList.ContainerFromIndex(viewIndex) as SelectCandidateListItem;
+        container.ShouldNotBeNull();
+        return container;
+    }
+
+    private static void RaisePointerMoved(Control source)
+    {
+        source.RaiseEvent(new PointerEventArgs(
+            InputElement.PointerMovedEvent,
+            source,
+            new Avalonia.Input.Pointer(Avalonia.Input.Pointer.GetNextFreeId(), PointerType.Mouse, true),
+            source,
+            new Point(1, 1),
+            0,
+            new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.Other),
+            KeyModifiers.None));
+    }
+
+    private static void RaiseCandidateKeyDown(SelectCandidateList candidateList, Key key)
+    {
+        candidateList.HandleKeyDown(new KeyEventArgs
+        {
+            RoutedEvent  = InputElement.KeyDownEvent,
+            Source       = candidateList,
+            Key          = key,
+            PhysicalKey  = key switch
+            {
+                Key.Enter => PhysicalKey.Enter,
+                Key.Up    => PhysicalKey.ArrowUp,
+                Key.Down  => PhysicalKey.ArrowDown,
+                _         => PhysicalKey.None
+            },
+            KeyModifiers = KeyModifiers.None
+        });
+    }
+
+    private static void InvokeCandidateListHook(
+        SelectCandidateList candidateList,
+        string methodName,
+        params object?[] arguments)
+    {
+        var method = typeof(SelectCandidateList).GetMethod(
+            methodName,
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        method.ShouldNotBeNull();
+        method!.Invoke(candidateList, arguments);
     }
 
     private static ISelectOption CreateRuntimeTagOption(Desktop.Controls.Select select, string text)

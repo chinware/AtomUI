@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CarouselShowCaseLangResourceKind">
+    <unit id="AutoScrollDescription">
+      <segment>
+        <source>Timing of scrolling to the next card/picture.</source>
+        <target state="translated">Timing de scrolling para o próximo cartão/picture.</target>
+      </segment>
+    </unit>
+    <unit id="AutoScrollTitle">
+      <segment>
+        <source>Scroll automatically</source>
+        <target state="translated">Scroll automatically</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic usage.</source>
+        <target state="translated">Básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="CardShapePositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+        <target state="translated">Guia's posição: esquerda, direita, superior ou inferior. Irá auto alternância para superior em mobile.</target>
+      </segment>
+    </unit>
+    <unit id="CardShapePositionTitle">
+      <segment>
+        <source>Card Shape Position</source>
+        <target state="translated">Cartão Forma Posição</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="DotsProgressDescription">
+      <segment>
+        <source>Show progress of dots.</source>
+        <target state="translated">Mostrar progresso de dots.</target>
+      </segment>
+    </unit>
+    <unit id="DotsProgressTitle">
+      <segment>
+        <source>Progress of dots</source>
+        <target state="translated">Progresso de dots</target>
+      </segment>
+    </unit>
+    <unit id="FadeInDescription">
+      <segment>
+        <source>Slides use fade for transition.</source>
+        <target state="translated">Slides usar fade para transition.</target>
+      </segment>
+    </unit>
+    <unit id="FadeInTitle">
+      <segment>
+        <source>Fade in</source>
+        <target state="translated">Fade em</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">Inferior</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">Esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">Direita</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">Superior</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPaginationPosition">
+      <segment>
+        <source>Pagination Position:</source>
+        <target state="translated">Paginação Posição:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Carousel cycles through images, cards, or promotion panels. It supports autoplay, pagination positions, fade transitions, navigation arrows, infinite scrolling, progress indicators, and swipe gestures.</source>
+        <target state="translated">Carousel cycles through imagens, cartões, ou promotion painéis. Isso oferece suporte autoplay, paginação positions, fade transitions, navegação arrows, infinite scrolling, progresso indicators, e swipe gestures.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display a rotating set of content panels in a limited space.</source>
+        <target state="translated">Exibir a rotating definir de conteúdo painéis em a limited space.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SwitchArrowsDescription">
+      <segment>
+        <source>Show the arrows for switching.</source>
+        <target state="translated">Mostrar o arrows para switching.</target>
+      </segment>
+    </unit>
+    <unit id="SwitchArrowsTitle">
+      <segment>
+        <source>Arrows for switching</source>
+        <target state="translated">Arrows para switching</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind">
+    <unit id="CircularProgressBarDescription">
+      <segment>
+        <source>A circular progress bar.</source>
+      </segment>
+    </unit>
+    <unit id="CircularProgressBarTitle">
+      <segment>
+        <source>Circular progress bar</source>
+      </segment>
+    </unit>
+    <unit id="CircularStepsDescription">
+      <segment>
+        <source>A circular progress bar that support steps and color segments, default gap is 2px.</source>
+      </segment>
+    </unit>
+    <unit id="CircularStepsTitle">
+      <segment>
+        <source>Circular progress bar whit steps</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="CustomLineGradientDescription">
+      <segment>
+        <source>Gradient encapsulation, circle and dashboard will ignore strokeLinecap when setting gradient.</source>
+      </segment>
+    </unit>
+    <unit id="CustomLineGradientTitle">
+      <segment>
+        <source>Custom line gradient</source>
+      </segment>
+    </unit>
+    <unit id="CustomTextFormatDescription">
+      <segment>
+        <source>You can set a custom text by setting the format prop.</source>
+      </segment>
+    </unit>
+    <unit id="CustomTextFormatTitle">
+      <segment>
+        <source>Custom text format</source>
+      </segment>
+    </unit>
+    <unit id="DashboardDescription">
+      <segment>
+        <source>By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.</source>
+      </segment>
+    </unit>
+    <unit id="DashboardTitle">
+      <segment>
+        <source>Dashboard</source>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>A dynamic progress bar is better.</source>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+      </segment>
+    </unit>
+    <unit id="MiniSizeDescription">
+      <segment>
+        <source>Appropriate for a narrow area.</source>
+      </segment>
+    </unit>
+    <unit id="MiniSizeTitle">
+      <segment>
+        <source>Mini size progress bar</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAdd">
+      <segment>
+        <source>Add</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSub">
+      <segment>
+        <source>Sub</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ProgressBar, StepsProgressBar, CircleProgress, and DashboardProgress cover linear, stepped, circular, and dashboard progress indicators with status, size, gradient, and layout options.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Visualize task completion and operation progress.</source>
+      </segment>
+    </unit>
+    <unit id="PercentPositionDescription">
+      <segment>
+        <source>Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.</source>
+      </segment>
+    </unit>
+    <unit id="PercentPositionTitle">
+      <segment>
+        <source>Change progress value position</source>
+      </segment>
+    </unit>
+    <unit id="ProgressBarDescription">
+      <segment>
+        <source>A standard progress bar.</source>
+      </segment>
+    </unit>
+    <unit id="ProgressBarTitle">
+      <segment>
+        <source>Progress bar</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarDescription">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarTitle">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+      </segment>
+    </unit>
+    <unit id="StepsDescription">
+      <segment>
+        <source>A progress bar with steps.</source>
+      </segment>
+    </unit>
+    <unit id="StepsPercentPositionDescription">
+      <segment>
+        <source>Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.</source>
+      </segment>
+    </unit>
+    <unit id="StepsPercentPositionTitle">
+      <segment>
+        <source>Change progress value position for StepsProgressBar</source>
+      </segment>
+    </unit>
+    <unit id="StepsTitle">
+      <segment>
+        <source>Progress bar with steps</source>
+      </segment>
+    </unit>
+    <unit id="StrokeLinecapDescription">
+      <segment>
+        <source>By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.</source>
+      </segment>
+    </unit>
+    <unit id="StrokeLinecapTitle">
+      <segment>
+        <source>Stroke Linecap</source>
+      </segment>
+    </unit>
+    <unit id="SuccessSegmentDescription">
+      <segment>
+        <source>Show several parts of progress with different status.</source>
+      </segment>
+    </unit>
+    <unit id="SuccessSegmentTitle">
+      <segment>
+        <source>Progress bar with success segment</source>
+      </segment>
+    </unit>
+    <unit id="ToggleDisabledStatusDescription">
+      <segment>
+        <source>The progress bar is in the disabled state and uses the disabled style.</source>
+      </segment>
+    </unit>
+    <unit id="ToggleDisabledStatusTitle">
+      <segment>
+        <source>toggle disabled status</source>
+      </segment>
+    </unit>
+    <unit id="VerticalLinearDescription">
+      <segment>
+        <source>Ordinary linear progress bar, supports position specification of additional areas</source>
+      </segment>
+    </unit>
+    <unit id="VerticalLinearTitle">
+      <segment>
+        <source>Vertical progress bar</source>
+      </segment>
+    </unit>
+    <unit id="VerticalStepsDescription">
+      <segment>
+        <source>Ordinary step progress bar, supports position specification of additional areas</source>
+      </segment>
+    </unit>
+    <unit id="VerticalStepsTitle">
+      <segment>
+        <source>Vertical progress bar</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind">
+    <unit id="AutoHeightContentDetail">
+      <segment>
+        <source>When the content comes from StackPanel, Grid or explicitly sized controls, GroupBox uses the content DesiredSize to calculate its total height.</source>
+        <target state="translated">Quando o conteúdo comes de StackPanel, Grid ou explicitly sized controles, GroupBox usa o conteúdo DesiredSize para calculate its total altura.</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightContentFooter">
+      <segment>
+        <source>If the parent sets Height or MaxHeight, Avalonia layout constraints still decide clipping or scrolling.</source>
+        <target state="translated">Se o pai define Altura ou MaxHeight, Avalonia layout constraints still decide clipping ou scrolling.</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightContentOverview">
+      <segment>
+        <source>The GroupBox below does not set Height, so its content area grows with the text rows.</source>
+        <target state="translated">O GroupBox below does não definir Altura, so its conteúdo area grows com o texto linhas.</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightDescription">
+      <segment>
+        <source>GroupBox grows from the measured header, padding and content size when no height is set.</source>
+        <target state="translated">GroupBox grows de o measured cabeçalho, padding e conteúdo tamanho quando não altura é definir.</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightTitle">
+      <segment>
+        <source>Auto height</source>
+        <target state="translated">Auto altura</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic usage of the GroupBox control.</source>
+        <target state="translated">Básico uso de o GroupBox controle.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="HeaderIconDescription">
+      <segment>
+        <source>GroupBox Header supports specifying Icon.</source>
+        <target state="translated">GroupBox Cabeçalho oferece suporte specifying Ícone.</target>
+      </segment>
+    </unit>
+    <unit id="HeaderIconTitle">
+      <segment>
+        <source>Header Icon</source>
+        <target state="translated">Cabeçalho Ícone</target>
+      </segment>
+    </unit>
+    <unit id="HeaderPositionDescription">
+      <segment>
+        <source>GroupBox Header supports three position types: Left, Center and Right.</source>
+        <target state="translated">GroupBox Cabeçalho oferece suporte três posição types: Esquerda, Center e Direita.</target>
+      </segment>
+    </unit>
+    <unit id="HeaderPositionTitle">
+      <segment>
+        <source>Header title Position</source>
+        <target state="translated">Cabeçalho título Posição</target>
+      </segment>
+    </unit>
+    <unit id="HeaderStyleDescription">
+      <segment>
+        <source>GroupBox Header supports customizing some properties of color and font.</source>
+        <target state="translated">GroupBox Cabeçalho oferece suporte customizing some properties de cor e font.</target>
+      </segment>
+    </unit>
+    <unit id="HeaderStyleTitle">
+      <segment>
+        <source>Header title style</source>
+        <target state="translated">Cabeçalho título estilo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTitleTitleInfo">
+      <segment>
+        <source>Title Info</source>
+        <target state="translated">Título Informação</target>
+      </segment>
+    </unit>
+    <unit id="P2TextContentOfGroupBox">
+      <segment>
+        <source>Content of group box</source>
+        <target state="translated">Conteúdo de grupo caixa</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>GroupBox wraps related content with a bordered container and a configurable header title, position, icon and typography.</source>
+        <target state="translated">GroupBox wraps related conteúdo com a bordered container e a configurable cabeçalho título, posição, ícone e typography.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Group related content under a titled frame.</source>
+        <target state="translated">Grupo related conteúdo under a titled frame.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

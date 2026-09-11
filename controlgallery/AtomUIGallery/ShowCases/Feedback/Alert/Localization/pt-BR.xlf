@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.AlertShowCaseLangResourceKind">
+    <unit id="ApiEventCloseRequest">
+      <segment>
+        <source>Raised when the user clicks the close button.</source>
+        <target state="translated">Emitido quando o usuário clicks o fechar botão.</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage for short messages.</source>
+        <target state="translated">O simplest uso para curto mensagens.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ClosableDescription">
+      <segment>
+        <source>To show close button.</source>
+        <target state="translated">Para mostrar fechar botão.</target>
+      </segment>
+    </unit>
+    <unit id="ClosableTitle">
+      <segment>
+        <source>Closable</source>
+        <target state="translated">Closable</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomActionDescription">
+      <segment>
+        <source>Custom action.</source>
+        <target state="translated">Personalizado ação.</target>
+      </segment>
+    </unit>
+    <unit id="CustomActionTitle">
+      <segment>
+        <source>Custom action</source>
+        <target state="translated">Personalizado ação</target>
+      </segment>
+    </unit>
+    <unit id="DescriptionDescription">
+      <segment>
+        <source>Additional description for alert message.</source>
+        <target state="translated">Additional descrição para alerta mensagem.</target>
+      </segment>
+    </unit>
+    <unit id="DescriptionTitle">
+      <segment>
+        <source>Description</source>
+        <target state="translated">Descrição</target>
+      </segment>
+    </unit>
+    <unit id="IconDescription">
+      <segment>
+        <source>A relevant icon makes alert information clearer.</source>
+        <target state="translated">A relevant ícone makes alerta informação clearer.</target>
+      </segment>
+    </unit>
+    <unit id="IconTitle">
+      <segment>
+        <source>Icon</source>
+        <target state="translated">Ícone</target>
+      </segment>
+    </unit>
+    <unit id="LoopBannerDescription">
+      <segment>
+        <source>Show a loop banner.</source>
+        <target state="translated">Mostrar a loop banner.</target>
+      </segment>
+    </unit>
+    <unit id="LoopBannerTitle">
+      <segment>
+        <source>Loop Banner</source>
+        <target state="translated">Loop Banner</target>
+      </segment>
+    </unit>
+    <unit id="MoreTypesDescription">
+      <segment>
+        <source>There are 4 types of Alert: success, info, warning, error.</source>
+        <target state="translated">Há são 4 types de Alerta: sucesso, informação, aviso, erro.</target>
+      </segment>
+    </unit>
+    <unit id="MoreTypesTitle">
+      <segment>
+        <source>More types</source>
+        <target state="translated">Mais types</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAccept">
+      <segment>
+        <source>Accept</source>
+        <target state="translated">Accept</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDecline">
+      <segment>
+        <source>Decline</source>
+        <target state="translated">Decline</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDetail">
+      <segment>
+        <source>Detail</source>
+        <target state="translated">Detail</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDone">
+      <segment>
+        <source>Done</source>
+        <target state="translated">Done</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentErrorText">
+      <segment>
+        <source>Error Text</source>
+        <target state="translated">Erro Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentICanBeAReactComponentMultipleReact">
+      <segment>
+        <source>I can be custom content, multiple controls, or just some text, Info Description Info Description Info Description Info Description</source>
+        <target state="translated">I pode ser personalizado conteúdo, múltiplos controles, ou just some texto, Informação Descrição Informação Descrição Informação Descrição Informação Descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentInfoText">
+      <segment>
+        <source>Info Text</source>
+        <target state="translated">Informação Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccessText">
+      <segment>
+        <source>Success Text</source>
+        <target state="translated">Sucesso Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUndo">
+      <segment>
+        <source>UNDO</source>
+        <target state="translated">UNDO</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarningText">
+      <segment>
+        <source>Warning Text</source>
+        <target state="translated">Aviso Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarningTextWarningTextWarningTextWarningText">
+      <segment>
+        <source>Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text</source>
+        <target state="translated">Aviso Texto Aviso Texto Aviso Texto Aviso Texto Aviso Texto Aviso TextWarning Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionAdditionalDescriptionAndInformationAboutCopywriting">
+      <segment>
+        <source>Additional description and information about copywriting.</source>
+        <target state="translated">Additional descrição e informação sobre copywriting.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionDetailedDescriptionAndAdviceAboutSuccessfulCopywriting">
+      <segment>
+        <source>Detailed description and advice about successful copywriting.</source>
+        <target state="translated">Detailed descrição e advice sobre successful copywriting.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc">
+      <segment>
+        <source>Error Description Error Description Error Description Error Description Error Description Error Description</source>
+        <target state="translated">Erro Descrição Erro Descrição Erro Descrição Erro Descrição Erro Descrição Erro Descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc2">
+      <segment>
+        <source>Error Description Error Description Error Description Error Description</source>
+        <target state="translated">Erro Descrição Erro Descrição Erro Descrição Erro Descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionInfoDescriptionInfoDescriptionInfoDescriptionInfoDescript">
+      <segment>
+        <source>Info Description Info Description Info Description Info Description</source>
+        <target state="translated">Informação Descrição Informação Descrição Informação Descrição Informação Descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionSuccessDescriptionSuccessDescriptionSuccessDescription">
+      <segment>
+        <source>Success Description Success Description Success Description</source>
+        <target state="translated">Sucesso Descrição Sucesso Descrição Sucesso Descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsAWarningNoticeAboutCopywriting">
+      <segment>
+        <source>This is a warning notice about copywriting.</source>
+        <target state="translated">Este é a aviso notice sobre copywriting.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsAnErrorMessageAboutCopywriting">
+      <segment>
+        <source>This is an error message about copywriting.</source>
+        <target state="translated">Este é an erro mensagem sobre copywriting.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionWarningDescriptionWarningDescriptionWarningDescriptionWar">
+      <segment>
+        <source>Warning Description Warning Description Warning Description Warning Description</source>
+        <target state="translated">Aviso Descrição Aviso Descrição Aviso Descrição Aviso Descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">Erro</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageErrorText">
+      <segment>
+        <source>Error Text</source>
+        <target state="translated">Erro Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageInfoText">
+      <segment>
+        <source>Info Text</source>
+        <target state="translated">Informação Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageInformationalNotes">
+      <segment>
+        <source>Informational Notes</source>
+        <target state="translated">Informational Notes</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageSuccessText">
+      <segment>
+        <source>Success Text</source>
+        <target state="translated">Sucesso Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageSuccessTips">
+      <segment>
+        <source>Success Tips</source>
+        <target state="translated">Sucesso Tips</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">Aviso</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageWarningText">
+      <segment>
+        <source>Warning Text</source>
+        <target state="translated">Aviso Texto</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Alert displays important status information and optional actions without interrupting the current workflow.</source>
+        <target state="translated">Alerta displays important status informação e opcional ações sem interrupting o atual workflow.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Prominent contextual feedback message.</source>
+        <target state="translated">Prominent contextual feedback mensagem.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

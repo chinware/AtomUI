@@ -212,6 +212,7 @@ internal sealed class DialogSurface : ContentControl, IDisposable
     internal DialogButtonBox? ButtonBox { get; private set; }
     internal OverlayDialogHeader? Header { get; private set; }
     internal OverlayDialogResizer? Resizer { get; private set; }
+    internal Control? SurfaceContentLayer { get; private set; }
 
     internal event EventHandler<DialogSurfaceCloseRequestedEventArgs>? CloseRequested;
     internal event EventHandler? HostCloseRequested;
@@ -316,6 +317,7 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         ButtonBox = e.NameScope.Find<DialogButtonBox>("PART_ButtonBox");
         Header = e.NameScope.Find<OverlayDialogHeader>("PART_Header");
         Resizer = e.NameScope.Find<OverlayDialogResizer>("PART_Resizer");
+        SurfaceContentLayer = e.NameScope.Find<Control>("PART_SurfaceContentLayer");
         _contentFrame = e.NameScope.Find<Border>("ContentFrame");
         _footerFrame = e.NameScope.Find<Border>("FooterFrame");
         if (ButtonBox is not null)
@@ -563,6 +565,7 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         ReleaseHeader();
         ReleaseResizer();
         ReleaseStructuralFrames();
+        SurfaceContentLayer = null;
         _bindings.Dispose();
     }
 

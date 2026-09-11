@@ -248,6 +248,9 @@ public class Tour : TemplatedControl, IMotionAwareControl
         AvaloniaProperty.RegisterDirect<Tour, IBrush?>(nameof(CurrentMaskColor),
             o => o.CurrentMaskColor,
             (o, v) => o.CurrentMaskColor = v);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<Tour>();
     
     private Rect _targetClipBounds;
 
@@ -303,6 +306,12 @@ public class Tour : TemplatedControl, IMotionAwareControl
         private set => SetAndRaise(CurrentMaskColorProperty, ref _currentMaskColor, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
     
     private bool _ignorePropertyChanged;
@@ -312,6 +321,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
     private TourStepsView? _stepsView;
     private CompositeDisposable? _indicatorDisposables;
     private Control? _scrollBlockedTarget;
+    private IDisposable? _popupPinnedOpenBinding;
 
     static Tour()
     {
@@ -394,7 +404,14 @@ public class Tour : TemplatedControl, IMotionAwareControl
             {
                 if (!_ignorePropertyChanged)
                 {
-                    if (change.GetNewValue<bool>())
+                    if (!change.GetNewValue<bool>() && IsPopupPinnedOpen)
+                    {
+                        using (BeginIgnoringPropertyChanged())
+                        {
+                            SetCurrentValue(IsOpenProperty, true);
+                        }
+                    }
+                    else if (change.GetNewValue<bool>())
                     {
                         ShowTour();
                     }
@@ -403,6 +420,12 @@ public class Tour : TemplatedControl, IMotionAwareControl
                         HideTour();
                     }
                 }
+            }
+            else if (change.Property == IsPopupPinnedOpenProperty &&
+                     change.GetNewValue<bool>() &&
+                     !IsOpen)
+            {
+                SetCurrentValue(IsOpenProperty, true);
             }
             else if (change.Property == GapRadiusProperty ||
                      change.Property == GapOffsetXProperty ||
@@ -496,9 +519,20 @@ public class Tour : TemplatedControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_popup != null)
+        {
+            _popupPinnedOpenBinding?.Dispose();
+            _popupPinnedOpenBinding = null;
+            _popup.PositionFlipped -= HandlePositionFlipped;
+        }
         _popup = e.NameScope.Find<Popup>("PART_Popup");
         if (_popup != null)
         {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _popup,
+                Popup.IsPopupPinnedOpenProperty);
             this[!IsPopupHorizontalFlippedProperty] = _popup[!Popup.IsHorizontalFlippedProperty];
             this[!IsPopupVerticalFlippedProperty] = _popup[!Popup.IsVerticalFlippedProperty];
             _popup.PositionFlipped += HandlePositionFlipped;
@@ -571,6 +605,11 @@ public class Tour : TemplatedControl, IMotionAwareControl
     
     public void HideTour()
     {
+        if (IsPopupPinnedOpen)
+        {
+            return;
+        }
+
         if (!_isReallyOpened || _popup == null)
         {
             return;
@@ -594,7 +633,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
     {
         base.OnLoaded(e);
 
-        if (IsOpen)
+        if (IsPopupPinnedOpen || IsOpen)
         {
             ShowTour();
         }
@@ -606,6 +645,24 @@ public class Tour : TemplatedControl, IMotionAwareControl
         if (Steps.Count > 0)
         {
             SetCurrentValue(CurrentIndexProperty, 0);
+        }
+    }
+
+    private void CloseTourForLifecycle()
+    {
+        BlockTargetScroll(null);
+        if (_layer != null)
+        {
+            _layer.SetCurrentValue(TourLayer.IsMotionEnabledProperty, false);
+            _layer.IsVisible = false;
+        }
+
+        _popup?.CloseForLifecycle();
+        using (BeginIgnoringPropertyChanged())
+        {
+            SetCurrentValue(CurrentIndexProperty, 0);
+            SetCurrentValue(IsOpenProperty, false);
+            _isReallyOpened = false;
         }
     }
 
@@ -775,9 +832,9 @@ public class Tour : TemplatedControl, IMotionAwareControl
     
      protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
      {
+         CloseTourForLifecycle();
          base.OnDetachedFromVisualTree(e);
-         
-         BlockTargetScroll(null);
+
          Steps.CollectionChanged -= HandleItemsViewCollectionChanged;
          CustomActions.CollectionChanged -= HandleCustomActionsChanged;
          

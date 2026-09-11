@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Controls.Localization.CommonLangResourceKind">
+    <unit id="Cancel">
+      <segment>
+        <source>Cancel</source>
+      </segment>
+    </unit>
+    <unit id="Delete">
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="Edit">
+      <segment>
+        <source>Edit</source>
+      </segment>
+    </unit>
+    <unit id="Loading">
+      <segment>
+        <source>Loading</source>
+      </segment>
+    </unit>
+    <unit id="NoData">
+      <segment>
+        <source>No data</source>
+      </segment>
+    </unit>
+    <unit id="Ok">
+      <segment>
+        <source>Ok</source>
+      </segment>
+    </unit>
+    <unit id="Optional">
+      <segment>
+        <source>(optional)</source>
+      </segment>
+    </unit>
+    <unit id="Reset">
+      <segment>
+        <source>Reset</source>
+      </segment>
+    </unit>
+    <unit id="Save">
+      <segment>
+        <source>Save</source>
+      </segment>
+    </unit>
+    <unit id="Submit">
+      <segment>
+        <source>Submit</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

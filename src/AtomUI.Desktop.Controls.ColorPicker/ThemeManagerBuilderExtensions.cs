@@ -1,15 +1,28 @@
-using AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker;
-using AtomUI.Theme;
-
+using AtomUI.Generated.AtomUIDesktopControlsColorPicker;
+using AtomUI.Registration;
 namespace AtomUI.Desktop.Controls;
 
 public static class ColorPickerThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopColorPicker(this IThemeManagerBuilder themeManagerBuilder)
+    internal const string PackageId = "AtomUI.Desktop.Controls.ColorPicker";
+
+    [ControlPackageRegistrationEntry]
+    public static IAtomUIBuilder UseDesktopColorPicker(this IAtomUIBuilder builder)
     {
-        GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
-            new AtomUIColorPickerThemesProvider());
-        return themeManagerBuilder;
+        ArgumentNullException.ThrowIfNull(builder);
+        var provider = new AtomUIColorPickerThemesProvider();
+        if (AotTrimRegistration.IsEnabled)
+        {
+            AotTrimRegistrationPlanRegistry.ApplyPackage(
+                builder,
+                PackageId,
+                provider);
+        }
+        else
+        {
+            GeneratedControlPackageRegistration.Register(builder.Theme, provider);
+        }
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
+        return builder;
     }
 }

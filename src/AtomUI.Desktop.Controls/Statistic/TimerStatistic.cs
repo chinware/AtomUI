@@ -1,3 +1,5 @@
+using System.Reactive.Disposables;
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Threading;
 
@@ -75,6 +77,7 @@ public class TimerStatistic : AbstractStatistic
     #endregion
     
     private DispatcherTimer? _timer;
+    private CompositeDisposable? _effectiveVisibilitySubscriptions;
     private bool _isAttachedToVisualTree;
     private bool _isCountdown;
     private bool _hasCountdownFinished;
@@ -90,15 +93,18 @@ public class TimerStatistic : AbstractStatistic
         _isAttachedToVisualTree = true;
         if (HasTimerTarget())
         {
-            BuildTimer(true);
+            BuildTimer(false);
+            ConfigureEffectiveVisibilityTracking();
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
         _isAttachedToVisualTree = false;
+        _effectiveVisibilitySubscriptions?.Dispose();
+        _effectiveVisibilitySubscriptions = null;
         ReleaseTimer();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -122,10 +128,13 @@ public class TimerStatistic : AbstractStatistic
             {
                 if (HasTimerTarget())
                 {
-                    BuildTimer(true);
+                    BuildTimer(false);
+                    ConfigureEffectiveVisibilityTracking();
                 }
                 else
                 {
+                    _effectiveVisibilitySubscriptions?.Dispose();
+                    _effectiveVisibilitySubscriptions = null;
                     ReleaseTimer();
                     SetCurrentValue(RemainingTimeProperty, TimeSpan.Zero);
                 }
@@ -182,6 +191,30 @@ public class TimerStatistic : AbstractStatistic
             _timer.Stop();
             _timer.Tick -= HandleTickElapsed;
             _timer = null;
+        }
+    }
+
+    private void ConfigureEffectiveVisibilityTracking()
+    {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        var subscriptions = new CompositeDisposable();
+        _effectiveVisibilitySubscriptions = subscriptions;
+        this.TrackEffectiveVisibility(HandleEffectiveVisibilityChanged, subscriptions);
+    }
+
+    private void HandleEffectiveVisibilityChanged(bool isEffectivelyVisible)
+    {
+        if (isEffectivelyVisible)
+        {
+            RefreshRemainingTime(DateTime.Now);
+            if (!_hasCountdownFinished)
+            {
+                _timer?.Start();
+            }
+        }
+        else
+        {
+            _timer?.Stop();
         }
     }
     

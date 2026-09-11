@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Controls.Localization.CommonLangResourceKind">
+    <unit id="Cancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="translated">取消</target>
+      </segment>
+    </unit>
+    <unit id="Delete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">刪除</target>
+      </segment>
+    </unit>
+    <unit id="Edit">
+      <segment>
+        <source>Edit</source>
+        <target state="translated">編輯</target>
+      </segment>
+    </unit>
+    <unit id="Loading">
+      <segment>
+        <source>Loading</source>
+        <target state="translated">正在加載數據</target>
+      </segment>
+    </unit>
+    <unit id="NoData">
+      <segment>
+        <source>No data</source>
+        <target state="translated">暫無數據</target>
+      </segment>
+    </unit>
+    <unit id="Ok">
+      <segment>
+        <source>Ok</source>
+        <target state="translated">確定</target>
+      </segment>
+    </unit>
+    <unit id="Optional">
+      <segment>
+        <source>(optional)</source>
+        <target state="translated">(可選)</target>
+      </segment>
+    </unit>
+    <unit id="Reset">
+      <segment>
+        <source>Reset</source>
+        <target state="translated">重置</target>
+      </segment>
+    </unit>
+    <unit id="Save">
+      <segment>
+        <source>Save</source>
+        <target state="translated">保存</target>
+      </segment>
+    </unit>
+    <unit id="Submit">
+      <segment>
+        <source>Submit</source>
+        <target state="translated">提交</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

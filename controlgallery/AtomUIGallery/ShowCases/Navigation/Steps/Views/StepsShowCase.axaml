@@ -331,6 +331,31 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-panel"
+                    Title="{gallery:StepsShowCaseLangResource PanelStepsTitle}"
+                    Description="{gallery:StepsShowCaseLangResource PanelStepsDescription}"
+                    IsOccupyEntireRow="True"
+                    MinHeight="200"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:StepsViewModel">
+                            <StackPanel Orientation="Vertical" Spacing="20">
+                                <atom:Steps Current="0" Type="Panel" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested">
+                                    <atom:StepsItem Header="Step 1" SubHeader="00:00" Content="This is a content." />
+                                    <atom:StepsItem Header="Step 2" Content="This is a content." Status="Error" />
+                                    <atom:StepsItem Header="Step 3" Content="This is a content." />
+                                </atom:Steps>
+                                <atom:Steps Current="0" Type="Panel" PanelVariant="Outlined" SizeType="Small" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested">
+                                    <atom:StepsItem Header="Step 1" SubHeader="00:00" Content="This is a content." />
+                                    <atom:StepsItem Header="Step 2" Content="This is a content." Status="Error" />
+                                    <atom:StepsItem Header="Step 3" Content="This is a content." />
+                                </atom:Steps>
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
                     SourceKey="steps-progress"
                     Title="{gallery:StepsShowCaseLangResource StepsWithProgressTitle}"
                     Description="{gallery:StepsShowCaseLangResource StepsWithProgressDescription}"

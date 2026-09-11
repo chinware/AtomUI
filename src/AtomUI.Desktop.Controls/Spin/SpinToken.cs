@@ -3,7 +3,7 @@
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class SpinToken : AbstractControlDesignToken
+internal sealed class SpinToken : AbstractControlDesignToken
 {
     
     public SpinToken()

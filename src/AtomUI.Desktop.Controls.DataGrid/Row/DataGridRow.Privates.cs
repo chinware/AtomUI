@@ -67,6 +67,12 @@ public partial class DataGridRow
     private bool _isEditingMode = false;
     
     internal int Slot { get; set; }
+
+    internal DataGridRowKey RowKey { get; set; }
+
+    internal long DataIndex { get; set; } = -1;
+
+    internal bool IsRangeBacked { get; set; }
     
     internal DataGridCellCollection Cells { get; private set; }
     
@@ -343,7 +349,7 @@ public partial class DataGridRow
     
     private bool? _appliedDetailsVisibility;
     private IDataTemplate? _appliedHeaderContentTemplate;
-    
+
     private void HandleCellAdded(object? sender, DataGridCellEventArgs e)
     {
         _cellsElement?.Children.Add(e.Cell);
@@ -609,9 +615,14 @@ public partial class DataGridRow
     //TODO Animation
     internal void DetachFromDataGrid(bool recycle)
     {
-        UnloadDetailsTemplate(recycle);
+        var isRangeBacked = IsRangeBacked;
+        var wasAttached = OwningGrid is not null;
+        if (wasAttached)
+        {
+            UnloadDetailsTemplate(recycle);
+        }
 
-        if (recycle)
+        if (recycle && wasAttached)
         {
             IsRecycled = true;
 
@@ -630,6 +641,21 @@ public partial class DataGridRow
             }
         }
 
+        if (isRangeBacked)
+        {
+            OwningGrid = null;
+            DataContext = null;
+            Header = null;
+            RowKey = default;
+            DataIndex = -1;
+            Index = -1;
+            IsDragging = false;
+            IsEditingMode = false;
+            IsSelected = false;
+            _mouseOverColumnIndex = null;
+            ClearHiddenClipGeometry();
+            IsRangeBacked = false;
+        }
         Slot = -1;
     }
 

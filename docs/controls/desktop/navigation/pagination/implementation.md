@@ -11,9 +11,10 @@
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Pagination/AbstractPagination.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/PaginationLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/Pagination/PageNavRequestArgs.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PageSizeComboBoxItem.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/Pagination.cs`
@@ -49,9 +50,7 @@
 - `QuickJumpEdit`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `QuickJumperBar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `SimplePagination`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `PaginationLangResourceKind`：稳定的本地化 Catalog enum；三个 XLIFF 文件提供随模块发布的内置翻译，生成器负责编译资源表和 XAML 扩展。
 
 核心协作规则：
 

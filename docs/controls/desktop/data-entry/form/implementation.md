@@ -1,6 +1,6 @@
 # Form 桌面版实现原理
 
-本文档描述 Form 桌面版的表单项容器、布局配置传播、值读写、验证编排、反馈控件、按钮路由、动态表单项和 Token 资源边界。公共设计与 API 契约见 [Form 桌面版架构设计](overview.md)，Token 语义见 [Form Token 设计](token.md)，变化记录见 [Form Changelog](changelog.md)。
+本文档描述 Form 桌面版的表单项容器、布局配置传播、值读写、验证编排、反馈控件、按钮路由、动态表单项和 Token 资源边界。输入控件共享分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Form 桌面版架构设计](overview.md)，Token 语义见 [Form Token 设计](token.md)，变化记录见 [Form Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -82,7 +82,7 @@ ValidateValueAsync / ValidateValueDefer
   → BuildValidationOutcome()
   → ApplyValidationOutcome()
   → write/merge Form-owned DataValidationErrors for error
-  → NotifyValidateStatus() for extended visual state
+  → NotifyValidateStatus() → FormStatus for extended visual state
   → FormItem.ValidateChangedEvent
   → Form.IsFormValid aggregation
 ```
@@ -228,7 +228,7 @@ create new CancellationTokenSource
 - `ErrorMessageInlines`
 - `ValidateChangedEvent`
 
-Form validator 产生的 error 必须写入内容控件的 `DataValidationErrors`，使 native binding validation、`DataValidationErrors.HasErrors`、`:error` 和 AddOn error 视觉使用同一条通道。Form 清理时只能移除 Form-owned error，不能调用无差别清理导致 ViewModel 或 binding 写入的 native error 丢失。
+Form validator 产生的 error 必须写入内容控件的 `DataValidationErrors`，使 native binding validation、`DataValidationErrors.HasErrors`、`:error` 和由 `InputControlFrame` 投射的输入表面 error 视觉使用同一条通道。Form 清理时只能移除 Form-owned error，不能调用无差别清理导致 ViewModel 或 binding 写入的 native error 丢失。
 
 错误和警告消息被构造成 `InlineCollection`，并分别使用 `ErrorMessageForeground` 与 `WarningMessageForeground`。警告没有 Avalonia native validation 等价语义，因此只保留在 Form 消息、`ValidateStatus=Warning` 和控件扩展视觉状态中，不写入 `DataValidationErrors`。
 

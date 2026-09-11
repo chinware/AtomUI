@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ListShowCaseLangResourceKind">
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">基础用法示例。</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">数据展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="EmptyDescription">
+      <segment>
+        <source>show empty indicator when no data.</source>
+        <target state="translated">无数据时显示空状态指示。</target>
+      </segment>
+    </unit>
+    <unit id="EmptyTitle">
+      <segment>
+        <source>Empty</source>
+        <target state="translated">空状态</target>
+      </segment>
+    </unit>
+    <unit id="FilterDescription">
+      <segment>
+        <source>You can filter the data based on criteria; here we've filtered for items containing 'a'.</source>
+        <target state="translated">可以按条件筛选数据；这里筛选包含“色”的项。</target>
+      </segment>
+    </unit>
+    <unit id="FilterTitle">
+      <segment>
+        <source>Filter</source>
+        <target state="translated">筛选</target>
+      </segment>
+    </unit>
+    <unit id="GroupDescription">
+      <segment>
+        <source>You can group the data based on conditions.</source>
+        <target state="translated">可以根据条件对数据分组。</target>
+      </segment>
+    </unit>
+    <unit id="GroupTitle">
+      <segment>
+        <source>Group</source>
+        <target state="translated">分组</target>
+      </segment>
+    </unit>
+    <unit id="ItemDisabledDescription">
+      <segment>
+        <source>Disabled item.</source>
+        <target state="translated">禁用列表项。</target>
+      </segment>
+    </unit>
+    <unit id="ItemDisabledTitle">
+      <segment>
+        <source>Item disabled</source>
+        <target state="translated">禁用项</target>
+      </segment>
+    </unit>
+    <unit id="ListBoxEmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default ListBox empty content.</source>
+        <target state="translated">使用 EmptyIndicator 替换 ListBox 的默认空状态内容。</target>
+      </segment>
+    </unit>
+    <unit id="ListBoxEmptyIndicatorTitle">
+      <segment>
+        <source>ListBox custom empty indicator</source>
+        <target state="translated">ListBox 自定义空状态</target>
+      </segment>
+    </unit>
+    <unit id="ListViewEmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default ListView empty content.</source>
+        <target state="translated">使用 EmptyIndicator 替换 ListView 的默认空状态内容。</target>
+      </segment>
+    </unit>
+    <unit id="ListViewEmptyIndicatorTitle">
+      <segment>
+        <source>ListView custom empty indicator</source>
+        <target state="translated">ListView 自定义空状态</target>
+      </segment>
+    </unit>
+    <unit id="OrderedDescription">
+      <segment>
+        <source>We can sort according to specified attributes.</source>
+        <target state="translated">可以根据指定属性排序。</target>
+      </segment>
+    </unit>
+    <unit id="OrderedTitle">
+      <segment>
+        <source>Ordered</source>
+        <target state="translated">排序</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBeige">
+      <segment>
+        <source>Beige</source>
+        <target state="translated">米色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBlack">
+      <segment>
+        <source>Black</source>
+        <target state="translated">黑色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">蓝色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBrown">
+      <segment>
+        <source>Brown</source>
+        <target state="translated">棕色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorCyan">
+      <segment>
+        <source>Cyan</source>
+        <target state="translated">青色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorGray">
+      <segment>
+        <source>Gray</source>
+        <target state="translated">灰色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">绿色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorLavender">
+      <segment>
+        <source>Lavender</source>
+        <target state="translated">薰衣草色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorMagenta">
+      <segment>
+        <source>Magenta</source>
+        <target state="translated">品红色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorMaroon">
+      <segment>
+        <source>Maroon</source>
+        <target state="translated">栗色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorNavy">
+      <segment>
+        <source>Navy</source>
+        <target state="translated">海军蓝</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorOlive">
+      <segment>
+        <source>Olive</source>
+        <target state="translated">橄榄色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorOrange">
+      <segment>
+        <source>Orange</source>
+        <target state="translated">橙色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorPink">
+      <segment>
+        <source>Pink</source>
+        <target state="translated">粉色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorPurple">
+      <segment>
+        <source>Purple</source>
+        <target state="translated">紫色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorRed">
+      <segment>
+        <source>Red</source>
+        <target state="translated">红色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorTurquoise">
+      <segment>
+        <source>Turquoise</source>
+        <target state="translated">青绿色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorViolet">
+      <segment>
+        <source>Violet</source>
+        <target state="translated">紫罗兰色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorWhite">
+      <segment>
+        <source>White</source>
+        <target state="translated">白色</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorYellow">
+      <segment>
+        <source>Yellow</source>
+        <target state="translated">黄色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddItem">
+      <segment>
+        <source>Add Item</source>
+        <target state="translated">添加项</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAustralianWalksN100kmAfterOutbackCrash">
+      <segment>
+        <source>Australian walks 100km after outback crash.</source>
+        <target state="translated">澳大利亚人在内陆车祸后步行 100 公里。</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearSelection">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDynamicItem">
+      <segment>
+        <source>Dynamic item</source>
+        <target state="translated">动态项</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentJapanesePrincessToWedCommoner">
+      <segment>
+        <source>Japanese princess to wed commoner.</source>
+        <target state="translated">日本公主将嫁给平民。</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLosAngelesBattlesHugeWildfires">
+      <segment>
+        <source>Los Angeles battles huge wildfires.</source>
+        <target state="translated">洛杉矶抗击大规模山火。</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentManChargedOverMissingWeddingGirl">
+      <segment>
+        <source>Man charged over missing wedding girl.</source>
+        <target state="translated">男子因婚礼女孩失踪案被起诉。</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMultiple">
+      <segment>
+        <source>Multiple</source>
+        <target state="translated">多选</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPaginationItemFormat">
+      <segment>
+        <source>Content {0}</source>
+        <target state="translated">内容 {0}</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRacingCarSpraysBurningFuelIntoCrowd">
+      <segment>
+        <source>Racing car sprays burning fuel into crowd.</source>
+        <target state="translated">赛车向人群喷出燃烧的燃料。</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRemoveItem">
+      <segment>
+        <source>Remove Item</source>
+        <target state="translated">移除项</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSelectColors">
+      <segment>
+        <source>Select Green / Yellow</source>
+        <target state="translated">选择绿色 / 黄色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSingle">
+      <segment>
+        <source>Single</source>
+        <target state="translated">单选</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggle">
+      <segment>
+        <source>Toggle</source>
+        <target state="translated">切换选择</target>
+      </segment>
+    </unit>
+    <unit id="P2FilterValue">
+      <segment>
+        <source>a</source>
+        <target state="translated">色</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupBasicColors">
+      <segment>
+        <source>Basic Colors</source>
+        <target state="translated">基础颜色</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupNeutralColors">
+      <segment>
+        <source>Neutral Colors</source>
+        <target state="translated">中性色</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupSpecificShades">
+      <segment>
+        <source>Specific Shades</source>
+        <target state="translated">特定色调</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No items to display</source>
+        <target state="translated">暂无可显示的项目</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNoSelection">
+      <segment>
+        <source>None</source>
+        <target state="translated">无</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedItems">
+      <segment>
+        <source>Selected:</source>
+        <target state="translated">已选：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectionMode">
+      <segment>
+        <source>Selection Mode:</source>
+        <target state="translated">选择模式：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>List presents repeated information in a compact vertical format. It supports ListView scenarios such as grouping, selection indicators, empty state, filtering, ordering, and pagination, plus simple ListBox usage.</source>
+        <target state="translated">List 用紧凑的纵向结构呈现重复信息。它支持 ListView 的分组、选择指示器、空状态、筛选、排序和分页，也覆盖简单的 ListBox 用法。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display a collection of related items with selection, grouping, sorting, filtering, and paging.</source>
+        <target state="translated">展示一组相关项目，并支持选择、分组、排序、筛选和分页。</target>
+      </segment>
+    </unit>
+    <unit id="PaginationListDescription">
+      <segment>
+        <source>Pagination list.</source>
+        <target state="translated">分页列表。</target>
+      </segment>
+    </unit>
+    <unit id="PaginationListTitle">
+      <segment>
+        <source>Pagination list</source>
+        <target state="translated">分页列表</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">进阶</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable List.</source>
+        <target state="translated">可搜索的列表。</target>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">可搜索</target>
+      </segment>
+    </unit>
+    <unit id="SelectedItemsBindingDescription">
+      <segment>
+        <source>SelectedItems can be bound without an explicit Mode=TwoWay; both user selection and collection mutations stay synchronized.</source>
+        <target state="translated">SelectedItems 不需要显式设置 Mode=TwoWay；用户选择和集合变更都会保持同步。</target>
+      </segment>
+    </unit>
+    <unit id="SelectedItemsBindingTitle">
+      <segment>
+        <source>SelectedItems binding</source>
+        <target state="translated">SelectedItems 绑定</target>
+      </segment>
+    </unit>
+    <unit id="SelectionDescription">
+      <segment>
+        <source>You can set single selection, multiple selection or no selection.</source>
+        <target state="translated">可以设置单选、多选或不可选择。</target>
+      </segment>
+    </unit>
+    <unit id="SelectionTitle">
+      <segment>
+        <source>Selection</source>
+        <target state="translated">选择</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">基础用法示例。</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxItemsSourceDescription">
+      <segment>
+        <source>Basic ItemsSource and template usage example.</source>
+        <target state="translated">基础 ItemsSource 和模板用法示例。</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxItemsSourceTitle">
+      <segment>
+        <source>Simple listbox control</source>
+        <target state="translated">简单列表框控件</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxTitle">
+      <segment>
+        <source>Simple listbox control</source>
+        <target state="translated">简单列表框控件</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

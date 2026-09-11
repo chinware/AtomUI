@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -117,6 +118,9 @@ public class ContextMenu : AvaloniaContextMenu,
     internal static readonly StyledProperty<double> MaxPopupHeightProperty =
         AvaloniaProperty.Register<ContextMenu, double>(nameof(MaxPopupHeight));
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<ContextMenu>();
+
     internal double ItemHeight
     {
         get => GetValue(ItemHeightProperty);
@@ -129,15 +133,23 @@ public class ContextMenu : AvaloniaContextMenu,
         set => SetValue(MaxPopupHeightProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     private Popup? _popup;
     private IDisposable? _deactivationSubscription;
     private bool _ignorePlacementChanged;
+    private Control? _pinnedOpenOwner;
 
     static ContextMenu()
     {
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<ContextMenu>(false);
+        Control.ContextMenuProperty.Changed.AddClassHandler<Control>(HandleOwnerContextMenuChanged);
     }
 
     public ContextMenu()
@@ -167,6 +179,7 @@ public class ContextMenu : AvaloniaContextMenu,
         _popup[!Popup.CloseMotionProperty]           = this[!CloseMotionProperty];
         _popup[!Popup.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
         _popup[!Popup.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayPopupProperty];
+        _popup[!Popup.IsPopupPinnedOpenProperty]     = this[!IsPopupPinnedOpenProperty];
 
         this.SetPopup(_popup);
         return _popup;
@@ -295,6 +308,11 @@ public class ContextMenu : AvaloniaContextMenu,
 
     public override void Close()
     {
+        if (IsPopupPinnedOpen)
+        {
+            return;
+        }
+
         if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
         {
             interactionHandler.CancelPendingHoverOperations();
@@ -334,6 +352,85 @@ public class ContextMenu : AvaloniaContextMenu,
         {
             ConfigurePlacement();
         }
+        else if (change.Property == IsPopupPinnedOpenProperty && change.GetNewValue<bool>())
+        {
+            TryOpenPinned();
+        }
+    }
+
+    private static void HandleOwnerContextMenuChanged(Control owner, AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.OldValue is ContextMenu oldContextMenu &&
+            ReferenceEquals(oldContextMenu._pinnedOpenOwner, owner))
+        {
+            oldContextMenu.SetPinnedOpenOwner(null);
+        }
+
+        if (change.NewValue is ContextMenu newContextMenu)
+        {
+            newContextMenu.SetPinnedOpenOwner(owner);
+        }
+    }
+
+    private void SetPinnedOpenOwner(Control? owner)
+    {
+        if (ReferenceEquals(_pinnedOpenOwner, owner))
+        {
+            return;
+        }
+
+        if (_pinnedOpenOwner != null)
+        {
+            _pinnedOpenOwner.AttachedToVisualTree -= HandlePinnedOpenOwnerAttached;
+            _pinnedOpenOwner.DetachedFromVisualTree -= HandlePinnedOpenOwnerDetached;
+            CloseForLifecycle();
+        }
+
+        _pinnedOpenOwner = owner;
+        if (_pinnedOpenOwner != null)
+        {
+            _pinnedOpenOwner.AttachedToVisualTree += HandlePinnedOpenOwnerAttached;
+            _pinnedOpenOwner.DetachedFromVisualTree += HandlePinnedOpenOwnerDetached;
+            TryOpenPinned();
+        }
+    }
+
+    private void HandlePinnedOpenOwnerAttached(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        TryOpenPinned();
+    }
+
+    private void HandlePinnedOpenOwnerDetached(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        CloseForLifecycle();
+    }
+
+    private void TryOpenPinned()
+    {
+        if (!IsPopupPinnedOpen ||
+            IsOpen ||
+            _pinnedOpenOwner == null ||
+            !_pinnedOpenOwner.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        Open(_pinnedOpenOwner);
+    }
+
+    private void CloseForLifecycle()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is MenuItem menuItem)
+            {
+                menuItem.CloseForLifecycle();
+            }
+        }
+
+        _popup?.CloseForLifecycle();
+        _deactivationSubscription?.Dispose();
+        _deactivationSubscription = null;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

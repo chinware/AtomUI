@@ -152,7 +152,7 @@ Title="{gallery:ListShowCaseLangResource SearchableTitle}"
 Description="{gallery:ListShowCaseLangResource SearchableDescription}">
 <StackPanel Orientation="Vertical" Spacing="10">
 <atom:SearchEdit PlaceholderText="{gallery:ListShowCaseLangResource P2PlaceholderTextSearch}"
-SearchButtonClick="HandleFilterListBoxClicked"/>
+SearchRequested="HandleFilterListBoxSearchRequested"/>
 <atom:ListBox Name="SearchListBox"
 Filter="{atom:ValueFilterProvider Contains}"
 FilterValue="{Binding SearchFilterValue}">

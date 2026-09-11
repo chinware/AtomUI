@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Interactivity;
@@ -78,10 +76,10 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
             return;
         }
 
+        _owningGrid.CancelRowReorder();
         _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
         _owningGrid.LoadingRow                -= HandleLoadingRow;
         _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
-        _owningGrid.PropertyChanged           -= HandleOwningGridItemsSourceChanged;
         _owningGrid                           =  null;
     }
 
@@ -136,12 +134,6 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
             {
                 throw DataGridError.DataGridRow.RowReorderNotAllowedException();
             }
-            // TODO 需否需要检查每一列的配置
-            if (owningGrid.CanUserFilterColumns || owningGrid.CanUserSortColumns)
-            {
-                throw DataGridError.DataGridRow.InvalidRowReorderPreConditionException();
-            }
-            owningGrid.PropertyChanged += HandleOwningGridItemsSourceChanged;
         }
 
         ConfigureOwningGrid();
@@ -151,17 +143,6 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
     {
         base.NotifyOwningGridAboutToDetached();
         ReleaseOwningGrid();
-    }
-
-    private void HandleOwningGridItemsSourceChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
-    {
-        if (change.Property == DataGrid.ItemsSourceProperty)
-        {
-            if (change.NewValue != null && change.NewValue is not IList)
-            {
-                throw DataGridError.DataGridRow.DataSourceTypeNotSupportRowReorderException();
-            }
-        }
     }
     
     public override bool IsEditable()

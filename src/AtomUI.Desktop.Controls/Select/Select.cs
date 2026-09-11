@@ -393,12 +393,14 @@ public partial class Select : AbstractSelect
         {
             _candidateList = new SelectCandidateList
             {
-                Name                 = "PART_CandidateList",
-                BorderThickness      = new Thickness(0),
-                IsShowEmptyIndicator = true,
-                ItemsSource          = _effectiveOptions
+                Name            = "PART_CandidateList",
+                BorderThickness = new Thickness(0),
+                ItemsSource     = _effectiveOptions
             };
             _candidateList.SetTemplatedParent(this);
+            _candidateList[!ListView.IsShowEmptyIndicatorProperty]     = this[!IsShowEmptyIndicatorProperty];
+            _candidateList[!ListView.EmptyIndicatorProperty]          = this[!EmptyIndicatorProperty];
+            _candidateList[!ListView.EmptyIndicatorTemplateProperty]  = this[!EmptyIndicatorTemplateProperty];
             _candidateList[!ListView.FilterProperty]                    = this[!FilterProperty];
             _candidateList[!ListView.FilterValueProperty]               = this[!FilterValueProperty];
             _candidateList[!ListView.FilterValueSelectorProperty]       = this[!FilterValueSelectorProperty];
@@ -607,6 +609,7 @@ public partial class Select : AbstractSelect
             ConfigureSingleFilterTextBox();
         }
 
+        _candidateList?.ClearActiveCandidate();
         _candidateListActivated = false;
         base.PopupClosed(sender, e);
     }
@@ -795,7 +798,7 @@ public partial class Select : AbstractSelect
             return false;
         }
 
-        if (e.Source is TextBox textBox && string.IsNullOrWhiteSpace(textBox.Text) == false)
+        if (e.Source is AbstractTextInput textInput && string.IsNullOrWhiteSpace(textInput.Text) == false)
         {
             return false;
         }
@@ -844,6 +847,7 @@ public partial class Select : AbstractSelect
     {
         if (_candidateList != null)
         {
+            _candidateList.ClearActiveCandidate();
             ((ICandidateList)_candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
             _candidateList.Commit           -= HandleCandidateListComplete;
             _candidateList.Cancel           -= HandleCandidateListCanceled;
@@ -1121,9 +1125,9 @@ public partial class Select : AbstractSelect
     {
         if (_candidateList != null)
         {
-            if (e.Source is TextBox textBox)
+            if (e.Source is AbstractTextInput textInput)
             {
-                if (ReferenceEquals(textBox, _singleFilterInput) &&
+                if (ReferenceEquals(textInput, _singleFilterInput) &&
                     Mode == SelectMode.Single &&
                     (_syncingSingleFilterInputText || !IsDropDownOpen || !IsEffectiveFilterEnabled))
                 {
@@ -1131,7 +1135,7 @@ public partial class Select : AbstractSelect
                     return;
                 }
 
-                var searchText = textBox.Text?.Trim();
+                var searchText = textInput.Text?.Trim();
                 FilterValue = string.IsNullOrEmpty(searchText) ? null : searchText;
             }
 
@@ -1546,7 +1550,8 @@ public partial class Select : AbstractSelect
         var candidateList = _candidateList;
         if (candidateList != null)
         {
-                ((ICandidateList)candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
+            candidateList.ClearActiveCandidate();
+            ((ICandidateList)candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
         }
 
         try

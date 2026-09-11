@@ -1,0 +1,52 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum ProgressBarShowCaseLangResourceKind
+{
+    ScenarioBasic,
+    ScenarioAdvanced,
+    ScenarioLayout,
+    ProgressBarTitle,
+    ProgressBarDescription,
+    CircularProgressBarTitle,
+    CircularProgressBarDescription,
+    MiniSizeTitle,
+    MiniSizeDescription,
+    SmallerCircularProgressBarTitle,
+    SmallerCircularProgressBarDescription,
+    DynamicTitle,
+    DynamicDescription,
+    CustomTextFormatTitle,
+    CustomTextFormatDescription,
+    DashboardTitle,
+    DashboardDescription,
+    SuccessSegmentTitle,
+    SuccessSegmentDescription,
+    StrokeLinecapTitle,
+    StrokeLinecapDescription,
+    CustomLineGradientTitle,
+    CustomLineGradientDescription,
+    StepsTitle,
+    StepsDescription,
+    CircularStepsTitle,
+    CircularStepsDescription,
+    PercentPositionTitle,
+    PercentPositionDescription,
+    StepsPercentPositionTitle,
+    StepsPercentPositionDescription,
+    VerticalLinearTitle,
+    VerticalLinearDescription,
+    VerticalStepsTitle,
+    VerticalStepsDescription,
+    ToggleDisabledStatusTitle,
+    ToggleDisabledStatusDescription,
+    P2ContentSub,
+    P2ContentAdd,
+    PageSubtitle,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ScenarioExamples
+}

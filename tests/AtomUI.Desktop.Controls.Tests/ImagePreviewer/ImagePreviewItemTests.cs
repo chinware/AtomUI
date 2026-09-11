@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using Shouldly;
 using Xunit;
 
@@ -6,40 +7,49 @@ namespace AtomUI.Desktop.Controls.Tests.ImagePreviewer;
 public class ImagePreviewItemTests
 {
     [Fact]
-    public void CompleteLoading_Ignores_Stale_Result_And_Disposes_It()
+    public void ImagePreviewItem_Exposes_Init_Only_Configuration()
     {
-        var item          = new ImagePreviewItem(new UriImagePreviewSource("a.png"));
-        var firstVersion  = item.BeginLoading();
-        var secondVersion = item.BeginLoading();
-        using var stale   = LoadedImageSource.CreateSvg("<svg />", new Avalonia.Size(1, 1));
+        var source = ImageSource.Parse("avares://AtomUI.Tests/Assets/full.png");
+        var thumbnail = ImageSource.Parse("avares://AtomUI.Tests/Assets/thumb.png");
+        var fallback = ImageSource.Parse("avares://AtomUI.Tests/Assets/fallback.png");
+        var options = new ImageRequestOptions { Variant = "dark" };
+        var tag = new object();
 
-        item.CompleteLoading(firstVersion, stale);
+        var item = new ImagePreviewItem(source)
+        {
+            ThumbnailSource = thumbnail,
+            FallbackSource = fallback,
+            RequestOptions = options,
+            Title = "Preview title",
+            Tag = tag
+        };
 
-        item.State.ShouldBe(ImagePreviewItemState.Loading);
-        item.LoadedSource.ShouldBeNull();
-
-        var current = LoadedImageSource.CreateSvg("<svg />", new Avalonia.Size(2, 2));
-        item.CompleteLoading(secondVersion, current);
-
-        item.State.ShouldBe(ImagePreviewItemState.Loaded);
-        item.LoadedSource.ShouldBeSameAs(current);
+        item.Source.ShouldBeSameAs(source);
+        item.ThumbnailSource.ShouldBeSameAs(thumbnail);
+        item.FallbackSource.ShouldBeSameAs(fallback);
+        item.RequestOptions.ShouldBeSameAs(options);
+        item.Title.ShouldBe("Preview title");
+        item.Tag.ShouldBeSameAs(tag);
+        foreach (var property in typeof(ImagePreviewItem).GetProperties())
+        {
+            var setMethod = property.SetMethod.ShouldNotBeNull();
+            setMethod.ReturnParameter
+                     .GetRequiredCustomModifiers()
+                     .ShouldContain(typeof(System.Runtime.CompilerServices.IsExternalInit));
+        }
     }
 
     [Fact]
-    public void FailLoading_Ignores_Stale_Failure()
+    public void With_Expression_Creates_A_New_Item_Without_Mutating_The_Original()
     {
-        var item          = new ImagePreviewItem(new UriImagePreviewSource("a.png"));
-        var firstVersion  = item.BeginLoading();
-        var secondVersion = item.BeginLoading();
+        var source = ImageSource.Parse("avares://AtomUI.Tests/Assets/source.png");
+        var original = new ImagePreviewItem(source) { Title = "Original" };
 
-        item.FailLoading(firstVersion, new IOException("old"));
+        var changed = original with { Title = "Changed" };
 
-        item.State.ShouldBe(ImagePreviewItemState.Loading);
-        item.Error.ShouldBeNull();
-
-        item.FailLoading(secondVersion, new IOException("current"));
-
-        item.State.ShouldBe(ImagePreviewItemState.Failed);
-        item.Error.ShouldNotBeNull();
+        changed.ShouldNotBeSameAs(original);
+        changed.Source.ShouldBeSameAs(source);
+        changed.Title.ShouldBe("Changed");
+        original.Title.ShouldBe("Original");
     }
 }

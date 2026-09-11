@@ -2,6 +2,85 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-10
+
+- Platform
+  - Align Windows `WindowTitleBarButton` and `WindowTitleBarToggleButton` with managed caption-button geometry: a full-height square hit surface, square corners, transparent resting background and Arrow cursor, while preserving Linux/macOS managed visuals.
+- Theme
+  - Project `WindowTitleBar.OsType` through both AddOn presenters and select Windows-specific active, inactive, hover, pressed and disabled states without assigning native caption roles or window commands.
+  - Keep both AddOn theme assets as top-level `ControlTheme` documents so `x:Class` remains valid for IDE tooling and compiled theme loading.
+- Architecture
+  - Share a stateless `WindowsCaptionButtonLayout` measurement helper between system Windows caption buttons and public AddOn buttons; keep application-owned container spacing and business icon sizing independent from the hit surface.
+- Verification
+  - Cover Windows button and toggle geometry, host platform projection and detach fallback, real pointer hover/pressed/exit feedback, and non-Windows size, corner-radius and cursor preservation in `WindowTitleBarButtonTests`.
+
+## 2026-09-04
+
+- Design
+  - Split logo content resolution from explicit state: public `Logo`/`LogoTemplate` hold developer values only; rendering resolves `Window.EffectiveLogo`/`EffectiveLogoTemplate` (explicit → host `Icon` → main-window explicit logo → main-window `Icon`, with the built-in `WindowIcon` template).
+- API
+  - Remove the one-shot default-logo injection (`ApplyDefaultLogoIfNeeded`/`TryApplyWindowIconLogo`) that wrote fallback values into public properties; runtime `Logo = <Control>` now renders directly and `Logo = null` falls back to the default icon. `LogoVisibility = Never` remains the way to fully hide the logo.
+- Theme
+  - Bind the three platform templates' `PART_Logo` to `WindowTitleBar.EffectiveLogo` / `EffectiveLogoTemplate` through `TemplateBinding`, preserving standalone and custom-title-bar values; bind both fullscreen hosts to the Window effective title and logo state.
+- Lifecycle
+  - Move Window effective-logo notifications into every title bar's host projection lease; create child-window main-logo fallback subscriptions only while the child is open and release them on local takeover or close.
+- Docs
+  - Rewrite the Effective Logo section; document the fallback chain and the explicit-values-only contract.
+- Verification
+  - Add `WindowTitleBarEffectiveLogoTests` covering icon fallback, runtime control replacement without template residue, custom-title-bar precedence, runtime main-window updates, zero pre-open subscriptions and release on close; cover both fullscreen theme hosts and the caption-button-preserving title-hidden template state.
+
+## 2026-09-03
+
+- Design
+  - Define the in-title-bar title text visibility model: `IsEffectiveTitleVisible = IsTitleVisible && Title is not null`, with `LogoVisibility=Auto` following the titleless branch when the title is hidden.
+- API
+  - Add `IsTitleVisible` (`bool`, default `true`) to `WindowTitleBar` and expose the `Window` AddOwner facade with `NotifyConfigureTitleBar` projection; the OS-level window title is unaffected.
+- Theme
+  - Bind the three platform templates' `PART_ContentPresenter` and the fullscreen layer's `FullscreenTitleText` to internal effective visibility direct properties instead of `Title != null`.
+- Docs
+  - Add the title display model section; update the API table, Logo Auto matrix, template contract, compatibility invariants, test list and LLMS semantic areas.
+- Verification
+  - Cover defaults, effective computation, empty-string semantics, Logo Auto interplay, Window projection and fullscreen binding in `WindowTitleBarTitleVisibilityTests`.
+
+## 2026-08-23
+
+- Design
+  - Define public `WindowTitleBarButton` and `WindowTitleBarToggleButton` controls for `LeftAddOn` and `RightAddOn` content.
+  - Share managed caption visual tokens and active/inactive state with system caption buttons while keeping Window operations, native element roles and platform chrome internal.
+- API
+  - Add `WindowTitleBarButton : IconButton` and `WindowTitleBarToggleButton : ToggleIconButton` as additive public AXAML controls.
+- Theme
+  - Register independent AddOn themes that reuse `WindowTitleBarToken` dimensions, active/inactive colors, interaction states and motion policy without entering the system caption contract.
+- Integration
+  - Add Gallery Workspace coverage for appearance and Wave Spirit actions, including checked-state synchronization with the existing menu.
+- Verification
+  - Cover host-state projection, standalone fallback, icon-pair switching, theme asset registration and pointer-input isolation in `WindowTitleBarButtonTests`.
+
+## 2026-08-19
+
+- Architecture
+  - Define a shared Window host projection for every `WindowTitleBar` in an AtomUI Window logical tree.
+  - Make `Window` own projection definitions and lease creation while each `WindowTitleBar` owns and disposes its connection lease.
+  - Include drag and double-click interaction subscriptions in each host projection lease while keeping default-title-bar content projection separate.
+  - Keep title-bar height hints and CSD geometry owned only by the default title bar; content-area title bars receive caption, drag and double-click behavior without becoming geometry owners.
+- Platform
+  - Keep CSD windows on `WindowDecorations.Full` when the AtomUI title bar is hidden, and hide only the drawn title-bar visual so native window state transitions remain platform-owned.
+- Verification
+  - Extend the caption button lifecycle contract to cover content-area title bars, real pointer double-click toggling, multiple title bars per Window, host switching and lease release.
+
+## 2026-08-18
+
+- Design
+  - Define a conditional gap between effective Windows/Linux Logo and LeftAddOn content while keeping macOS Leading and Logo/Title grouping unchanged.
+- Token
+  - Add the dedicated `LogoAndLeftAddOnSpacing` semantic with a default `SpacingXXS` value of 4 logical pixels.
+- Architecture
+  - Separate managed caption button requested visibility from Window capability and platform support.
+  - Keep Window as the operation and state owner while CaptionButtonGroup derives presentation state and forwards declarative actions.
+- Docs
+  - Add the caption button configuration design covering Public API defaults, platform/state matrices, template flow, lifecycle and verification boundaries.
+  - Synchronize the Leading composition, title safe-region formula, Token contract and conditional-spacing verification requirements.
+
 ## 2026-07-28
 
 - Integration

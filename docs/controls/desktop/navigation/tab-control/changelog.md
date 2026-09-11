@@ -2,6 +2,27 @@
 
 本文档记录 TabControl 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-28
+
+- Behavior
+  - Route overflow close requests through `BaseTabControl.CloseTab` so `IsClosable`, `Closing`, cancellation, selection, collection and `Closed` semantics remain unified before the menu item is removed.
+
+- Docs
+  - Define overflow menu items as alternate presentations of the source `TabItem`, including propagation of effective `IsClosable` and `HeaderTemplate` semantics.
+  - Define `BaseOverflowMenuItemTheme` close-button visibility from `IsClosable`, and require overflow close requests to delegate to `BaseTabControl.CloseTab` so `Closing`, cancellation, selection, collection and `Closed` semantics remain unified.
+  - Require canceled or rejected closes to retain both the source tab and its overflow menu item; only a successful owner close may remove the menu item.
+
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record BaseTabControl as the semantic owner for TabControl, with TabControlScrollViewer used only as the relay adapter.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
+## 2026-08-18
+
+- Behavior
+  - Preserve each tab header's `HeaderTemplate` in overflow menu items so custom header rendering remains consistent after a tab moves into the overflow menu.
+
 ## 2026-07-09
 
 - Docs

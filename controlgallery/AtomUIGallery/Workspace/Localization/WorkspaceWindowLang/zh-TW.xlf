@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WorkspaceWindowLangResourceKind">
+    <unit id="MenuItemAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">外觀模式</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemCompactMode">
+      <segment>
+        <source>Compact Mode</source>
+        <target state="translated">緊湊模式</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemDarkMode">
+      <segment>
+        <source>Dark Mode</source>
+        <target state="translated">暗黑模式</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableFullScreen">
+      <segment>
+        <source>Enable FullScreen</source>
+        <target state="translated">開啓全屏</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMaximize">
+      <segment>
+        <source>Enable Maximize</source>
+        <target state="translated">開啓最大化</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMinimize">
+      <segment>
+        <source>Enable Minimize</source>
+        <target state="translated">開啓最小化</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMotion">
+      <segment>
+        <source>Enable Motion</source>
+        <target state="translated">開啓動效</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMove">
+      <segment>
+        <source>Enable Move</source>
+        <target state="translated">開啓窗口移動</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnablePin">
+      <segment>
+        <source>Enable Pin</source>
+        <target state="translated">開啓窗口固定</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableResize">
+      <segment>
+        <source>Enable Resize</source>
+        <target state="translated">開啓窗口設置大小</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableWaveSpirit">
+      <segment>
+        <source>Enable WaveSpirit</source>
+        <target state="translated">開啓波浪動畫</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemFollowSystem">
+      <segment>
+        <source>Follow System</source>
+        <target state="translated">跟隨系統</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemLanguage">
+      <segment>
+        <source>Language</source>
+        <target state="translated">語言</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemLightMode">
+      <segment>
+        <source>Light Mode</source>
+        <target state="translated">明亮模式</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemSettings">
+      <segment>
+        <source>Settings</source>
+        <target state="translated">設置</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemTheme">
+      <segment>
+        <source>Theme</source>
+        <target state="translated">主題</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemThemeSettings">
+      <segment>
+        <source>Theme Settings</source>
+        <target state="translated">主題設定</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemWindowOptions">
+      <segment>
+        <source>Window Options</source>
+        <target state="translated">窗口選項</target>
+      </segment>
+    </unit>
+    <unit id="WindowTitle">
+      <segment>
+        <source>AtomUI Desktop Gallery</source>
+        <target state="translated">AtomUI 桌面控件庫</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

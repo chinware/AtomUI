@@ -45,10 +45,10 @@ public class MenuShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:MenuShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(17);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(17);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(17);
-        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(17);
+        CountShowCaseItemElements(source).ShouldBe(19);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(19);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(19);
+        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(19);
         source.ShouldContain("MenuShowCaseLangResource BasicTitle");
         source.ShouldContain("MenuShowCaseLangResource IconAndSubmenuTitle");
         source.ShouldContain("MenuShowCaseLangResource MenuItemItemsSourceTitle");
@@ -56,12 +56,58 @@ public class MenuShowCasePageTests
         source.ShouldContain("MenuShowCaseLangResource VerticalNavMenuTitle");
         source.ShouldContain("MenuShowCaseLangResource NavMenuNodeCommandTitle");
         source.ShouldContain("MenuShowCaseLangResource InlineCollapsedMenuTitle");
+        source.ShouldContain("MenuShowCaseLangResource NavMenuCompositionTitle");
         source.ShouldContain("BadgeText=\"v6.0.6\"");
         source.ShouldContain("IsInlineCollapsed=\"{Binding IsInlineCollapsed}\"");
+        source.ShouldContain("Tooltip=\"{gallery:MenuShowCaseLangResource P2HeaderOptionN1}\"");
         source.ShouldContain("Click=\"HandleToggleInlineCollapsedClick\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Menu_ShowCase_Demonstrates_NavMenu_Structural_Entries_And_Root_Slots()
+    {
+        var pageSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
+        var zhCN = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-CN.xlf");
+        var zhTW = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-TW.xlf");
+        var enUS = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en-US.xlf");
+        var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/ViewModels/MenuViewModel.cs");
+        var showCaseSource = ExtractShowCaseItem(pageSource, "NavMenuCompositionTitle");
+
+        showCaseSource.ShouldContain("MenuShowCaseLangResource NavMenuCompositionDescription");
+        showCaseSource.ShouldContain("ItemSpacing=\"4\"");
+        showCaseSource.ShouldContain("<atom:NavMenu.Header>");
+        showCaseSource.ShouldContain("<atom:NavMenu.Footer>");
+        CountOccurrences(showCaseSource, "<atom:NavMenuGroup").ShouldBeGreaterThanOrEqualTo(3);
+        CountOccurrences(showCaseSource, "<atom:NavMenuDivider").ShouldBeGreaterThanOrEqualTo(2);
+        showCaseSource.ShouldContain("<atom:NavMenuNode.Entries>");
+        showCaseSource.ShouldContain("IsInlineCollapsed=\"{Binding IsStructuredNavMenuCollapsed}\"");
+        showCaseSource.ShouldContain("Click=\"HandleToggleStructuredNavMenuCollapsedClick\"");
+        showCaseSource.ShouldNotContain("<atom:NavMenu.Styles>");
+
+        viewModelSource.ShouldContain("public bool IsStructuredNavMenuCollapsed");
+        viewModelSource.ShouldContain("HandleToggleStructuredNavMenuCollapsedClick");
+        zhCN.ShouldContain("<target state=\"translated\">结构化导航菜单</target>");
+        zhTW.ShouldContain("<target state=\"translated\">結構化導航菜單</target>");
+        enUS.ShouldContain("<source>Structured nav menu</source>");
+    }
+
+    [Fact]
+    public void Menu_ViewModel_Collapsed_Demo_State_Is_Independent()
+    {
+        var viewModel = new MenuViewModel(new TestScreen());
+
+        viewModel.HandleToggleStructuredNavMenuCollapsedClick(null, null);
+
+        viewModel.IsStructuredNavMenuCollapsed.ShouldBeTrue();
+        viewModel.IsInlineCollapsed.ShouldBeFalse();
+
+        viewModel.HandleToggleInlineCollapsedClick(null, null);
+
+        viewModel.IsInlineCollapsed.ShouldBeTrue();
+        viewModel.IsStructuredNavMenuCollapsed.ShouldBeTrue();
     }
 
     [Fact]
@@ -123,9 +169,9 @@ public class MenuShowCasePageTests
     {
         var pageSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
         var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/ViewModels/MenuViewModel.cs");
-        var zhCN            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_CN.cs");
-        var zhTW            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_TW.cs");
-        var enUS            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en_US.cs");
+        var zhCN            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-CN.xlf");
+        var zhTW            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-TW.xlf");
+        var enUS            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en-US.xlf");
         var scrollableShowCaseSource = ExtractShowCaseItem(pageSource, "ScrollableTitle");
 
         scrollableShowCaseSource.ShouldContain("MenuShowCaseLangResource ScrollableTitle");
@@ -139,9 +185,9 @@ public class MenuShowCasePageTests
         viewModelSource.ShouldContain("private bool _isPopupScrollEnabled = true;");
         viewModelSource.ShouldContain("public bool IsPopupScrollEnabled");
 
-        zhCN.ShouldContain("public const string P2TextEnablePopupScroll = \"开启弹层滚动\";");
-        zhTW.ShouldContain("public const string P2TextEnablePopupScroll = \"開啟彈層滾動\";");
-        enUS.ShouldContain("public const string P2TextEnablePopupScroll = \"Enable popup scrolling\";");
+        zhCN.ShouldContain("<target state=\"translated\">开启弹层滚动</target>");
+        zhTW.ShouldContain("<target state=\"translated\">開啟彈層滾動</target>");
+        enUS.ShouldContain("<source>Enable popup scrolling</source>");
     }
 
     [Fact]

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.EmptyShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+        <target state="translated">最简单的用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">数据展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeDescription">
+      <segment>
+        <source>Customize image source, image size, description and extra content.</source>
+        <target state="translated">自定义图片来源、图片尺寸、描述和额外内容。</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTitle">
+      <segment>
+        <source>Customize</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="NoDescriptionDescription">
+      <segment>
+        <source>Simplest Usage with no description.</source>
+        <target state="translated">不带描述的最简单用法。</target>
+      </segment>
+    </unit>
+    <unit id="NoDescriptionTitle">
+      <segment>
+        <source>No description</source>
+        <target state="translated">无描述</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCreateNow">
+      <segment>
+        <source>Create Now</source>
+        <target state="translated">Create Now</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionCustomizeDescription">
+      <segment>
+        <source>Customize Description</source>
+        <target state="translated">Customize Description</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Use Empty to communicate that a container has no result, no configured content, or an optional recovery action.</source>
+        <target state="translated">Empty 用于表达容器没有结果、没有配置内容，或提供一个可选的恢复操作。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Empty state placeholder for no data or unavailable content.</source>
+        <target state="translated">用于无数据或内容不可用状态的占位展示。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>AtomUI supports three sizes of buttons: small, default and large.</source>
+        <target state="translated">AtomUI 支持小号、默认和大号三种尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

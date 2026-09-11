@@ -3,6 +3,8 @@ using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.State;
 using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Localization;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -1417,6 +1419,56 @@ public class CalendarViewStateTests
 
                 updatedTitles.ShouldNotBe(titles);
             });
+        });
+    }
+
+    [Fact]
+    public void CalendarItem_LanguageManager_Subscription_Follows_VisualTree_Lifecycle()
+    {
+        RunOnUIThread(() =>
+        {
+            var languageManager = Application.Current!.GetLanguageManager().ShouldNotBeNull();
+            var originalLanguage = languageManager.Current.CurrentLanguage;
+            languageManager.ChangeLanguage(LanguageTags.EnUS);
+            var calendar = new PickerCalendar
+            {
+                DisplayDate = new DateTime(2026, 6, 1)
+            };
+            var window = new AvaloniaWindow
+            {
+                Width = 420,
+                Height = 360,
+                Content = calendar
+            };
+
+            try
+            {
+                window.Show();
+                Dispatcher.UIThread.RunJobs();
+
+                languageManager.ChangeLanguage(LanguageTags.ZhCN);
+                Dispatcher.UIThread.RunJobs();
+                var activeCulture = calendar.SyncAndGetCurrentViewState().Culture;
+                activeCulture.ShortDatePattern.ShouldBe(
+                    languageManager.Current.FormattingCulture.DateTimeFormat.ShortDatePattern);
+
+                window.Content = null;
+                Dispatcher.UIThread.RunJobs();
+                languageManager.ChangeLanguage(LanguageTags.EnUS);
+                Dispatcher.UIThread.RunJobs();
+                calendar.SyncAndGetCurrentViewState().Culture.ShouldBeSameAs(activeCulture);
+
+                window.Content = calendar;
+                Dispatcher.UIThread.RunJobs();
+                calendar.SyncAndGetCurrentViewState().Culture.ShortDatePattern.ShouldBe(
+                    languageManager.Current.FormattingCulture.DateTimeFormat.ShortDatePattern);
+            }
+            finally
+            {
+                window.Close();
+                languageManager.ChangeLanguage(originalLanguage);
+                Dispatcher.UIThread.RunJobs();
+            }
         });
     }
 

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.PaginationShowCaseLangResourceKind">
+    <unit id="AlignDescription">
+      <segment>
+        <source>Support three alignment modes: left alignment, center alignment, right alignment.</source>
+        <target state="translated">支持左對齊、居中對齊和右對齊三種對齊方式。</target>
+      </segment>
+    </unit>
+    <unit id="AlignTitle">
+      <segment>
+        <source>Align</source>
+        <target state="translated">對齊方式</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic pagination.</source>
+        <target state="translated">基礎分頁。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎分頁</target>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>CurrentPage and PageSize can be bound without an explicit Mode=TwoWay; page clicks and size changes write back to the view model.</source>
+        <target state="translated">CurrentPage 和 PageSize 不需要顯式設置 Mode=TwoWay；點擊頁碼和修改頁大小都會寫回 ViewModel。</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>Controlled binding</source>
+        <target state="translated">受控繫結</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">導航</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeDescription">
+      <segment>
+        <source>Mini size pagination.</source>
+        <target state="translated">迷你尺寸分頁。</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeTitle">
+      <segment>
+        <source>Mini size</source>
+        <target state="translated">迷你尺寸</target>
+      </segment>
+    </unit>
+    <unit id="MoreDescription">
+      <segment>
+        <source>More pages.</source>
+        <target state="translated">更多頁碼。</target>
+      </segment>
+    </unit>
+    <unit id="MoreTitle">
+      <segment>
+        <source>More</source>
+        <target state="translated">更多頁碼</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentReset">
+      <segment>
+        <source>Reset</source>
+        <target state="translated">重置</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetPage">
+      <segment>
+        <source>Set page 5 / 20</source>
+        <target state="translated">設置第 5 頁 / 20</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCurrentPage">
+      <segment>
+        <source>CurrentPage:</source>
+        <target state="translated">CurrentPage：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPageSize">
+      <segment>
+        <source>PageSize:</source>
+        <target state="translated">PageSize：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Pagination divides large data sets into predictable pages. It supports alignment, page size selection, quick jump input, total information, mini size, and simple read-only or editable modes.</source>
+        <target state="translated">Pagination 將大型數據集拆分為可預測的頁面，支持對齊方式、頁大小選擇、快速跳轉、總數信息、迷你尺寸以及簡潔只讀或可編輯模式。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Navigate long lists with page numbers, sizes, totals, and quick jumps.</source>
+        <target state="translated">用頁碼、頁大小、總數和快速跳轉瀏覽長列表。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SimpleModeDescription">
+      <segment>
+        <source>Simple mode.</source>
+        <target state="translated">簡潔模式。</target>
+      </segment>
+    </unit>
+    <unit id="SimpleModeTitle">
+      <segment>
+        <source>Simple mode</source>
+        <target state="translated">簡潔模式</target>
+      </segment>
+    </unit>
+    <unit id="TotalNumberDescription">
+      <segment>
+        <source>You can show the total number of data by setting showTotal.</source>
+        <target state="translated">可以通過設置 showTotal 展示數據總量。</target>
+      </segment>
+    </unit>
+    <unit id="TotalNumberTitle">
+      <segment>
+        <source>Total number</source>
+        <target state="translated">總數</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

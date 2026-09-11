@@ -4,7 +4,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class QRCodeToken : AbstractControlDesignToken
+internal sealed class QRCodeToken : AbstractControlDesignToken
 {
     
     /// <summary>

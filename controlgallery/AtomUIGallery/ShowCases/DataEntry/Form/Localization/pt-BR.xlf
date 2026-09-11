@@ -1,0 +1,1559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.FormShowCaseLangResourceKind">
+    <unit id="ApiEventSubmitted">
+      <segment>
+        <source>Raised when the form submit action is invoked.</source>
+        <target state="translated">Emitido quando o formulário enviar ação é invoked.</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventValidated">
+      <segment>
+        <source>Raised after form validation completes.</source>
+        <target state="translated">Emitido depois formulário validation completes.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic Form data control. Includes layout, initial values, validation and submit.</source>
+        <target state="translated">Básico Formulário dados controle. Includes layout, initial values, validation e enviar.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">Uso básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedFormControlsDescription">
+      <segment>
+        <source>Customized or third-party form controls can be used in Form, too. Controls must implement IFormItemAware:</source>
+        <target state="translated">Customized ou terceiro-party formulário controles pode ser usado em Formulário, too. Controles must implement IFormItemAware:</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedFormControlsTitle">
+      <segment>
+        <source>Customized Form Controls</source>
+        <target state="translated">Customized Formulário Controles</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedValidationDescription">
+      <segment>
+        <source>We provide properties like validateStatus help hasFeedback to customize your own validate status and message, without using Form.</source>
+        <target state="translated">We provide properties like validateStatus help hasFeedback to customize your own validate status and message, without using Form.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedValidationTitle">
+      <segment>
+        <source>Customized Validation</source>
+        <target state="translated">Customized Validation</target>
+      </segment>
+    </unit>
+    <unit id="DynamicFormItemDescription">
+      <segment>
+        <source>Add or remove form items dynamically. add function support config initial value.</source>
+        <target state="translated">Adicionar ou remover formulário itens dynamically. adicionar function suporte config initial valor.</target>
+      </segment>
+    </unit>
+    <unit id="DynamicFormItemTitle">
+      <segment>
+        <source>Dynamic Form Item</source>
+        <target state="translated">Dinâmico Formulário Item</target>
+      </segment>
+    </unit>
+    <unit id="FormLayoutDescription">
+      <segment>
+        <source>There are three layout for form: horizontal, vertical, inline.</source>
+        <target state="translated">Há são três layout para formulário: horizontal, vertical, embutido.</target>
+      </segment>
+    </unit>
+    <unit id="FormLayoutTitle">
+      <segment>
+        <source>Form Layout</source>
+        <target state="translated">Formulário Layout</target>
+      </segment>
+    </unit>
+    <unit id="FormMethodsDescription">
+      <segment>
+        <source>Call form method with Form.</source>
+        <target state="translated">Call formulário method com Formulário.</target>
+      </segment>
+    </unit>
+    <unit id="FormMethodsTitle">
+      <segment>
+        <source>Form methods</source>
+        <target state="translated">Formulário methods</target>
+      </segment>
+    </unit>
+    <unit id="FormVariantsDescription">
+      <segment>
+        <source>Change the variant of all components in the form, options include: outlined filled borderless and underlined.</source>
+        <target state="translated">Alterar o variant de all components em o formulário, opções incluir: contornado preenchido sem borda e underlined.</target>
+      </segment>
+    </unit>
+    <unit id="FormVariantsTitle">
+      <segment>
+        <source>Form variants</source>
+        <target state="translated">Formulário variantes</target>
+      </segment>
+    </unit>
+    <unit id="InlineLoginFormDescription">
+      <segment>
+        <source>Inline login form is often used in navigation bar.</source>
+        <target state="translated">Embutido entrar formulário é often usado em navegação barra.</target>
+      </segment>
+    </unit>
+    <unit id="InlineLoginFormTitle">
+      <segment>
+        <source>Inline Login Form</source>
+        <target state="translated">Embutido Entrar Formulário</target>
+      </segment>
+    </unit>
+    <unit id="LabelCanWrapDescription">
+      <segment>
+        <source>Turn on labelWrap to wrap label if text is long.</source>
+        <target state="translated">Turn em labelWrap para wrap rótulo se texto é longo.</target>
+      </segment>
+    </unit>
+    <unit id="LabelCanWrapTitle">
+      <segment>
+        <source>label can wrap</source>
+        <target state="translated">rótulo pode wrap</target>
+      </segment>
+    </unit>
+    <unit id="LoginFormDescription">
+      <segment>
+        <source>Normal login form which can contain more elements.</source>
+        <target state="translated">Normal entrar formulário which pode conter mais elements.</target>
+      </segment>
+    </unit>
+    <unit id="LoginFormTitle">
+      <segment>
+        <source>Login Form</source>
+        <target state="translated">Entrar Formulário</target>
+      </segment>
+    </unit>
+    <unit id="NoBlockRuleDescription">
+      <segment>
+        <source>rule with warningOnly will not block form submit.</source>
+        <target state="translated">rule com warningOnly irá não block formulário enviar.</target>
+      </segment>
+    </unit>
+    <unit id="NoBlockRuleTitle">
+      <segment>
+        <source>No block rule</source>
+        <target state="translated">Não block rule</target>
+      </segment>
+    </unit>
+    <unit id="OtherFormControlsDescription">
+      <segment>
+        <source>Demonstration of validation configuration for form controls which are not shown in the demos above.</source>
+        <target state="translated">Demonstration de validation configuration para formulário controles which são não shown em o demos above.</target>
+      </segment>
+    </unit>
+    <unit id="OtherFormControlsTitle">
+      <segment>
+        <source>Other Form Controls</source>
+        <target state="translated">Outro Formulário Controles</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentA">
+      <segment>
+        <source>A</source>
+        <target state="translated">A</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddField">
+      <segment>
+        <source>Add field</source>
+        <target state="translated">Adicionar campo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddFieldAtHead">
+      <segment>
+        <source>Add field at head</source>
+        <target state="translated">Adicionar campo no início</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAgreement">
+      <segment>
+        <source>agreement</source>
+        <target state="translated">agreement</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentApple">
+      <segment>
+        <source>Apple</source>
+        <target state="translated">Apple</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentB">
+      <segment>
+        <source>B</source>
+        <target state="translated">B</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBorderless">
+      <segment>
+        <source>borderless</source>
+        <target state="translated">sem borda</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButton">
+      <segment>
+        <source>Button</source>
+        <target state="translated">Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentC">
+      <segment>
+        <source>C</source>
+        <target state="translated">C</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCheckbox">
+      <segment>
+        <source>Checkbox</source>
+        <target state="translated">Checkbox</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToUpload">
+      <segment>
+        <source>Click to Upload</source>
+        <target state="translated">Clique para Envio</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustomize">
+      <segment>
+        <source>Customize</source>
+        <target state="translated">Personalizar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentD">
+      <segment>
+        <source>D</source>
+        <target state="translated">D</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentE">
+      <segment>
+        <source>E</source>
+        <target state="translated">E</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentF">
+      <segment>
+        <source>F</source>
+        <target state="translated">F</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFill">
+      <segment>
+        <source>Fill</source>
+        <target state="translated">Fill</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFilled">
+      <segment>
+        <source>filled</source>
+        <target state="translated">preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentForgotPassword">
+      <segment>
+        <source>Forgot password</source>
+        <target state="translated">Forgot password</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFormDisabled">
+      <segment>
+        <source>Form disabled</source>
+        <target state="translated">Formulário desativado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHidden">
+      <segment>
+        <source>Hidden</source>
+        <target state="translated">Oculto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHorizontal">
+      <segment>
+        <source>Horizontal</source>
+        <target state="translated">Horizontal</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentInline">
+      <segment>
+        <source>Inline</source>
+        <target state="translated">Embutido</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentItemN1">
+      <segment>
+        <source>item 1</source>
+        <target state="translated">item 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentItemN2">
+      <segment>
+        <source>item 2</source>
+        <target state="translated">item 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentItemN3">
+      <segment>
+        <source>item 3</source>
+        <target state="translated">item 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLogIn">
+      <segment>
+        <source>Log in</source>
+        <target state="translated">Log em</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptional">
+      <segment>
+        <source>Optional</source>
+        <target state="translated">Opcional</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptional2">
+      <segment>
+        <source>optional</source>
+        <target state="translated">opcional</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOutlined">
+      <segment>
+        <source>outlined</source>
+        <target state="translated">contornado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPear">
+      <segment>
+        <source>Pear</source>
+        <target state="translated">Pear</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRegister">
+      <segment>
+        <source>Register</source>
+        <target state="translated">Register</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRegisterNow">
+      <segment>
+        <source>Register now!</source>
+        <target state="translated">Register now!</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRememberMe">
+      <segment>
+        <source>Remember me</source>
+        <target state="translated">Remember me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRequired">
+      <segment>
+        <source>required</source>
+        <target state="translated">required</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUnderlined">
+      <segment>
+        <source>underlined</source>
+        <target state="translated">underlined</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentVertical">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">Vertical</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAaa">
+      <segment>
+        <source>AAA</source>
+        <target state="translated">AAA</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBamboo">
+      <segment>
+        <source>Bamboo</source>
+        <target state="translated">Bamboo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBbb">
+      <segment>
+        <source>BBB</source>
+        <target state="translated">BBB</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">Blue</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN1N1">
+      <segment>
+        <source>Child 1-1</source>
+        <target state="translated">Child 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN1N2">
+      <segment>
+        <source>Child 1-2</source>
+        <target state="translated">Child 1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN2N1">
+      <segment>
+        <source>Child 2-1</source>
+        <target state="translated">Child 2-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">China</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDemo">
+      <segment>
+        <source>Demo</source>
+        <target state="translated">Demo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFemale">
+      <segment>
+        <source>female</source>
+        <target state="translated">female</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFemale2">
+      <segment>
+        <source>Female</source>
+        <target state="translated">Female</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGrandchildN1N1N1">
+      <segment>
+        <source>Grandchild 1-1-1</source>
+        <target state="translated">Grandchild 1-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">Green</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+        <target state="translated">Hangzhou</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+        <target state="translated">Jiangsu</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+        <target state="translated">Light</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMale">
+      <segment>
+        <source>male</source>
+        <target state="translated">male</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMale2">
+      <segment>
+        <source>Male</source>
+        <target state="translated">Male</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+        <target state="translated">Nanjing</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN1">
+      <segment>
+        <source>Option 1</source>
+        <target state="translated">Opção 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN2">
+      <segment>
+        <source>Option 2</source>
+        <target state="translated">Opção 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN3">
+      <segment>
+        <source>Option 3</source>
+        <target state="translated">Opção 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther">
+      <segment>
+        <source>other</source>
+        <target state="translated">outro</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther2">
+      <segment>
+        <source>Other</source>
+        <target state="translated">Outro</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>Parent 1</source>
+        <target state="translated">Pai 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN2">
+      <segment>
+        <source>Parent 2</source>
+        <target state="translated">Pai 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRed">
+      <segment>
+        <source>Red</source>
+        <target state="translated">Red</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUSA">
+      <segment>
+        <source>U.S.A</source>
+        <target state="translated">U.S.A</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+        <target state="translated">West Lake</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXx">
+      <segment>
+        <source>xx</source>
+        <target state="translated">xx</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+        <target state="translated">Zhejiang</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+        <target state="translated">Zhong Hua Men</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpLongUpload">
+      <segment>
+        <source>Long upload help text</source>
+        <target state="translated">Longo envio help texto</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpNeedToBeChecked">
+      <segment>
+        <source>Need to be checked.</source>
+        <target state="translated">Need para ser checked.</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpShouldBeCombinationOfNumbersAndAlphabets">
+      <segment>
+        <source>Should be combination of numbers and alphabets</source>
+        <target state="translated">Should ser combination de numbers e alphabets</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpShouldHaveSomething">
+      <segment>
+        <source>Should have something</source>
+        <target state="translated">Should have something</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpSomethingBreaksTheRule">
+      <segment>
+        <source>Something breaks the rule.</source>
+        <target state="translated">Something breaks o rule.</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpTheInformationIsBeingValidated">
+      <segment>
+        <source>The information is being validated</source>
+        <target state="translated">O informação é being validated</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextASuperLongLabelText">
+      <segment>
+        <source>A super long label text</source>
+        <target state="translated">A super longo rótulo texto</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextAge">
+      <segment>
+        <source>Age</source>
+        <target state="translated">Age</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextButton">
+      <segment>
+        <source>Button</source>
+        <target state="translated">Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCaptcha">
+      <segment>
+        <source>Captcha</source>
+        <target state="translated">Captcha</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCascader">
+      <segment>
+        <source>Cascader</source>
+        <target state="translated">Cascader</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCheckbox">
+      <segment>
+        <source>Checkbox</source>
+        <target state="translated">Checkbox</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCheckboxGroup">
+      <segment>
+        <source>Checkbox.Group</source>
+        <target state="translated">Checkbox.Group</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextColorPicker">
+      <segment>
+        <source>ColorPicker</source>
+        <target state="translated">ColorPicker</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextConfirmPassword">
+      <segment>
+        <source>Confirm Password</source>
+        <target state="translated">Confirm Password</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCustomizeGender">
+      <segment>
+        <source>Customize Gender</source>
+        <target state="translated">Personalizar Gender</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDatePicker">
+      <segment>
+        <source>DatePicker</source>
+        <target state="translated">DatePicker</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDatePickerShowTime">
+      <segment>
+        <source>DatePicker[showTime]</source>
+        <target state="translated">DatePicker[showTime]</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDonation">
+      <segment>
+        <source>Donation</source>
+        <target state="translated">Donation</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDragger">
+      <segment>
+        <source>Dragger</source>
+        <target state="translated">Dragger</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextEmail">
+      <segment>
+        <source>Email</source>
+        <target state="translated">Email</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">Erro</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFail">
+      <segment>
+        <source>Fail</source>
+        <target state="translated">Fail</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldA">
+      <segment>
+        <source>Field A</source>
+        <target state="translated">Campo A</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldB">
+      <segment>
+        <source>FieldB</source>
+        <target state="translated">FieldB</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldC">
+      <segment>
+        <source>FieldC</source>
+        <target state="translated">FieldC</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextGender">
+      <segment>
+        <source>Gender</source>
+        <target state="translated">Gender</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextHabitualResidence">
+      <segment>
+        <source>Habitual Residence</source>
+        <target state="translated">Habitual Residence</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextHorizontal">
+      <segment>
+        <source>horizontal</source>
+        <target state="translated">horizontal</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextInput">
+      <segment>
+        <source>Input</source>
+        <target state="translated">Entrada</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextInputNumber">
+      <segment>
+        <source>InputNumber</source>
+        <target state="translated">InputNumber</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextIntro">
+      <segment>
+        <source>Intro</source>
+        <target state="translated">Intro</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextMentions">
+      <segment>
+        <source>Mentions</source>
+        <target state="translated">Mentions</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextName">
+      <segment>
+        <source>Name</source>
+        <target state="translated">Name</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNickname">
+      <segment>
+        <source>Nickname</source>
+        <target state="translated">Nickname</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNormalLabel">
+      <segment>
+        <source>Normal label</source>
+        <target state="translated">Normal rótulo</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNote">
+      <segment>
+        <source>Note</source>
+        <target state="translated">Note</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextOptionButtonGroup">
+      <segment>
+        <source>option-button-group</source>
+        <target state="translated">opção-botão-grupo</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassengers">
+      <segment>
+        <source>Passengers</source>
+        <target state="translated">Passengers</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassengers1">
+      <segment>
+        <source>Passengers1</source>
+        <target state="translated">Passengers1</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassword">
+      <segment>
+        <source>Password</source>
+        <target state="translated">Password</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPhoneNumber">
+      <segment>
+        <source>Phone Number</source>
+        <target state="translated">Phone Number</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPlainText">
+      <segment>
+        <source>Plain Text</source>
+        <target state="translated">Plain Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPrice">
+      <segment>
+        <source>Price</source>
+        <target state="translated">Price</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRadio">
+      <segment>
+        <source>Radio</source>
+        <target state="translated">Radio</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRadioGroup">
+      <segment>
+        <source>radio-group</source>
+        <target state="translated">radio-grupo</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRangePicker">
+      <segment>
+        <source>RangePicker</source>
+        <target state="translated">RangePicker</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRangePickerShowTime">
+      <segment>
+        <source>RangePicker[showTime]</source>
+        <target state="translated">RangePicker[showTime]</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRate">
+      <segment>
+        <source>Rate</source>
+        <target state="translated">Avaliação</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSelect">
+      <segment>
+        <source>Select</source>
+        <target state="translated">Selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSelectMultiple">
+      <segment>
+        <source>Select[multiple]</source>
+        <target state="translated">Selecionar[múltiplos]</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSlider">
+      <segment>
+        <source>Slider</source>
+        <target state="translated">Slider</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSuccess">
+      <segment>
+        <source>Success</source>
+        <target state="translated">Sucesso</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSwitch">
+      <segment>
+        <source>Switch</source>
+        <target state="translated">Alternância</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTextArea">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">TextArea</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTimePicker">
+      <segment>
+        <source>TimePicker</source>
+        <target state="translated">TimePicker</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTree">
+      <segment>
+        <source>Tree</source>
+        <target state="translated">Árvore</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTreeSelect">
+      <segment>
+        <source>TreeSelect</source>
+        <target state="translated">TreeSelect</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">Enviar arquivo</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUrl">
+      <segment>
+        <source>Url</source>
+        <target state="translated">Url</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUsername">
+      <segment>
+        <source>Username</source>
+        <target state="translated">Username</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextValidating">
+      <segment>
+        <source>Validating</source>
+        <target state="translated">Validating</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextVertical">
+      <segment>
+        <source>vertical</source>
+        <target state="translated">vertical</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextVertical2">
+      <segment>
+        <source>vertical2</source>
+        <target state="translated">vertical2</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">Aviso</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextWebsite">
+      <segment>
+        <source>Website</source>
+        <target state="translated">Website</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageColorIsRequired">
+      <segment>
+        <source>color is required!</source>
+        <target state="translated">cor é required!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageContinueInputToExceedN6Chars">
+      <segment>
+        <source>Continue input to exceed 6 chars!</source>
+        <target state="translated">Continue entrada para exceed 6 chars!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageFieldAMustBeUpToN3Characters">
+      <segment>
+        <source>Field A must be up to 3 characters!</source>
+        <target state="translated">Campo A must ser up para 3 characters!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageFieldAMustBeUpToN6Characters">
+      <segment>
+        <source>Field A must be up to 6 characters!</source>
+        <target state="translated">Campo A must ser up para 6 characters!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseConfirmYourPassword">
+      <segment>
+        <source>Please confirm your password!</source>
+        <target state="translated">Por favor confirm seu password!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterAge">
+      <segment>
+        <source>Please enter Age!</source>
+        <target state="translated">Por favor enter Age!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterCustomizeGender">
+      <segment>
+        <source>Please enter Customize Gender</source>
+        <target state="translated">Por favor enter Personalizar Gender</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterGender">
+      <segment>
+        <source>Please enter Gender</source>
+        <target state="translated">Por favor enter Gender</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterName">
+      <segment>
+        <source>Please enter Name!</source>
+        <target state="translated">Por favor enter Name!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterNote">
+      <segment>
+        <source>Please enter Note</source>
+        <target state="translated">Por favor enter Note</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterURL">
+      <segment>
+        <source>Please enter URL!</source>
+        <target state="translated">Por favor enter URL!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInput">
+      <segment>
+        <source>Please input!</source>
+        <target state="translated">Por favor entrada!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputDonationAmount">
+      <segment>
+        <source>Please input donation amount!</source>
+        <target state="translated">Por favor entrada donation amount!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputIntro">
+      <segment>
+        <source>Please input Intro!</source>
+        <target state="translated">Por favor entrada Intro!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputPassengerSNameOrDeleteThisField">
+      <segment>
+        <source>Please input passenger's name or delete this field!</source>
+        <target state="translated">Por favor entrada passenger's name ou excluir este campo!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputTheCaptchaYouGot">
+      <segment>
+        <source>Please input the captcha you got!</source>
+        <target state="translated">Por favor entrada o captcha você got!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputWebsite">
+      <segment>
+        <source>Please input website!</source>
+        <target state="translated">Por favor entrada website!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourEMail">
+      <segment>
+        <source>Please input your E-mail!</source>
+        <target state="translated">Por favor entrada seu E-mail!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourNickname">
+      <segment>
+        <source>Please input your nickname!</source>
+        <target state="translated">Por favor entrada seu nickname!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourPassword">
+      <segment>
+        <source>Please input your password!</source>
+        <target state="translated">Por favor entrada seu password!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourPhoneNumber">
+      <segment>
+        <source>Please input your phone number!</source>
+        <target state="translated">Por favor entrada seu phone number!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourUsername">
+      <segment>
+        <source>Please input your username!</source>
+        <target state="translated">Por favor entrada seu username!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectGender">
+      <segment>
+        <source>Please select gender!</source>
+        <target state="translated">Por favor selecionar gender!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectTime">
+      <segment>
+        <source>Please select time!</source>
+        <target state="translated">Por favor selecionar hora!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourCountry">
+      <segment>
+        <source>Please select your country!</source>
+        <target state="translated">Por favor selecionar seu country!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourFavouriteColors">
+      <segment>
+        <source>Please select your favourite colors!</source>
+        <target state="translated">Por favor selecionar seu favourite cores!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourHabitualResidence">
+      <segment>
+        <source>Please select your habitual residence!</source>
+        <target state="translated">Por favor selecionar seu habitual residence!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePriceMustBeGreaterThanZero">
+      <segment>
+        <source>Price must be greater than zero!</source>
+        <target state="translated">Price must ser greater than zero!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageURLIsNotAValidUrl">
+      <segment>
+        <source>URL is not a valid url!</source>
+        <target state="translated">URL é não a valid url!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageURLMustBeAtLeastN6Characters">
+      <segment>
+        <source>URL must be at least 6 characters!</source>
+        <target state="translated">URL must ser at least 6 characters!</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMSelect">
+      <segment>
+        <source>I'm Select</source>
+        <target state="translated">I'm Selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTheContent">
+      <segment>
+        <source>I'm the content</source>
+        <target state="translated">I'm o conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTheContentIsBeingValidated">
+      <segment>
+        <source>I'm the content is being validated</source>
+        <target state="translated">I'm o conteúdo é being validated</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTreeselect">
+      <segment>
+        <source>I'm TreeSelect</source>
+        <target state="translated">I'm TreeSelect</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputPlaceholder">
+      <segment>
+        <source>input placeholder</source>
+        <target state="translated">entrada placeholder</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPassword">
+      <segment>
+        <source>Password</source>
+        <target state="translated">Password</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">Por favor selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelectACountry">
+      <segment>
+        <source>Please select a country</source>
+        <target state="translated">Por favor selecionar a country</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelectFavouriteColors">
+      <segment>
+        <source>Please select favourite colors</source>
+        <target state="translated">Por favor selecionar favourite cores</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectAOptionAndChangeInputTextAbove">
+      <segment>
+        <source>Select a option and change input text above</source>
+        <target state="translated">Selecionar a opção e alterar entrada texto above</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectDate">
+      <segment>
+        <source>Select date</source>
+        <target state="translated">Selecionar dados</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectDate2">
+      <segment>
+        <source>Select date!</source>
+        <target state="translated">Selecionar dados!</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select time</source>
+        <target state="translated">Selecionar hora</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartDate">
+      <segment>
+        <source>Start date</source>
+        <target state="translated">Início dados</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+        <target state="translated">Início hora</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnavailableChoice">
+      <segment>
+        <source>unavailable choice</source>
+        <target state="translated">unavailable choice</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUsername">
+      <segment>
+        <source>Username</source>
+        <target state="translated">Username</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateOneByOne">
+      <segment>
+        <source>Validate one by one</source>
+        <target state="translated">Validate um por um</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateRequiredDebounceAfterN1s">
+      <segment>
+        <source>Validate required debounce after 1s</source>
+        <target state="translated">Validate required debounce depois 1s</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateRequiredOnblur">
+      <segment>
+        <source>Validate required onBlur</source>
+        <target state="translated">Validate required onBlur</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>warning</source>
+        <target state="translated">aviso</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWebsite">
+      <segment>
+        <source>website</source>
+        <target state="translated">website</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithAllowclear">
+      <segment>
+        <source>with allowClear</source>
+        <target state="translated">com allowClear</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithInputPassword">
+      <segment>
+        <source>with input password</source>
+        <target state="translated">com entrada password</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithInputPasswordAndAllowclear">
+      <segment>
+        <source>with input password and allowClear</source>
+        <target state="translated">com entrada password e allowClear</target>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndDate">
+      <segment>
+        <source>End date</source>
+        <target state="translated">Fim dados</target>
+      </segment>
+    </unit>
+    <unit id="P2TextChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">China</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFormLayout">
+      <segment>
+        <source>Form Layout :</source>
+        <target state="translated">Formulário Layout :</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFormVariant">
+      <segment>
+        <source>Form variant:</source>
+        <target state="translated">Formulário variant:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIHaveReadThe">
+      <segment>
+        <source>I have read the</source>
+        <target state="translated">I have read o</target>
+      </segment>
+    </unit>
+    <unit id="P2TextOr">
+      <segment>
+        <source>Or</source>
+        <target state="translated">Ou</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRequiredMark">
+      <segment>
+        <source>Required Mark :</source>
+        <target state="translated">Required Mark :</target>
+      </segment>
+    </unit>
+    <unit id="P2TextUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">Enviar arquivo</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipThisIsARequiredField">
+      <segment>
+        <source>This is a required field</source>
+        <target state="translated">Este é a required campo</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipTooltipWithCustomizeIcon">
+      <segment>
+        <source>Tooltip with customize icon</source>
+        <target state="translated">Tooltip com personalizar ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipWhatDoYouWantOthersToCallYou">
+      <segment>
+        <source>What do you want others to call you?</source>
+        <target state="translated">What do você want others para call você?</target>
+      </segment>
+    </unit>
+    <unit id="P3CurrencyDollarHeader">
+      <segment>
+        <source>Dollar</source>
+        <target state="translated">Dollar</target>
+      </segment>
+    </unit>
+    <unit id="P3CurrencyRmbHeader">
+      <segment>
+        <source>RMB</source>
+        <target state="translated">RMB</target>
+      </segment>
+    </unit>
+    <unit id="P3DynamicPassengerLabelFormat">
+      <segment>
+        <source>passengers_{0}</source>
+        <target state="translated">passengers_{0}</target>
+      </segment>
+    </unit>
+    <unit id="P3GenderNoteFormat">
+      <segment>
+        <source>Hi, {0}!</source>
+        <target state="translated">Hi, {0}!</target>
+      </segment>
+    </unit>
+    <unit id="P3GetCaptchaButtonText">
+      <segment>
+        <source>Get captcha</source>
+        <target state="translated">Get captcha</target>
+      </segment>
+    </unit>
+    <unit id="P3SubmitFailedMessage">
+      <segment>
+        <source>Submit failed!</source>
+        <target state="translated">Enviar failed!</target>
+      </segment>
+    </unit>
+    <unit id="P3SubmitSuccessMessage">
+      <segment>
+        <source>Submit success!</source>
+        <target state="translated">Enviar sucesso!</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Form coordinates fields, validation rules, submit/reset actions, and reusable form item controls for structured data entry workflows.</source>
+        <target state="translated">Formulário coordinates campos, validation rules, enviar/redefinir ações, e reusable formulário item controles para structured dados entrada workflows.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>High-performance data entry with validation, layout, and form item coordination.</source>
+        <target state="translated">High-performance dados entrada com validation, layout, e formulário item coordination.</target>
+      </segment>
+    </unit>
+    <unit id="RegistrationDescription">
+      <segment>
+        <source>Fill in this form to create a new account for you.</source>
+        <target state="translated">Fill in this form to create a new account for you.</target>
+      </segment>
+    </unit>
+    <unit id="RegistrationTitle">
+      <segment>
+        <source>Registration</source>
+        <target state="translated">Registration</target>
+      </segment>
+    </unit>
+    <unit id="RequiredStyleDescription">
+      <segment>
+        <source>Switch required or optional style with requiredMark.</source>
+        <target state="translated">Alternância required ou opcional estilo com requiredMark.</target>
+      </segment>
+    </unit>
+    <unit id="RequiredStyleTitle">
+      <segment>
+        <source>Required style</source>
+        <target state="translated">Required estilo</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioControls">
+      <segment>
+        <source>Controls</source>
+        <target state="translated">Controles</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioDynamic">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">Dinâmico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPresets">
+      <segment>
+        <source>Presets</source>
+        <target state="translated">Presets</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioStates">
+      <segment>
+        <source>States</source>
+        <target state="translated">States</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioValidation">
+      <segment>
+        <source>Validation</source>
+        <target state="translated">Validation</target>
+      </segment>
+    </unit>
+    <unit id="TimeRelatedControlsDescription">
+      <segment>
+        <source>The value of time-related components is a dayjs object, which we need to pre-process it before we submit to server.</source>
+        <target state="translated">O valor de hora-related components é a dayjs object, which nós need para pre-process isso antes nós enviar para servidor.</target>
+      </segment>
+    </unit>
+    <unit id="TimeRelatedControlsTitle">
+      <segment>
+        <source>Time-related Controls</source>
+        <target state="translated">Hora-related Controles</target>
+      </segment>
+    </unit>
+    <unit id="ValidateOnlyDescription">
+      <segment>
+        <source>Dynamic adjust submit button's disabled status by validateOnly of validateFields.</source>
+        <target state="translated">Dinâmico adjust enviar botão's desativado status por validateOnly de validateFields.</target>
+      </segment>
+    </unit>
+    <unit id="ValidateOnlyTitle">
+      <segment>
+        <source>Validate Only</source>
+        <target state="translated">Validate Somente</target>
+      </segment>
+    </unit>
+    <unit id="ValidateTriggerDescription">
+      <segment>
+        <source>For the async validation scenario, high frequency of verification will cause backend pressure. You can change the verification timing through validateTrigger, or change the verification frequency through validateDebounce, or set the verification short circuit through validateFirst.</source>
+        <target state="translated">Para o async validation scenario, high frequency de verification irá cause backend pressure. Você pode alterar o verification timing through validateTrigger, ou alterar o verification frequency through validateDebounce, ou definir o verification curto circuit through validateFirst.</target>
+      </segment>
+    </unit>
+    <unit id="ValidateTriggerTitle">
+      <segment>
+        <source>Validate Trigger</source>
+        <target state="translated">Validate Gatilho</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

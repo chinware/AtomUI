@@ -105,7 +105,9 @@ public class DashedBorder : Decorator
     
     #endregion
     
-    private readonly BorderRenderHelper _borderRenderHelper = new BorderRenderHelper();
+    // 不能使用 readonly + inline 初始化：win-x86 ReadyToRun 镜像会把这个字段错误地
+    // 读成 null（见 https://github.com/AtomUI/AtomUI/issues/429），这里改为使用时惰性兜底。
+    private BorderRenderHelper? _borderRenderHelper = new BorderRenderHelper();
     private Thickness? _renderThickness;
     private double _layoutScale;
 
@@ -138,10 +140,11 @@ public class DashedBorder : Decorator
 
     public sealed override void Render(DrawingContext context)
     {
+        var borderRenderHelper = _borderRenderHelper ??= new BorderRenderHelper();
         var renderThickness = RenderThickness;
         var renderSize = CalculateRenderSize(Bounds.Size);
 
-        _borderRenderHelper.Render(
+        borderRenderHelper.Render(
             context,
             renderSize,
             renderThickness,

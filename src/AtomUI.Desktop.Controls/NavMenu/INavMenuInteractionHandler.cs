@@ -13,7 +13,14 @@ internal interface INavMenuInteractionHandler
     /// </summary>
     void Detach(NavMenu menu);
     
-    void Select(NavMenuItem menuItem);
+    /// <summary>
+    /// Commits a user item activation: selection (leaf) or submenu activation
+    /// (parent), followed by command execution and the item click event unless
+    /// a synchronous selection change supersedes the leaf activation.
+    /// </summary>
+    void CommitItemActivation(NavMenuItem menuItem);
 
     void ClearSelection();
+
+    void Forget(NavMenuItem menuItem);
 }

@@ -5,6 +5,96 @@ namespace AtomUI.Generator.Diagnostics;
 #pragma warning disable RS2008
 internal static class AtomUIDiagnosticDescriptors
 {
+    public static readonly DiagnosticDescriptor LinkedPlanOwner = new(
+        AtomUIDiagnosticIds.LinkedPlanOwner,
+        "Linked registration requires one application plan owner",
+        "Linked registration requires exactly one Application Plan owner; detected '{0}'",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedDynamicUsageWidened = new(
+        AtomUIDiagnosticIds.LinkedDynamicUsageWidened,
+        "Dynamic AtomUI usage requires package fallback",
+        "AtomUI dynamic usage '{0}' cannot be resolved to a Registration Unit; Package '{1}' uses full fallback. Add an AtomUIRegistrationUnitRoot when the Unit is known, or an AtomUIPackageRoot for fully dynamic usage.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedLegacyPackageFallback = new(
+        AtomUIDiagnosticIds.LinkedLegacyPackageFallback,
+        "Legacy package requires full linked-registration fallback",
+        "Package '{0}' has no compatible linked manifest and requires full fallback. Add <AtomUIPackageRoot Include=\"{0}\" /> or upgrade the package.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedExplicitRootInvalid = new(
+        AtomUIDiagnosticIds.LinkedExplicitRootInvalid,
+        "Explicit AtomUI linked-registration root is invalid",
+        "Explicit {0} root '{1}' cannot be resolved. Use AtomUIRegistrationUnitRoot for a known Unit or AtomUIPackageRoot for a full Package.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedPackageDefinitionInvalid = new(
+        AtomUIDiagnosticIds.LinkedPackageDefinitionInvalid,
+        "AtomUI linked-registration package definition is invalid",
+        "Package '{0}' contains an invalid registration granularity, Registration Unit, or PackageShared definition: {1}",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedManifestVersionMismatch = new(
+        AtomUIDiagnosticIds.LinkedManifestVersionMismatch,
+        "AtomUI linked-registration input is incompatible",
+        "Linked-registration input '{0}' is incompatible or malformed: {1}",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedLooseAxamlWidened = new(
+        AtomUIDiagnosticIds.LinkedLooseAxamlWidened,
+        "Loose AXAML or dynamic theme requires package fallback",
+        "Dynamic resource source '{0}' can load Package '{1}'; that Package uses full fallback. Add <AtomUIPackageRoot Include=\"{1}\" /> to declare the boundary explicitly.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedPackageEntryMissing = new(
+        AtomUIDiagnosticIds.LinkedPackageEntryMissing,
+        "AtomUI package usage has no registration entry",
+        "Package '{0}' is used by '{1}', but its UseXxxControls() registration entry is not invoked",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedPackageEntryInvalid = new(
+        AtomUIDiagnosticIds.LinkedPackageEntryInvalid,
+        "AtomUI control package registration entry is invalid",
+        "Control package registration entry '{0}' is invalid: {1}",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedDynamicUsageUncovered = new(
+        AtomUIDiagnosticIds.LinkedDynamicUsageUncovered,
+        "Dynamic AtomUI usage is not covered by the static registration plan",
+        "AtomUI dynamic usage '{0}' cannot be resolved statically; controls of Package '{1}' created only through this site are not registered. Add an AtomUIRegistrationUnitRoot when the Unit is known, or an AtomUIPackageRoot for fully dynamic usage; no action is required when this site never creates AtomUI controls.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
     public static readonly DiagnosticDescriptor AotMissingGeneratedAccessor = new(
         AtomUIDiagnosticIds.AotMissingGeneratedAccessor,
         "AOT-sensitive data member path requires generated accessor",
@@ -124,8 +214,8 @@ internal static class AtomUIDiagnosticDescriptors
 
     public static readonly DiagnosticDescriptor ControlTokenInheritance = new(
         AtomUIDiagnosticIds.ControlTokenInheritance,
-        "Control design token cannot inherit another Control Token",
-        "Control design token type '{0}' cannot inherit Control Token type '{1}'; inherit AbstractControlDesignToken directly",
+        "Control design token inheritance chain is invalid",
+        "Control design token inheritance chain is invalid at '{0}': {1}",
         AtomUIDiagnosticCategories.Generator,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -181,6 +271,141 @@ internal static class AtomUIDiagnosticDescriptors
         "Control Own Token conflicts with a Global Token",
         "Control '{0}' Own Token '{1}' conflicts with a Global Token",
         AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenMustBeSealed = new(
+        AtomUIDiagnosticIds.ControlTokenMustBeSealed,
+        "Concrete Control design token must be sealed",
+        "Concrete Control design token type '{0}' must be sealed",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenGenericLayer = new(
+        AtomUIDiagnosticIds.ControlTokenGenericLayer,
+        "Control design token layer must be non-generic",
+        "Control design token type '{0}' must be non-generic",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenPropertyConflict = new(
+        AtomUIDiagnosticIds.ControlTokenPropertyConflict,
+        "Control design token member conflicts with an inherited token name",
+        "Control Own Token name '{0}' conflicts across the inheritance chain ('{1}' and '{2}')",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenInvalidProperty = new(
+        AtomUIDiagnosticIds.ControlTokenInvalidProperty,
+        "Control design token property shape is invalid",
+        "Property '{1}' on Control design token type '{0}' cannot define an Own Token: {2}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenInvalidCalculationChain = new(
+        AtomUIDiagnosticIds.ControlTokenInvalidCalculationChain,
+        "Control design token calculation chain is invalid",
+        "CalculateTokenValues on Control design token type '{0}' has an invalid calculation chain: {1}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor AbstractControlTokenInvalidName = new(
+        AtomUIDiagnosticIds.AbstractControlTokenInvalidName,
+        "Abstract Control design token name does not follow convention",
+        "The abstract Control design token type '{0}' must end with 'Token'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenNestedType = new(
+        AtomUIDiagnosticIds.ControlTokenNestedType,
+        "Control design token type must be top-level",
+        "Control design token type '{0}' must be declared as a top-level class",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidLanguageData = new(
+        AtomUIDiagnosticIds.LocalizationInvalidLanguageData,
+        "Pinned language data record is invalid",
+        "Language data '{0}' line {1} is invalid: {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationDuplicateLanguageData = new(
+        AtomUIDiagnosticIds.LocalizationDuplicateLanguageData,
+        "Pinned language data record is duplicated",
+        "Language data '{0}' line {1} duplicates {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidCatalog = new(
+        AtomUIDiagnosticIds.LocalizationInvalidCatalog,
+        "Language Catalog declaration is invalid",
+        "Language Catalog '{0}' is invalid: {1}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidCatalogUnit = new(
+        AtomUIDiagnosticIds.LocalizationInvalidCatalogUnit,
+        "Language Catalog unit is invalid",
+        "Language Catalog unit '{0}' in '{1}' is invalid: {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidXliff = new(
+        AtomUIDiagnosticIds.LocalizationInvalidXliff,
+        "XLIFF language document is invalid",
+        "XLIFF language document '{0}' is invalid: {1}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationCatalogXliffMismatch = new(
+        AtomUIDiagnosticIds.LocalizationCatalogXliffMismatch,
+        "XLIFF does not match its Language Catalog",
+        "XLIFF language document '{0}' does not match Catalog '{1}': {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidTranslation = new(
+        AtomUIDiagnosticIds.LocalizationInvalidTranslation,
+        "XLIFF translation message is invalid",
+        "Translation unit '{0}' for language '{1}' is invalid: {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidApplicationHost = new(
+        AtomUIDiagnosticIds.LocalizationInvalidApplicationHost,
+        "Application cannot host generated localization bootstrap",
+        "Application type '{0}' cannot host generated localization bootstrap: {1}",
+        AtomUIDiagnosticCategories.Localization,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);

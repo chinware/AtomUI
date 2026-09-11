@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SpaceShowCaseLangResourceKind">
+    <unit id="AlignDescription">
+      <segment>
+        <source>Config item align.</source>
+        <target state="translated">配置项目对齐方式。</target>
+      </segment>
+    </unit>
+    <unit id="AlignTitle">
+      <segment>
+        <source>Align</source>
+        <target state="translated">对齐</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Crowded components horizontal spacing.</source>
+        <target state="translated">为拥挤的组件添加水平间距。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="CompactButtonDescription">
+      <segment>
+        <source>Button component compact example.</source>
+        <target state="translated">按钮组件的紧凑示例。</target>
+      </segment>
+    </unit>
+    <unit id="CompactButtonTitle">
+      <segment>
+        <source>Button Compact Mode</source>
+        <target state="translated">按钮紧凑模式</target>
+      </segment>
+    </unit>
+    <unit id="CompactFormDescription">
+      <segment>
+        <source>Compact Mode for form component.</source>
+        <target state="translated">表单组件的紧凑模式。</target>
+      </segment>
+    </unit>
+    <unit id="CompactFormTitle">
+      <segment>
+        <source>Compact Mode for form component</source>
+        <target state="translated">表单紧凑模式</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">布局</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelTextCancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="translated">取消</target>
+      </segment>
+    </unit>
+    <unit id="P2ConfirmContentAreYouSureToDeleteThisTask">
+      <segment>
+        <source>Are you sure to delete this task?</source>
+        <target state="translated">确定要删除这个任务吗？</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButton">
+      <segment>
+        <source>Button</source>
+        <target state="translated">按钮</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN1">
+      <segment>
+        <source>Button 1</source>
+        <target state="translated">按钮 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN2">
+      <segment>
+        <source>Button 2</source>
+        <target state="translated">按钮 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN3">
+      <segment>
+        <source>Button 3</source>
+        <target state="translated">按钮 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN4">
+      <segment>
+        <source>Button 4</source>
+        <target state="translated">按钮 4</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToUpload">
+      <segment>
+        <source>Click to Upload</source>
+        <target state="translated">点击上传</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentConfirm">
+      <segment>
+        <source>Confirm</source>
+        <target state="translated">确认</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDashed">
+      <segment>
+        <source>Dashed</source>
+        <target state="translated">虚线</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默认</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLink">
+      <segment>
+        <source>Link</source>
+        <target state="translated">链接</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+        <target state="translated">主要</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">查询</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSubmit">
+      <segment>
+        <source>Submit</source>
+        <target state="translated">提交</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBetween">
+      <segment>
+        <source>Between</source>
+        <target state="translated">介于</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCard">
+      <segment>
+        <source>Card</source>
+        <target state="translated">卡片</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExcept">
+      <segment>
+        <source>Except</source>
+        <target state="translated">排除</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+        <target state="translated">杭州</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+        <target state="translated">江苏</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf1">
+      <segment>
+        <source>leaf1</source>
+        <target state="translated">叶子节点1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf2">
+      <segment>
+        <source>leaf2</source>
+        <target state="translated">叶子节点2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf3">
+      <segment>
+        <source>leaf3</source>
+        <target state="translated">叶子节点3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingyinShi">
+      <segment>
+        <source>Lingyin shi</source>
+        <target state="translated">灵隐寺</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMail">
+      <segment>
+        <source>Mail</source>
+        <target state="translated">邮件</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMobile">
+      <segment>
+        <source>Mobile</source>
+        <target state="translated">手机</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN1stItem">
+      <segment>
+        <source>1st item</source>
+        <target state="translated">第 1 项</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN2ndItem">
+      <segment>
+        <source>2nd item</source>
+        <target state="translated">第 2 项</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN3rdItem">
+      <segment>
+        <source>3rd item</source>
+        <target state="translated">第 3 项</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+        <target state="translated">南京</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption1">
+      <segment>
+        <source>Option1</source>
+        <target state="translated">选项 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption1N1">
+      <segment>
+        <source>Option1-1</source>
+        <target state="translated">选项 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2">
+      <segment>
+        <source>Option2</source>
+        <target state="translated">选项 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2N1">
+      <segment>
+        <source>Option2-1</source>
+        <target state="translated">选项 2-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2N2">
+      <segment>
+        <source>Option2-2</source>
+        <target state="translated">选项 2-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>parent 1</source>
+        <target state="translated">父节点 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N0">
+      <segment>
+        <source>parent 1-0</source>
+        <target state="translated">父节点 1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N1">
+      <segment>
+        <source>parent 1-1</source>
+        <target state="translated">父节点 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderReport">
+      <segment>
+        <source>Report</source>
+        <target state="translated">举报</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSignIn">
+      <segment>
+        <source>Sign In</source>
+        <target state="translated">登录</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSignUp">
+      <segment>
+        <source>Sign Up</source>
+        <target state="translated">注册</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTextN1">
+      <segment>
+        <source>text 1</source>
+        <target state="translated">文本 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTextN2">
+      <segment>
+        <source>text 2</source>
+        <target state="translated">文本 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+        <target state="translated">西湖</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+        <target state="translated">浙江</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+        <target state="translated">中华门</target>
+      </segment>
+    </unit>
+    <unit id="P2OkTextOk">
+      <segment>
+        <source>Ok</source>
+        <target state="translated">确定</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAnotherInput">
+      <segment>
+        <source>another input</source>
+        <target state="translated">另一个输入</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEmail">
+      <segment>
+        <source>Email</source>
+        <target state="translated">邮箱</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputHere">
+      <segment>
+        <source>input here</source>
+        <target state="translated">在此输入</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMaximum">
+      <segment>
+        <source>Maximum</source>
+        <target state="translated">最大值</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMinimum">
+      <segment>
+        <source>Minimum</source>
+        <target state="translated">最小值</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">请选择</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectAddress">
+      <segment>
+        <source>Select Address</source>
+        <target state="translated">选择地址</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select Time</source>
+        <target state="translated">选择时间</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+        <target state="translated">开始时间</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextText">
+      <segment>
+        <source>~</source>
+        <target state="translated">~</target>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndTime">
+      <segment>
+        <source>End time</source>
+        <target state="translated">结束时间</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBlock">
+      <segment>
+        <source>Block</source>
+        <target state="translated">块</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCardContent">
+      <segment>
+        <source>Card content</source>
+        <target state="translated">卡片内容</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCenter">
+      <segment>
+        <source>center</source>
+        <target state="translated">居中</target>
+      </segment>
+    </unit>
+    <unit id="P2TextInputContent">
+      <segment>
+        <source>input content</source>
+        <target state="translated">输入内容</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN1">
+      <segment>
+        <source>+1</source>
+        <target state="translated">+1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSpace">
+      <segment>
+        <source>Space:</source>
+        <target state="translated">Space：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextXihuDistrictHangzhou">
+      <segment>
+        <source>Xihu District, Hangzhou</source>
+        <target state="translated">杭州市西湖区</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDeleteTheTask">
+      <segment>
+        <source>Delete the task</source>
+        <target state="translated">删除任务</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipComment">
+      <segment>
+        <source>Comment</source>
+        <target state="translated">评论</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipCopyGitUrl">
+      <segment>
+        <source>copy git url</source>
+        <target state="translated">复制 Git URL</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipDownload">
+      <segment>
+        <source>Download</source>
+        <target state="translated">下载</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipHeart">
+      <segment>
+        <source>Heart</source>
+        <target state="translated">喜欢</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipLike">
+      <segment>
+        <source>Like</source>
+        <target state="translated">点赞</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipShare">
+      <segment>
+        <source>Share</source>
+        <target state="translated">分享</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipStar">
+      <segment>
+        <source>Star</source>
+        <target state="translated">收藏</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipTooltip">
+      <segment>
+        <source>Tooltip</source>
+        <target state="translated">提示</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Space provides inline and vertical spacing, item alignment, split rendering, and compact input/button groups for dense tool surfaces.</source>
+        <target state="translated">Space 提供水平和垂直间距、项目对齐、分隔渲染以及紧凑输入和按钮组合，适合高密度工具界面。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Arrange components with consistent spacing or compact grouping.</source>
+        <target state="translated">用一致的间距或紧凑组合排列控件。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAlign">
+      <segment>
+        <source>Align</source>
+        <target state="translated">对齐</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCompactButton">
+      <segment>
+        <source>Compact Button</source>
+        <target state="translated">紧凑按钮</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCompactForm">
+      <segment>
+        <source>Compact Form</source>
+        <target state="translated">紧凑表单</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioSize">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Use size to set the spacing. Three sizes are preset: small, middle, and large. You can also customize the spacing. If size is not set, the spacing is small.</source>
+        <target state="translated">使用 size 设置间距，预设 small、middle、large 三种尺寸，也可以自定义间距。未设置 size 时，间距为 small。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Space Size</source>
+        <target state="translated">间距尺寸</target>
+      </segment>
+    </unit>
+    <unit id="SplitDescription">
+      <segment>
+        <source>Crowded components split.</source>
+        <target state="translated">为拥挤的组件添加分隔符。</target>
+      </segment>
+    </unit>
+    <unit id="SplitTitle">
+      <segment>
+        <source>Split</source>
+        <target state="translated">分隔符</target>
+      </segment>
+    </unit>
+    <unit id="VerticalCompactDescription">
+      <segment>
+        <source>Vertical Mode for Space.Compact, supports Button only.</source>
+        <target state="translated">Space.Compact 的垂直模式，仅支持 Button。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalCompactTitle">
+      <segment>
+        <source>Vertical Compact Mode</source>
+        <target state="translated">垂直紧凑模式</target>
+      </segment>
+    </unit>
+    <unit id="VerticalSpaceDescription">
+      <segment>
+        <source>Crowded components vertical spacing.</source>
+        <target state="translated">为拥挤的组件添加垂直间距。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalSpaceTitle">
+      <segment>
+        <source>Vertical Space</source>
+        <target state="translated">垂直间距</target>
+      </segment>
+    </unit>
+    <unit id="WrapDescription">
+      <segment>
+        <source>Auto wrap line.</source>
+        <target state="translated">自动换行。</target>
+      </segment>
+    </unit>
+    <unit id="WrapTitle">
+      <segment>
+        <source>Wrap</source>
+        <target state="translated">自动换行</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

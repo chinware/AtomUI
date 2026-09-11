@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind">
+    <unit id="ArrowDescription">
+      <segment>
+        <source>Support show, hide or keep arrow in the center.</source>
+      </segment>
+    </unit>
+    <unit id="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic example. The size of the floating layer depends on the contents region.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBL">
+      <segment>
+        <source>BL</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBR">
+      <segment>
+        <source>BR</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickMe">
+      <segment>
+        <source>Click me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentFocusMe">
+      <segment>
+        <source>Focus me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLB">
+      <segment>
+        <source>LB</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLT">
+      <segment>
+        <source>LT</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRB">
+      <segment>
+        <source>RB</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRT">
+      <segment>
+        <source>RT</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentShow">
+      <segment>
+        <source>Show</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTL">
+      <segment>
+        <source>TL</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTR">
+      <segment>
+        <source>TR</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2TextTheMostBasicExample">
+      <segment>
+        <source>The most basic example.</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>InfoFlyout anchors a custom floating panel to a target control, with configurable trigger modes, placement and arrow behavior.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display rich contextual content in a floating layer.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysDescription">
+      <segment>
+        <source>Mouse to click, focus and move in.</source>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysTitle">
+      <segment>
+        <source>Three ways to trigger</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

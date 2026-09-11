@@ -1,0 +1,20 @@
+<Project>
+    <PropertyGroup>
+        <AtomUILanguageModuleId Condition="'$(AtomUILanguageModuleId)' == '' and '$(PackageId)' != ''">$(PackageId)</AtomUILanguageModuleId>
+        <AtomUILanguageModuleId Condition="'$(AtomUILanguageModuleId)' == ''">$(AssemblyName)</AtomUILanguageModuleId>
+    </PropertyGroup>
+
+    <ItemDefinitionGroup>
+        <AtomUILanguage>
+            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
+            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
+            <AtomUILanguageModuleId>$(AtomUILanguageModuleId)</AtomUILanguageModuleId>
+            <AtomUILanguageContractValidation Condition="'$(AtomUIBuildLanguagePackage)' != 'true'">Verified</AtomUILanguageContractValidation>
+        </AtomUILanguage>
+        <AtomUILanguageOverride>
+            <AtomUILanguageSourceKind>ApplicationOverride</AtomUILanguageSourceKind>
+            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
+            <AtomUILanguageModuleId>$(AtomUILanguageModuleId)</AtomUILanguageModuleId>
+        </AtomUILanguageOverride>
+    </ItemDefinitionGroup>
+</Project>

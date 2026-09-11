@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
@@ -96,7 +97,7 @@ public class UploadTrigger : ContentControl, IMotionAwareControl
         ConfigureEffectiveCornerRadius(Math.Max(e.NewSize.Width, e.NewSize.Height));
     }
 
-    private async void HandlePointerReleased(object? sender, PointerReleasedEventArgs e)
+    private void HandlePointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         var owner = this.FindAncestorOfType<Upload>();
         if (owner is null)
@@ -104,16 +105,29 @@ public class UploadTrigger : ContentControl, IMotionAwareControl
             return;
         }
 
-        if (SourceKind == UploadSourceKind.Directories)
-        {
-            await owner.SelectDirectoriesAsync();
-        }
-        else
-        {
-            await owner.SelectFilesAsync();
-        }
-
         e.Handled = true;
+        var task = SourceKind == UploadSourceKind.Directories
+            ? owner.SelectDirectoriesAsync()
+            : owner.SelectFilesAsync();
+        if (!task.IsCompletedSuccessfully)
+        {
+            _ = ObserveSelectionOperationAsync(task);
+        }
+    }
+
+    private static async Task ObserveSelectionOperationAsync(Task operation)
+    {
+        try
+        {
+            await operation.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Upload picker processing failed: {ex.Message}");
+        }
     }
 
     private void ConfigureOwnerBindings()

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="ja-JP" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="Acme.LocalizationComponent.Localization.WelcomeLangResourceKind">
+    <unit id="Greeting">
+      <segment>
+        <source>Welcome</source>
+        <target state="final">ようこそ</target>
+      </segment>
+    </unit>
+    <unit id="ItemCount">
+      <segment>
+        <source>You have {0} items.</source>
+        <target state="final">{0} 件の項目があります。</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

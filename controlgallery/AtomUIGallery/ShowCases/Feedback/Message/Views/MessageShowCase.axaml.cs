@@ -110,7 +110,7 @@ public partial class MessageShowCase : GalleryReactiveUserControl<MessageViewMod
 
     private static string Lang(MessageShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 
     private WindowMessageManager? GetMessageManager()

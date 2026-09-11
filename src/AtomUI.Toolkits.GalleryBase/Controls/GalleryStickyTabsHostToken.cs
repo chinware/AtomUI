@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 [ControlDesignToken]
-internal class GalleryStickyTabsHostToken : AbstractControlDesignToken
+internal sealed class GalleryStickyTabsHostToken : AbstractControlDesignToken
 {
 
     public Thickness StickyContentPadding { get; set; }

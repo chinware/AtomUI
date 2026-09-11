@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;

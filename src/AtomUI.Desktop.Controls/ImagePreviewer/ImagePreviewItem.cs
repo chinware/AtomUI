@@ -1,145 +1,23 @@
-using System.ComponentModel;
+using AtomUI.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
-public enum ImagePreviewItemState
+public sealed record ImagePreviewItem
 {
-    Pending,
-    Loading,
-    Loaded,
-    Failed
-}
-
-internal sealed class ImagePreviewItem : INotifyPropertyChanged, IDisposable
-{
-    private long _loadVersion;
-    private ImagePreviewItemState _state = ImagePreviewItemState.Pending;
-    private LoadedImageSource? _loadedSource;
-    private Exception? _error;
-
-    public ImagePreviewItem(IImagePreviewSource source)
+    public ImagePreviewItem(ImageSource source)
     {
         Source = source ?? throw new ArgumentNullException(nameof(source));
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public ImageSource Source { get; init; }
 
-    public IImagePreviewSource Source { get; private set; }
+    public ImageSource? ThumbnailSource { get; init; }
 
-    public ImagePreviewItemState State
-    {
-        get => _state;
-        private set
-        {
-            if (_state != value)
-            {
-                _state = value;
-                RaisePropertyChanged(nameof(State));
-                RaisePropertyChanged(nameof(IsLoading));
-                RaisePropertyChanged(nameof(IsLoaded));
-                RaisePropertyChanged(nameof(IsFailed));
-            }
-        }
-    }
+    public ImageSource? FallbackSource { get; init; }
 
-    public LoadedImageSource? LoadedSource
-    {
-        get => _loadedSource;
-        private set
-        {
-            if (!ReferenceEquals(_loadedSource, value))
-            {
-                _loadedSource = value;
-                RaisePropertyChanged(nameof(LoadedSource));
-            }
-        }
-    }
+    public ImageRequestOptions? RequestOptions { get; init; }
 
-    public Exception? Error
-    {
-        get => _error;
-        private set
-        {
-            if (!ReferenceEquals(_error, value))
-            {
-                _error = value;
-                RaisePropertyChanged(nameof(Error));
-            }
-        }
-    }
+    public string? Title { get; init; }
 
-    public bool IsLoading => State == ImagePreviewItemState.Loading;
-
-    public bool IsLoaded => State == ImagePreviewItemState.Loaded;
-
-    public bool IsFailed => State == ImagePreviewItemState.Failed;
-
-    public void UpdateSource(IImagePreviewSource source)
-    {
-        Source = source ?? throw new ArgumentNullException(nameof(source));
-        RaisePropertyChanged(nameof(Source));
-    }
-
-    public long BeginLoading()
-    {
-        var oldSource = LoadedSource;
-        LoadedSource = null;
-        oldSource?.Dispose();
-        Error = null;
-        State = ImagePreviewItemState.Loading;
-        return ++_loadVersion;
-    }
-
-    public bool CompleteLoading(long version, LoadedImageSource loadedSource)
-    {
-        if (version != _loadVersion)
-        {
-            loadedSource.Dispose();
-            return false;
-        }
-
-        LoadedSource = loadedSource;
-        Error        = null;
-        State        = ImagePreviewItemState.Loaded;
-        return true;
-    }
-
-    public bool FailLoading(long version, Exception error)
-    {
-        if (version != _loadVersion)
-        {
-            return false;
-        }
-
-        var oldSource = LoadedSource;
-        LoadedSource = null;
-        oldSource?.Dispose();
-        Error = error;
-        State = ImagePreviewItemState.Failed;
-        return true;
-    }
-
-    public bool CancelLoading(long version)
-    {
-        if (version != _loadVersion)
-        {
-            return false;
-        }
-
-        LoadedSource = null;
-        Error        = null;
-        State        = ImagePreviewItemState.Pending;
-        return true;
-    }
-
-    public void Dispose()
-    {
-        LoadedSource?.Dispose();
-        LoadedSource = null;
-    }
-
-    private void RaisePropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    public object? Tag { get; init; }
 }

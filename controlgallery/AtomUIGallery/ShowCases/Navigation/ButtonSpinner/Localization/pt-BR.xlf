@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic button spinner.</source>
+        <target state="translated">Básico botão spinner.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Variants of disabled Input.</source>
+        <target state="translated">Variantes de desativado Entrada.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ButtonSpinner combines an input-like content area with increment and decrement handles, and supports add-ons, prefixes, suffixes, statuses, sizes, and visual variants.</source>
+        <target state="translated">ButtonSpinner combines an entrada-like conteúdo area com increment e decrement handles, e oferece suporte adicionar-ons, prefixes, suffixes, statuses, tamanhos, e visual variantes.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A compact spinner input with button handles.</source>
+        <target state="translated">A compacto spinner entrada com botão handles.</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">Usando pre e post guias exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">Pre / Post guia</target>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">Adicionar ícones de prefixo ou sufixo dentro da entrada.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">prefixo e suffix</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para Entrada com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>ButtonSpinner supports large (40px), default (32px), small (24px), and Custom with local size values.</source>
+        <target state="translated">ButtonSpinner oferece suporte grande (40px), padrão (32px), pequeno (24px), e Personalizado com local tamanho values.</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>ButtonSpinner sizes</source>
+        <target state="translated">ButtonSpinner tamanhos</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+        <target state="translated">Variantes de Entrada.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

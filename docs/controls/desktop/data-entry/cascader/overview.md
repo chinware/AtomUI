@@ -1,6 +1,8 @@
 # Cascader 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Cascader` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Cascader 桌面版实现原理](implementation.md)，Cascader Token 的专项设计见 [Cascader Token 设计](token.md)，设计和契约变化记录见 [Cascader Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Cascader` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，候选列表统一交互见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，内部实现原理见 [Cascader 桌面版实现原理](implementation.md)，Cascader Token 的专项设计见 [Cascader Token 设计](token.md)，设计和契约变化记录见 [Cascader Changelog](changelog.md)。
+
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `AbstractSelect`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 `IsDropDownOpen` 并 relay 到 `PART_Popup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
 ## 1. 控件定位
 
@@ -114,7 +116,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `CascaderAddOnDecoratedBox` | 输入壳体、Addon、variant、status、CompactSpace、多选状态和 content padding 承载。 |
+| `PART_InputControlFrame` | `CascaderAddOnDecoratedBox` | `InputControlFrame` / AddOnDecoratedBox 组合、Addon、EffectiveStatus、CompactSpace、多选状态和 content padding 承载。 |
 | `PART_SingleFilterInput` | `SelectFilterTextBox` | 单选过滤输入，过滤启用时显示。 |
 | `SelectedOptionsBox` | `SelectTagAwareTextBox` | 多选结果 tag 展示和多选过滤输入承载。 |
 | `PART_SelectMaxCountIndicator` | `SelectMaxCountIndicator` | 最大选择数量提示。 |
@@ -130,7 +132,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 稳定伪类来自 `AbstractSelect` 和 `CascaderViewItem`：
 
 - `:dropdownopen`、native validation `:error`、AtomUI warning `:warning`、`:pressed`。
-- AddOnDecoratedBox variant 伪类：`:outlined`、`:filled`、`:borderless`。
+- `InputControlFrame` variant 伪类：`:outlined`、`:filled`、`:borderless`、`:underlined`；Cascader 专用伪类只表达 dropdown、候选和结果状态。
 - `CascaderViewItem` 使用 `:expanded`、`:checked`、`:selected` 和 checkbox toggle type 伪类。
 
 ## 4. 行为与状态模型
@@ -181,11 +183,13 @@ input display + Form value
 - `FilterValue` 非空且控件 loaded 时，CascaderView 收集所有叶子路径并按 `Filter` 过滤。
 - 过滤结果显示完整路径文本，选中过滤结果后回写目标 option。
 - 过滤模式下，`Up` / `Down` 在可用结果间循环移动内部候选高亮，不修改 `SelectedOption`；`Enter` 提交当前候选，尚无候选时提交第一个可用结果，没有可用结果时保持选择和 popup 状态不变。路径中任一祖先 disabled 时，该过滤结果也不可作为候选或提交。
+- 过滤列表拥有独立于树列的 active candidate owner；过滤结果重建、过滤清空、popup 关闭和容器回收时清除旧候选。树列与过滤列不会同时保留两个候选视觉。
 - 清空过滤值或关闭 popup 后，过滤列表、过滤计数和缓存路径会被清理。
 
 树形键盘导航：
 
 - popup 打开且未过滤时，`Up` / `Down` 在当前已展开列的可见 enabled item 间循环移动内部候选；候选高亮与真实选择相互独立。
+- 普通树列的 active candidate 由 `CascaderView` 单一持有；鼠标移动到 enabled item 时迁移该候选并继续执行 `ExpandTrigger=Hover` 的展开逻辑，但不提前提交选择、不滚动列表。`Enter` 使用同一 active candidate 作为选择或展开目标。
 - `Right` 从当前候选或第一个可见 enabled item 开始，展开可展开节点并把候选移到下一列的第一个 enabled child。
 - `Left` 优先把子级候选移回父级；候选已位于展开的根级非叶节点时折叠该节点。
 - `Enter` 提交 enabled、非 loading 的叶子候选；`IsAllowSelectParent=true` 时也可提交父节点，否则沿用 `Right` 的展开并进入子级行为。
@@ -199,7 +203,7 @@ Form：
 
 ## 5. 视觉与主题模型
 
-Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、CascaderView、CascaderViewItem、SelectTagAwareTextBox、SelectHandle 和 CascaderToken 协作完成。
+Cascader 的默认视觉由 Cascader 根主题、`InputControlFrame` / CascaderAddOnDecoratedBox、PopupHost、CascaderView、CascaderViewItem、SelectTagAwareTextBox、SelectHandle 和 CascaderToken 协作完成。
 
 | 主题或资源 | 职责 |
 | --- | --- |
@@ -215,12 +219,12 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 
 主题不可破坏的视觉边界：
 
-- 输入壳体必须继续由 `CascaderAddOnDecoratedBox` 承载，保持 variant、status、CompactSpace 和 content padding 语义。
+- 输入表面必须继续由 `InputControlFrame` 承载；`CascaderAddOnDecoratedBox` 只扩展多选、dropdown 和 content padding 布局。
 - `PART_SelectHandle` 的 hover / pressed / dropdown open / clear / loading 状态必须与输入壳体保持同步。
 - `OptionTemplate` 的 DataContext 必须保持为 `ICascaderOption`，不能改为 header 文本。
 - Popup 宽度和空状态宽度匹配语义必须保持：普通级联列使用列宽，空状态需要匹配输入宽度。
 - 选项行的 checkbox、icon、header、expand / loading icon 间距由 Token 管理，不应在单个模板节点中写死。
-- disabled、expanded、pointerover、checked 和 loading 状态 selector 不能被绕过。
+- disabled、expanded、pointerover、checked、loading 和 active candidate 状态 selector 不能被绕过；`pointerover` 只触发 active candidate 迁移，不独立绘制第二个候选背景。
 
 ## 6. 控件家族或集成关系
 
@@ -229,14 +233,14 @@ Cascader 属于 Data Entry 选择控件家族，与 Select、TreeSelect、DatePi
 集成关系：
 
 - `AbstractSelect`：输入壳体、popup、清除、Form、feedback、AddOn、CompactSpace 和 `CustomizableSizeType` 契约。
-- `CascaderAddOnDecoratedBox`：Cascader 专用输入壳体，接收多选和 dropdown 状态。
+- `CascaderAddOnDecoratedBox`：Cascader 专用输入布局扩展，接收多选和 dropdown 状态并复用 shared frame。
 - `CascaderView`：弹层内容、级联列、过滤、展开、选择、勾选和异步加载。
 - `CascaderViewLevelList`：单级选项列表和虚拟化容器生命周期。
 - `CascaderViewItem`：单个选项容器、状态视觉、checked / expanded 事件和绑定型选项同步。
 - `SelectTagAwareTextBox` / `SelectTag`：多选结果 tag 展示和 tag close 行为。
 - `SelectHandle`：右侧操作入口，负责展开指示、loading、清除和 Form feedback。
 - `ICascaderItemDataLoader`：异步加载边界。
-- `IFormItemAware` / `IFormItemFeedbackAware`：由 `AbstractSelect` 接入 Form 值、扩展状态和 feedback；error 由 `DataValidationErrors` 投射到输入壳体。
+- `IFormItemAware` / `IFormItemFeedbackAware`：由 `AbstractSelect` 接入 Form 值、扩展状态和 feedback；error 由 `DataValidationErrors` 投射到 `InputControlFrame`。
 
 ## 7. 兼容性不变量
 

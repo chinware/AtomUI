@@ -131,6 +131,24 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Fact]
+    public void Workspace_Window_Does_Not_Add_Application_Buttons_To_Main_TitleBar()
+    {
+        var viewSource = File.ReadAllText(GetRepoFile(
+            "controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var codeSource = File.ReadAllText(GetRepoFile(
+            "controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
+
+        viewSource.ShouldNotContain("<atom:Window.RightAddOn>");
+        viewSource.ShouldNotContain("<atom:WindowTitleBarButton");
+        viewSource.ShouldNotContain("<atom:WindowTitleBarToggleButton");
+        viewSource.ShouldNotContain("HandleTitleBarAppearanceButtonClick");
+        viewSource.ShouldNotContain("HandleTitleBarWaveSpiritToggleButtonClick");
+        codeSource.ShouldNotContain("WindowTitleBarButton");
+        codeSource.ShouldNotContain("WindowTitleBarToggleButton");
+        codeSource.ShouldNotContain("TitleBarWaveSpiritToggleButton");
+    }
+
+    [Fact]
     public void Workspace_Window_Menu_Keeps_Motion_And_WaveSpirit_Checks_In_Sync()
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
@@ -139,6 +157,18 @@ public class WorkspaceWindowLayoutTests
         source.ShouldContain("waveSpiritMenuItem.IsChecked = false");
         source.ShouldContain("FindSiblingMenuItem(menuItem, WindowMenuItemKind.Motion)");
         source.ShouldContain("motionMenuItem.IsChecked = true");
+        source.ShouldNotContain("TitleBarWaveSpiritToggleButton");
+    }
+
+    [Fact]
+    public void Workspace_Window_Caption_Menu_Controls_Button_Visibility_Without_Changing_Capability()
+    {
+        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
+
+        source.ShouldContain("IsMinimizeCaptionButtonVisible = menuItem.IsChecked");
+        source.ShouldContain("IsMaximizeCaptionButtonVisible = menuItem.IsChecked");
+        source.ShouldNotContain("CanMinimize = menuItem.IsChecked");
+        source.ShouldNotContain("CanMaximize = menuItem.IsChecked");
     }
 
     [Fact]
@@ -218,26 +248,27 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Theory]
-    [InlineData("en_US.cs", "public const string MenuItemThemeSettings = \"Theme Settings\";")]
-    [InlineData("en_US.cs", "public const string MenuItemAppearance = \"Appearance\";")]
-    [InlineData("en_US.cs", "public const string MenuItemLightMode = \"Light Mode\";")]
-    [InlineData("en_US.cs", "public const string MenuItemFollowSystem = \"Follow System\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemThemeSettings = \"主题设置\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemAppearance = \"外观模式\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemLightMode = \"明亮模式\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemFollowSystem = \"跟随系统\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemThemeSettings = \"主題設定\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemAppearance = \"外觀模式\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemLightMode = \"明亮模式\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemFollowSystem = \"跟隨系統\";")]
+    [InlineData("en-US.xlf", "MenuItemThemeSettings", "Theme Settings")]
+    [InlineData("en-US.xlf", "MenuItemAppearance", "Appearance")]
+    [InlineData("en-US.xlf", "MenuItemLightMode", "Light Mode")]
+    [InlineData("en-US.xlf", "MenuItemFollowSystem", "Follow System")]
+    [InlineData("zh-CN.xlf", "MenuItemThemeSettings", "主题设置")]
+    [InlineData("zh-CN.xlf", "MenuItemAppearance", "外观模式")]
+    [InlineData("zh-CN.xlf", "MenuItemLightMode", "明亮模式")]
+    [InlineData("zh-CN.xlf", "MenuItemFollowSystem", "跟随系统")]
+    [InlineData("zh-TW.xlf", "MenuItemThemeSettings", "主題設定")]
+    [InlineData("zh-TW.xlf", "MenuItemAppearance", "外觀模式")]
+    [InlineData("zh-TW.xlf", "MenuItemLightMode", "明亮模式")]
+    [InlineData("zh-TW.xlf", "MenuItemFollowSystem", "跟隨系統")]
     public void Workspace_Window_Localizes_The_Theme_Settings_Submenu(
         string fileName,
-        string expectedConstant)
+        string resourceName,
+        string expectedText)
     {
-        var source = File.ReadAllText(GetRepoFile(
-            $"controlgallery/AtomUIGallery/Workspace/Localization/WorkspaceWindowLang/{fileName}"));
+        var localization = XliffTestDocument.Read(
+            $"controlgallery/AtomUIGallery/Workspace/Localization/WorkspaceWindowLang/{fileName}");
 
-        source.ShouldContain(expectedConstant);
+        localization[resourceName].ShouldBe(expectedText);
     }
 
     [Fact]
@@ -291,7 +322,13 @@ public class WorkspaceWindowLayoutTests
     {
         var commandType = typeof(WorkspaceWindow).GetNestedType("StableCommand", BindingFlags.NonPublic);
         commandType.ShouldNotBeNull();
-        return (ICommand)Activator.CreateInstance(commandType!, innerCommand)!;
+        var constructor = commandType!.GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(ICommand)],
+            modifiers: null);
+        constructor.ShouldNotBeNull();
+        return (ICommand)constructor.Invoke([innerCommand]);
     }
 
     private sealed class RecordingCommand : ICommand

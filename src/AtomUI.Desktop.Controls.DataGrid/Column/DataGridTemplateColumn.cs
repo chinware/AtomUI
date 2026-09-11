@@ -33,7 +33,6 @@ public class DataGridTemplateColumn : DataGridColumn
             (o, v) => o.CellEditingTemplate = v);
 
     [Content]
-    [InheritDataTypeFromItems(nameof(DataGrid.ItemsSource), AncestorType = typeof(DataGrid))]
     public IDataTemplate? CellTemplate
     {
         get => _cellTemplate;
@@ -50,7 +49,6 @@ public class DataGridTemplateColumn : DataGridColumn
     /// <remarks>
     /// If this property is <see langword="null"/> the column is read-only.
     /// </remarks>
-    [InheritDataTypeFromItems(nameof(DataGrid.ItemsSource), AncestorType = typeof(DataGrid))]
     public IDataTemplate? CellEditingTemplate
     {
         get => _cellEditingCellTemplate;

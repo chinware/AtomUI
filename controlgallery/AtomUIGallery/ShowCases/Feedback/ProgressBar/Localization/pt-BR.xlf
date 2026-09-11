@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind">
+    <unit id="CircularProgressBarDescription">
+      <segment>
+        <source>A circular progress bar.</source>
+        <target state="translated">Uma barra de progresso circular.</target>
+      </segment>
+    </unit>
+    <unit id="CircularProgressBarTitle">
+      <segment>
+        <source>Circular progress bar</source>
+        <target state="translated">Circular progresso barra</target>
+      </segment>
+    </unit>
+    <unit id="CircularStepsDescription">
+      <segment>
+        <source>A circular progress bar that support steps and color segments, default gap is 2px.</source>
+        <target state="translated">Uma barra de progresso circular que oferece suporte a etapas e segmentos de cores; o espaçamento padrão é de 2px.</target>
+      </segment>
+    </unit>
+    <unit id="CircularStepsTitle">
+      <segment>
+        <source>Circular progress bar whit steps</source>
+        <target state="translated">Circular progresso barra whit etapas</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomLineGradientDescription">
+      <segment>
+        <source>Gradient encapsulation, circle and dashboard will ignore strokeLinecap when setting gradient.</source>
+        <target state="translated">Gradient encapsulation, círculo e dashboard irá ignore strokeLinecap quando configuração gradient.</target>
+      </segment>
+    </unit>
+    <unit id="CustomLineGradientTitle">
+      <segment>
+        <source>Custom line gradient</source>
+        <target state="translated">Personalizado linha gradient</target>
+      </segment>
+    </unit>
+    <unit id="CustomTextFormatDescription">
+      <segment>
+        <source>You can set a custom text by setting the format prop.</source>
+        <target state="translated">Você pode definir a personalizado texto por configuração o format prop.</target>
+      </segment>
+    </unit>
+    <unit id="CustomTextFormatTitle">
+      <segment>
+        <source>Custom text format</source>
+        <target state="translated">Personalizado texto format</target>
+      </segment>
+    </unit>
+    <unit id="DashboardDescription">
+      <segment>
+        <source>By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.</source>
+        <target state="translated">Por configuração tipo=dashboard, você pode get a dashboard estilo de progresso easily. Modify gapDegree para definir o degree de gap.</target>
+      </segment>
+    </unit>
+    <unit id="DashboardTitle">
+      <segment>
+        <source>Dashboard</source>
+        <target state="translated">Dashboard</target>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>A dynamic progress bar is better.</source>
+        <target state="translated">Uma barra de progresso dinâmica é melhor.</target>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">Dinâmico</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeDescription">
+      <segment>
+        <source>Appropriate for a narrow area.</source>
+        <target state="translated">Appropriate para a narrow area.</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeTitle">
+      <segment>
+        <source>Mini size progress bar</source>
+        <target state="translated">Mini tamanho progresso barra</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAdd">
+      <segment>
+        <source>Add</source>
+        <target state="translated">Adicionar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSub">
+      <segment>
+        <source>Sub</source>
+        <target state="translated">Sub</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ProgressBar, StepsProgressBar, CircleProgress, and DashboardProgress cover linear, stepped, circular, and dashboard progress indicators with status, size, gradient, and layout options.</source>
+        <target state="translated">ProgressBar, StepsProgressBar, CircleProgress, e DashboardProgress cover linear, stepped, circular, e dashboard progresso indicators com status, tamanho, gradient, e layout opções.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Visualize task completion and operation progress.</source>
+        <target state="translated">Visualize task completion e operação progresso.</target>
+      </segment>
+    </unit>
+    <unit id="PercentPositionDescription">
+      <segment>
+        <source>Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.</source>
+        <target state="translated">Alterar o posição de o progresso valor, você pode usar percentPosition para adjust isso so que o progresso barra valor é inside, outside ou at o inferior de o progresso barra.</target>
+      </segment>
+    </unit>
+    <unit id="PercentPositionTitle">
+      <segment>
+        <source>Change progress value position</source>
+        <target state="translated">Alterar progresso valor posição</target>
+      </segment>
+    </unit>
+    <unit id="ProgressBarDescription">
+      <segment>
+        <source>A standard progress bar.</source>
+        <target state="translated">Uma barra de progresso padrão.</target>
+      </segment>
+    </unit>
+    <unit id="ProgressBarTitle">
+      <segment>
+        <source>Progress bar</source>
+        <target state="translated">Progresso barra</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">Avançado</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarDescription">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+        <target state="translated">Uma barra de progresso circular menor.</target>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarTitle">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+        <target state="translated">Uma barra de progresso circular menor.</target>
+      </segment>
+    </unit>
+    <unit id="StepsDescription">
+      <segment>
+        <source>A progress bar with steps.</source>
+        <target state="translated">Uma barra de progresso com etapas.</target>
+      </segment>
+    </unit>
+    <unit id="StepsPercentPositionDescription">
+      <segment>
+        <source>Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.</source>
+        <target state="translated">Alterar o posição de o progresso valor, você pode usar percentPosition para adjust isso so que o progresso barra valor é inside, outside ou at o inferior de o progresso barra.</target>
+      </segment>
+    </unit>
+    <unit id="StepsPercentPositionTitle">
+      <segment>
+        <source>Change progress value position for StepsProgressBar</source>
+        <target state="translated">Alterar progresso valor posição para StepsProgressBar</target>
+      </segment>
+    </unit>
+    <unit id="StepsTitle">
+      <segment>
+        <source>Progress bar with steps</source>
+        <target state="translated">Progresso barra com etapas</target>
+      </segment>
+    </unit>
+    <unit id="StrokeLinecapDescription">
+      <segment>
+        <source>By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.</source>
+        <target state="translated">Por configuração strokeLinecap='butt', você pode alterar o linecaps de arredondado para butt, see stroke-linecap para mais informação.</target>
+      </segment>
+    </unit>
+    <unit id="StrokeLinecapTitle">
+      <segment>
+        <source>Stroke Linecap</source>
+        <target state="translated">Stroke Linecap</target>
+      </segment>
+    </unit>
+    <unit id="SuccessSegmentDescription">
+      <segment>
+        <source>Show several parts of progress with different status.</source>
+        <target state="translated">Mostrar several parts de progresso com diferente status.</target>
+      </segment>
+    </unit>
+    <unit id="SuccessSegmentTitle">
+      <segment>
+        <source>Progress bar with success segment</source>
+        <target state="translated">Progresso barra com sucesso segment</target>
+      </segment>
+    </unit>
+    <unit id="ToggleDisabledStatusDescription">
+      <segment>
+        <source>The progress bar is in the disabled state and uses the disabled style.</source>
+        <target state="translated">O progresso barra é em o desativado estado e usa o desativado estilo.</target>
+      </segment>
+    </unit>
+    <unit id="ToggleDisabledStatusTitle">
+      <segment>
+        <source>toggle disabled status</source>
+        <target state="translated">toggle desativado status</target>
+      </segment>
+    </unit>
+    <unit id="VerticalLinearDescription">
+      <segment>
+        <source>Ordinary linear progress bar, supports position specification of additional areas</source>
+        <target state="translated">Ordinary linear progresso barra, oferece suporte posição specification de additional areas</target>
+      </segment>
+    </unit>
+    <unit id="VerticalLinearTitle">
+      <segment>
+        <source>Vertical progress bar</source>
+        <target state="translated">Vertical progresso barra</target>
+      </segment>
+    </unit>
+    <unit id="VerticalStepsDescription">
+      <segment>
+        <source>Ordinary step progress bar, supports position specification of additional areas</source>
+        <target state="translated">Ordinary etapa progresso barra, oferece suporte posição specification de additional areas</target>
+      </segment>
+    </unit>
+    <unit id="VerticalStepsTitle">
+      <segment>
+        <source>Vertical progress bar</source>
+        <target state="translated">Vertical progresso barra</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class CheckBoxToken : AbstractControlDesignToken
+internal sealed class CheckBoxToken : AbstractControlDesignToken
 {
     
     public CheckBoxToken()

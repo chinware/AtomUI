@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <PackageId>__ATOMUI_LANGUAGE_PACKAGE_ID__</PackageId>
+        <PackageVersion>1.0.0</PackageVersion>
+        <Description>Static __ATOMUI_LANGUAGE_TAG__ (__ATOMUI_LANGUAGE_TAG_IDENTIFIER__) translations for __ATOMUI_LANGUAGE_MODULE_ID__.</Description>
+        <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
+        <AtomUILanguageTag>__ATOMUI_LANGUAGE_TAG__</AtomUILanguageTag>
+        <AtomUILanguageModuleId>__ATOMUI_LANGUAGE_MODULE_ID__</AtomUILanguageModuleId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AtomUI.Generator"
+                          Version="__ATOMUI_VERSION__"
+                          PrivateAssets="all" />
+    </ItemGroup>
+</Project>

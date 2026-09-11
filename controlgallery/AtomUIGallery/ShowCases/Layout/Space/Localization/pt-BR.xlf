@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SpaceShowCaseLangResourceKind">
+    <unit id="AlignDescription">
+      <segment>
+        <source>Config item align.</source>
+        <target state="translated">Config item alinhar.</target>
+      </segment>
+    </unit>
+    <unit id="AlignTitle">
+      <segment>
+        <source>Align</source>
+        <target state="translated">Alinhar</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Crowded components horizontal spacing.</source>
+        <target state="translated">Crowded components horizontal espaçamento.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="CompactButtonDescription">
+      <segment>
+        <source>Button component compact example.</source>
+        <target state="translated">Botão component compacto exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="CompactButtonTitle">
+      <segment>
+        <source>Button Compact Mode</source>
+        <target state="translated">Botão Compacto Modo</target>
+      </segment>
+    </unit>
+    <unit id="CompactFormDescription">
+      <segment>
+        <source>Compact Mode for form component.</source>
+        <target state="translated">Compacto Modo para formulário component.</target>
+      </segment>
+    </unit>
+    <unit id="CompactFormTitle">
+      <segment>
+        <source>Compact Mode for form component</source>
+        <target state="translated">Compacto Modo para formulário component</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelTextCancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="translated">Cancelar</target>
+      </segment>
+    </unit>
+    <unit id="P2ConfirmContentAreYouSureToDeleteThisTask">
+      <segment>
+        <source>Are you sure to delete this task?</source>
+        <target state="translated">Tem certeza de que deseja excluir esta tarefa?</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButton">
+      <segment>
+        <source>Button</source>
+        <target state="translated">Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN1">
+      <segment>
+        <source>Button 1</source>
+        <target state="translated">Botão 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN2">
+      <segment>
+        <source>Button 2</source>
+        <target state="translated">Botão 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN3">
+      <segment>
+        <source>Button 3</source>
+        <target state="translated">Botão 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButtonN4">
+      <segment>
+        <source>Button 4</source>
+        <target state="translated">Botão 4</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToUpload">
+      <segment>
+        <source>Click to Upload</source>
+        <target state="translated">Clique para Envio</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentConfirm">
+      <segment>
+        <source>Confirm</source>
+        <target state="translated">Confirmar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDashed">
+      <segment>
+        <source>Dashed</source>
+        <target state="translated">Dashed</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLink">
+      <segment>
+        <source>Link</source>
+        <target state="translated">Link</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+        <target state="translated">Primário</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSubmit">
+      <segment>
+        <source>Submit</source>
+        <target state="translated">Enviar</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBetween">
+      <segment>
+        <source>Between</source>
+        <target state="translated">Between</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCard">
+      <segment>
+        <source>Card</source>
+        <target state="translated">Cartão</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExcept">
+      <segment>
+        <source>Except</source>
+        <target state="translated">Except</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+        <target state="translated">Hangzhou</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+        <target state="translated">Jiangsu</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf1">
+      <segment>
+        <source>leaf1</source>
+        <target state="translated">leaf1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf2">
+      <segment>
+        <source>leaf2</source>
+        <target state="translated">leaf2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf3">
+      <segment>
+        <source>leaf3</source>
+        <target state="translated">leaf3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingyinShi">
+      <segment>
+        <source>Lingyin shi</source>
+        <target state="translated">Lingyin shi</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMail">
+      <segment>
+        <source>Mail</source>
+        <target state="translated">Mail</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMobile">
+      <segment>
+        <source>Mobile</source>
+        <target state="translated">Mobile</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN1stItem">
+      <segment>
+        <source>1st item</source>
+        <target state="translated">1st item</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN2ndItem">
+      <segment>
+        <source>2nd item</source>
+        <target state="translated">2nd item</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN3rdItem">
+      <segment>
+        <source>3rd item</source>
+        <target state="translated">3rd item</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+        <target state="translated">Nanjing</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption1">
+      <segment>
+        <source>Option1</source>
+        <target state="translated">Option1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption1N1">
+      <segment>
+        <source>Option1-1</source>
+        <target state="translated">Option1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2">
+      <segment>
+        <source>Option2</source>
+        <target state="translated">Option2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2N1">
+      <segment>
+        <source>Option2-1</source>
+        <target state="translated">Option2-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2N2">
+      <segment>
+        <source>Option2-2</source>
+        <target state="translated">Option2-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>parent 1</source>
+        <target state="translated">pai 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N0">
+      <segment>
+        <source>parent 1-0</source>
+        <target state="translated">pai 1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N1">
+      <segment>
+        <source>parent 1-1</source>
+        <target state="translated">pai 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderReport">
+      <segment>
+        <source>Report</source>
+        <target state="translated">Report</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSignIn">
+      <segment>
+        <source>Sign In</source>
+        <target state="translated">Sign Em</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSignUp">
+      <segment>
+        <source>Sign Up</source>
+        <target state="translated">Sign Up</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTextN1">
+      <segment>
+        <source>text 1</source>
+        <target state="translated">texto 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTextN2">
+      <segment>
+        <source>text 2</source>
+        <target state="translated">texto 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+        <target state="translated">West Lake</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+        <target state="translated">Zhejiang</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+        <target state="translated">Zhong Hua Men</target>
+      </segment>
+    </unit>
+    <unit id="P2OkTextOk">
+      <segment>
+        <source>Ok</source>
+        <target state="translated">OK</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAnotherInput">
+      <segment>
+        <source>another input</source>
+        <target state="translated">another entrada</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEmail">
+      <segment>
+        <source>Email</source>
+        <target state="translated">Email</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputHere">
+      <segment>
+        <source>input here</source>
+        <target state="translated">entrada here</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMaximum">
+      <segment>
+        <source>Maximum</source>
+        <target state="translated">Maximum</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMinimum">
+      <segment>
+        <source>Minimum</source>
+        <target state="translated">Minimum</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">Por favor selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectAddress">
+      <segment>
+        <source>Select Address</source>
+        <target state="translated">Selecionar Address</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select Time</source>
+        <target state="translated">Selecionar Hora</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+        <target state="translated">Início hora</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextText">
+      <segment>
+        <source>~</source>
+        <target state="translated">~</target>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndTime">
+      <segment>
+        <source>End time</source>
+        <target state="translated">Fim hora</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBlock">
+      <segment>
+        <source>Block</source>
+        <target state="translated">Block</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCardContent">
+      <segment>
+        <source>Card content</source>
+        <target state="translated">Cartão conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCenter">
+      <segment>
+        <source>center</source>
+        <target state="translated">center</target>
+      </segment>
+    </unit>
+    <unit id="P2TextInputContent">
+      <segment>
+        <source>input content</source>
+        <target state="translated">entrada conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN1">
+      <segment>
+        <source>+1</source>
+        <target state="translated">+1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSpace">
+      <segment>
+        <source>Space:</source>
+        <target state="translated">Space:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextXihuDistrictHangzhou">
+      <segment>
+        <source>Xihu District, Hangzhou</source>
+        <target state="translated">Xihu District, Hangzhou</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDeleteTheTask">
+      <segment>
+        <source>Delete the task</source>
+        <target state="translated">Excluir a tarefa</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipComment">
+      <segment>
+        <source>Comment</source>
+        <target state="translated">Comment</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipCopyGitUrl">
+      <segment>
+        <source>copy git url</source>
+        <target state="translated">copy git url</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipDownload">
+      <segment>
+        <source>Download</source>
+        <target state="translated">Baixar</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipHeart">
+      <segment>
+        <source>Heart</source>
+        <target state="translated">Heart</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipLike">
+      <segment>
+        <source>Like</source>
+        <target state="translated">Like</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipShare">
+      <segment>
+        <source>Share</source>
+        <target state="translated">Share</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipStar">
+      <segment>
+        <source>Star</source>
+        <target state="translated">Star</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipTooltip">
+      <segment>
+        <source>Tooltip</source>
+        <target state="translated">Tooltip</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Space provides inline and vertical spacing, item alignment, split rendering, and compact input/button groups for dense tool surfaces.</source>
+        <target state="translated">Space provides embutido e vertical espaçamento, item alignment, split rendering, e compacto entrada/botão groups para denso tool surfaces.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Arrange components with consistent spacing or compact grouping.</source>
+        <target state="translated">Arrange components com consistent espaçamento ou compacto grouping.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAlign">
+      <segment>
+        <source>Align</source>
+        <target state="translated">Alinhar</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCompactButton">
+      <segment>
+        <source>Compact Button</source>
+        <target state="translated">Compacto Botão</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCompactForm">
+      <segment>
+        <source>Compact Form</source>
+        <target state="translated">Compacto Formulário</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioSize">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Use size to set the spacing. Three sizes are preset: small, middle, and large. You can also customize the spacing. If size is not set, the spacing is small.</source>
+        <target state="translated">Usar tamanho para definir o espaçamento. Três tamanhos são predefinido: pequeno, centro, e grande. Você pode also personalizar o espaçamento. Se tamanho é não definir, o espaçamento é pequeno.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Space Size</source>
+        <target state="translated">Space Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="SplitDescription">
+      <segment>
+        <source>Crowded components split.</source>
+        <target state="translated">Crowded components split.</target>
+      </segment>
+    </unit>
+    <unit id="SplitTitle">
+      <segment>
+        <source>Split</source>
+        <target state="translated">Split</target>
+      </segment>
+    </unit>
+    <unit id="VerticalCompactDescription">
+      <segment>
+        <source>Vertical Mode for Space.Compact, supports Button only.</source>
+        <target state="translated">Vertical Mode for Space.Compact, supports Button only.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalCompactTitle">
+      <segment>
+        <source>Vertical Compact Mode</source>
+        <target state="translated">Vertical Compacto Modo</target>
+      </segment>
+    </unit>
+    <unit id="VerticalSpaceDescription">
+      <segment>
+        <source>Crowded components vertical spacing.</source>
+        <target state="translated">Crowded components vertical espaçamento.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalSpaceTitle">
+      <segment>
+        <source>Vertical Space</source>
+        <target state="translated">Vertical Space</target>
+      </segment>
+    </unit>
+    <unit id="WrapDescription">
+      <segment>
+        <source>Auto wrap line.</source>
+        <target state="translated">Auto wrap linha.</target>
+      </segment>
+    </unit>
+    <unit id="WrapTitle">
+      <segment>
+        <source>Wrap</source>
+        <target state="translated">Wrap</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

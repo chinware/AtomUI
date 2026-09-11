@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls.Data;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
@@ -16,9 +15,12 @@ public class DataGridPaginationTemplateLifecycleTests
     }
 
     [Fact]
-    public void Pagination_State_Is_Replayed_When_Template_Applies_After_ItemsSource()
+    public void Pagination_State_Is_Replayed_When_Template_Applies_After_Source()
     {
-        var grid = CreateGrid<global::AtomUI.Desktop.Controls.DataGrid>();
+        using var source = CreateSource();
+        var grid = CreateGrid<global::AtomUI.Desktop.Controls.DataGrid>(
+            source,
+            new DataGridPageRequest(0, 10));
         var window = new Window
         {
             Width   = 640,
@@ -29,7 +31,7 @@ public class DataGridPaginationTemplateLifecycleTests
         try
         {
             window.Show();
-            Dispatcher.UIThread.RunJobs();
+            PumpUntil(() => grid.LoadState == DataGridLoadState.Ready);
 
             var topPagination    = FindPagination(grid, "PART_TopPagination");
             var bottomPagination = FindPagination(grid, "PART_BottomPagination");
@@ -49,27 +51,50 @@ public class DataGridPaginationTemplateLifecycleTests
     [Fact]
     public void Pagination_State_Is_Replayed_Without_Resetting_Page_When_Template_Is_Reapplied()
     {
-        var grid        = CreateGrid<TestDataGrid>();
-        var firstTop    = new Pagination();
+        using var source = CreateSource();
+        var grid = CreateGrid<TestDataGrid>(
+            source,
+            new DataGridPageRequest(20, 10));
+        var window = new Window { Content = grid };
+        var firstTop = new Pagination();
         var firstBottom = new Pagination();
-        grid.ApplyPaginationParts(firstTop, firstBottom);
-
-        var collectionView = grid.CollectionView.ShouldBeOfType<DataGridCollectionView>();
-        collectionView.MoveToPage(2).ShouldBeTrue();
-
-        var secondTop    = new Pagination();
+        var secondTop = new Pagination();
         var secondBottom = new Pagination();
-        grid.ApplyPaginationParts(secondTop, secondBottom);
+        try
+        {
+            window.Show();
+            PumpUntil(() => grid.LoadState == DataGridLoadState.Ready);
 
-        collectionView.PageIndex.ShouldBe(2);
-        AssertPaginationState(secondTop, 3);
-        AssertPaginationState(secondBottom, 3);
+            grid.ApplyPaginationParts(firstTop, firstBottom);
+            AssertPaginationState(firstTop, 3);
+            AssertPaginationState(firstBottom, 3);
 
-        firstTop.CurrentPage = 4;
-        collectionView.PageIndex.ShouldBe(2);
+            grid.ApplyPaginationParts(secondTop, secondBottom);
+            grid.PageRequest.ShouldBe(new DataGridPageRequest(20, 10));
+            AssertPaginationState(secondTop, 3);
+            AssertPaginationState(secondBottom, 3);
+
+            firstTop.CurrentPage = 4;
+            grid.PageRequest.ShouldBe(new DataGridPageRequest(20, 10));
+
+            secondBottom.CurrentPage = 4;
+            grid.PageRequest.ShouldBe(new DataGridPageRequest(30, 10));
+
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            secondBottom.CurrentPage = 5;
+            grid.PageRequest.ShouldBe(new DataGridPageRequest(30, 10));
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
     }
 
-    private static T CreateGrid<T>()
+    private static T CreateGrid<T>(
+        IDataGridSource source,
+        DataGridPageRequest pageRequest)
         where T : global::AtomUI.Desktop.Controls.DataGrid, new()
     {
         return new T
@@ -77,11 +102,22 @@ public class DataGridPaginationTemplateLifecycleTests
             AutoGenerateColumns  = false,
             PaginationVisibility = DataGridPaginationVisibility.All,
             IsHideOnSinglePage   = true,
-            PageSize             = 10,
-            ItemsSource          = Enumerable.Range(1, 100).ToArray(),
+            PageRequest           = pageRequest,
+            ItemsSource               = source,
             Width                = 540,
             Height               = 280
         };
+    }
+
+    private static DataGridLocalSource<Row> CreateSource()
+    {
+        var field = new DataGridFieldId("value");
+        var descriptor = DataGridLocalSourceDescriptor.For<Row>(
+                static row => DataGridRowKey.FromInt64(row.Value))
+            .Field(field, static row => row.Value);
+        return DataGridLocalSource.Create(
+            Enumerable.Range(1, 100).Select(static value => new Row(value)).ToArray(),
+            descriptor);
     }
 
     private static Pagination FindPagination(
@@ -109,6 +145,20 @@ public class DataGridPaginationTemplateLifecycleTests
                   .IsVisible
                   .ShouldBeTrue();
     }
+
+    private static void PumpUntil(Func<bool> condition)
+    {
+        if (!SpinWait.SpinUntil(() =>
+            {
+                Dispatcher.UIThread.RunJobs();
+                return condition();
+            }, TimeSpan.FromSeconds(5)))
+        {
+            throw new TimeoutException("The expected grid state was not reached.");
+        }
+    }
+
+    private sealed record Row(long Value);
 
     private sealed class TestDataGrid : global::AtomUI.Desktop.Controls.DataGrid
     {

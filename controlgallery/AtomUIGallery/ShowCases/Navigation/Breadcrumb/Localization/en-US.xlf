@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind">
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>The simplest use.</source>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorDescription">
+      <segment>
+        <source>The separator can be customized by setting the separator property: separator equals &gt;</source>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorIndependentlyDescription">
+      <segment>
+        <source>Customize separator for each other.</source>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorIndependentlyTitle">
+      <segment>
+        <source>Configuring the Separator Independently</source>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorTitle">
+      <segment>
+        <source>Configuring the Separator</source>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateDescription">
+      <segment>
+        <source>Generate BreadcrumbItem by template.</source>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateTitle">
+      <segment>
+        <source>Generate BreadcrumbItem by template</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAnApplication">
+      <segment>
+        <source>An Application</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentApplication">
+      <segment>
+        <source>Application</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentApplicationCenter">
+      <segment>
+        <source>Application Center</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentApplicationList">
+      <segment>
+        <source>Application List</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHome">
+      <segment>
+        <source>Home</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLocation">
+      <segment>
+        <source>Location</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentParam">
+      <segment>
+        <source>Param</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUsers">
+      <segment>
+        <source>Users</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Breadcrumb helps users understand where they are and move back through parent levels. It supports icons, custom separators, route context, URI navigation, and item templates.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Show the current page location in a navigation hierarchy.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>The icon should be placed in front of the text.</source>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With an Icon</source>
+      </segment>
+    </unit>
+    <unit id="WithParamsDescription">
+      <segment>
+        <source>With route params.</source>
+      </segment>
+    </unit>
+    <unit id="WithParamsTitle">
+      <segment>
+        <source>With Params</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

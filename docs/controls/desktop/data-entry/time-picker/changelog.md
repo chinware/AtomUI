@@ -2,6 +2,18 @@
 
 本文档记录 TimePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record InfoPickerInput as the semantic owner for TimePicker.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
+## 2026-08-23
+
+- Architecture
+  - Align TimePicker and RangeTimePicker input surfaces with the shared `AbstractTextInput` / `InputControlFrame` model.
+  - Keep time-panel state in TimePicker while projecting native validation, FormStatus and explicit status through the shared frame.
+
 ## 2026-08-03
 
 - Implementation

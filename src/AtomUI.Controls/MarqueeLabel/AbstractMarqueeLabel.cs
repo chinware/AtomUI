@@ -210,7 +210,8 @@ public abstract class AbstractMarqueeLabel : TextBlock
         var delta = _pivotOffsetStartValue - cycleWidth - _pivotOffsetStartValue;
         _animation = new Animation
         {
-            IterationCount = new IterationCount(long.MaxValue),
+            IterationCount    = new IterationCount(long.MaxValue),
+            PlaybackBehavior = PlaybackBehavior.OnlyIfVisible,
             Children =
             {
                 new KeyFrame

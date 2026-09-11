@@ -96,10 +96,11 @@ public class DataGridRowGroupHeader : TemplatedControl
         get
         {
             Debug.Assert(OwningGrid != null);
-            Debug.Assert(RowGroupInfo != null);
-            return (RowGroupInfo.Slot == OwningGrid.CurrentSlot);
+            return DisplaySlot == OwningGrid.CurrentSlot;
         }
     }
+
+    internal int DisplaySlot => SourceSlot;
 
     private bool IsMouseOver { get; set; }
 
@@ -109,7 +110,9 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     internal DataGrid? OwningGrid { get; set; }
 
-    internal DataGridRowGroupInfo? RowGroupInfo { get; set; }
+    internal DataGridGroupEntry? SourceGroup { get; set; }
+
+    internal int SourceSlot { get; set; } = -1;
 
     internal double TotalIndent
     {
@@ -210,10 +213,10 @@ public class DataGridRowGroupHeader : TemplatedControl
     {
         PseudoClasses.Set(StdPseudoClass.Current, IsCurrent);
 
-        if (RowGroupInfo?.CollectionViewGroup != null)
-        {
-            PseudoClasses.Set(StdPseudoClass.Expanded, RowGroupInfo.IsVisible && RowGroupInfo.CollectionViewGroup.ItemCount > 0);
-        }
+        PseudoClasses.Set(
+            StdPseudoClass.Expanded,
+            SourceGroup is { LeafCount: > 0 } group &&
+            !(OwningGrid?.GroupExpansion.CollapsedGroups.Contains(group.Key) ?? false));
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -312,13 +315,11 @@ public class DataGridRowGroupHeader : TemplatedControl
         {
             return;
         }
-        Debug.Assert(RowGroupInfo != null);
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             if (OwningGrid.IsDoubleClickRecordsClickOnCall(this) && !e.Handled)
             {
-           
-                ToggleExpandCollapse(!RowGroupInfo.IsVisible, true);
+                ToggleExpandCollapse(!IsExpanded, true);
                 e.Handled = true;
             }
             else
@@ -327,7 +328,7 @@ public class DataGridRowGroupHeader : TemplatedControl
                 {
                     OwningGrid.Focus();
                 }
-                e.Handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, OwningGrid.CurrentColumnIndex, RowGroupInfo.Slot, allowEdit: false);
+                e.Handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, OwningGrid.CurrentColumnIndex, DisplaySlot, allowEdit: false);
             }
         }
         else if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
@@ -336,7 +337,7 @@ public class DataGridRowGroupHeader : TemplatedControl
             {
                 OwningGrid.Focus();
             }
-            e.Handled = OwningGrid.UpdateStateOnMouseRightButtonDown(e, OwningGrid.CurrentColumnIndex, RowGroupInfo.Slot, allowEdit: false);
+            e.Handled = OwningGrid.UpdateStateOnMouseRightButtonDown(e, OwningGrid.CurrentColumnIndex, DisplaySlot, allowEdit: false);
         }
 
     }
@@ -403,10 +404,9 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     internal void EnsureExpanderButtonIsChecked()
     {
-        if (_expanderButton != null && RowGroupInfo != null && RowGroupInfo.CollectionViewGroup != null &&
-            RowGroupInfo.CollectionViewGroup.ItemCount != 0)
+        if (_expanderButton != null && HasChildren)
         {
-            SetIsCheckedNoCallBack(RowGroupInfo.IsVisible);
+            SetIsCheckedNoCallBack(IsExpanded);
         }
     }
 
@@ -480,23 +480,23 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     internal void ToggleExpandCollapse(bool isVisible, bool setCurrent)
     {
-        Debug.Assert(RowGroupInfo != null);
-        Debug.Assert(RowGroupInfo.CollectionViewGroup != null);
-        if (RowGroupInfo.CollectionViewGroup.ItemCount != 0)
+        if (!HasChildren)
         {
-            if (OwningGrid == null)
+            return;
+        }
+        if (SourceGroup is not null)
+        {
+            if (OwningGrid is not null && IsExpanded != isVisible)
             {
-                // Do these even if the OwningGrid is null in case it could improve the Designer experience for a standalone DataGridRowGroupHeader
-                RowGroupInfo.IsVisible = isVisible;
+                if (isVisible)
+                {
+                    OwningGrid.ExpandGroup(SourceGroup.Key);
+                }
+                else
+                {
+                    OwningGrid.CollapseGroup(SourceGroup.Key);
+                }
             }
-            else if(RowGroupInfo.IsVisible != isVisible)
-            {
-                OwningGrid.OnRowGroupHeaderToggled(this, isVisible, setCurrent);
-            }
-
-            EnsureExpanderButtonIsChecked();
-
-            UpdatePseudoClasses();
         }
     }
 
@@ -515,20 +515,39 @@ public class DataGridRowGroupHeader : TemplatedControl
             }
             _propertyNameElement.Text = txt;
         }
-        if (_itemCountElement != null && RowGroupInfo != null && RowGroupInfo.CollectionViewGroup != null)
+        if (_itemCountElement != null && SourceGroup is not null)
         {
             string formatString;
-            if (RowGroupInfo.CollectionViewGroup.ItemCount == 1)
+            if (SourceGroup.LeafCount == 1)
             {
-                formatString = (string.IsNullOrEmpty(ItemCountFormat) ? "({0} Item)" : ItemCountFormat);
+                formatString = string.IsNullOrEmpty(ItemCountFormat) ? "({0} Item)" : ItemCountFormat;
             }
             else
             {
-                formatString = (string.IsNullOrEmpty(ItemCountFormat) ? "({0} Items)" : ItemCountFormat);
+                formatString = string.IsNullOrEmpty(ItemCountFormat) ? "({0} Items)" : ItemCountFormat;
             }
-            _itemCountElement.Text = string.Format(formatString, RowGroupInfo.CollectionViewGroup.ItemCount);
+            _itemCountElement.Text = string.Format(formatString, SourceGroup.LeafCount);
         }
     }
+
+    internal void DetachFromDataGrid()
+    {
+        OwningGrid = null;
+        DataContext = null;
+        SourceGroup = null;
+        SourceSlot = -1;
+        Level = 0;
+        PropertyName = null;
+        IsMouseOver = false;
+        IsRecycled = true;
+        PseudoClasses.Set(StdPseudoClass.Current, false);
+        PseudoClasses.Set(StdPseudoClass.Expanded, false);
+    }
+
+    private bool HasChildren => SourceGroup?.LeafCount > 0;
+
+    private bool IsExpanded => SourceGroup is not null &&
+                               !(OwningGrid?.GroupExpansion.CollapsedGroups.Contains(SourceGroup.Key) ?? false);
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {

@@ -3,16 +3,17 @@ using AtomUI.Controls;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
+[PseudoClasses(":loading", ":has-image")]
 internal class ImageViewer : TemplatedControl, IMotionAwareControl
 {
     public static readonly StyledProperty<bool> IsImageMovableProperty =
@@ -152,8 +153,8 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     
     #region 内部属性定义
     
-    internal static readonly DirectProperty<ImageViewer, LoadedImageSource?> CurrentImageProperty =
-        AvaloniaProperty.RegisterDirect<ImageViewer, LoadedImageSource?>(
+    internal static readonly DirectProperty<ImageViewer, IImage?> CurrentImageProperty =
+        AvaloniaProperty.RegisterDirect<ImageViewer, IImage?>(
             nameof(CurrentImage),
             o => o.CurrentImage,
             (o, v) => o.CurrentImage = v);
@@ -244,9 +245,9 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
             o => o.SuppressTransformAnimation,
             (o, v) => o.SuppressTransformAnimation = v);
     
-    private LoadedImageSource? _currentImage;
+    private IImage? _currentImage;
 
-    internal LoadedImageSource? CurrentImage
+    internal IImage? CurrentImage
     {
         get => _currentImage;
         set => SetAndRaise(CurrentImageProperty, ref _currentImage, value);
@@ -461,6 +462,15 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
         {
             _isSelfChangedPosition = false;
             InvalidateMeasure();
+        }
+
+        if (change.Property == CurrentImageProperty ||
+            change.Property == IsCurrentImageLoadingProperty)
+        {
+            // 与 ImagePreviewerCover/AsyncImage 相同的视觉门控契约：
+            // 有图显示时不呈现加载指示器
+            PseudoClasses.Set(":has-image", CurrentImage is not null);
+            PseudoClasses.Set(":loading", IsCurrentImageLoading);
         }
     }
 

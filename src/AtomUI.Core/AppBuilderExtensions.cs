@@ -17,8 +17,8 @@ public static class AppBuilderExtensions
     /// <list type="bullet">
     ///   <item>
     ///     <description>
-    ///     <b>Windows</b>：Windows 10 和 Windows 11 都使用 RedirectionSurface，避免
-    ///     WinUIComposition / DirectComposition 在 live resize 期间提交与 HWND 尺寸不同步的表面。
+    ///     <b>Windows</b>：Windows 10 和 Windows 11 按 Avalonia 的合成回退顺序使用 WinUIComposition、
+    ///     DirectComposition、LowLatencyDxgiSwapChain 和 RedirectionSurface；CSD 窗口保留主题背景配置。
     ///     </description>
     ///   </item>
     ///   <item>
@@ -48,8 +48,11 @@ public static class AppBuilderExtensions
     /// </example>
     public static AppBuilder WithAtomUIDefaultOptions(this AppBuilder appBuilder)
     {
-        return appBuilder
-            .With(new AvaloniaNativePlatformOptions
+        // 按目标平台分支设置平台选项。NativeAOT 在 RID 发布时会把 OperatingSystem.IsXxx()
+        // 折叠为常量，非目标平台的分支及其引用的平台选项类型会被整体裁剪。
+        if (OperatingSystem.IsMacOS())
+        {
+            appBuilder = appBuilder.With(new AvaloniaNativePlatformOptions
             {
                 RenderingMode =
                 [
@@ -57,20 +60,34 @@ public static class AppBuilderExtensions
                     AvaloniaNativeRenderingMode.Metal,
                     AvaloniaNativeRenderingMode.Software
                 ]
-            })
-            .With(new Win32PlatformOptions
+            });
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            appBuilder = appBuilder.With(new Win32PlatformOptions
             {
                 RenderingMode =
                 [
                     Win32RenderingMode.AngleEgl,
                     Win32RenderingMode.Software
                 ],
-                CompositionMode = [Win32CompositionMode.RedirectionSurface]
-            })
-            .With(new X11PlatformOptions
+                CompositionMode =
+                [
+                    Win32CompositionMode.WinUIComposition,
+                    Win32CompositionMode.DirectComposition,
+                    Win32CompositionMode.LowLatencyDxgiSwapChain,
+                    Win32CompositionMode.RedirectionSurface
+                ]
+            });
+        }
+        if (OperatingSystem.IsLinux())
+        {
+            appBuilder = appBuilder.With(new X11PlatformOptions
             {
                 EnableDrawnDecorations = true
-            })
+            });
+        }
+        return appBuilder
             .With(new FontManagerOptions
             {
                 FontFallbacks = [new FontFallback

@@ -103,6 +103,8 @@ Spin 的交互事件应从输入源收敛到控件级语义事件：
 - 内容、命令和视觉状态在模板节点之间的同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
+`AbstractSpinIndicator` 的旋转和内置 dot opacity 由 Compositor 无限动画驱动。Compositor 不提供控件级有效可见性暂停语义，因此 indicator 在 attach 后跟踪自身及 Visual 祖先链；有效不可见时停止所有目标动画并复位视觉状态，恢复可见时重新解析当前 built-in/custom target 并启动动画。detach 时必须释放可见性订阅和所有 Compositor target。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -119,6 +121,7 @@ Spin 的交互事件应从输入源收敛到控件级语义事件：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏祖先下的 Spin 不得保留旋转或 dot opacity 的 Compositor 无限动画。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 9. 维护不变量

@@ -1,6 +1,8 @@
 # AutoComplete 桌面版架构设计
 
-本文档定义 `AutoComplete` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [AutoComplete 桌面版实现原理](implementation.md)，AutoComplete Token 的专项设计见 [AutoComplete Token 设计](token.md)，设计和契约变化记录见 [AutoComplete Changelog](changelog.md)。
+本文档定义 `AutoComplete` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，候选列表统一交互见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，内部实现原理见 [AutoComplete 桌面版实现原理](implementation.md)，AutoComplete Token 的专项设计见 [AutoComplete Token 设计](token.md)，设计和契约变化记录见 [AutoComplete Changelog](changelog.md)。
+
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `AbstractAutoComplete`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 candidate open state 并 relay 到 candidate Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
 ## 1. 控件定位
 
@@ -41,12 +43,12 @@ AutoComplete 的公共契约由 public/protected 类型成员、Avalonia 属性�
 | --- | --- | --- |
 | 内容与数据 | `ClearIcon`、`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`DefaultValue`、`FilterValue`、`FilterValueSelector`、`OptionTemplate`、`OptionsAsyncLoader` 等 14 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `CaretIndex`、`ClearSelectionOnLostFocus`、`DisplayCandidateCount`、`Filter`、`IsShowCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsOperating`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 13 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsOperating`、`IsSearchOnEnterEnabled`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 14 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `MaxDropDownHeight`、`PlaceholderForeground`、`Placement`、`SearchButtonStyle`、`SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `AsyncLoadDebounce`、`AsyncLoadTimeout` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `Lines`、`MaxLength`、`MinimumPrefixLength` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-稳定事件包括 `SelectionChanged`、`ValueChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`ValueChanged`；`AutoCompleteSearchEdit` 还通过内部 SearchEdit box 转发 `SearchRequested`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
 主要公开类型与枚举：
 
@@ -84,6 +86,8 @@ Public API / inherited command / item source / user input
 
 AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
+`AutoCompleteLineEditBox`、`AutoCompleteSearchEditBox` 和 `AutoCompleteTextAreaBox` 分别复用 `LineEdit`、`SearchEdit` 和 `TextArea` 的 `AbstractTextInput` 逻辑层与 `InputControlFrame` 输入表面。候选 popup 和过滤状态属于 AutoComplete 自身，不得重新声明输入边框、状态或 Form error owner。
+
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractAutoCompleteTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -109,11 +113,11 @@ AutoComplete 与同分类控件共享尺寸、状态、Token、Gallery 展示和
 - `AbstractAutoComplete`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `AbstractAutoCompleteTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `AutoComplete`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `AutoCompleteLineEditBox`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `AutoCompleteLineEditBox`：继承 LineEdit 的模板协作类型，承载内容展示和候选宿主边界，输入表面由 shared frame 提供。
 - `AutoCompleteSearchEdit`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `AutoCompleteSearchEditBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `AutoCompleteTextArea`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `AutoCompleteTextAreaBox`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `AutoCompleteTextAreaBox`：继承 TextArea 的模板协作类型，承载多行内容和候选宿主边界，输入表面由 shared frame 提供。
 - `AutoCompleteToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `CompactSpaceAwareAutoComplete`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `CompleteOptionsLoadResult`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
@@ -140,7 +144,7 @@ AutoComplete 与同分类控件共享尺寸、状态、Token、Gallery 展示和
 
 ### 8.1 选择与当前项模型
 
-AutoComplete 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
+AutoComplete 的候选当前项由弹层中的 `CandidateList` 作为单一 active candidate owner。鼠标移动和 `Up` / `Down` 都只迁移这个候选，不提前改变输入值；`Enter` 使用同一个 active candidate 提交，提交后才更新 `Value` / `SelectionChanged` 并按控件契约关闭弹层。候选项容器只投影 active、selected 和 disabled 状态，`:pointerover` 不再形成第二个候选高亮。过滤结果、异步加载、集合替换、清空和模板重套用时，失效的 active candidate 必须被清除或重新从当前视图解析。
 
 ### 8.2 弹层与宿主模型
 

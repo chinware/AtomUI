@@ -1,12 +1,16 @@
 using System.Diagnostics;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
 
 internal class WindowsCaptionButton : CaptionButton
 {
+    internal static readonly StyledProperty<WindowState> HostWindowStateProperty =
+        WindowTitleBar.HostWindowStateProperty.AddOwner<WindowsCaptionButton>();
+
     internal static readonly DirectProperty<WindowsCaptionButton, bool> IsCloseButtonProperty =
         AvaloniaProperty.RegisterDirect<WindowsCaptionButton, bool>(nameof(IsCloseButton),
             o => o.IsCloseButton,
@@ -20,6 +24,12 @@ internal class WindowsCaptionButton : CaptionButton
     private bool _isCloseButton;
     private bool _isPointerOverSuppressed;
 
+    internal WindowState HostWindowState
+    {
+        get => GetValue(HostWindowStateProperty);
+        set => SetValue(HostWindowStateProperty, value);
+    }
+
     internal bool IsCloseButton
     {
         get => _isCloseButton;
@@ -30,6 +40,12 @@ internal class WindowsCaptionButton : CaptionButton
     {
         get => _isPointerOverSuppressed;
         private set => SetAndRaise(IsPointerOverSuppressedProperty, ref _isPointerOverSuppressed, value);
+    }
+
+    static WindowsCaptionButton()
+    {
+        HostWindowStateProperty.Changed.AddClassHandler<WindowsCaptionButton>((button, _) =>
+            button.InvalidatePointerOverVisualState());
     }
 
     internal void InvalidatePointerOverVisualState()
@@ -63,16 +79,8 @@ internal class WindowsCaptionButton : CaptionButton
     
     protected override Size MeasureOverride(Size availableSize)
     {
-        var width  = availableSize.Width;
-        var height = availableSize.Height;
-        if (double.IsInfinity(width))
-        {
-            width = height;
-        }
-        var availableMinSize = Math.Min(width, height);
-        var size             = base.MeasureOverride(new Size(width, height));
-        var minSize          = Math.Min(size.Width, size.Height);
-        var finalSize = Math.Max(minSize, availableMinSize);
-        return new Size(finalSize, finalSize);
+        var measureConstraint = WindowsCaptionButtonLayout.NormalizeMeasureConstraint(availableSize);
+        var measuredSize = base.MeasureOverride(measureConstraint);
+        return WindowsCaptionButtonLayout.ResolveDesiredSize(measureConstraint, measuredSize);
     }
 }

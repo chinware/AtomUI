@@ -19,6 +19,8 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    FormStatus="{TemplateBinding FormStatus}"
+                    IsInputFocusWithin="{TemplateBinding IsKeyboardFocusWithin}"
                     DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                     CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
@@ -30,24 +32,35 @@
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
-                                Name="PART_ClearButton" />
-                            <!-- 新增显示密码按钮 -->
+                                Name="PART_ClearButton"
+                                Icon="{Binding $parent[atom:LineEdit].ClearIcon}"
+                                IsVisible="{Binding $parent[atom:LineEdit].IsEffectiveShowClearButton}"
+                                IsMotionEnabled="{Binding $parent[atom:LineEdit].IsMotionEnabled}" />
                             <atom:RevealButton
-                                Name="PART_RevealButton" />
+                                Name="PART_RevealButton"
+                                IsChecked="{Binding $parent[atom:LineEdit].RevealPassword, Mode=TwoWay}"
+                                IsVisible="{Binding $parent[atom:LineEdit].IsEnableRevealButton}"
+                                IsMotionEnabled="{Binding $parent[atom:LineEdit].IsMotionEnabled}" />
                             <ContentPresenter
                                 Name="FormFeedBack"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
-                                HorizontalAlignment="Right" />
+                                HorizontalAlignment="Right"
+                                Content="{Binding $parent[atom:LineEdit].FormFeedback}"
+                                IsVisible="{Binding $parent[atom:LineEdit].IsFormFeedbackVisible}" />
                             <atom:AddOnContentPresenter
                                 Name="InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Right"
-                                Focusable="False" />
+                                Focusable="False"
+                                Content="{Binding $parent[atom:LineEdit].InnerRightContent}"
+                                ContentTemplate="{Binding $parent[atom:LineEdit].InnerRightContentTemplate}" />
                             <atom:TextBlock Name="TextCountIndicator"
                                             VerticalAlignment="Center"
-                                            Foreground="{atom:SharedTokenResource ColorTextPlaceholder}" />
+                                            Foreground="{atom:SharedTokenResource ColorTextPlaceholder}"
+                                            Text="{Binding $parent[atom:LineEdit].CountText}"
+                                            IsVisible="{Binding $parent[atom:LineEdit].IsShowCount}" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
 
@@ -151,6 +164,9 @@
             </Style>
         </Style>
 
+        <!-- The visual frame is shared by composite inputs, but control token
+             scopes are keyed by the public input control rather than the
+             internal AddOnDecoratedBox. Keep state colors on that owner. -->
         <Style Selector="^[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default][IsInnerBoxHover=True],
                          ^[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default][IsInnerBoxHover=True]">
             <Setter Property="BorderBrush"
@@ -170,35 +186,6 @@
             <Setter Property="BoxShadow"
                     Value="{atom:LineEditTokenResource InputActiveShadow}" />
         </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="Background"
-                    Value="{atom:LineEditTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputWarningActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="Background"
-                    Value="{atom:LineEditTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputWarningActiveShadow}" />
-        </Style>
+
     </ControlTheme>
 </ResourceDictionary>

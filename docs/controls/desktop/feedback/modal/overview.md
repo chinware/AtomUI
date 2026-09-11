@@ -1,6 +1,6 @@
 # Modal 桌面版架构设计
 
-本文档定义 `Dialog` 和 `MessageBox` 的当前公共设计。内部状态机与宿主实现见 [Modal 桌面版实现原理](implementation.md)，宿主尺寸与交互缩放见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，视觉变量见 [Modal Token 设计](token.md)，历史变化见 [Modal Changelog](changelog.md)。
+本文档定义 `Dialog` 和 `MessageBox` 的当前公共设计。内部状态机与宿主实现见 [Modal 桌面版实现原理](implementation.md)，关闭动效的视觉层与生命周期边界见 [Modal Dialog 关闭动效设计](dialog-close-motion-design.md)，宿主尺寸与交互缩放见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，内容区弹层叠放见 [Modal 内容弹层叠放设计](popup-layering-design.md)，视觉变量见 [Modal Token 设计](token.md)，历史变化见 [Modal Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -24,6 +24,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 - 对话表面由标题、内容、Footer 和操作按钮组成，Overlay 与 Window 共享同一个内容模型。
 - modal 通过 mask 或原生 owner 关系阻断底层输入；modeless 保持底层可交互。
 - Presenter 的真实展示边界属于 Session 生命周期的一部分。Overlay 在入场 motion 完成后触发 `Opened`，Window 在原生 `DialogWindow.Opened` 后触发；关闭任务分别等待 Overlay 退出 motion 或原生 `DialogWindow.Closed`，并在宿主移除和资源释放完成后结束。
+- Overlay 关闭时，外层 Surface motion 与 `DialogSurface` 内容层的前景 opacity 动画并行；内容和按钮保持附着，直到所有关闭任务完成后才 teardown。Window 继续使用原生 Window 生命周期。
 - `MessageBoxStyle` 只表达消息语义和默认图标/按钮策略，不改变 Dialog 生命周期。
 
 ## 3. API 与契约模型
@@ -34,8 +35,8 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 | --- | --- | --- |
 | 内容 | `Title`, `TitleIcon`, `Content`, `ContentTemplate`, `DataContext` | 定义标题和任意内容对象或模板。 |
 | 打开状态 | `IsOpen`, `OpenAsync(...)` | `IsOpen` 是默认 TwoWay 的声明式意图；`OpenAsync` 表示一次完整 Session。 |
-| 展示方式 | `DialogHostType`, `IsModal`, `PlacementTarget`, startup anchor/offset | 选择 Overlay/Window、交互模态和初始位置。 |
-| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组 Surface 正文尺寸请求映射到 Overlay 或原生 Window。`NaN` 表示初始自然尺寸；有效最小尺寸还必须满足 Dialog 的结构性下限。 |
+| 展示方式 | `DialogHostType`, `IsModal`, `PlacementTarget`, startup anchor/offset | 选择 Overlay/Window、交互模态和初始位置。直接实例化与静态 API 的水平、垂直 startup anchor 默认均为 `Center`；显式 `Custom` 时由对应 offset 决定位置。 |
+| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsMaskClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组 Surface 正文尺寸请求映射到 Overlay 或原生 Window。`NaN` 表示初始自然尺寸；有效最小尺寸还必须满足 Dialog 的结构性下限。`IsClosable` 控制标题栏关闭入口，`IsMaskClosable` 控制 Overlay modal mask 外点关闭入口，两者正交且默认都为 `true`。 |
 | 操作 | `StandardButtons`, `CustomButtons`, `DefaultStandardButton`, `EscapeStandardButton`, `ButtonsConfigure` | 生成标准按钮、加入自定义按钮并配置当前有效按钮序列。 |
 | 状态与策略 | `IsLoading`, `IsConfirmLoading`, `IsFooterVisible`, `IsMotionEnabled`, `BeforeCloseAsync` | 控制加载、确认按钮 loading、Footer、motion 和关闭前校验。 |
 | 结果 | `Result`, `Accept()`, `Reject()`, `Done(...)` | 所有关闭来源归一为结果与 `DialogCloseReason`。 |
@@ -74,7 +75,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 
 `MessageBox : Dialog` 增加 `Style`、`Icon`、`OkButtonStyle`、`OkButtonText`、`CancelButtonText`、`IsCenterOnStartup`、`Confirmed`、`Cancelled`、`Confirm()` 和 `Cancel()`。
 
-`ShowMessageBoxAsync(...)` 与 `ShowMessageBoxModalAsync(...)` 复用继承的异步 Session 语义。未显式指定 `MessageBoxOptions.MinWidth` 时保留 MessageBox Token 的默认最小宽度。
+`ShowMessageBoxAsync(...)` 与 `ShowMessageBoxModalAsync(...)` 复用继承的异步 Session 语义。未显式指定 `MessageBoxOptions.MinWidth` 时保留 MessageBox Token 的默认最小宽度。`IsMaskClosable` 由 `Dialog` 继承并经 `MessageBoxOptions` 透传，语义与 Dialog 一致。
 
 ### 3.4 Template Parts
 
@@ -86,19 +87,21 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 | `PART_LeftGroup` / `PART_CenterGroup` / `PART_RightGroup` | `DialogButtonBox` | 按按钮角色布局。 |
 | `PART_MaskMotionActor` | `OverlayDialogPresenter` | modal mask 及其 motion。 |
 | `PART_SurfaceMotionActor` | `OverlayDialogPresenter` | DialogSurface 入场/退出 motion。 |
+| `PART_SurfaceContentLayer` | `DialogSurface` 内部模板节点 | 包围 Header、ContentFrame 和 FooterFrame；Overlay 关闭时承载前景 opacity 动画，不是 public Semantic Part。 |
 
 当前没有 Modal 专属 pseudo class。
 
 ## 4. 行为与状态模型
 
 - `IsOpen` 表示最新声明式意图；`DialogSession` 表示一次实际展示。两者不能由 presenter 或 template part 反向拥有。
-- modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。
-- 所有平台的 `AtomUI.Window` 都按宿主能力选择 Overlay layer：drawn decorations 暴露 Dialog host 时把 presenter 放在该层，否则回退 TopLevel popup overlay。modal mask 覆盖完整 Avalonia 可绘制窗口轮廓和 managed/drawn 标题栏，标题栏内容与 caption buttons 也受同一 modal 输入阻断；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。栈顶 modal mask 外点默认以 `HostCloseRequest` 发起普通关闭；`IsMaskClosable=false` 时该次点击被吞掉且不产生任何关闭请求，不进入 `Closing`/`BeforeCloseAsync` 管道。Window host 没有 mask，外点本来就不触发关闭。
+- 所有平台的 `AtomUI.Window` 都把 Overlay presenter 放在 owning `TopLevel` 的 Avalonia `OverlayLayer`。modal 活跃时通过 Window 引用计数租约隐藏 managed/drawn chrome overlay，使 mask 覆盖完整 Avalonia 可绘制窗口轮廓并阻断 caption input；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- Dialog 内容区内的 popup 类控件(ComboBox、Select、DatePicker、Tooltip、Flyout、ContextMenu 等)由同一 Window 的 `PopupOverlayLayer` 或原生 Popup host 承载，位于 Dialog `OverlayLayer` 之上并保持可命中；二者之间的 `LightDismissOverlayLayer` 保证外点关闭与输入穿透语义和普通页面一致。层级与所有权契约见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
 - Overlay mask bounds、Window visible frame 与 Dialog 正文 owner bounds 独立：mask 使用完整 layer bounds；所有平台的 Surface 正文定位、拖动、resize 和 maximize 使用 visible frame 按当前有效 drawn frame thickness 内缩后的范围，允许进入 managed/drawn title bar，但不能覆盖窗口 frame。Dialog BoxShadow 只参与绘制并允许在窗口边缘由统一 visual-layer clip 裁剪。
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
-- Overlay 等待 mask 与 Surface 的 opening/closing motion；`IsMotionEnabled=false` 只跳过这些 motion，不跳过宿主附加、移除和释放。Window 不创建 Surface `MotionActor`，其打开与关闭分别等待原生 `DialogWindow.Opened` 和 `DialogWindow.Closed`。
+- Overlay 等待 mask 与 Surface 的 opening/closing motion；关闭时同一 presenter 还等待内容层 opacity 动画，并在聚合任务完成后才断开 composition children、释放 Surface 和移除 layer。`IsMotionEnabled=false` 只跳过这些 motion，不跳过宿主附加、移除和释放。Window 不创建 Surface `MotionActor`，其打开与关闭分别等待原生 `DialogWindow.Opened` 和 `DialogWindow.Closed`。
 - `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
 
 ## 5. 视觉与主题模型
@@ -119,7 +122,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 ## 6. 控件家族或集成关系
 
 - `MessageBox` 继承 `Dialog`，只增加语义内容和按钮策略。
-- Overlay 在 `AtomUI.Window` 暴露 drawn decorations Dialog host 时使用该层；其他 TopLevel 使用 popup overlay layer，单视图或局部 scope 使用最近的 `ScopeAwareOverlayLayer`。宿主解析由实际能力决定，不按操作系统硬编码，也不使用全局静态 TopLevel 字典。
+- Overlay 优先使用 placement target 所属 `TopLevel` 的 Avalonia `OverlayLayer`；无可用 TopLevel overlay 时才使用最近的 `ScopeAwareOverlayLayer` fallback。宿主解析由实际能力决定，不按操作系统硬编码，也不使用全局静态 TopLevel 字典。
 - Drawer 与 Overlay Dialog 在 Window 中遵循相同的 visible frame、标题栏覆盖和窗口 frame clip 规则，但各自保留独立的 layer、stack 与关闭生命周期。
 - Window 使用 Avalonia 原生 `Window` modal owner 能力；不支持原生 Window 的平台会回退到 Overlay。
 - `IDialogAwareDataContext` 在 DataContext attach/detach 和 Session closed 时接收通知。
@@ -135,10 +138,12 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 - 自定义按钮集合的 Add/Remove/Replace/Move/Reset/Clear 都要更新有效序列并对称管理事件订阅。
 - mask、Surface、内容、按钮、binding、逻辑/资源 parent、owner/target 订阅必须在所有关闭路径释放。
 - Window mask 必须覆盖完整 Avalonia 可绘制窗口轮廓；存在 drawn title bar 时必须位于其上方。所有平台的 Dialog Surface 正文都使用包含 managed/drawn 标题栏、排除透明 frame shadow 与有效 drawn frame 的 owner bounds；不能把 mask bounds、visible frame bounds、正文 owner bounds 与 BoxShadow 绘制范围合并为同一个矩形。
+- Dialog 内容、placement target 与 owning Window 必须保持在同一 `TopLevel`；Dialog 使用 `OverlayLayer`，内容弹层使用更高的 `PopupOverlayLayer`，并保留中间的 light-dismiss 层。
 - Window 外轮廓只能由现有 `WindowVisualLayerClip` 统一裁剪；Overlay Dialog 不单独复制 frame shadow margin 或 CornerRadius。
 - Overlay 与 Window 必须使用同一套 Surface 正文尺寸解析。Window 只允许在 presenter 边界加回 chrome；不能把 Surface `HostMin/Max` 直接解释为包含标题栏和 frame 的 Window client constraints。
 - 用户 resize、runtime `HostMin/Max`、主题或宿主容量变化不得无条件重置已调整尺寸；actual size 只有越出最新有效区间时才被 clamp。
 - 不重新引入同步 DispatcherFrame、callback close、隐藏 MessageBox Dialog 或分离的 Popup mask。
+- 关闭入口开关保持正交：`IsClosable` 管标题栏 X，`IsMaskClosable` 管 Overlay modal mask 外点，互不推导；`IsMaskClosable=false` 时 mask 外点不产生 `HostCloseRequest`。
 
 ## 8. 专项模型
 
@@ -154,8 +159,8 @@ Created -> Opening -> Open -> ClosePending -> Closing -> Closed
 
 ### 8.2 宿主选择
 
-- `DialogHostType.Overlay` 使用 owner 范围内的 Dialog overlay stack。`AtomUI.Window` 在 drawn decorations Dialog host 可用时优先使用该层，不可用的平台或装饰模式使用 popup overlay layer；无 TopLevel popup layer 的 scope 使用 `ScopeAwareOverlayLayer`。
-- drawn decorations host 不可用时回退到普通 TopLevel/scope overlay，保证自定义或不完整 Window theme 不阻断 Dialog 打开。
+- `DialogHostType.Overlay` 使用 owner 范围内的 Dialog overlay stack。Window/TopLevel 使用 Avalonia `OverlayLayer`；无 TopLevel overlay layer 的 scope 使用 `ScopeAwareOverlayLayer` fallback。
+- `WindowDrawnDecorations` 只承担 chrome 绘制，不作为 Dialog host；自定义 decorations theme 不改变 Dialog 的 `TopLevel` 所有权。
 - `DialogHostType.Window` 使用原生 Window；平台不支持时回退 Overlay。
 - `IsModal` 只控制交互模态，不改变 `OpenAsync` 的任务边界。
 
@@ -180,7 +185,9 @@ owner resize、frame shadow、drawn frame thickness、Window state 和 `ClientSi
 ## 9. 文档导航、LLMS 导出与验证策略
 
 - [实现原理](implementation.md)
+- [关闭动效设计](dialog-close-motion-design.md)
 - [宿主尺寸与 Resize 设计](host-sizing-design.md)
+- [内容弹层叠放设计](popup-layering-design.md)
 - [Token 设计](token.md)
 - [控件级 Changelog](changelog.md)
 
@@ -192,7 +199,7 @@ LLMS 语义区域：
 | `host` | Overlay presenter / native Window | 承载模态、placement、尺寸和宿主生命周期。 | `DialogHostType`, `IsModal`, `PlacementTarget` | SharedToken motion | internal-observable |
 | `surface` | `DialogSurface` | 共享标题、正文、Footer、按钮和 focus scope。 | `Content`, `StandardButtons`, `IsLoading` | `ContentBg`, padding/footer tokens | internal-observable |
 | `content` | Content / `MessageBoxContent` | 呈现任意 Dialog 内容或 MessageBox 语义内容。 | `Content`, `ContentTemplate`, `Style`, `Icon` | typography/color tokens | stable |
-| `motion` | Overlay `MotionActor` | 等待 Overlay opening/closing motion；Window 使用原生 Opened/Closed 边界。 | `IsMotionEnabled` | `MotionDurationMid` | internal-observable |
+| `motion` | Overlay `MotionActor` + `PART_SurfaceContentLayer` | Overlay 等待外层、前景内容和 mask 的关闭边界；Window 使用原生 Opened/Closed 边界。 | `IsMotionEnabled` | `MotionDurationMid` | internal-observable |
 
 LLMS 导出来源：
 
@@ -205,4 +212,7 @@ LLMS 导出来源：
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | implementation.md | 用于定位控件源码、主题和测试 |
 
-验证按改动范围运行 Dialog/MessageBox 定向测试、完整 Desktop Controls 测试、Gallery 测试与构建；涉及 AOT 发布路径时执行 Gallery NativeAOT publish，并始终运行 `git diff --check`。
+验证按改动范围运行 Dialog/MessageBox 定向测试、完整 Desktop Controls 测试、Gallery 测试与构建；涉及 AOT 发布路径时执行 Gallery NativeAOT publish，并始终运行 `git diff --check`。Dialog 内容 Popup 家族由原语、控件家族、DataGrid 专项与入口库存测试覆盖，完整清单和断言见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
+
+当前最终 Popup 分层方案已在 Windows CSD、macOS 原生 chrome，以及 Ubuntu GNOME Wayland 环境完成实机测试；
+Wayland 证据仅覆盖 Dialog 内容 Popup 真实窗口人工回归。Linux X11 尚未测试，不属于当前已验证平台。

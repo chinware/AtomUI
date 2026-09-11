@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.QRCodeLangResourceKind">
+    <unit id="Expired">
+      <segment>
+        <source>QR code expired</source>
+        <target state="final">Código QR expirado</target>
+      </segment>
+    </unit>
+    <unit id="Refresh">
+      <segment>
+        <source>Refresh</source>
+        <target state="final">Atualizar</target>
+      </segment>
+    </unit>
+    <unit id="Scanned">
+      <segment>
+        <source>Scanned</source>
+        <target state="final">Escaneado</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

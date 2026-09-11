@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.IconShowCaseLangResourceKind">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">通用</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="IconCopyFailed">
+      <segment>
+        <source>Could not copy the icon name. Please try again.</source>
+        <target state="translated">無法複製圖示名稱，請再試一次。</target>
+      </segment>
+    </unit>
+    <unit id="IconCopySucceededFormat">
+      <segment>
+        <source>Icon name copied: {0}</source>
+        <target state="translated">已複製圖示名稱：{0}</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充風格</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">線框風格</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTwoTone">
+      <segment>
+        <source>Two Tone</source>
+        <target state="translated">雙色風格</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Icon provides the Ant Design icon set for AtomUI controls and applications. Use the tabs to switch between outlined, filled, and two-tone icon themes, then search within the selected gallery.</source>
+        <target state="translated">Icon 為 AtomUI 控件和應用提供 Ant Design 圖標集。通過標籤切換線框、填充和雙色圖標主題，並在當前圖庫內搜索圖標。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Browse AtomUI Ant Design icons by theme style.</source>
+        <target state="translated">按主題風格瀏覽 AtomUI Ant Design 圖標。</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

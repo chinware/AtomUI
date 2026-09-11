@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">最基础的用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomConfigurationDescription">
+      <segment>
+        <source>Preview the watermark effect by configuring custom parameters.</source>
+        <target state="translated">通过配置自定义参数预览水印效果。</target>
+      </segment>
+    </unit>
+    <unit id="CustomConfigurationTitle">
+      <segment>
+        <source>Custom configuration</source>
+        <target state="translated">自定义配置</target>
+      </segment>
+    </unit>
+    <unit id="ImageWatermarkDescription">
+      <segment>
+        <source>Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.</source>
+        <target state="translated">通过 image 指定图片地址。为确保图片高清且不被拉伸，请设置宽高，并上传至少两倍于显示宽高的 logo 图片。</target>
+      </segment>
+    </unit>
+    <unit id="ImageWatermarkTitle">
+      <segment>
+        <source>Image watermark</source>
+        <target state="translated">图片水印</target>
+      </segment>
+    </unit>
+    <unit id="MultiLineDescription">
+      <segment>
+        <source>Use line-break to specify multi-line text watermark content.</source>
+        <target state="translated">使用换行指定多行水印内容。</target>
+      </segment>
+    </unit>
+    <unit id="MultiLineTitle">
+      <segment>
+        <source>Multi-line watermark</source>
+        <target state="translated">多行水印</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNaturalInteractionDescription">
+      <segment>
+        <source>The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.
+
+Natural user cognition: According to cognitive psychology, about 80% of external information is obtained through visual channels. The most important visual elements in the interface design, including layout, colors, illustrations, icons, etc., should fully absorb the laws of nature, thereby reducing the user's cognitive cost and bringing authentic and smooth feelings. In some scenarios, opportunely adding other sensory channels such as hearing, touch can create a richer and more natural product experience.
+
+Natural user behavior: In the interaction with the system, the designer should fully understand the relationship between users, system roles, and task objectives, and also contextually organize system functions and services. At the same time, a series of methods such as behavior analysis, artificial intelligence and sensors could be applied to assist users to make effective decisions and reduce extra operations of users, to save users' mental and physical resources and make human-computer interaction more natural.</source>
+        <target state="translated">数字世界的高速迭代让产品变得更加复杂，而人的意识和注意力资源是有限的。面对这种设计矛盾，追求自然交互将始终是 Ant Design 的一致方向。
+
+自然的用户认知：根据认知心理学，外部信息约有 80% 通过视觉通道获得。界面设计中最重要的视觉元素，包括布局、色彩、插图、图标等，都应充分吸收自然规律，从而降低用户的认知成本，并带来真实、顺畅的感受。在一些场景中，适时加入听觉、触觉等其他感官通道，也可以创造更丰富、更自然的产品体验。
+
+自然的用户行为：在与系统交互时，设计师应充分理解用户、系统角色和任务目标之间的关系，并结合上下文组织系统功能和服务。同时，可以运用行为分析、人工智能、传感器等方法辅助用户做出有效决策，减少用户的额外操作，节省用户的心智和体力资源，让人机交互更加自然。</target>
+      </segment>
+    </unit>
+    <unit id="P2WatermarkMultiLineText">
+      <segment>
+        <source>AtomUI
+Happy Working</source>
+        <target state="translated">AtomUI
+快乐工作</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Watermark attaches repeated text or image glyphs to a target area, helping identify ownership or prevent unauthorized reuse.</source>
+        <target state="translated">Watermark 将重复的文字或图片 Glyph 附加到目标区域，用于标识归属或降低未经授权复用的风险。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Text or image watermarks for protected content.</source>
+        <target state="translated">用于受保护内容的文字或图片水印。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

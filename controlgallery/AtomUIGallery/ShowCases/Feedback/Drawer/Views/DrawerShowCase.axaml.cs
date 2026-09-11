@@ -2,7 +2,7 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
@@ -26,12 +26,14 @@ public partial class DrawerShowCase : GalleryReactiveUserControl<DrawerViewModel
             if (DataContext is DrawerViewModel viewModel)
             {
                 RefreshLocalizedOptionData(viewModel);
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = Application.Current is { } application
+                    ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
+                    : null;
                 if (languageManager is not null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    disposables.Add(Disposable.Create(() => languageManager.LanguageVariantChanged -= handler));
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    disposables.Add(Disposable.Create(() => languageManager.LanguageChanged -= handler));
                 }
             }
         });
@@ -215,6 +217,6 @@ internal static class DrawerShowCaseLanguage
 {
     public static string Get(DrawerShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 }

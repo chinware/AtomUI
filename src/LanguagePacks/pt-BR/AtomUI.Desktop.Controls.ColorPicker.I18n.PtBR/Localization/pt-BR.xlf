@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.ColorPickerLangResourceKind">
+    <unit id="EmptyColorText">
+      <segment>
+        <source>Transparent</source>
+        <target state="final">Transparente</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

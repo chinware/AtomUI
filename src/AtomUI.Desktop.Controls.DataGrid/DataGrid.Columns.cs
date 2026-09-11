@@ -5,20 +5,22 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls.Data;
-using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -111,11 +113,16 @@ public partial class DataGrid
 
     internal int EditingColumnIndex { get; private set; }
 
+    internal bool HasFiniteColumnViewport => _columnViewportWidth.HasValue &&
+                                             !double.IsPositiveInfinity(_columnViewportWidth.Value);
+
     #endregion
 
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
     private DataGridGroupColumnHeadersPresenter? _groupColumnHeadersPresenter;
     private DataGridColumnDraggingOverIndicator? _dataGridDraggingOverIndicator;
+    private DataGridColumn? _popupPinnedOpenFilterColumn;
+    private double? _columnViewportWidth;
 
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
     {
@@ -215,32 +222,17 @@ public partial class DataGrid
 
         if (CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
         {
-            Dispatcher.Post(ProcessClearSort);
+            ProcessClearSort();
         }
     }
 
     internal void ProcessClearSort()
     {
-        if (EditingRow == null)
+        if (EditingRow != null)
         {
-            foreach (var column in ColumnsInternal)
-            {
-                var ea = new DataGridColumnEventArgs(column);
-                NotifyColumnSorting(ea);
-            }
-
-            // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
-            if (DataConnection.AllowSort && DataConnection.SortDescriptions != null)
-            {
-                IDataGridCollectionView? collectionView = DataConnection.CollectionView;
-                Debug.Assert(collectionView != null);
-
-                using (collectionView.DeferRefresh())
-                {
-                    DataConnection.SortDescriptions.Clear();
-                }
-            }
+            return;
         }
+        ClearSorts();
     }
 
     public void Filter(int columnIndex, List<object> filterValues)
@@ -284,42 +276,17 @@ public partial class DataGrid
 
         if (CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
         {
-            Dispatcher.Post(ProcessClearFilters);
+            ProcessClearFilters();
         }
     }
 
     internal void ProcessClearFilters()
     {
-        if (EditingRow == null)
+        if (EditingRow != null || Query.Filters.IsEmpty)
         {
-            foreach (var column in ColumnsInternal)
-            {
-                var ea = new DataGridColumnEventArgs(column);
-                NotifyColumnFiltering(ea);
-                if (!ea.Handled)
-                {
-                    column.SetSelectedFilterValuesFromFilterRequest(Array.Empty<object>());
-                }
-            }
-
-            if (DataConnection.AllowFilter && DataConnection.FilterDescriptions != null)
-            {
-                IDataGridCollectionView? collectionView = DataConnection.CollectionView;
-                Debug.Assert(collectionView != null);
-
-                using (collectionView.DeferRefresh())
-                {
-                    for (var i = DataConnection.FilterDescriptions.Count - 1; i >= 0; i--)
-                    {
-                        var filterDescription = DataConnection.FilterDescriptions[i];
-                        if (!filterDescription.HasPropertyPath)
-                        {
-                            DataConnection.FilterDescriptions.RemoveAt(i);
-                        }
-                    }
-                }
-            }
+            return;
         }
+        Query = Query.WithFilters(ImmutableArray<DataGridFilter>.Empty);
     }
 
     /// <summary>
@@ -346,6 +313,58 @@ public partial class DataGrid
         }
 
         return amount;
+    }
+
+    internal void ResolveStarColumnWidths(double availableCellsWidth)
+    {
+        if (double.IsNaN(availableCellsWidth) || double.IsNegativeInfinity(availableCellsWidth))
+        {
+            return;
+        }
+
+        _columnViewportWidth = Math.Max(0, availableCellsWidth);
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        if (double.IsPositiveInfinity(availableCellsWidth) ||
+            ColumnsInternal.VisibleStarColumnCount == 0 ||
+            AutoSizingColumns)
+        {
+            return;
+        }
+
+        double adjustment = availableCellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
+        if (MathUtils.IsZero(adjustment))
+        {
+            return;
+        }
+
+        AdjustColumnWidths(0, adjustment, false);
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+    }
+
+    internal void CompleteAutoSizing(double availableCellsWidth)
+    {
+        if (!AutoSizingColumns)
+        {
+            return;
+        }
+
+        AutoSizingColumns = false;
+
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
+        {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (column.IsVisible)
+            {
+                column.IsInitialDesiredWidthDetermined = true;
+            }
+        }
+
+        ResolveStarColumnWidths(availableCellsWidth);
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        ComputeScrollBarsLayout();
+        InvalidateColumnHeadersMeasure();
+        InvalidateRowsMeasure(true);
     }
 
     /// <summary>
@@ -451,7 +470,7 @@ public partial class DataGrid
                 return true;
             }
 
-            return DataConnection.GetPropertyIsReadOnly(path) || isReadOnly;
+            return isReadOnly;
         }
 
         return isReadOnly;
@@ -550,6 +569,8 @@ public partial class DataGrid
             EnsureRowsPresenterVisibility();
             InvalidateRowHeightEstimate();
         }
+
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     internal void HandleColumnCollectionChangedPreNotification(bool columnsGrew)
@@ -589,6 +610,7 @@ public partial class DataGrid
         // Invalidate layout
         CorrectColumnFrozenStates();
         EnsureHorizontalLayout();
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     internal void HandleColumnDisplayIndexChanging(DataGridColumn targetColumn, int newDisplayIndex)
@@ -769,10 +791,9 @@ public partial class DataGrid
         if (updatedColumn.IsVisible &&
             ColumnsInternal.VisibleColumnCount == 1 && CurrentColumnIndex == -1)
         {
-            Debug.Assert(SelectedIndex == DataConnection.IndexOf(SelectedItem));
-            if (SelectedIndex != -1)
+            if (CurrentSlot >= 0)
             {
-                SetAndSelectCurrentCell(updatedColumn.Index, SelectedIndex, true /*forceCurrentCellSelection*/);
+                SetAndSelectCurrentCell(updatedColumn.Index, CurrentSlot, true /*forceCurrentCellSelection*/);
             }
             else
             {
@@ -788,6 +809,8 @@ public partial class DataGrid
             row.Cells[updatedColumn.Index].IsVisible = updatedColumn.IsVisible;
             row.InvalidateCellsIndex();
         }
+
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     internal void HandleColumnVisibleStateChanging(DataGridColumn targetColumn)
@@ -813,6 +836,95 @@ public partial class DataGrid
                 SetCurrentCellCore(dataGridColumn.Index, CurrentSlot);
             }
         }
+    }
+
+    private void HandleCanUserFilterColumnsChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        foreach (var column in ColumnsInternal.GetDisplayedColumns())
+        {
+            if (column.HasHeaderCell)
+            {
+                column.HeaderCell.CanUserFilter = column.CanUserFilter;
+            }
+        }
+
+        RefreshPopupPinnedOpenFilterTarget();
+    }
+
+    private void HandlePopupPinnedOpenChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.GetNewValue<bool>())
+        {
+            RefreshPopupPinnedOpenFilterTarget();
+        }
+        else
+        {
+            UnpinPopupPinnedOpenFilterTarget();
+        }
+    }
+
+    internal void RefreshPopupPinnedOpenFilterTarget()
+    {
+        if (!IsPopupPinnedOpen ||
+            !IsEffectivelyEnabled ||
+            !IsEffectivelyVisible ||
+            !this.IsAttachedToVisualTree() ||
+            TopLevel.GetTopLevel(this) is null)
+        {
+            SuspendPopupPinnedOpenFilterTarget();
+            return;
+        }
+
+        DataGridColumn? targetColumn = null;
+        foreach (var column in ColumnsInternal.GetDisplayedColumns())
+        {
+            if (column is not DataGridFillerColumn &&
+                column.IsVisible &&
+                column.CanUserFilter &&
+                column.HasFilterItems &&
+                column.HasHeaderCell)
+            {
+                targetColumn = column;
+                break;
+            }
+        }
+
+        if (!ReferenceEquals(_popupPinnedOpenFilterColumn, targetColumn))
+        {
+            if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } previousColumn)
+            {
+                previousColumn.HeaderCell.CloseFilterPopupForLifecycle();
+                previousColumn.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, false);
+            }
+
+            _popupPinnedOpenFilterColumn = targetColumn;
+        }
+
+        if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } currentColumn)
+        {
+            currentColumn.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, true);
+        }
+    }
+
+    private void SuspendPopupPinnedOpenFilterTarget()
+    {
+        if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } column)
+        {
+            column.HeaderCell.CloseFilterPopupForLifecycle();
+            column.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, false);
+        }
+
+        _popupPinnedOpenFilterColumn = null;
+    }
+
+    private void UnpinPopupPinnedOpenFilterTarget()
+    {
+        if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } column)
+        {
+            column.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, false);
+        }
+
+        _popupPinnedOpenFilterColumn = null;
     }
 
     internal void HandleColumnWidthChanged(DataGridColumn updatedColumn)
@@ -1909,7 +2021,8 @@ public partial class DataGrid
         {
             dataGridColumn.HeaderCell.IsVisible = dataGridColumn.IsVisible;
             Debug.Assert(!_columnHeadersPresenter.Children.Contains(dataGridColumn.HeaderCell));
-            dataGridColumn.HeaderCell.CanUserSort       = dataGridColumn.CanUserSort;
+            dataGridColumn.HeaderCell.CanUserSort       = dataGridColumn.EffectiveCanUserSort;
+            dataGridColumn.HeaderCell.SupportedSortDirections = dataGridColumn.EffectiveSupportedSortDirections;
             dataGridColumn.HeaderCell.CanUserFilter     = dataGridColumn.CanUserFilter;
             dataGridColumn.HeaderCell.IsSorterTooltipVisible = dataGridColumn.IsSorterTooltipVisible;
             _columnHeadersPresenter.Children.Insert(dataGridColumn.DisplayIndexWithFiller, dataGridColumn.HeaderCell);
@@ -2226,8 +2339,7 @@ public partial class DataGrid
     {
         if (!_measured || (_autoGeneratingColumnOperationCount > 0))
         {
-            // Reading the DataType when we generate columns could cause the CollectionView to 
-            // raise a Reset if its Enumeration changed.  In that case, we don't want to generate again.
+            // Ignore nested requests while schema-driven auto-generation is already active.
             return;
         }
 
@@ -2248,207 +2360,69 @@ public partial class DataGrid
 
     private void GenerateColumnsFromProperties()
     {
-        // Autogenerated Columns are added at the end so the user columns appear first
-        var dataAccessors = DataConnection.DataAccessors;
-        if (dataAccessors.Count > 0)
+        if (ItemsSource is null)
         {
-            List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>> columnOrderPairs =
-                new List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>>(dataAccessors.Count);
-
-            foreach (var accessor in dataAccessors)
-            {
-                var metadata = GetDataMemberAccessorMetadata(accessor);
-                if (metadata.AutoGenerateField == false)
-                {
-                    continue;
-                }
-
-                var columnHeader = metadata.DisplayName ?? accessor.Path;
-                var columnOrder  = metadata.Order ?? DefaultColumnDisplayOrder;
-                var columnArgs   = GenerateColumn(accessor.ValueType, accessor.Path, columnHeader, this, accessor);
-                InsertColumnByOrder(columnOrderPairs, columnOrder, columnArgs);
-            }
-
-            foreach (KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs> columnOrderPair in columnOrderPairs)
-            {
-                AddGeneratedColumn(columnOrderPair.Value);
-            }
-
             return;
         }
 
-        var dataProperties = DataConnection.DataProperties;
-        if (dataProperties.Length > 0)
+        foreach (var field in ItemsSource.Schema.Fields)
         {
-            List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>> columnOrderPairs =
-                new List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>>(dataProperties.Length);
-
-            // Generate the columns
-            foreach (PropertyInfo propertyInfo in dataProperties)
+            if (field.DisplayAccessor is null)
             {
-                string columnHeader = propertyInfo.Name;
-                int    columnOrder  = DefaultColumnDisplayOrder;
-
-                // Check if DisplayAttribute is defined on the property
-                if (propertyInfo.IsDefined(typeof(DisplayAttribute), true))
-                {
-                    object[] attributes = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true);
-                    if (attributes.Length > 0)
-                    {
-                        DisplayAttribute? displayAttribute = attributes[0] as DisplayAttribute;
-                        Debug.Assert(displayAttribute != null);
-
-                        bool? autoGenerateField = displayAttribute.GetAutoGenerateField();
-                        if (autoGenerateField.HasValue && autoGenerateField.Value == false)
-                        {
-                            // Abort column generation because we aren't supposed to auto-generate this field
-                            continue;
-                        }
-
-                        string? header = displayAttribute.GetShortName();
-                        if (header != null)
-                        {
-                            columnHeader = header;
-                        }
-
-                        int? order = displayAttribute.GetOrder();
-                        if (order.HasValue)
-                        {
-                            columnOrder = order.Value;
-                        }
-                    }
-                }
-
-                DataGridAutoGeneratingColumnEventArgs columnArgs =
-                    GenerateColumn(propertyInfo.PropertyType, propertyInfo.Name, columnHeader, this, propertyInfo);
-                InsertColumnByOrder(columnOrderPairs, columnOrder, columnArgs);
+                continue;
             }
-
-            // Add the columns to the DataGrid in the correct order
-            foreach (KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs> columnOrderPair in columnOrderPairs)
-            {
-                AddGeneratedColumn(columnOrderPair.Value);
-            }
-        }
-        else if (DataConnection.DataIsPrimitive)
-        {
-            Debug.Assert(DataConnection.DataType != null);
-            AddGeneratedColumn(
-                GenerateColumn(DataConnection.DataType, string.Empty, DataConnection.DataType.Name, this));
+            var column = GetDataGridColumnFromType(field.ValueType, this);
+            column.Binding = CreateAutoGeneratedColumnBinding(field);
+            column.FieldId = field.Id;
+            column.Header = field.Id.Value;
+            column.IsAutoGenerated = true;
+            AddGeneratedColumn(new DataGridAutoGeneratingColumnEventArgs(
+                field.Id.Value,
+                field.ValueType,
+                column));
         }
     }
 
-    private static DataGridAutoGeneratingColumnEventArgs GenerateColumn(Type propertyType,
-                                                                        string propertyName,
-                                                                        string header,
-                                                                        DataGrid ownerGrid,
-                                                                        PropertyInfo? propertyInfo = null)
+    internal static BindingBase CreateAutoGeneratedColumnBinding(DataGridFieldSchema field)
     {
-        // Create a new DataBoundColumn for the Property
-        DataGridBoundColumn newColumn = GetDataGridColumnFromType(propertyType, ownerGrid);
-        newColumn.Binding         = CreateAutoGeneratedColumnBinding(propertyInfo);
-        newColumn.Header          = header;
-        newColumn.IsAutoGenerated = true;
-        return new DataGridAutoGeneratingColumnEventArgs(propertyName, propertyType, newColumn);
-    }
-
-    private static DataGridAutoGeneratingColumnEventArgs GenerateColumn(Type propertyType,
-                                                                        string propertyName,
-                                                                        string header,
-                                                                        DataGrid ownerGrid,
-                                                                        IDataMemberAccessor accessor)
-    {
-        DataGridBoundColumn newColumn = GetDataGridColumnFromType(propertyType, ownerGrid);
-        newColumn.Binding         = CreateAutoGeneratedColumnBinding(accessor);
-        newColumn.Header          = header;
-        newColumn.IsAutoGenerated = true;
-        return new DataGridAutoGeneratingColumnEventArgs(propertyName, propertyType, newColumn);
-    }
-
-    private static void InsertColumnByOrder(List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>> columnOrderPairs,
-                                            int columnOrder,
-                                            DataGridAutoGeneratingColumnEventArgs columnArgs)
-    {
-        int insertIndex = 0;
-        if (columnOrder == int.MaxValue)
-        {
-            insertIndex = columnOrderPairs.Count;
-        }
-        else
-        {
-            foreach (KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs> columnOrderPair in columnOrderPairs)
-            {
-                if (columnOrderPair.Key > columnOrder)
-                {
-                    break;
-                }
-
-                insertIndex++;
-            }
-        }
-
-        columnOrderPairs.Insert(insertIndex,
-            new KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>(columnOrder, columnArgs));
-    }
-
-    private static BindingBase CreateAutoGeneratedColumnBinding(PropertyInfo? propertyInfo)
-    {
-        var pathBuilder = new CompiledBindingPathBuilder();
-        if (propertyInfo is null)
-        {
-            pathBuilder.Self();
-        }
-        else
-        {
-            var property = new ClrPropertyInfo(
-                propertyInfo.Name,
-                propertyInfo.GetValue,
-                propertyInfo.CanWrite ? propertyInfo.SetValue : null,
-                propertyInfo.PropertyType);
-            pathBuilder.Property(property, CreateAutoGeneratedColumnPropertyAccessor);
-        }
-
-        return new CompiledBindingExtension(pathBuilder.Build());
-    }
-
-    private static BindingBase CreateAutoGeneratedColumnBinding(IDataMemberAccessor accessor)
-    {
+        ArgumentNullException.ThrowIfNull(field);
+        var accessor = field.DisplayAccessor ?? throw new ArgumentException(
+            "An auto-generated column requires a display accessor.", nameof(field));
         var pathBuilder = new CompiledBindingPathBuilder();
         var property = new ClrPropertyInfo(
-            accessor.Path,
+            field.Id.Value,
             accessor.GetValue,
             accessor.CanWrite ? accessor.SetValue : null,
-            accessor.ValueType);
-        pathBuilder.Property(property, CreateAutoGeneratedColumnPropertyAccessor);
-        return new CompiledBindingExtension(pathBuilder.Build());
-    }
-
-    private static DataMemberAccessorMetadata GetDataMemberAccessorMetadata(IDataMemberAccessor accessor)
-    {
-        return accessor is IDataMemberAccessorMetadataProvider provider
-            ? provider.Metadata
-            : DataMemberAccessorMetadata.Default;
-    }
-
-    private static IPropertyAccessor CreateAutoGeneratedColumnPropertyAccessor(
-        WeakReference<object?> target,
-        IPropertyInfo property)
-    {
-        return new AutoGeneratedColumnPropertyAccessor(target, property);
+            field.ValueType);
+        pathBuilder.Property(
+            property,
+            (target, propertyInfo) => new AutoGeneratedColumnPropertyAccessor(
+                target,
+                propertyInfo,
+                accessor.PropertyChangedName));
+        return new CompiledBindingExtension(pathBuilder.Build())
+        {
+            Mode = accessor.CanWrite ? BindingMode.TwoWay : BindingMode.OneWay
+        };
     }
 
     private sealed class AutoGeneratedColumnPropertyAccessor : IPropertyAccessor
     {
         private readonly WeakReference<object?> _target;
         private readonly IPropertyInfo _property;
+        private readonly string? _propertyChangedName;
         private Action<object?>? _listener;
         private INotifyPropertyChanged? _notifyPropertyChanged;
         private PropertyChangedEventHandler? _propertyChangedHandler;
 
-        public AutoGeneratedColumnPropertyAccessor(WeakReference<object?> target, IPropertyInfo property)
+        public AutoGeneratedColumnPropertyAccessor(
+            WeakReference<object?> target,
+            IPropertyInfo property,
+            string? propertyChangedName)
         {
-            _target   = target;
+            _target = target;
             _property = property;
+            _propertyChangedName = propertyChangedName;
         }
 
         public Type? PropertyType => _property.PropertyType;
@@ -2469,49 +2443,41 @@ public partial class DataGrid
 
         public void Subscribe(Action<object?> listener)
         {
-            if (_listener != null)
+            ArgumentNullException.ThrowIfNull(listener);
+            if (_listener is not null)
             {
-                throw new InvalidOperationException("A member accessor can be subscribed to only once.");
+                throw new InvalidOperationException("A field accessor can be subscribed to only once.");
             }
 
             _listener = listener;
             SendCurrentValue();
             if (_target.TryGetTarget(out var target) && target is INotifyPropertyChanged notifyPropertyChanged)
             {
-                _notifyPropertyChanged  = notifyPropertyChanged;
+                _notifyPropertyChanged = notifyPropertyChanged;
                 _propertyChangedHandler = HandlePropertyChanged;
-                _notifyPropertyChanged.PropertyChanged += _propertyChangedHandler;
+                notifyPropertyChanged.PropertyChanged += _propertyChangedHandler;
             }
         }
 
         public void Unsubscribe()
         {
-            if (_listener == null)
-            {
-                throw new InvalidOperationException("The member accessor was not subscribed.");
-            }
-
-            if (_notifyPropertyChanged != null && _propertyChangedHandler != null)
+            if (_notifyPropertyChanged is not null && _propertyChangedHandler is not null)
             {
                 _notifyPropertyChanged.PropertyChanged -= _propertyChangedHandler;
             }
 
-            _notifyPropertyChanged  = null;
+            _notifyPropertyChanged = null;
             _propertyChangedHandler = null;
-            _listener               = null;
+            _listener = null;
         }
 
-        public void Dispose()
-        {
-            if (_listener != null)
-            {
-                Unsubscribe();
-            }
-        }
+        public void Dispose() => Unsubscribe();
 
         private void HandlePropertyChanged(object? sender, PropertyChangedEventArgs args)
         {
-            if (string.IsNullOrEmpty(args.PropertyName) || args.PropertyName == _property.Name)
+            if (string.IsNullOrEmpty(args.PropertyName) ||
+                _propertyChangedName is null ||
+                args.PropertyName == _propertyChangedName)
             {
                 SendCurrentValue();
             }
@@ -2523,9 +2489,9 @@ public partial class DataGrid
             {
                 _listener?.Invoke(Value);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _listener?.Invoke(new BindingNotification(e, BindingErrorType.Error));
+                _listener?.Invoke(new BindingNotification(exception, BindingErrorType.Error));
             }
         }
     }

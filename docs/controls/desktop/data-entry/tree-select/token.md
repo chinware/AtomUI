@@ -1,10 +1,10 @@
 # TreeSelect Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.TreeSelectToken` 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。TreeSelect 整体架构见 [TreeSelect 桌面版架构设计](overview.md)，内部实现原理见 [TreeSelect 桌面版实现原理](implementation.md)，设计和契约变化记录见 [TreeSelect Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.TreeSelectToken` 的专属语义、分类、使用范围和兼容边界。共享输入表面分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。TreeSelect 整体架构见 [TreeSelect 桌面版架构设计](overview.md)，内部实现原理见 [TreeSelect 桌面版实现原理](implementation.md)，设计和契约变化记录见 [TreeSelect Changelog](changelog.md)。
 
 ## 1. 定位
 
-TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
+TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入表面的通用边框、圆角、effective status、focus ring、disabled 背景和 AddOn 结构来自 `InputControlFrameTheme`、SharedToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
 
 TreeSelectToken 不承载以下状态：
 
@@ -49,7 +49,7 @@ PopupFrame.MinWidth = max(EffectivePopupWidth, TreeSelectToken.MinPopupWidth)
 TreeSelectToken 直接影响 TreeSelect。TreeSelect 还复用以下 Token 系统：
 
 - `SelectToken`：popup padding、多选 tag 高度和输入内容 padding。
-- `AddOnDecoratedBoxToken`：输入壳体边框、圆角、状态和 CompactSpace。
+- `InputControlFrameTheme` / `SharedToken`：输入壳体边框、圆角、状态和 CompactSpace。
 - `PopupHostToken`：popup 圆角、阴影和 anchor margin。
 - `SharedToken`：字体、颜色、间距、控件高度和 motion。
 
@@ -68,7 +68,7 @@ Token 变更要求：
 
 - 不擅自重命名或删除现有 Token。
 - 不把实例数据、过滤状态、loading 状态、选择集合、popup 打开状态或 Form 状态迁移为 Token。
-- 不在 TreeSelectToken 中复制 SelectToken、AddOnDecoratedBoxToken 或 PopupHostToken 的通用职责。
+- 不在 TreeSelectToken 中复制 SelectToken、InputControlFrameTheme 或 PopupHostToken 的通用职责。
 - 不把 `DisplayPageSize`、`MaxCount`、`ShowCheckedStrategy` 或 `IsTreeCheckable` 变成 Token；它们是实例行为属性。
 - 需要破坏性变更时，必须先说明影响范围并获得授权。
 

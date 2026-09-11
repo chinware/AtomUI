@@ -6,14 +6,27 @@
               TargetType="atom:TextBox">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:TextBox">
-            <atom:PixelAlignedBorder
-                Name="InnerBoxDecorator"
+            <atom:InputControlFrame
+                Name="PART_InputControlFrame"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 Background="{TemplateBinding Background}"
-                BackgroundSizing="InnerBorderEdge">
+                StyleVariant="{TemplateBinding StyleVariant}"
+                SizeType="{TemplateBinding SizeType}"
+                Status="{TemplateBinding Status}"
+                FormStatus="{TemplateBinding FormStatus}"
+                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                IsInputFocusWithin="{TemplateBinding IsKeyboardFocusWithin}"
+                DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
+                CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
+                IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                 <DockPanel Name="ContentLayout" LastChildFill="True">
                     <StackPanel
                         Orientation="Horizontal"
@@ -84,7 +97,7 @@
                         </Panel>
                     </atom:ScrollViewer>
                 </DockPanel>
-            </atom:PixelAlignedBorder>
+            </atom:InputControlFrame>
         </ControlTemplate>
     </Setter>
 
@@ -92,8 +105,8 @@
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{atom:TextBoxTokenResource BorderColor}" />
-        <Setter Property="BorderThickness" Value="{atom:TextBoxTokenResource BorderThickness}" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="SelectionBrush" Value="{atom:SharedTokenResource SelectionBackground}" />
         <Setter Property="CaretBrush" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="SelectionForegroundBrush"
@@ -102,42 +115,42 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
-        <Setter Property="IsMotionEnabled" Value="{atom:TextBoxTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
         <Setter Property="ClipToBounds" Value="False" />
     
         <Style Selector="^[SizeType=Large]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
-            <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusLG}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
             <Setter Property="Padding" Value="{atom:TextBoxTokenResource ContentPaddingLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
-            <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadius}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="Padding" Value="{atom:TextBoxTokenResource ContentPadding}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
-            <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusSM}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="Padding" Value="{atom:TextBoxTokenResource ContentPaddingSM}" />
         </Style>
         <Style Selector="^[SizeType=Custom]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
-            <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadius}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
         </Style>
     
         <Style Selector="^[IsCustomFontSize=False]">
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
-                <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusLG}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
             </Style>
             <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
-                <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadius}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             </Style>
             <Style Selector="^[SizeType=Small]">
                 <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeSM}" />
-                <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusSM}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             </Style>
         </Style>
     
@@ -152,36 +165,18 @@
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
         </Style>
 
-        <Style Selector="^:pointerover /template/ atom|PixelAlignedBorder#InnerBoxDecorator">
+        <!-- TextBox keeps its control-local token scope while the shared frame
+             remains the single owner of input surface state. -->
+        <Style Selector="^ /template/ atom|InputControlFrame#PART_InputControlFrame[EffectiveStatus=Default][IsInnerBoxHover=True]">
             <Setter Property="BorderBrush"
-                    Value="{atom:TextBoxTokenResource HoverBorderColor}" />
+                    Value="{atom:TextBoxTokenResource ColorPrimaryHover}" />
         </Style>
-
-        <Style Selector="^:focus /template/ atom|PixelAlignedBorder#InnerBoxDecorator">
+        <Style Selector="^ /template/ atom|InputControlFrame#PART_InputControlFrame[EffectiveStatus=Default]:focus-within">
             <Setter Property="BorderBrush"
-                    Value="{atom:TextBoxTokenResource ActiveBorderColor}" />
+                    Value="{atom:TextBoxTokenResource ColorPrimary}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:TextBoxTokenResource ActiveShadow}" />
+                    Value="{atom:TextBoxTokenResource InputActiveShadow}" />
         </Style>
 
-        <Style Selector="^[IsMotionEnabled=True] /template/ atom|PixelAlignedBorder#InnerBoxDecorator">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                    <atom:BoxShadowsTransition Property="BoxShadow" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                </Transitions>
-            </Setter>
-        </Style>
-        
-        <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|PixelAlignedBorder#InnerBoxDecorator">
-                <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
-            </Style>
-            <Style Selector="^ /template/ atom|ScrollViewer#ScrollViewer">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            </Style>
-        </Style>
     </Style>
 </ControlTheme>

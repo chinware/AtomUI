@@ -14,23 +14,21 @@ Button.cs 保留公共属性、事件和接口实现入口；内部 helper 可�
 
 - `src/AtomUI.Desktop.Controls/Buttons/Button.cs`：Button public API、Avalonia 属性注册、effective state、伪类同步、CompactSpace / Form / Wave 接口实现。
 - `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 控件 Token 定义与派生。
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`：桌面 Button 模板、状态 selector 和主题变量映射。
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml`：Browser Button 模板投影，与桌面主题共享同一 public 状态语义。
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`、`DropdownButtonTheme.axaml`：DropdownButton 对 Button 图标尺寸和状态语义的桌面投影。
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`：DropdownButton 对同一公共尺寸语义的 Browser 投影。
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/IconButtonTheme.axaml`：Browser IconButton 默认主题叶子。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`：Button 跨平台模板、状态 selector 和主题变量映射。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`、`DropdownButtonTheme.axaml`：DropdownButton 对 Button 图标尺寸和状态语义的跨平台投影。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/IconButtonTheme.axaml`：IconButton 默认主题叶子。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.cs`：主题资源注册辅助。
 - `src/AtomUI.Controls/Buttons/ButtonPseudoClass.cs`：共享 Button 伪类定义。
 - `src/AtomUI.Controls/Buttons/Converters/ButtonIconVisibleConverter.cs`：icon 可见性转换辅助。
-- `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`、`SplitButton.cs`、`IconButton.cs`、`HyperLinkButton.cs`：Button 家族控件。
+- `src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs`、`src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs`、`src/AtomUI.Desktop.Controls/Buttons/IconButton.cs`、`src/AtomUI.Desktop.Controls/Buttons/HyperLinkButton.cs`：Button 家族控件。
 
 ## 3. 核心类职责
 
 `Button` 是状态归一中心。它同时承担 Avalonia Button 基类扩展、AtomUI 主题状态同步、CompactSpace 圆角和边框协同、Form 语义转发、Wave 几何和颜色感知。
 
 `ButtonToken` 只提供组件级语义值，不保存实例状态。主题变量由 Button internal `StyledProperty` 承载，使 AXAML
-selector 和动态资源可以消费状态结果。`Button.cs` 是颜色状态矩阵的唯一计算所有者；桌面和 Browser ControlTheme
-不得再按 `ButtonType`、Danger 或 Ghost 复制一套颜色计算。
+selector 和动态资源可以消费状态结果。`Button.cs` 是颜色状态矩阵的唯一计算所有者；Button 家族 ControlTheme
+不得按平台、`ButtonType`、Danger 或 Ghost 复制一套颜色计算。
 
 Button 家族控件复用 Button 的动作语义。派生控件可以替换模板或增加行为入口，但不得重新解释 `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、loading 和 disabled 语义。
 
@@ -50,7 +48,7 @@ EffectiveBorderThickness / EffectiveCornerRadius / WaveSpiritType
       ↓
 Pseudo-classes + internal StyledProperty theme variables
       ↓
-Desktop / Browser ControlTheme visual projection
+Shared ControlTheme visual projection
 ```
 
 `Color` 与 `Variant` 为 nullable，是兼容优先级的关键。归一逻辑必须能区分“用户未设置正交 API”和“用户显式设置默认值”。
@@ -67,7 +65,7 @@ ControlTheme 只绑定这些变量。
 
 Button 在静态构造中注册属性、伪类和主题关联，在实例构造中完成需要的状态订阅。模板应用时读取稳定 template part，并把状态同步到视觉节点。
 
-桌面和 Browser 的 Button、DropdownButton 模板都必须让 `PART_ButtonIcon` 与 `PART_LoadingIcon` 通过 `TemplateBinding` 绑定 `IconWidth`、`IconHeight`。图标尺寸不需要在 `OnApplyTemplate` 中查找 part 后手工同步，也不允许由 Gallery 或应用样式通过深层模板 selector 写入；Button 自身属性是尺寸数据流的唯一入口。
+Button 与 DropdownButton 模板都必须让 `PART_ButtonIcon` 与 `PART_LoadingIcon` 通过 `TemplateBinding` 绑定 `IconWidth`、`IconHeight`。图标尺寸不需要在 `OnApplyTemplate` 中查找 part 后手工同步，也不允许由 Gallery 或应用样式通过深层模板 selector 写入；Button 自身属性是尺寸数据流的唯一入口。
 
 维护顺序应遵守控件代码规范：
 
@@ -96,7 +94,7 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
 - API 归一：显式 `Color + Variant` 优先，其次兼容 API 映射，再回退到默认语义。
 - 颜色解析：`EffectiveColor` 选择 Default、Primary、Danger 或 preset palette；`EffectiveVariant` 再把该颜色组映射为
   Solid、Outlined、Dashed、Filled、Text 或 Link 的最终主题变量。
-- 视觉投影：桌面和 Browser ControlTheme 只消费 `VariantText*`、`VariantBackground*`、`VariantBorder*` 和
+- 视觉投影：Button 家族 ControlTheme 只消费 `VariantText*`、`VariantBackground*`、`VariantBorder*` 和
   `VariantShadow`，不重复解释 `ButtonType` 或语义色阶。
 - 尺寸归一：`Large`、`Middle`、`Small` 映射到对应 Token；`Custom` 以 `Middle` Token 作为 Style 默认值，Button 本地尺寸属性保持更高优先级。
 - 图标尺寸：SizeType selector 把 `IconWidth`、`IconHeight` 默认映射到 `IconSizeLG`、`IconSize`、`IconSizeSM`；Custom 使用 `IconSize`。只有 `:icononly:loading` selector 把这两个默认值切换到对应 `OnlyIconSize*`，非 loading 的 icon-only 用户图标仍使用普通 `IconSize*`。
@@ -129,7 +127,7 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - `Button.cs` 保留公共属性、事件、方法和接口入口；实现拆分只承载内部逻辑。
 - `Color + Variant` 优先级和旧 API 映射结果不变。
 - `ButtonType=Text` 保持 `Default + Text` 中性语义；`Primary + Text` 跟随当前主题 `ColorPrimary` 色阶。
-- 桌面和 Browser 主题必须共享 C# 计算出的最终颜色变量，不得各自维护兼容 API 颜色矩阵。
+- Button 家族主题必须共享 C# 计算出的最终颜色变量，不得按平台或兼容 API 复制颜色矩阵。
 - `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
 - 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
 - `IconWidthProperty`、`IconHeightProperty` 及其 CLR wrapper 是 Button 公共契约，属性变化必须参与 measure invalidation。
@@ -139,7 +137,8 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。
 - wave brush 不从 `CustomBackground`、模板背景或 hover 背景反推。
 - CompactSpace 圆角和边框折叠行为不变。
-- Browser 主题与桌面主题在同一 API 下语义一致。
+- 同一 Button 家族主题资产必须在 Native 与 Browser 支持宿主下保持同一 API 语义；不得维护
+  `Buttons/Themes/Browser/` 或 `BrowserButtonThemes.axaml` 形式的平台主题分叉。
 
 ## 10. 测试与验证
 
@@ -148,7 +147,7 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - API 归一：覆盖 `ButtonType`、`IsDanger`、`Color`、`Variant`、`IsGhost` 的组合。
 - 尺寸契约：覆盖 `SizeType=Large/Middle/Small/Custom`；验证 Custom 默认等同 Middle，并验证本地 `Height`、`Padding`、`FontSize`、`IconWidth`、`IconHeight` 覆盖 Theme 默认值。
 - 状态同步：覆盖 disabled、loading、hover、pressed、icon-only、circle、round。
-- 图标投影：覆盖桌面与 Browser Button、DropdownButton 模板的两个 part；验证普通 icon-only 仍使用 `IconSize*`、只有 icon-only loading 使用 `OnlyIconSize*`，并验证非正方形本地尺寸同时作用于用户 icon 和 loading icon。
+- 图标投影：覆盖 Button、DropdownButton 模板的两个 part，并验证 Browser 注册使用同一套共享主题资产；验证普通 icon-only 仍使用 `IconSize*`、只有 icon-only loading 使用 `OnlyIconSize*`，并验证非正方形本地尺寸同时作用于用户 icon 和 loading icon。
 - Wave：覆盖危险态、预设色、custom background 与 disabled / loading 播放条件。
 - Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 和 custom background 视觉；Text
   必须覆盖 Default、Primary、Danger 的 normal、hover、pressed 以及主题 Token 动态刷新。

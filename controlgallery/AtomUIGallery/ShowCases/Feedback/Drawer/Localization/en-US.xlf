@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DrawerShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic drawer.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="CustomPlacementDescription">
+      <segment>
+        <source>The Drawer can appear from any edge of the screen.</source>
+      </segment>
+    </unit>
+    <unit id="CustomPlacementTitle">
+      <segment>
+        <source>Custom Placement</source>
+      </segment>
+    </unit>
+    <unit id="ExtraAndFooterDescription">
+      <segment>
+        <source>Set the header extra area and footer area.</source>
+      </segment>
+    </unit>
+    <unit id="ExtraAndFooterTitle">
+      <segment>
+        <source>Extra and Footer</source>
+      </segment>
+    </unit>
+    <unit id="FormInDrawerDescription">
+      <segment>
+        <source>Use a form inside a drawer to complete create tasks without leaving the current page.</source>
+      </segment>
+    </unit>
+    <unit id="FormInDrawerTitle">
+      <segment>
+        <source>Form in Drawer</source>
+      </segment>
+    </unit>
+    <unit id="MultiLevelDescription">
+      <segment>
+        <source>Open a new drawer on top of an existing drawer to handle multi branch tasks.</source>
+      </segment>
+    </unit>
+    <unit id="MultiLevelTitle">
+      <segment>
+        <source>Multi-level drawer</source>
+      </segment>
+    </unit>
+    <unit id="NoMaskDescription">
+      <segment>
+        <source>Without a mask.</source>
+      </segment>
+    </unit>
+    <unit id="NoMaskTitle">
+      <segment>
+        <source>No Mask</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCancel">
+      <segment>
+        <source>Cancel</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDelete">
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentEdit">
+      <segment>
+        <source>Edit</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentNewAccount">
+      <segment>
+        <source>New account</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOk">
+      <segment>
+        <source>Ok</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpen">
+      <segment>
+        <source>Open</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenCustomSizeN400px">
+      <segment>
+        <source>Open Custom Size (400px)</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenCustomSizeN50">
+      <segment>
+        <source>Open Custom Size (50%)</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenDefaultSizeN378px">
+      <segment>
+        <source>Open Default Size (378px)</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenLargeSizeN736px">
+      <segment>
+        <source>Open Large Size (736px)</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSubmit">
+      <segment>
+        <source>Submit</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTwoLevelDrawer">
+      <segment>
+        <source>Two-level drawer</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUpload">
+      <segment>
+        <source>Upload</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJackMa">
+      <segment>
+        <source>Jack Ma</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMaomaoZhou">
+      <segment>
+        <source>Maomao Zhou</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPrivate">
+      <segment>
+        <source>private</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPublic">
+      <segment>
+        <source>public</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTomLiu">
+      <segment>
+        <source>Tom Liu</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXiaoxiaoFu">
+      <segment>
+        <source>Xiaoxiao Fu</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextApprover">
+      <segment>
+        <source>Approver</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDateTime">
+      <segment>
+        <source>DateTime</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDescription">
+      <segment>
+        <source>Description</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextName">
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextOwner">
+      <segment>
+        <source>Owner</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextType">
+      <segment>
+        <source>Type</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUrl">
+      <segment>
+        <source>Url</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseChooseApprover">
+      <segment>
+        <source>Please choose the approver</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseChooseType">
+      <segment>
+        <source>Please choose the type</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseEnterUrl">
+      <segment>
+        <source>Please enter url</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseEnterUrlDescription">
+      <segment>
+        <source>Please enter url description</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseEnterUserName">
+      <segment>
+        <source>Please enter user name</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelectOwner">
+      <segment>
+        <source>Please select an owner</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartDate">
+      <segment>
+        <source>Start date</source>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndDate">
+      <segment>
+        <source>End date</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRenderInThis">
+      <segment>
+        <source>Render in this</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSomeContents">
+      <segment>
+        <source>Some contents...</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleBasicDrawer">
+      <segment>
+        <source>Basic Drawer</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleCreateNewAccount">
+      <segment>
+        <source>Create a new account</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleFirstLevelDrawer">
+      <segment>
+        <source>First-level Drawer</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleTwoLevelDrawer">
+      <segment>
+        <source>Two-level Drawer</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Drawer opens from the edge of the window or a local container, keeping users in the current workflow while exposing secondary actions, forms, or details.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A slide-out panel for contextual tasks.</source>
+      </segment>
+    </unit>
+    <unit id="PresetSizeDescription">
+      <segment>
+        <source>The default width (or height) of Drawer is 378px, and there is a preset large size 736px.</source>
+      </segment>
+    </unit>
+    <unit id="PresetSizeTitle">
+      <segment>
+        <source>Preset size</source>
+      </segment>
+    </unit>
+    <unit id="RenderInCurrentAreaDescription">
+      <segment>
+        <source>Render in current area.</source>
+      </segment>
+    </unit>
+    <unit id="RenderInCurrentAreaTitle">
+      <segment>
+        <source>Render in current area</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

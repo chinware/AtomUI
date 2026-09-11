@@ -2,6 +2,39 @@
 
 本文档记录 Modal 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-21
+
+- API
+  - Change the `Dialog.HorizontalStartupLocation` and `Dialog.VerticalStartupLocation` metadata defaults from `Custom` to `Center`, matching `DialogOptions` and the static Dialog APIs.
+- Behavior
+  - Directly instantiated Dialogs now open centered by default; explicit anchors, `Custom` placement and offsets keep their existing semantics.
+  - Keep Overlay structural-minimum updates initialization-aware so template layout cannot clamp the unresolved `(0, 0)` Surface position and convert it into startup offsets before centered placement.
+- Docs
+  - Document the shared centered startup default and the explicit `Custom` offset behavior.
+  - Extend the Dialog popup family matrix with shared surface ownership: Direct Popup and specialized Popup-bearing controls inherit the primitive's null surface default, while explicit non-null brushes opt into a host-owned surface.
+  - Preserve the Windows/macOS tested and Linux X11/Wayland untested evidence boundary for Popup surface behavior.
+- Implementation
+  - Remove the obsolete standalone manual regression application and its source-contract assertions; retain the Popup Theme default assertion and automated Dialog Popup coverage.
+- Validation
+  - Record the Dialog content Popup real-window manual regression as passed on Ubuntu 26.04 GNOME Wayland; Linux X11 and Drawer on Linux remain untested.
+
+## 2026-08-20
+
+- Design
+  - Keep Overlay Dialog presentation in the owning Window `TopLevel`: `DialogOverlayLayer` uses Avalonia `OverlayLayer`, while content popups use the higher `PopupOverlayLayer` with the normal `LightDismissOverlayLayer` between them.
+  - Reserve `WindowDrawnDecorations` overlay for chrome visuals and manage modal chrome coverage through a Window-owned reference-counted suppression lease shared safely by overlapping Dialog and Drawer presentations.
+- API
+  - Add `Dialog.IsMaskClosable` (default `true`) controlling whether pressing the Overlay modal mask requests a close; `MessageBox` inherits it and `MessageBoxOptions` exposes the same passthrough.
+  - Define the two close-entry switches as orthogonal: `IsClosable` gates the header close button, `IsMaskClosable` gates the mask outside-press entry.
+- Behavior
+  - With `IsMaskClosable=false`, a mask press is swallowed by the topmost Overlay presenter without producing any close request, and never enters the `Closing`/`BeforeCloseAsync` pipeline.
+  - Dialog content popups retain their Window `TopLevel`, open without crashes, remain clickable and preserve normal outside-click light-dismiss behavior under managed/drawn window chrome.
+- Docs
+  - Add the Modal content popup layering design document and link it from the public design, implementation and compatibility sections.
+  - Document the mask close-entry contract in the Dialog contract groups, behavior model, compatibility invariants and maintenance invariants.
+  - Expand popup verification from the ComboBox trigger to the complete Popup/Flyout/ToolTip/ContextMenu inventory and control-family matrix.
+  - Define the canonical Popup family matrix, with Windows and macOS tested and Linux X11/Wayland explicitly untested.
+
 ## 2026-07-22
 
 - Design
@@ -37,7 +70,7 @@
 - Performance
   - Move Overlay Dialog drag positioning from layout-affecting Margin writes to one reusable render-only Matrix translation while retaining `OffsetX` / `OffsetY` as persistence state.
 - Docs
-  - Document capability-driven host selection, visual-layer clipping ownership, lifecycle cleanup, AOT reflection boundary and Windows/Linux/macOS regression coverage.
+  - Document capability-driven host selection, visual-layer clipping ownership, lifecycle cleanup, AOT reflection boundary and cross-platform regression requirements.
 
 ## 2026-07-18
 

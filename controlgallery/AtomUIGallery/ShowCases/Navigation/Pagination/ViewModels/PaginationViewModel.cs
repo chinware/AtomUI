@@ -31,7 +31,7 @@ public class PaginationViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public string BoundCurrentPageText => BoundCurrentPage.ToString(CultureInfo.CurrentCulture);
+    public string BoundCurrentPageText => BoundCurrentPage.ToString(GalleryLocalization.GetFormattingCulture());
 
     public int BoundPageSize
     {
@@ -48,7 +48,7 @@ public class PaginationViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public string BoundPageSizeText => BoundPageSize.ToString(CultureInfo.CurrentCulture);
+    public string BoundPageSizeText => BoundPageSize.ToString(GalleryLocalization.GetFormattingCulture());
 
     public ReactiveCommand<Unit, Unit> SetBoundPaginationCommand { get; }
 

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind">
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage, set data source of autocomplete with options property.</source>
+        <target state="translated">Básico uso, definir dados source de autocomplete com opções propriedade.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">Básico Uso</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomOptionRenderingDescription">
+      <segment>
+        <source>Use OptionTemplate to render rich option content with multiple fields, badges, and multi-line layout.</source>
+        <target state="translated">Usar OptionTemplate para renderizar rich opção conteúdo com múltiplos campos, badges, e multi-linha layout.</target>
+      </segment>
+    </unit>
+    <unit id="CustomOptionRenderingTitle">
+      <segment>
+        <source>Custom option rendering</source>
+        <target state="translated">Personalizado opção rendering</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeClearButtonDescription">
+      <segment>
+        <source>Customize clear button.</source>
+        <target state="translated">Personalizar limpar botão.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeClearButtonTitle">
+      <segment>
+        <source>Customize clear button</source>
+        <target state="translated">Personalizar limpar botão</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedDescription">
+      <segment>
+        <source>You could set custom Option label.</source>
+        <target state="translated">Você could definir personalizado Opção rótulo.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedTitle">
+      <segment>
+        <source>Customized</source>
+        <target state="translated">Customized</target>
+      </segment>
+    </unit>
+    <unit id="LookupPatternsUncertainCategoryDescription">
+      <segment>
+        <source>Demonstration of Lookup Patterns: Uncertain Category.</source>
+        <target state="translated">Demonstration de Lookup Patterns: Uncertain Category.</target>
+      </segment>
+    </unit>
+    <unit id="LookupPatternsUncertainCategoryTitle">
+      <segment>
+        <source>Lookup-Patterns - Uncertain Category</source>
+        <target state="translated">Lookup-Patterns - Uncertain Category</target>
+      </segment>
+    </unit>
+    <unit id="NonCaseSensitiveDescription">
+      <segment>
+        <source>A non-case-sensitive AutoComplete.</source>
+        <target state="translated">A non-case-sensitive AutoComplete.</target>
+      </segment>
+    </unit>
+    <unit id="NonCaseSensitiveTitle">
+      <segment>
+        <source>Non-case-sensitive AutoComplete</source>
+        <target state="translated">Non-case-sensitive AutoComplete</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+        <target state="translated">SizeType: Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+        <target state="translated">SizeType: Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+        <target state="translated">SizeType: Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+        <target state="translated">SizeType: Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">Sem borda</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustomizedClearIcon">
+      <segment>
+        <source>Customized clear icon</source>
+        <target state="translated">Customized limpar ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">Preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputHere">
+      <segment>
+        <source>input here</source>
+        <target state="translated">entrada here</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+        <target state="translated">Outline</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTryAOrB">
+      <segment>
+        <source>try 'a' or 'b'</source>
+        <target state="translated">tente 'a' ou 'b'</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTryToTypeB">
+      <segment>
+        <source>try to type `b`</source>
+        <target state="translated">tente para tipo `b`</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnclearable">
+      <segment>
+        <source>UnClearable</source>
+        <target state="translated">UnClearable</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">Underlined</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResults">
+      <segment>
+        <source>results</source>
+        <target state="translated">resultados</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>AutoComplete combines text input with candidate filtering, async loading, custom option rendering, status feedback and specialized search or text area variants.</source>
+        <target state="translated">AutoComplete combines texto entrada com candidate filtering, async carregando, personalizado opção rendering, status feedback e specialized pesquisa ou texto area variantes.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Type ahead and select suggested values from local or asynchronous options.</source>
+        <target state="translated">Tipo ahead e selecionar suggested values de local ou asynchronous opções.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>AutoComplete supports large, middle, small, and Custom sizes with local height overrides.</source>
+        <target state="translated">AutoComplete oferece suporte grande, centro, pequeno, e Personalizado tamanhos com local altura overrides.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>SizeType</source>
+        <target state="translated">SizeType</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to AutoComplete with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para AutoComplete com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaAutoCompletionDescription">
+      <segment>
+        <source>You can use the TextArea type for autocomplete.</source>
+        <target state="translated">Você pode usar o TextArea tipo para autocomplete.</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaAutoCompletionTitle">
+      <segment>
+        <source>TextArea type auto-completion</source>
+        <target state="translated">TextArea tipo auto-completion</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>There are outlined, filled, borderless, and underlined variants to choose from.</source>
+        <target state="translated">Há são contornado, preenchido, sem borda, e underlined variantes para escolher de.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

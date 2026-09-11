@@ -365,20 +365,21 @@ public class ExpanderBehaviorTests
 
             expander.IsExpanded = true;
             Dispatcher.UIThread.RunJobs();
-            motionActor.MotionTransform.ShouldNotBeNull();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
 
             expander.IsExpanded = false;
             Dispatcher.UIThread.RunJobs();
-            motionActor.MotionTransform.ShouldNotBeNull();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
 
             expander.IsExpanded = true;
             Dispatcher.UIThread.RunJobs();
             WaitForLayoutCondition(() => motionActor.IsVisible &&
-                                         motionActor.MotionTransform is null &&
-                                         motionActor.Transitions is null);
+                                         !motionActor.IsAnimating(Visual.OpacityProperty) &&
+                                         motionActor.Opacity == 1);
 
             expander.IsExpanded.ShouldBeTrue();
             motionActor.IsVisible.ShouldBe(expander.IsExpanded);
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
             motionActor.MotionTransform.ShouldBeNull();
             motionActor.Transitions.ShouldBeNull();
             contentBorderChangeCount.ShouldBe(0);
@@ -408,7 +409,7 @@ public class ExpanderBehaviorTests
     }
 
     [Fact]
-    public void Template_Reapply_Clears_Old_Content_Motion_Actor_Values()
+    public void Template_Reapply_Cancels_Old_Content_Motion_And_Preserves_User_Local_Values()
     {
         var expander = new TestExpander
         {
@@ -425,8 +426,7 @@ public class ExpanderBehaviorTests
             Dispatcher.UIThread.RunJobs();
 
             var oldMotionActor = GetContentMotionActor(expander);
-            oldMotionActor.MotionTransform.ShouldNotBeNull();
-            oldMotionActor.Transitions.ShouldNotBeNull();
+            oldMotionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
             oldMotionActor.MotionTransformOperations = TransformOperations.Identity;
             oldMotionActor.Height = 42;
             oldMotionActor.MotionTransformOperations.ShouldNotBeNull();
@@ -436,18 +436,25 @@ public class ExpanderBehaviorTests
 
             expander.ApplyTemplateParts(new IconButton(), new LayoutAwareMotionActor());
 
+            oldMotionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+            oldMotionActor.IsVisible.ShouldBeTrue();
+            oldMotionActor.Opacity.ShouldBe(1);
             oldMotionActor.MotionTransform.ShouldBeNull();
-            oldMotionActor.MotionTransformOperations.ShouldBeNull();
+            oldMotionActor.MotionTransformOperations.ShouldBe(TransformOperations.Identity);
             oldMotionActor.Transitions.ShouldBeNull();
-            oldMotionActor.Height.ShouldBe(double.NaN);
+            oldMotionActor.Height.ShouldBe(42);
 
             Thread.Sleep(expander.MotionDuration + TimeSpan.FromMilliseconds(50));
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
             Dispatcher.UIThread.RunJobs();
 
+            oldMotionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+            oldMotionActor.IsVisible.ShouldBeTrue();
+            oldMotionActor.Opacity.ShouldBe(1);
             oldMotionActor.MotionTransform.ShouldBeNull();
-            oldMotionActor.MotionTransformOperations.ShouldBeNull();
+            oldMotionActor.MotionTransformOperations.ShouldBe(TransformOperations.Identity);
             oldMotionActor.Transitions.ShouldBeNull();
-            oldMotionActor.Height.ShouldBe(double.NaN);
+            oldMotionActor.Height.ShouldBe(42);
             lateCompletionCount.ShouldBe(0);
         }
         finally
@@ -457,7 +464,7 @@ public class ExpanderBehaviorTests
     }
 
     [Fact]
-    public void Detach_Clears_Active_Content_Motion_Actor_Values()
+    public void Detach_Cancels_Active_Content_Motion_And_Preserves_User_Local_Values()
     {
         var expander = new AtomUIExpander
         {
@@ -474,8 +481,7 @@ public class ExpanderBehaviorTests
             Dispatcher.UIThread.RunJobs();
 
             var motionActor = GetContentMotionActor(expander);
-            motionActor.MotionTransform.ShouldNotBeNull();
-            motionActor.Transitions.ShouldNotBeNull();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
             motionActor.MotionTransformOperations = TransformOperations.Identity;
             motionActor.Height = 42;
             motionActor.MotionTransformOperations.ShouldNotBeNull();
@@ -486,18 +492,25 @@ public class ExpanderBehaviorTests
             window.Content = null;
             Dispatcher.UIThread.RunJobs();
 
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+            motionActor.IsVisible.ShouldBeTrue();
+            motionActor.Opacity.ShouldBe(1);
             motionActor.MotionTransform.ShouldBeNull();
-            motionActor.MotionTransformOperations.ShouldBeNull();
+            motionActor.MotionTransformOperations.ShouldBe(TransformOperations.Identity);
             motionActor.Transitions.ShouldBeNull();
-            motionActor.Height.ShouldBe(double.NaN);
+            motionActor.Height.ShouldBe(42);
 
             Thread.Sleep(expander.MotionDuration + TimeSpan.FromMilliseconds(50));
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
             Dispatcher.UIThread.RunJobs();
 
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+            motionActor.IsVisible.ShouldBeTrue();
+            motionActor.Opacity.ShouldBe(1);
             motionActor.MotionTransform.ShouldBeNull();
-            motionActor.MotionTransformOperations.ShouldBeNull();
+            motionActor.MotionTransformOperations.ShouldBe(TransformOperations.Identity);
             motionActor.Transitions.ShouldBeNull();
-            motionActor.Height.ShouldBe(double.NaN);
+            motionActor.Height.ShouldBe(42);
             lateCompletionCount.ShouldBe(0);
         }
         finally
@@ -527,7 +540,7 @@ public class ExpanderBehaviorTests
             expander.IsExpanded = false;
             Dispatcher.UIThread.RunJobs();
             motionActor.IsVisible.ShouldBeTrue();
-            motionActor.MotionTransform.ShouldNotBeNull();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
 
             window.Content = null;
             Dispatcher.UIThread.RunJobs();
@@ -544,6 +557,7 @@ public class ExpanderBehaviorTests
             motionActor.Opacity.ShouldBe(0);
 
             Thread.Sleep(expander.MotionDuration + TimeSpan.FromMilliseconds(50));
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
             Dispatcher.UIThread.RunJobs();
 
             motionActor.IsVisible.ShouldBe(expander.IsExpanded);
@@ -699,6 +713,8 @@ public class ExpanderBehaviorTests
         while (DateTime.UtcNow < deadline)
         {
             Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
+            Dispatcher.UIThread.RunJobs();
             if (condition())
             {
                 return;
@@ -707,7 +723,9 @@ public class ExpanderBehaviorTests
             Thread.Sleep(10);
         }
 
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick();
         Dispatcher.UIThread.RunJobs();
+        condition().ShouldBeTrue("The expected layout or animation state did not settle before the timeout.");
     }
 
     private static T? FindTemplatePart<T>(AtomUIExpander expander, string name)

@@ -22,34 +22,64 @@ public class PopupShadowTests
             Child     = new Border()
         };
 
-        var shadowRenderer = GetShadowRenderer(container);
+        var shadowRenderer = GetFrameRenderer(container);
 
         shadowRenderer.ShouldNotBeNull();
         shadowRenderer!.ClipToBounds.ShouldBeFalse();
     }
 
     [Fact]
-    public void ShadowsAwareContainer_Shadow_Renderer_Does_Not_Draw_Own_Surface()
+    public void Popup_Exposes_SurfaceBackground_As_A_Public_Styled_Property()
+    {
+        Popup.SurfaceBackgroundProperty.OwnerType.ShouldBe(typeof(Popup));
+        typeof(Popup).GetProperty(nameof(Popup.SurfaceBackground)).ShouldNotBeNull();
+        new Popup().SurfaceBackground.ShouldBeNull();
+    }
+
+    [Fact]
+    public void ShadowsAwareContainer_Frame_Renderer_Draws_Configured_Surface()
     {
         var container = new ShadowsAwareContainer
         {
-            BoxShadow = BoxShadows.Parse("0 8 24 0 #66000000"),
-            Child     = new Border()
+            BoxShadow         = BoxShadows.Parse("0 8 24 0 #66000000"),
+            SurfaceBackground = Brushes.White,
+            Child             = new Border()
         };
 
-        var shadowRenderer = GetShadowRenderer(container);
+        var frameRenderer = GetFrameRenderer(container);
 
-        shadowRenderer.ShouldNotBeNull();
-        (shadowRenderer is Border).ShouldBeFalse();
-        shadowRenderer!.GetType()
-                       .GetProperty("Background", BindingFlags.Instance | BindingFlags.Public)
-                       .ShouldBeNull();
+        frameRenderer.ShouldNotBeNull();
+        frameRenderer!.GetType()
+                      .GetProperty("SurfaceBackground", BindingFlags.Instance | BindingFlags.Public)
+                      .ShouldNotBeNull()!
+                      .GetValue(frameRenderer)
+                      .ShouldBe(Brushes.White);
     }
 
-    private static Control? GetShadowRenderer(ShadowsAwareContainer container)
+    [Fact]
+    public void ShadowsAwareContainer_Null_Surface_Preserves_Transparent_Frame_Fill()
+    {
+        var container = new ShadowsAwareContainer
+        {
+            BoxShadow         = BoxShadows.Parse("0 8 24 0 #66000000"),
+            SurfaceBackground = null,
+            Child             = new Border()
+        };
+
+        var frameRenderer = GetFrameRenderer(container);
+
+        frameRenderer.ShouldNotBeNull();
+        frameRenderer!.GetType()
+                      .GetProperty("SurfaceBackground", BindingFlags.Instance | BindingFlags.Public)
+                      .ShouldNotBeNull()!
+                      .GetValue(frameRenderer)
+                      .ShouldBeNull();
+    }
+
+    private static Control? GetFrameRenderer(ShadowsAwareContainer container)
     {
         var field = typeof(ShadowsAwareContainer).GetField(
-            "_shadowsRenderer",
+            "_frameRenderer",
             BindingFlags.Instance | BindingFlags.NonPublic);
         field.ShouldNotBeNull();
         return (Control?)field!.GetValue(container);

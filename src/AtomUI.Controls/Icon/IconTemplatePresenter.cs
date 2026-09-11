@@ -58,10 +58,20 @@ public class IconTemplatePresenter : Control
 
     private void ConfigureIcon(PathIcon pathIcon)
     {
-        pathIcon[!WidthProperty]            = this[!WidthProperty];
-        pathIcon[!HeightProperty]           = this[!HeightProperty];
-        pathIcon[!Icon.StrokeBrushProperty] = this[!IconBrushProperty];
-        pathIcon[!Icon.FillBrushProperty]   = this[!IconBrushProperty];
+        pathIcon[!WidthProperty]  = this[!WidthProperty];
+        pathIcon[!HeightProperty] = this[!HeightProperty];
+        if (pathIcon is Icon icon)
+        {
+            icon[!Icon.StrokeBrushProperty]          = this[!IconBrushProperty];
+            icon[!Icon.FillBrushProperty]            = this[!IconBrushProperty];
+            icon[!Icon.SecondaryStrokeBrushProperty] = this[!IconBrushProperty];
+            icon[!Icon.SecondaryFillBrushProperty]   = this[!IconBrushProperty];
+            icon[!Icon.FallbackBrushProperty]        = this[!IconBrushProperty];
+        }
+        else
+        {
+            pathIcon[!PathIcon.ForegroundProperty] = this[!IconBrushProperty];
+        }
         VisualChildren.Add(pathIcon);
         LogicalChildren.Add(pathIcon);
     }

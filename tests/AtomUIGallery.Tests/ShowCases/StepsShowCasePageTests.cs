@@ -43,10 +43,10 @@ public class StepsShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:StepsShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(15);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(15);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(15);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(15);
+        CountShowCaseItemElements(source).ShouldBe(16);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(16);
         source.ShouldContain("StepsShowCaseLangResource BasicTitle");
         source.ShouldContain("StepsShowCaseLangResource SwitchStepTitle");
         source.ShouldContain("StepsShowCaseLangResource P2TextCurrent");
@@ -89,7 +89,7 @@ public class StepsShowCasePageTests
         pageSource.ShouldContain("ItemRailBackground=\"{atom:SharedTokenResource ColorTextDisabled}\"");
         pageSource.ShouldNotContain("inline-primary");
         pageSource.ShouldNotContain("/template/");
-        CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(15);
+        CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(16);
 
         codeBehindSource.ShouldContain("HandleCurrentChangeRequested");
         codeBehindSource.ShouldContain("viewModel.Current = args.Current");
@@ -127,6 +127,7 @@ public class StepsShowCasePageTests
     [Fact]
     public void Steps_ShowCase_Interactive_Content_Is_Not_Empty_For_Each_Controlled_Step()
     {
+        AvaloniaTestApp.EnsureInitialized();
         var viewModel = new StepsViewModel(null!);
 
         viewModel.Current = 0;

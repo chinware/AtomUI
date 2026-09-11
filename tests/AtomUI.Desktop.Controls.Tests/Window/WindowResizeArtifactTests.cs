@@ -285,6 +285,18 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Wayland_Input_Region_Destroys_The_Protocol_Object_Before_Disposing_The_Local_Proxy()
+    {
+        var nativeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Native/Linux/WaylandWindowUtils.cs"));
+
+        nativeSource.ShouldContain("region.Destroy();");
+        nativeSource.ShouldContain("region.Dispose();");
+        nativeSource.IndexOf("region.Destroy();", StringComparison.Ordinal)
+                    .ShouldBeLessThan(nativeSource.IndexOf("region.Dispose();", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Browser_Wasm_Excludes_Wayland_Input_Region_Protocol_Assemblies()
     {
         var browserProject = File.ReadAllText(GetRepoFile(
@@ -598,7 +610,7 @@ public class WindowResizeArtifactTests
         var contentPanel = visualLayerManager.Elements(av + "Panel").Single();
 
         contentPanel.Attribute("Margin").ShouldNotBeNull().Value.ShouldBe(
-            "{Binding $parent[Window].WindowDecorationMargin}");
+            "{Binding $parent[atom:Window].EffectiveContentFrameMargin}");
         contentPanel.Attribute("ClipToBounds").ShouldBeNull();
 
         var contentFrameLayer = contentPanel.Elements(av + "ContentPresenter")
@@ -621,7 +633,8 @@ public class WindowResizeArtifactTests
     [Theory]
     [InlineData(OsType.Windows)]
     [InlineData(OsType.Linux)]
-    public void Csd_Window_Removes_The_Drawn_TitleBar_When_TitleBar_Visibility_Is_Disabled(OsType osType)
+    [InlineData(OsType.macOS)]
+    public void Csd_Window_Hides_The_Managed_TitleBar_Without_Dropping_Full_Window_Decorations(OsType osType)
     {
         AvaloniaTestApp.EnsureInitialized();
         var window = new AtomUI.Desktop.Controls.Window();
@@ -630,13 +643,24 @@ public class WindowResizeArtifactTests
         window.IsTitleBarVisible = false;
         window.PreparePlatformChromeInitialShowLayout();
 
-        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+        window.WindowDecorations.ShouldBe(WindowDecorations.Full);
 
         window.IsTitleBarVisible = true;
         window.WindowDecorations.ShouldBe(WindowDecorations.Full);
 
         window.IsTitleBarVisible = false;
-        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+        window.WindowDecorations.ShouldBe(WindowDecorations.Full);
+    }
+
+    [Fact]
+    public void Drawn_Decorations_Combine_Platform_Title_Bar_Capability_With_AtomUI_Visibility()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
+
+        AssertTitleBarVisibilityContract(document, "PART_TitleBar");
+        AssertTitleBarVisibilityContract(document, "PART_TitleBarPresenter");
+        AssertTitleBarVisibilityContract(document, "WindowTitleBarShadowBackground");
     }
 
     [Fact]
@@ -675,8 +699,67 @@ public class WindowResizeArtifactTests
                 "change.Property == WindowDecorationsProperty",
                 StringSplitOptions.None).Length - 1)
             .ShouldBe(2);
-        relayoutBlock.ShouldContain("Dispatcher.Post");
-        relayoutBlock.ShouldContain("Avalonia.Threading.DispatcherPriority.Loaded");
+        relayoutBlock.ShouldContain("QueueMacOsWindowConfiguration");
+        relayoutBlock.ShouldContain("forceFollowUp: true");
+        windowSource.ShouldContain("DispatcherPriority.Render");
+    }
+
+    [Fact]
+    public void MacOs_TitleBar_Height_Changes_Defer_Traffic_Light_Layout_Until_Render()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var relayoutBlockStart = windowSource.IndexOf(
+            "if (change.Property == WindowStateProperty ||",
+            StringComparison.Ordinal);
+        var relayoutBlockEnd = windowSource.IndexOf(
+            "if (change.Property == ExtendClientAreaTitleBarHeightHintProperty ||",
+            relayoutBlockStart + 1,
+            StringComparison.Ordinal);
+        var relayoutBlock = windowSource[relayoutBlockStart..relayoutBlockEnd];
+
+        relayoutBlock.ShouldContain("change.Property == ExtendClientAreaTitleBarHeightHintProperty");
+        relayoutBlock.ShouldContain("QueueMacOsWindowConfiguration");
+        windowSource.ShouldContain("DispatcherPriority.Render");
+        windowSource.ShouldContain("ApplyQueuedMacOsWindowConfiguration");
+    }
+
+    [Fact]
+    public void MacOs_Window_Sharing_Transitions_Recheck_Native_Button_Frame()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var nativeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.MacOS.cs"));
+        var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.Interop.cs"));
+
+        windowSource.ShouldNotContain("DispatcherTimer");
+        windowSource.ShouldContain("ObserveStandardWindowButtonChanges");
+        windowSource.ShouldContain("_macOsWindowButtonObserver");
+        windowSource.ShouldContain("StopMacOsWindowButtonObserver");
+        nativeSource.ShouldContain("IsStandardWindowButtonsVisible");
+        nativeSource.ShouldContain("ObserveStandardWindowButtonChanges");
+        nativeSource.ShouldContain("NSNotificationCenter");
+        nativeSource.ShouldContain("GetStandardWindowButtonFrame");
+        interopSource.ShouldContain("isHidden");
+        interopSource.ShouldContain("postsFrameChangedNotifications");
+        interopSource.ShouldContain("NSViewFrameDidChangeNotification");
+        nativeSource.ShouldContain("observeValueForKeyPath");
+        nativeSource.ShouldContain("HiddenKeyPath");
+        interopSource.ShouldContain("removeObserver:forKeyPath:");
+        windowSource.ShouldContain("_macOsCachedButtonY");
+    }
+
+    [Fact]
+    public void MacOs_Window_Button_Observer_Releases_All_Native_Resources()
+    {
+        var nativeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.MacOS.cs"));
+        var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.Interop.cs"));
+
+        interopSource.ShouldContain("dlclose");
+        nativeSource.ShouldContain("_hiddenKeyPath");
+        nativeSource.ShouldNotContain("private static readonly IntPtr HiddenKeyPath");
+        nativeSource.ShouldContain("RemoveNativeRegistrations");
+        nativeSource.ShouldContain("_keyValueObserversRegistered");
+        nativeSource.ShouldContain("_frameNotificationStateCaptured");
+        nativeSource.ShouldContain("WindowUtilsInterop.ReleaseSelector");
     }
 
     [Fact]
@@ -987,13 +1070,14 @@ public class WindowResizeArtifactTests
         windowSource.ShouldContain("SetCurrentValue(MinHeightProperty, minimumHeight);");
         windowSource.ShouldContain("PointerCaptureLost");
         windowSource.ShouldContain("ResetTitleBarMoveDragState();");
-        windowSource.ShouldContain("EnsureWindowsCsdFrameThemeSubscription();");
         windowSource.ShouldContain("ApplyCurrentWindowsCsdFrameTheme();");
-        windowSource.ShouldContain("themeManager.ThemeChanged += handler;");
-        windowSource.ShouldContain("TryResolveCurrentWindowDarkMode()");
-        windowSource.ShouldContain("args.State.Appearance == ThemeAppearance.Dark");
+        windowSource.ShouldContain("change.Property == ActualThemeVariantProperty");
+        windowSource.ShouldContain("(PlatformThemeVariant?)ActualThemeVariant");
+        windowSource.ShouldContain("platformThemeVariant == PlatformThemeVariant.Dark");
         windowSource.ShouldContain("private void ApplyWindowsCsdFrameTheme(bool isDarkMode)");
-        windowSource.ShouldNotContain("change.Property == ActualThemeVariantProperty");
+        windowSource.ShouldNotContain("EnsureWindowsCsdFrameThemeSubscription");
+        windowSource.ShouldNotContain("themeManager.ThemeChanged += handler;");
+        windowSource.ShouldNotContain("TryResolveCurrentWindowDarkMode");
         windowSource.ShouldNotContain("_isDragging");
         windowSource.ShouldNotContain("IsWindowsDrawnDecorationsEnabledProperty");
         windowSource.ShouldNotContain("WindowsInactiveFramePolicy.Apply(this)");
@@ -1065,6 +1149,47 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Hidden_Csd_TitleBar_Removes_Only_The_Drawn_TitleBar_From_Content_Margin()
+    {
+        var decorationMargin = new Thickness(3, 44, 5, 7);
+
+        AtomUI.Desktop.Controls.Window.CalculateEffectiveContentFrameMargin(
+                decorationMargin,
+                isCsdEnabled: true,
+                isTitleBarVisible: false,
+                drawnTitleBarHeight: 40)
+            .ShouldBe(new Thickness(3, 4, 5, 7));
+
+        AtomUI.Desktop.Controls.Window.CalculateEffectiveContentFrameMargin(
+                decorationMargin,
+                isCsdEnabled: true,
+                isTitleBarVisible: false,
+                drawnTitleBarHeight: 80)
+            .ShouldBe(new Thickness(3, 0, 5, 7));
+    }
+
+    [Theory]
+    [InlineData(false, false, 40)]
+    [InlineData(true, true, 40)]
+    [InlineData(true, false, 0)]
+    [InlineData(true, false, -1)]
+    [InlineData(true, false, double.NaN)]
+    public void Content_Margin_Remains_Unchanged_Without_A_Valid_Hidden_Csd_TitleBar(
+        bool isCsdEnabled,
+        bool isTitleBarVisible,
+        double drawnTitleBarHeight)
+    {
+        var decorationMargin = new Thickness(3, 44, 5, 7);
+
+        AtomUI.Desktop.Controls.Window.CalculateEffectiveContentFrameMargin(
+                decorationMargin,
+                isCsdEnabled,
+                isTitleBarVisible,
+                drawnTitleBarHeight)
+            .ShouldBe(decorationMargin);
+    }
+
+    [Fact]
     [SupportedOSPlatform("windows")]
     public void Windows_Csd_Window_Rejects_A_Minimum_Height_Below_Its_Safe_Content_Surface()
     {
@@ -1091,32 +1216,38 @@ public class WindowResizeArtifactTests
     [Fact]
     public void Windows_Caption_Buttons_Suppress_Stale_Hover_After_Window_State_Transitions()
     {
-        var captionSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
+        var buttonSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowsCaptionButton.cs"));
+        var captionThemeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
         var themeSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml"));
 
-        captionSource.ShouldContain("if (stateChanged)");
-        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualStates();");
-        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_fullScreenButton);");
-        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_maximizeButton);");
-        captionSource.ShouldContain("button is WindowsCaptionButton windowsCaptionButton");
+        buttonSource.ShouldContain("HostWindowStateProperty.Changed.AddClassHandler<WindowsCaptionButton>");
+        buttonSource.ShouldContain("button.InvalidatePointerOverVisualState()");
+        captionThemeSource.ShouldContain("HostWindowState=\"{TemplateBinding HostWindowState}\"");
         themeSource.ShouldContain("^[IsPointerOverSuppressed=False]:pointerover");
     }
 
     [Fact]
-    public void AtomUI_Defaults_Use_Redirection_Surface_For_Windows_Live_Resize()
+    public void AtomUI_Defaults_Use_Ordered_Windows_Composition_Fallbacks_For_Live_Resize()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));
 
         source.ShouldContain(".With(new Win32PlatformOptions");
         source.ShouldContain("Win32RenderingMode.AngleEgl");
         source.ShouldContain("Win32RenderingMode.Software");
-        source.ShouldContain("CompositionMode = [Win32CompositionMode.RedirectionSurface]");
+        source.ShouldContain("Win32CompositionMode.WinUIComposition");
+        source.ShouldContain("Win32CompositionMode.DirectComposition");
+        source.ShouldContain("Win32CompositionMode.LowLatencyDxgiSwapChain");
+        source.ShouldContain("Win32CompositionMode.RedirectionSurface");
+        source.IndexOf("Win32CompositionMode.WinUIComposition", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Win32CompositionMode.DirectComposition", StringComparison.Ordinal));
+        source.IndexOf("Win32CompositionMode.DirectComposition", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Win32CompositionMode.LowLatencyDxgiSwapChain", StringComparison.Ordinal));
+        source.IndexOf("Win32CompositionMode.LowLatencyDxgiSwapChain", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Win32CompositionMode.RedirectionSurface", StringComparison.Ordinal));
         source.ShouldNotContain("WindowsAppBuilderDefaults");
-        source.ShouldNotContain("Win32CompositionMode.WinUIComposition");
-        source.ShouldNotContain("Win32CompositionMode.DirectComposition");
-        source.ShouldNotContain("Win32CompositionMode.LowLatencyDxgiSwapChain");
         source.ShouldNotContain("ShouldRenderOnUIThread = true");
     }
 
@@ -1166,5 +1297,27 @@ public class WindowResizeArtifactTests
     {
         var physicalValue = value * renderScaling;
         return Math.Abs(physicalValue - Math.Round(physicalValue)) < 0.000001;
+    }
+
+    private static void AssertTitleBarVisibilityContract(XDocument document, string elementName)
+    {
+        var element = document.Descendants()
+                              .Single(candidate =>
+                                  (string?)candidate.Attribute("Name") == elementName ||
+                                  candidate.Name.LocalName == elementName);
+        var multiBinding = element.Elements()
+                                  .Single(property => property.Name.LocalName.EndsWith(".IsVisible"))
+                                  .Elements()
+                                  .Single(binding => binding.Name.LocalName == "MultiBinding");
+
+        multiBinding.Attribute("Converter").ShouldNotBeNull().Value.ShouldBe("{x:Static BoolConverters.And}");
+        var bindings = multiBinding.Elements()
+                                   .Where(binding => binding.Name.LocalName == "Binding")
+                                   .ToArray();
+        bindings.ShouldContain(binding =>
+            (string?)binding.Attribute("RelativeSource") == "{RelativeSource TemplatedParent}" &&
+            (string?)binding.Attribute("Path") == "HasTitleBar");
+        bindings.ShouldContain(binding =>
+            (string?)binding.Attribute("Path") == "$parent[atom:Window].IsTitleBarVisible");
     }
 }

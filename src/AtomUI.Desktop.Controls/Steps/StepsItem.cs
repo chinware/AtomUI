@@ -62,6 +62,9 @@ public class StepsItem : HeaderedContentControl
     internal static readonly StyledProperty<StepsType> TypeProperty =
         Steps.TypeProperty.AddOwner<StepsItem>();
 
+    internal static readonly StyledProperty<StepsPanelVariant> PanelVariantProperty =
+        Steps.PanelVariantProperty.AddOwner<StepsItem>();
+
     internal static readonly StyledProperty<Orientation> OrientationProperty =
         Steps.OrientationProperty.AddOwner<StepsItem>();
 
@@ -153,6 +156,12 @@ public class StepsItem : HeaderedContentControl
     {
         get => GetValue(TypeProperty);
         set => SetValue(TypeProperty, value);
+    }
+
+    internal StepsPanelVariant PanelVariant
+    {
+        get => GetValue(PanelVariantProperty);
+        set => SetValue(PanelVariantProperty, value);
     }
 
     internal Orientation Orientation
@@ -301,7 +310,12 @@ public class StepsItem : HeaderedContentControl
     {
         PressedMixin.Attach<StepsItem>();
         FocusableProperty.OverrideDefaultValue<StepsItem>(false);
-        AffectsMeasure<StepsItem>(TypeProperty, OrientationProperty, TitlePlacementProperty, SizeTypeProperty);
+        AffectsMeasure<StepsItem>(
+            TypeProperty,
+            PanelVariantProperty,
+            OrientationProperty,
+            TitlePlacementProperty,
+            SizeTypeProperty);
     }
 
     internal void AttachToOwner(Steps owner, int index)
@@ -369,6 +383,7 @@ public class StepsItem : HeaderedContentControl
 
         if (change.Property == PercentProperty ||
             change.Property == TypeProperty ||
+            change.Property == PanelVariantProperty ||
             change.Property == IconProperty ||
             change.Property == IsCurrentProperty ||
             change.Property == EffectiveStatusProperty)

@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Media;
@@ -17,6 +18,9 @@ internal class ShadowsAwareContainer : Decorator
     
     public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
         Border.CornerRadiusProperty.AddOwner<ShadowsAwareContainer>();
+
+    internal static readonly StyledProperty<IBrush?> SurfaceBackgroundProperty =
+        Popup.SurfaceBackgroundProperty.AddOwner<ShadowsAwareContainer>();
     
     public static readonly StyledProperty<bool> IsArrowVisibleProperty =
         ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<ShadowsAwareContainer>();
@@ -40,6 +44,12 @@ internal class ShadowsAwareContainer : Decorator
     {
         get => GetValue(CornerRadiusProperty);
         set => SetValue(CornerRadiusProperty, value);
+    }
+
+    internal IBrush? SurfaceBackground
+    {
+        get => GetValue(SurfaceBackgroundProperty);
+        set => SetValue(SurfaceBackgroundProperty, value);
     }
     
     public bool IsArrowVisible
@@ -82,11 +92,12 @@ internal class ShadowsAwareContainer : Decorator
     }
     #endregion
     
-    private BoxShadowRenderer? _shadowsRenderer;
-    private IDisposable? _shadowsRenderDisposable;
+    private PopupFrameRenderer? _frameRenderer;
+    private CompositeDisposable? _frameRenderBindings;
     private IDisposable? _contentPresenterChildSubscription;
 
     private bool HasBoxShadow => BoxShadow.Count != 0;
+    private bool HasSurfaceBackground => SurfaceBackground is not null;
     
     static ShadowsAwareContainer()
     {
@@ -96,7 +107,14 @@ internal class ShadowsAwareContainer : Decorator
         {
             if (x.HasBoxShadow)
             {
-                x.EnsureShadowsRenderer();
+                x.EnsureFrameRenderer();
+            }
+        });
+        SurfaceBackgroundProperty.Changed.AddClassHandler<ShadowsAwareContainer>((x, _) =>
+        {
+            if (x.HasSurfaceBackground)
+            {
+                x.EnsureFrameRenderer();
             }
         });
         AffectsMeasure<ShadowsAwareContainer>(
@@ -115,16 +133,20 @@ internal class ShadowsAwareContainer : Decorator
         var popup = this.FindLogicalAncestorOfType<Popup>();
         if (popup != null)
         {
-            _shadowsRenderDisposable?.Dispose();
-            _shadowsRenderDisposable = BindUtils.RelayBind(popup, Popup.FrameShadowProperty, this, BoxShadowProperty);
+            _frameRenderBindings?.Dispose();
+            _frameRenderBindings = new CompositeDisposable(2)
+            {
+                BindUtils.RelayBind(popup, Popup.FrameShadowProperty, this, BoxShadowProperty),
+                BindUtils.RelayBind(popup, Popup.SurfaceBackgroundProperty, this, SurfaceBackgroundProperty)
+            };
         }
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        _shadowsRenderDisposable?.Dispose();
-        _shadowsRenderDisposable = null;
+        _frameRenderBindings?.Dispose();
+        _frameRenderBindings = null;
         _contentPresenterChildSubscription?.Dispose();
         _contentPresenterChildSubscription = null;
     }
@@ -183,7 +205,7 @@ internal class ShadowsAwareContainer : Decorator
             finalSize = base.ArrangeOverride(finalSize);
         }
         
-        if (HasBoxShadow && _shadowsRenderer != null)
+        if (_frameRenderer != null)
         {
             var shadowBounds = Child?.Bounds ?? default;
             if (IsArrowVisible)
@@ -208,16 +230,16 @@ internal class ShadowsAwareContainer : Decorator
                     shadowBounds = shadowBounds.WithWidth(shadowBounds.Width - ArrowIndicatorLayoutBounds.Width);
                 }
             }
-            _shadowsRenderer.Arrange(shadowBounds);
+            _frameRenderer.Arrange(shadowBounds);
         }
         return finalSize;
     }
 
     private void ChildChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        if (HasBoxShadow)
+        if (HasBoxShadow || HasSurfaceBackground)
         {
-            EnsureShadowsRenderer();
+            EnsureFrameRenderer();
         }
         _contentPresenterChildSubscription?.Dispose();
         _contentPresenterChildSubscription = null;
@@ -267,19 +289,20 @@ internal class ShadowsAwareContainer : Decorator
         return new Thickness(left, top, right, bottom);
     }
 
-    private void EnsureShadowsRenderer()
+    private void EnsureFrameRenderer()
     {
-        if (_shadowsRenderer != null)
+        if (_frameRenderer != null)
         {
             return;
         }
 
-        _shadowsRenderer = new BoxShadowRenderer();
-        _shadowsRenderer[!BoxShadowRenderer.BoxShadowProperty]    = this[!BoxShadowProperty];
-        _shadowsRenderer[!BoxShadowRenderer.CornerRadiusProperty] = this[!CornerRadiusProperty];
-        ((ISetLogicalParent)_shadowsRenderer).SetParent(this);
-        VisualChildren.Insert(0, _shadowsRenderer);
-        LogicalChildren.Insert(0, _shadowsRenderer);
+        _frameRenderer = new PopupFrameRenderer();
+        _frameRenderer[!PopupFrameRenderer.BoxShadowProperty]         = this[!BoxShadowProperty];
+        _frameRenderer[!PopupFrameRenderer.CornerRadiusProperty]      = this[!CornerRadiusProperty];
+        _frameRenderer[!PopupFrameRenderer.SurfaceBackgroundProperty] = this[!SurfaceBackgroundProperty];
+        ((ISetLogicalParent)_frameRenderer).SetParent(this);
+        VisualChildren.Insert(0, _frameRenderer);
+        LogicalChildren.Insert(0, _frameRenderer);
     }
 
     private void PostConfigureShadowsInfo(Control? child)
@@ -313,13 +336,16 @@ internal class ShadowsAwareContainer : Decorator
         }
     }
 
-    private sealed class BoxShadowRenderer : Control
+    private sealed class PopupFrameRenderer : Control
     {
         public static readonly StyledProperty<BoxShadows> BoxShadowProperty =
-            AvaloniaProperty.Register<BoxShadowRenderer, BoxShadows>(nameof(BoxShadow));
+            AvaloniaProperty.Register<PopupFrameRenderer, BoxShadows>(nameof(BoxShadow));
 
         public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
-            AvaloniaProperty.Register<BoxShadowRenderer, CornerRadius>(nameof(CornerRadius));
+            AvaloniaProperty.Register<PopupFrameRenderer, CornerRadius>(nameof(CornerRadius));
+
+        public static readonly StyledProperty<IBrush?> SurfaceBackgroundProperty =
+            AvaloniaProperty.Register<PopupFrameRenderer, IBrush?>(nameof(SurfaceBackground));
 
         public BoxShadows BoxShadow
         {
@@ -333,16 +359,23 @@ internal class ShadowsAwareContainer : Decorator
             set => SetValue(CornerRadiusProperty, value);
         }
 
-        static BoxShadowRenderer()
+        public IBrush? SurfaceBackground
         {
-            ClipToBoundsProperty.OverrideDefaultValue<BoxShadowRenderer>(false);
-            AffectsRender<BoxShadowRenderer>(BoxShadowProperty, CornerRadiusProperty);
+            get => GetValue(SurfaceBackgroundProperty);
+            set => SetValue(SurfaceBackgroundProperty, value);
+        }
+
+        static PopupFrameRenderer()
+        {
+            ClipToBoundsProperty.OverrideDefaultValue<PopupFrameRenderer>(false);
+            AffectsRender<PopupFrameRenderer>(BoxShadowProperty, CornerRadiusProperty, SurfaceBackgroundProperty);
         }
 
         public override void Render(DrawingContext context)
         {
             var bounds = new Rect(Bounds.Size);
-            if (BoxShadow.Count == 0 || bounds.Width <= 0 || bounds.Height <= 0)
+            if ((BoxShadow.Count == 0 && SurfaceBackground is null) ||
+                bounds.Width <= 0 || bounds.Height <= 0)
             {
                 return;
             }
@@ -354,7 +387,8 @@ internal class ShadowsAwareContainer : Decorator
                 cornerRadius.TopRight,
                 cornerRadius.BottomRight,
                 cornerRadius.BottomLeft);
-            context.DrawRectangle(Brushes.Transparent, null, roundedRect, BoxShadow);
+            var fill = SurfaceBackground ?? Brushes.Transparent;
+            context.DrawRectangle(fill, null, roundedRect, BoxShadow);
         }
     }
 }

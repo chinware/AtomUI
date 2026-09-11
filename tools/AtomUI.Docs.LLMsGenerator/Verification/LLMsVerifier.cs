@@ -34,12 +34,12 @@ public static partial class LLMsVerifier
             diagnostics.Add($"{model.ControlName}: token.md is absent and overview.md does not explain token absence or reuse.");
         }
 
-        if (model.OutputIndexPath != $"docs/AI/llms/controls/{model.ControlName}/index-cn.md")
+        if (model.OutputIndexPath != $"docs/AI/generated/llms/controls/{model.ControlName}/index-cn.md")
         {
             diagnostics.Add($"{model.ControlName}: generated output path is not controls/<control>/index-cn.md.");
         }
 
-        if (model.OutputSemanticPath != $"docs/AI/llms/controls/{model.ControlName}/semantic-cn.md")
+        if (model.OutputSemanticPath != $"docs/AI/generated/llms/controls/{model.ControlName}/semantic-cn.md")
         {
             diagnostics.Add($"{model.ControlName}: generated output path is not controls/<control>/semantic-cn.md.");
         }
@@ -104,7 +104,7 @@ public static partial class LLMsVerifier
             }
         }
 
-        var outputRoot = Path.Combine(repositoryRoot, "docs/AI/llms");
+        var outputRoot = Path.Combine(repositoryRoot, "docs/AI/generated/llms");
         if (Directory.Exists(outputRoot))
         {
             foreach (var path in Directory.GetFiles(outputRoot, "*", SearchOption.AllDirectories))
@@ -122,8 +122,8 @@ public static partial class LLMsVerifier
 
     private static bool IsGeneratedLLMsPath(string path)
     {
-        return path is "docs/AI/llms/llms.txt" or "docs/AI/llms/llms-full-cn.txt" or "docs/AI/llms/llms-semantic-cn.md" ||
-               path.StartsWith("docs/AI/llms/controls/", StringComparison.Ordinal);
+        return path is "docs/AI/generated/llms/llms.txt" or "docs/AI/generated/llms/llms-full-cn.txt" or "docs/AI/generated/llms/llms-semantic-cn.md" ||
+               path.StartsWith("docs/AI/generated/llms/controls/", StringComparison.Ordinal);
     }
 
     [GeneratedRegex(@"-[a-z][a-z]/(?:index|semantic)-[a-z][a-z]\.md", RegexOptions.IgnoreCase)]

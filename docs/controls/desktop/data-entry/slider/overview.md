@@ -1,6 +1,6 @@
 # Slider 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Slider` 桌面版的设计定位、公共契约、状态模型、视觉主题关系和维护边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，多 handle 专项模型见 [Slider 多 Handle 设计](multi-handle-design.md)，内部实现原理见 [Slider 桌面版实现原理](implementation.md)，Token 语义见 [Slider Token 设计](token.md)，变化记录见 [Slider Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Slider` 桌面版的设计定位、公共契约、状态模型、视觉主题关系和维护边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，多 handle 专项模型见 [Slider 多 Handle 设计](multi-handle-design.md)，内部实现原理见 [Slider 桌面版实现原理](implementation.md)，Token 语义见 [Slider Token 设计](token.md)，变化记录见 [Slider Changelog](changelog.md)。
 
 ## 1. 控件定位
 

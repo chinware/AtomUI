@@ -6,6 +6,6 @@ internal class BrowserDesktopControlThemesProvider : ControlThemesProvider
 {
     public BrowserDesktopControlThemesProvider()
     {
-        Id = "AtomUI.Desktop.Controls";
+        Id = ThemeManagerBuilderExtensions.PackageId;
     }
 }

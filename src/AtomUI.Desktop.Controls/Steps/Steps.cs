@@ -31,6 +31,9 @@ public class Steps : ItemsControl,
     public static readonly StyledProperty<StepsType> TypeProperty =
         AvaloniaProperty.Register<Steps, StepsType>(nameof(Type));
 
+    public static readonly StyledProperty<StepsPanelVariant> PanelVariantProperty =
+        AvaloniaProperty.Register<Steps, StepsPanelVariant>(nameof(PanelVariant), StepsPanelVariant.Filled);
+
     public static readonly StyledProperty<Orientation> OrientationProperty =
         ScrollBar.OrientationProperty.AddOwner<Steps>();
 
@@ -91,6 +94,12 @@ public class Steps : ItemsControl,
     {
         get => GetValue(TypeProperty);
         set => SetValue(TypeProperty, value);
+    }
+
+    public StepsPanelVariant PanelVariant
+    {
+        get => GetValue(PanelVariantProperty);
+        set => SetValue(PanelVariantProperty, value);
     }
 
     public Orientation Orientation
@@ -164,7 +173,13 @@ public class Steps : ItemsControl,
     static Steps()
     {
         OrientationProperty.OverrideDefaultValue<Steps>(Orientation.Horizontal);
-        AffectsMeasure<Steps>(TypeProperty, OrientationProperty, TitlePlacementProperty, SizeTypeProperty, OffsetProperty);
+        AffectsMeasure<Steps>(
+            TypeProperty,
+            PanelVariantProperty,
+            OrientationProperty,
+            TitlePlacementProperty,
+            SizeTypeProperty,
+            OffsetProperty);
     }
 
     public Steps()
@@ -203,6 +218,7 @@ public class Steps : ItemsControl,
         }
 
         stepsItem[!StepsItem.TypeProperty] = this[!TypeProperty];
+        stepsItem[!StepsItem.PanelVariantProperty] = this[!PanelVariantProperty];
         stepsItem[!StepsItem.OrientationProperty] = this[!OrientationProperty];
         stepsItem[!StepsItem.TitlePlacementProperty] = this[!TitlePlacementProperty];
         stepsItem[!StepsItem.SizeTypeProperty] = this[!SizeTypeProperty];
@@ -273,6 +289,11 @@ public class Steps : ItemsControl,
         if (change.Property == OrientationProperty)
         {
             UpdatePseudoClasses();
+        }
+
+        if (change.Property == TypeProperty || change.Property == PanelVariantProperty)
+        {
+            RefreshRealizedItems();
         }
 
         if (change.Property == CurrentProperty ||
@@ -410,6 +431,7 @@ public class Steps : ItemsControl,
     private static void ClearOwnerBindings(StepsItem item)
     {
         item.ClearValue(StepsItem.TypeProperty);
+        item.ClearValue(StepsItem.PanelVariantProperty);
         item.ClearValue(StepsItem.OrientationProperty);
         item.ClearValue(StepsItem.TitlePlacementProperty);
         item.ClearValue(StepsItem.SizeTypeProperty);

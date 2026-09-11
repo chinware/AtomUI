@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class MenuToken : AbstractControlDesignToken
+internal sealed class MenuToken : AbstractControlDesignToken
 {
 
     public MenuToken()

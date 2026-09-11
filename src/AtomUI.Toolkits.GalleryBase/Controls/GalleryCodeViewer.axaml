@@ -18,6 +18,7 @@
     </UserControl.Resources>
     <UserControl.Styles>
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Simple/AvaloniaEdit.xaml" />
+        <StyleInclude Source="avares://AtomUI.Toolkits.GalleryBase/Controls/GalleryCodeViewerSearchPanelTheme.axaml" />
     </UserControl.Styles>
     <avaloniaEdit:TextEditor
         Name="PART_Editor"

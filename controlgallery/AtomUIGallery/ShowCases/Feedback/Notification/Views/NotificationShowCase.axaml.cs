@@ -222,6 +222,6 @@ public partial class NotificationShowCase : GalleryReactiveUserControl<Notificat
 
     private static string Lang(NotificationShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 }

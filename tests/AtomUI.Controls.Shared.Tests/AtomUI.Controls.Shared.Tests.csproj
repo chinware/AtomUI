@@ -20,4 +20,5 @@
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all" />
     </ItemGroup>
+
 </Project>

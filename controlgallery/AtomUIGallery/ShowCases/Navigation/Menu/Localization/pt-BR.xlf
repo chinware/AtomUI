@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MenuShowCaseLangResourceKind">
+    <unit id="AccordionMenuDescription">
+      <segment>
+        <source>In accordion mode, only one top-level submenu can be expanded at a time. Opening another top-level submenu automatically collapses the previous one.</source>
+        <target state="translated">No modo acordeão, apenas um submenu de nível superior pode ficar expandido por vez. Ao abrir outro submenu de nível superior, o anterior é recolhido automaticamente.</target>
+      </segment>
+    </unit>
+    <unit id="AccordionMenuTitle">
+      <segment>
+        <source>Accordion mode</source>
+        <target state="translated">Modo acordeão</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+        <target state="translated">Simplest Uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="ContextMenuDescription">
+      <segment>
+        <source>Right click to bring up the context menu.</source>
+        <target state="translated">Direita clique para bring up o context menu.</target>
+      </segment>
+    </unit>
+    <unit id="ContextMenuItemsSourceDescription">
+      <segment>
+        <source>Right click to bring up the context menu.</source>
+        <target state="translated">Direita clique para bring up o context menu.</target>
+      </segment>
+    </unit>
+    <unit id="ContextMenuItemsSourceTitle">
+      <segment>
+        <source>Context menu, Generate MenuItem by ItemsSource</source>
+        <target state="translated">Context menu, Generate MenuItem por ItemsSource</target>
+      </segment>
+    </unit>
+    <unit id="ContextMenuTitle">
+      <segment>
+        <source>Context menu</source>
+        <target state="translated">Context menu</target>
+      </segment>
+    </unit>
+    <unit id="DefaultOpenedPathsDescription">
+      <segment>
+        <source>You can open or select the path by default.</source>
+        <target state="translated">Você pode abrir ou selecionar o path por padrão.</target>
+      </segment>
+    </unit>
+    <unit id="DefaultOpenedPathsTitle">
+      <segment>
+        <source>Default Opened paths</source>
+        <target state="translated">Padrão Aberto paths</target>
+      </segment>
+    </unit>
+    <unit id="IconAndSubmenuDescription">
+      <segment>
+        <source>With icon and submenu.</source>
+        <target state="translated">Com ícone e submenu.</target>
+      </segment>
+    </unit>
+    <unit id="IconAndSubmenuTitle">
+      <segment>
+        <source>Icon and submenu</source>
+        <target state="translated">Ícone e submenu</target>
+      </segment>
+    </unit>
+    <unit id="InlineCollapsedMenuDescription">
+      <segment>
+        <source>Inline menus can be collapsed and expanded.</source>
+        <target state="translated">Embutido menus pode ser collapsed e expanded.</target>
+      </segment>
+    </unit>
+    <unit id="InlineCollapsedMenuTitle">
+      <segment>
+        <source>Inline collapsed menu</source>
+        <target state="translated">Embutido collapsed menu</target>
+      </segment>
+    </unit>
+    <unit id="InlineMenuDescription">
+      <segment>
+        <source>Vertical menu with inline submenus.</source>
+        <target state="translated">Vertical menu com embutido submenus.</target>
+      </segment>
+    </unit>
+    <unit id="InlineMenuTitle">
+      <segment>
+        <source>Inline menu</source>
+        <target state="translated">Embutido menu</target>
+      </segment>
+    </unit>
+    <unit id="InlineNavMenuItemsSourceDescription">
+      <segment>
+        <source>Generate inline NavMenu structure based on ItemsSource and template.</source>
+        <target state="translated">Generate embutido NavMenu structure based em ItemsSource e template.</target>
+      </segment>
+    </unit>
+    <unit id="InlineNavMenuItemsSourceTitle">
+      <segment>
+        <source>Inline NavMenu by ItemsSource</source>
+        <target state="translated">Embutido NavMenu por ItemsSource</target>
+      </segment>
+    </unit>
+    <unit id="MenuFlyoutDescription">
+      <segment>
+        <source>Right Click to show Context Flyout</source>
+        <target state="translated">Direita Clique para mostrar Context Flyout</target>
+      </segment>
+    </unit>
+    <unit id="MenuFlyoutTitle">
+      <segment>
+        <source>Menu Flyout</source>
+        <target state="translated">Menu Flyout</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemItemsSourceDescription">
+      <segment>
+        <source>Generate structure based on ItemsSource and template.</source>
+        <target state="translated">Generate structure based em ItemsSource e template.</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemItemsSourceTitle">
+      <segment>
+        <source>Generate MenuItem by ItemsSource</source>
+        <target state="translated">Generate MenuItem por ItemsSource</target>
+      </segment>
+    </unit>
+    <unit id="NavMenuCompositionDescription">
+      <segment>
+        <source>Compose fixed header and footer slots with grouped entries, dividers, nested groups, and custom item spacing.</source>
+        <target state="translated">Compose fixed cabeçalho e rodapé slots com grouped entries, dividers, nested groups, e personalizado item espaçamento.</target>
+      </segment>
+    </unit>
+    <unit id="NavMenuCompositionTitle">
+      <segment>
+        <source>Structured nav menu</source>
+        <target state="translated">Structured nav menu</target>
+      </segment>
+    </unit>
+    <unit id="NavMenuItemItemsSourceDescription">
+      <segment>
+        <source>Generate structure based on ItemsSource and template.</source>
+        <target state="translated">Generate structure based em ItemsSource e template.</target>
+      </segment>
+    </unit>
+    <unit id="NavMenuItemItemsSourceTitle">
+      <segment>
+        <source>Generate NavMenuItem by ItemsSource</source>
+        <target state="translated">Generate NavMenuItem por ItemsSource</target>
+      </segment>
+    </unit>
+    <unit id="NavMenuNodeCommandDescription">
+      <segment>
+        <source>Each navigation node invokes the ViewModel command with its explicit business key.</source>
+        <target state="translated">Each navegação nó invokes o ViewModel command com its explicit business key.</target>
+      </segment>
+    </unit>
+    <unit id="NavMenuNodeCommandTitle">
+      <segment>
+        <source>NavMenuNode command</source>
+        <target state="translated">NavMenuNode command</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAccountGroup">
+      <segment>
+        <source>Account</source>
+        <target state="translated">Conta</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAccountSettings">
+      <segment>
+        <source>Account settings</source>
+        <target state="translated">Configurações da conta</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCopy">
+      <segment>
+        <source>Copy</source>
+        <target state="translated">Copy</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCustomerOverview">
+      <segment>
+        <source>Customer Overview</source>
+        <target state="translated">Customer Visão geral</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCut">
+      <segment>
+        <source>Cut</source>
+        <target state="translated">Cut</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDashboard">
+      <segment>
+        <source>Dashboard</source>
+        <target state="translated">Dashboard</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">Excluir</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDisabled">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDisabledItem">
+      <segment>
+        <source>Disabled Item</source>
+        <target state="translated">Desativado Item</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEdit">
+      <segment>
+        <source>_Edit</source>
+        <target state="translated">_Edit</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExit">
+      <segment>
+        <source>Exit</source>
+        <target state="translated">Exit</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFile">
+      <segment>
+        <source>_File</source>
+        <target state="translated">_File</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderInvoiceList">
+      <segment>
+        <source>Invoice List</source>
+        <target state="translated">Invoice Lista</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderItemN1">
+      <segment>
+        <source>Item 1</source>
+        <target state="translated">Item 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderItemN2">
+      <segment>
+        <source>Item 2</source>
+        <target state="translated">Item 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderManagementGroup">
+      <segment>
+        <source>Management</source>
+        <target state="translated">Management</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMenu">
+      <segment>
+        <source>_Menu</source>
+        <target state="translated">_Menu</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMenuA">
+      <segment>
+        <source>_Menu A</source>
+        <target state="translated">_Menu A</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMenuItem">
+      <segment>
+        <source>Menu Item</source>
+        <target state="translated">Menu Item</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationFour">
+      <segment>
+        <source>Navigation Four</source>
+        <target state="translated">Navegação Four</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationOne">
+      <segment>
+        <source>Navigation One</source>
+        <target state="translated">Navegação Um</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationThreeSubmenu">
+      <segment>
+        <source>Navigation Three - Submenu</source>
+        <target state="translated">Navegação Três - Submenu</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationTwo">
+      <segment>
+        <source>Navigation Two</source>
+        <target state="translated">Navegação Dois</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewFile">
+      <segment>
+        <source>New File</source>
+        <target state="translated">New Arquivo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewTextFile">
+      <segment>
+        <source>New Text File</source>
+        <target state="translated">New Texto Arquivo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewWindow">
+      <segment>
+        <source>New Window</source>
+        <target state="translated">New Janela</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN1">
+      <segment>
+        <source>Option 1</source>
+        <target state="translated">Opção 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN2">
+      <segment>
+        <source>Option 2</source>
+        <target state="translated">Opção 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN3">
+      <segment>
+        <source>Option 3</source>
+        <target state="translated">Opção 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN4">
+      <segment>
+        <source>Option 4</source>
+        <target state="translated">Opção 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN5">
+      <segment>
+        <source>Option 5</source>
+        <target state="translated">Opção 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN6">
+      <segment>
+        <source>Option 6</source>
+        <target state="translated">Opção 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN7">
+      <segment>
+        <source>Option 7</source>
+        <target state="translated">Opção 7</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN8">
+      <segment>
+        <source>Option 8</source>
+        <target state="translated">Opção 8</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPaste">
+      <segment>
+        <source>Paste</source>
+        <target state="translated">Paste</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPasteFromHistory">
+      <segment>
+        <source>Paste from History</source>
+        <target state="translated">Paste de History</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPermissions">
+      <segment>
+        <source>Permissions</source>
+        <target state="translated">Permissions</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPersonalGroup">
+      <segment>
+        <source>Personal</source>
+        <target state="translated">Personal</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderProfile">
+      <segment>
+        <source>Profile</source>
+        <target state="translated">Profile</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderProjects">
+      <segment>
+        <source>Projects</source>
+        <target state="translated">Projects</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSave">
+      <segment>
+        <source>Save</source>
+        <target state="translated">Salvar</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSaveAll">
+      <segment>
+        <source>Save All</source>
+        <target state="translated">Salvar tudo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSaveAs">
+      <segment>
+        <source>Save As...</source>
+        <target state="translated">Salvar As...</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSecurity">
+      <segment>
+        <source>Security</source>
+        <target state="translated">Security</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTeamMembers">
+      <segment>
+        <source>Team members</source>
+        <target state="translated">Team members</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUndo">
+      <segment>
+        <source>Undo</source>
+        <target state="translated">Undo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWorkspaceGroup">
+      <segment>
+        <source>Workspace</source>
+        <target state="translated">Workspace</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWorkspaceNavigation">
+      <segment>
+        <source>Workspace navigation</source>
+        <target state="translated">Workspace navegação</target>
+      </segment>
+    </unit>
+    <unit id="P2TextChangeMode">
+      <segment>
+        <source>Change Mode</source>
+        <target state="translated">Alterar Modo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextChangeStyle">
+      <segment>
+        <source>Change Style</source>
+        <target state="translated">Alterar Estilo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCurrentWorkspace">
+      <segment>
+        <source>Current workspace: AtomUI</source>
+        <target state="translated">Atual workspace: AtomUI</target>
+      </segment>
+    </unit>
+    <unit id="P2TextEnablePopupScroll">
+      <segment>
+        <source>Enable popup scrolling</source>
+        <target state="translated">Ativar popup scrolling</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLastCommandKey">
+      <segment>
+        <source>Last executed key:</source>
+        <target state="translated">Último executed key:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRightClickToShowContextFlyout">
+      <segment>
+        <source>Right Click to show Context Flyout</source>
+        <target state="translated">Direita Clique para mostrar Context Flyout</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRightClickToShowContextMenu">
+      <segment>
+        <source>Right Click to show Context Menu</source>
+        <target state="translated">Direita Clique para mostrar Context Menu</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleGeneratedByTemplate">
+      <segment>
+        <source>Generated by template</source>
+        <target state="translated">Generated por template</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">Normal</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Menu, ContextMenu, MenuFlyout, and NavMenu provide command lists, contextual actions, nested navigation, data-driven menu generation, and vertical, inline, or horizontal navigation layouts.</source>
+        <target state="translated">Menu, ContextMenu, MenuFlyout, e NavMenu fornecer command listas, contextual ações, nested navegação, dados-driven menu generation, e vertical, embutido, ou horizontal navegação layouts.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Menus organize commands and navigation actions.</source>
+        <target state="translated">Menus organize commands e navegação ações.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioContext">
+      <segment>
+        <source>Context</source>
+        <target state="translated">Context</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioFeatures">
+      <segment>
+        <source>Features</source>
+        <target state="translated">Features</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioItemsSource">
+      <segment>
+        <source>ItemsSource</source>
+        <target state="translated">ItemsSource</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioNavMenu">
+      <segment>
+        <source>NavMenu</source>
+        <target state="translated">NavMenu</target>
+      </segment>
+    </unit>
+    <unit id="ScrollableDescription">
+      <segment>
+        <source>When there are too many menu items, up and down scroll buttons will appear.</source>
+        <target state="translated">Quando há são too many menu itens, up e down scroll botões irá appear.</target>
+      </segment>
+    </unit>
+    <unit id="ScrollableTitle">
+      <segment>
+        <source>Scrollable menu</source>
+        <target state="translated">Scrollable menu</target>
+      </segment>
+    </unit>
+    <unit id="SwitchMenuTypeDescription">
+      <segment>
+        <source>Show the dynamic switching mode (between inline and vertical).</source>
+        <target state="translated">Mostrar o dinâmico switching modo (between embutido e vertical).</target>
+      </segment>
+    </unit>
+    <unit id="SwitchMenuTypeTitle">
+      <segment>
+        <source>Switch the menu type</source>
+        <target state="translated">Alternância o menu tipo</target>
+      </segment>
+    </unit>
+    <unit id="ToggleTypeDescription">
+      <segment>
+        <source>Renders a checkbox or radio button on a menu.</source>
+        <target state="translated">Renders a checkbox ou radio botão em a menu.</target>
+      </segment>
+    </unit>
+    <unit id="ToggleTypeTitle">
+      <segment>
+        <source>Menu item with ToggleType</source>
+        <target state="translated">Menu item com ToggleType</target>
+      </segment>
+    </unit>
+    <unit id="TopNavigationDescription">
+      <segment>
+        <source>Horizontal top navigation menu.</source>
+        <target state="translated">Horizontal superior navegação menu.</target>
+      </segment>
+    </unit>
+    <unit id="TopNavigationTitle">
+      <segment>
+        <source>Top Navigation</source>
+        <target state="translated">Superior Navegação</target>
+      </segment>
+    </unit>
+    <unit id="VerticalNavMenuDescription">
+      <segment>
+        <source>Submenus open as pop-ups.</source>
+        <target state="translated">Submenus abrir as pop-ups.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalNavMenuTitle">
+      <segment>
+        <source>Vertical nav menu</source>
+        <target state="translated">Vertical nav menu</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

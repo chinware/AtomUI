@@ -210,9 +210,9 @@ function Test-PackageFile {
 
 $publishAotEnabled = ConvertTo-Bool -Value $publishAot
 $projectPath = Join-Path -Path $PSScriptRoot -ChildPath "../AtomUIGallery.Desktop.csproj"
-$assetsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../output/AtomUIGallery.Desktop/obj/project.assets.json"
+$assetsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../.artifacts/AtomUIGallery.Desktop/obj/project.assets.json"
 $configsPath = Join-Path -Path $PSScriptRoot -ChildPath "../configs"
-$versionPropsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../build/Version.props"
+$versionPropsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../build/Versions.props"
 
 if ($publishAotEnabled) {
     if ($buildType -ne "Release") {
@@ -229,6 +229,7 @@ if ($publishAotEnabled) {
         "--disable-parallel",
         "-m:1",
         "/nr:false",
+        "-p:GalleryPublishTrimmed=true",
         "--nologo",
         "-v:minimal"
     )
@@ -249,7 +250,9 @@ if ($publishAotEnabled) {
         "--configuration",
         $buildType,
         "--no-restore",
+        "-p:GalleryPublishTrimmed=true",
         "-p:GalleryPublishAot=true",
+        "-p:AtomUILinkedPublish=true",
         "--disable-build-servers",
         "-m:1",
         "/nr:false",
@@ -271,7 +274,9 @@ if ($publishAotEnabled) {
         $runtime,
         "--configuration",
         $buildType,
+        "-p:GalleryPublishTrimmed=true",
         "-p:GalleryPublishAot=false",
+        "-p:AtomUILinkedPublish=true",
         "-p:PublishSingleFile=true"
     )
 }

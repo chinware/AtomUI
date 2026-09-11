@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BadgeShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ColorfulBadgeDescription">
+      <segment>
+        <source>We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.</source>
+      </segment>
+    </unit>
+    <unit id="ColorfulBadgeTitle">
+      <segment>
+        <source>Colorful Badge</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>The count will be animated as it changes.</source>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+      </segment>
+    </unit>
+    <unit id="OffsetDescription">
+      <segment>
+        <source>Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.</source>
+      </segment>
+    </unit>
+    <unit id="OffsetTitle">
+      <segment>
+        <source>Offset</source>
+      </segment>
+    </unit>
+    <unit id="OverflowCountDescription">
+      <segment>
+        <source>${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.</source>
+      </segment>
+    </unit>
+    <unit id="OverflowCountTitle">
+      <segment>
+        <source>Overflow Count</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAdd">
+      <segment>
+        <source>Add</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLinkSomething">
+      <segment>
+        <source>Link something</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRandom">
+      <segment>
+        <source>Random</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSub">
+      <segment>
+        <source>Sub</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAndRaisesTheSpyglass">
+      <segment>
+        <source>and raises the spyglass.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAvaloniaExcellent">
+      <segment>
+        <source>Avalonia is excellent</source>
+      </segment>
+    </unit>
+    <unit id="P2TextBlue">
+      <segment>
+        <source>Blue</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCyan">
+      <segment>
+        <source>Cyan</source>
+      </segment>
+    </unit>
+    <unit id="P2TextDefault">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="P2TextError">
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="P2TextGeekblue">
+      <segment>
+        <source>GeekBlue</source>
+      </segment>
+    </unit>
+    <unit id="P2TextGold">
+      <segment>
+        <source>Gold</source>
+      </segment>
+    </unit>
+    <unit id="P2TextGreen">
+      <segment>
+        <source>Green</source>
+      </segment>
+    </unit>
+    <unit id="P2TextHippies">
+      <segment>
+        <source>Hippies</source>
+      </segment>
+    </unit>
+    <unit id="P2TextHslN102N53N61">
+      <segment>
+        <source>hsl(102, 53%, 61%)</source>
+      </segment>
+    </unit>
+    <unit id="P2TextJiachenPlan">
+      <segment>
+        <source>Jiachen Plan takes off</source>
+      </segment>
+    </unit>
+    <unit id="P2TextLime">
+      <segment>
+        <source>Lime</source>
+      </segment>
+    </unit>
+    <unit id="P2TextMagenta">
+      <segment>
+        <source>Magenta</source>
+      </segment>
+    </unit>
+    <unit id="P2TextOrange">
+      <segment>
+        <source>Orange</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPink">
+      <segment>
+        <source>Pink</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPolishExperience">
+      <segment>
+        <source>Polish every detail for an excellent UI SDK experience</source>
+      </segment>
+    </unit>
+    <unit id="P2TextProcessing">
+      <segment>
+        <source>Processing</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPurple">
+      <segment>
+        <source>Purple</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPushesOpenTheWindow">
+      <segment>
+        <source>Pushes open the window</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRed">
+      <segment>
+        <source>Red</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRgbN15N141N230">
+      <segment>
+        <source>rgb(15, 141, 230)</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRgbN45N183N245">
+      <segment>
+        <source>rgb(45, 183, 245)</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSuccess">
+      <segment>
+        <source>Success</source>
+      </segment>
+    </unit>
+    <unit id="P2TextVolcano">
+      <segment>
+        <source>Volcano</source>
+      </segment>
+    </unit>
+    <unit id="P2TextWarning">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+    <unit id="P2TextYellow">
+      <segment>
+        <source>Yellow</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2TitlePresets">
+      <segment>
+        <source>Presets</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Badge draws attention to notifications, counts, status dots, and ribbon labels without interrupting the user's workflow.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Highlight counts, statuses, and contextual labels near related content.</source>
+      </segment>
+    </unit>
+    <unit id="RedBadgeDescription">
+      <segment>
+        <source>This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.</source>
+      </segment>
+    </unit>
+    <unit id="RedBadgeTitle">
+      <segment>
+        <source>Red badge</source>
+      </segment>
+    </unit>
+    <unit id="RibbonDescription">
+      <segment>
+        <source>Use ribbon badge.</source>
+      </segment>
+    </unit>
+    <unit id="RibbonTitle">
+      <segment>
+        <source>Ribbon</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Set size of numeral Badge.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="StandaloneDescription">
+      <segment>
+        <source>Used in standalone when children is empty.</source>
+      </segment>
+    </unit>
+    <unit id="StandaloneTitle">
+      <segment>
+        <source>Standalone</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Standalone badge with status.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

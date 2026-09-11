@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
         <RootNamespace>AtomUI</RootNamespace>
@@ -8,10 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="../AtomUI.Localization/AtomUI.Localization.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
@@ -20,7 +17,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets/**/*.*"/>
-        <EmbeddedResource Include="../../docs/modules/core/schemas/atomui-theme-v1.xsd"
+        <EmbeddedResource Include="../../docs/reference/theming/schemas/atomui-theme-v1.xsd"
                           LogicalName="AtomUI.Theme.Definitions.Schemas.atomui-theme-v1.xsd" />
     </ItemGroup>
 
@@ -29,7 +26,6 @@
         <PackageReference Include="Avalonia.Native" />
         <PackageReference Include="Avalonia.Win32" />
         <PackageReference Include="Avalonia"/>
-        <PackageReference Include="ReactiveUI.Avalonia"/>
         <PackageReference Include="System.Reactive"/>
     </ItemGroup>
 
@@ -42,6 +38,10 @@
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.Extras"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.Tests"/>
         <InternalsVisibleTo Include="AtomUI.Core.Tests"/>
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.Minimal"/>
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.TwoUnits"/>
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.DynamicFallback"/>
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.Full"/>
     </ItemGroup>
 
     <ItemGroup>

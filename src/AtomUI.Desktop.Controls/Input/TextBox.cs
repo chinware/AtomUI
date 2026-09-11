@@ -1,304 +1,51 @@
 using AtomUI.Animations;
-using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Layout;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 
-using AvaloniaTextBox = Avalonia.Controls.TextBox;
-
-public class TextBox : AvaloniaTextBox,
-                       IMotionAwareControl,
-                       ICustomizableSizeTypeAware,
-                       ICompactSpaceAware,
-                       IFormItemAware,
-                       IFormItemFeedbackAware
+public class TextBox : AbstractTextInput
 {
-    #region 公共属性定义
-
-    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
-        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<TextBox>();
-
-    public static readonly StyledProperty<bool> IsAllowClearProperty =
-        AvaloniaProperty.Register<TextBox, bool>(nameof(IsAllowClear));
-
-    public static readonly StyledProperty<bool> IsEnableRevealButtonProperty =
-        AvaloniaProperty.Register<TextBox, bool>(nameof(IsEnableRevealButton));
-    
-    public static readonly StyledProperty<bool> IsCustomFontSizeProperty =
-        AvaloniaProperty.Register<TextBox, bool>(nameof(IsCustomFontSize));
-    
-    public static readonly StyledProperty<bool> IsShowCountProperty =
-        AvaloniaProperty.Register<TextBox, bool>(nameof(IsShowCount));
-    
-    public static readonly StyledProperty<PathIcon?> ClearIconProperty =
-        AvaloniaProperty.Register<TextBox, PathIcon?>(nameof(ClearIcon));
-    
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TextBox>();
-    
-    public CustomizableSizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-    
-    public bool IsAllowClear
-    {
-        get => GetValue(IsAllowClearProperty);
-        set => SetValue(IsAllowClearProperty, value);
-    }
-
-    public bool IsEnableRevealButton
-    {
-        get => GetValue(IsEnableRevealButtonProperty);
-        set => SetValue(IsEnableRevealButtonProperty, value);
-    }
-    
-    public bool IsCustomFontSize
-    {
-        get => GetValue(IsCustomFontSizeProperty);
-        set => SetValue(IsCustomFontSizeProperty, value);
-    }
-    
-    public bool IsShowCount
-    {
-        get => GetValue(IsShowCountProperty);
-        set => SetValue(IsShowCountProperty, value);
-    }
-    
-    public PathIcon? ClearIcon
-    {
-        get => GetValue(ClearIconProperty);
-        set => SetValue(ClearIconProperty, value);
-    }
-    
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-    #endregion
-
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TextBox, bool> IsEffectiveShowClearButtonProperty =
-        AvaloniaProperty.RegisterDirect<TextBox, bool>(nameof(IsEffectiveShowClearButton),
-            o => o.IsEffectiveShowClearButton,
-            (o, v) => o.IsEffectiveShowClearButton = v);
-    
-    internal static readonly DirectProperty<TextBox, string?> CountTextProperty =
-        AvaloniaProperty.RegisterDirect<TextBox, string?>(nameof(CountText),
-            o => o.CountText,
-            (o, v) => o.CountText = v);
-    
     internal static readonly DirectProperty<TextBox, CornerRadius> EffectiveCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<TextBox, CornerRadius>(nameof(EffectiveCornerRadius),
+        AvaloniaProperty.RegisterDirect<TextBox, CornerRadius>(
+            nameof(EffectiveCornerRadius),
             o => o.EffectiveCornerRadius,
-            (o, v) => o.EffectiveCornerRadius = v);
-    
-    internal static readonly StyledProperty<SpaceItemPosition?> CompactSpaceItemPositionProperty = 
-        CompactSpaceAwareControlProperty.CompactSpaceItemPositionProperty.AddOwner<TextBox>();
-    
-    internal static readonly StyledProperty<Orientation> CompactSpaceOrientationProperty = 
-        CompactSpaceAwareControlProperty.CompactSpaceOrientationProperty.AddOwner<TextBox>();
-    
-    internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty = 
-        CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<TextBox>();
-    
-    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
-        AvaloniaProperty.Register<TextBox, FormValidateFeedback?>(nameof(FormFeedback));
+            (o, value) => o.EffectiveCornerRadius = value);
 
-    internal static readonly DirectProperty<TextBox, bool> IsFormFeedbackVisibleProperty =
-        AvaloniaProperty.RegisterDirect<TextBox, bool>(
-            nameof(IsFormFeedbackVisible),
-            o => o.IsFormFeedbackVisible);
-
-    internal static readonly DirectProperty<TextBox, bool> IsPlaceholderTextVisibleProperty =
-        AvaloniaProperty.RegisterDirect<TextBox, bool>(
-            nameof(IsPlaceholderTextVisible),
-            o => o.IsPlaceholderTextVisible,
-            (o, v) => o.IsPlaceholderTextVisible = v);
-
-    private bool _isEffectiveShowClearButton;
-
-    internal bool IsEffectiveShowClearButton
-    {
-        get => _isEffectiveShowClearButton;
-        set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
-    }
-
-    private string? _countText;
-
-    internal string? CountText
-    {
-        get => _countText;
-        set => SetAndRaise(CountTextProperty, ref _countText, value);
-    }
-    
     private CornerRadius _effectiveCornerRadius;
 
     internal CornerRadius EffectiveCornerRadius
     {
         get => _effectiveCornerRadius;
-        set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
-    }
-    
-    internal SpaceItemPosition? CompactSpaceItemPosition
-    {
-        get => GetValue(CompactSpaceItemPositionProperty);
-        set => SetValue(CompactSpaceItemPositionProperty, value);
-    }
-    
-    internal Orientation CompactSpaceOrientation
-    {
-        get => GetValue(CompactSpaceOrientationProperty);
-        set => SetValue(CompactSpaceOrientationProperty, value);
-    }
-    
-    internal bool IsUsedInCompactSpace
-    {
-        get => GetValue(IsUsedInCompactSpaceProperty);
-        set => SetValue(IsUsedInCompactSpaceProperty, value);
-    }
-    
-    internal FormValidateFeedback? FormFeedback
-    {
-        get => GetValue(FormFeedbackProperty);
-        set => SetValue(FormFeedbackProperty, value);
+        private set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
     }
 
-    private bool _isFormFeedbackVisible;
-
-    internal bool IsFormFeedbackVisible
-    {
-        get => _isFormFeedbackVisible;
-        private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
-    }
-
-    private bool _isPlaceholderTextVisible = true;
-
-    internal bool IsPlaceholderTextVisible
-    {
-        get => _isPlaceholderTextVisible;
-        set => SetAndRaise(IsPlaceholderTextVisibleProperty, ref _isPlaceholderTextVisible, value);
-    }
-    
     #endregion
-
-    private IconButton? _clearButton;
-    private IDisposable? _feedbackStatusSubscription;
-    private TextPresenter? _textPresenter;
-    private IDisposable? _preeditTextSubscription;
-    private IDisposable? _textViewportSubscription;
-
-    static TextBox()
-    {
-        AffectsArrange<TextBox>(CompactSpaceItemPositionProperty, CompactSpaceOrientationProperty);
-        TextChangedEvent.AddClassHandler<TextBox>((textBox, args) => textBox.HandleTextChanged());
-    }
 
     public TextBox()
     {
     }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        if (ClearIcon == null)
-        {
-            SetCurrentValue(ClearIconProperty, new CloseCircleFilled());
-        }
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-    
-        if (change.Property == AcceptsReturnProperty ||
-            change.Property == IsReadOnlyProperty ||
-            change.Property == TextProperty ||
-            change.Property == IsAllowClearProperty)
-        {
-            ConfigureEffectiveShowClearButton();
-            ConfigurePlaceholderTextVisibility();
-        }
-        else if (change.Property == IsShowCountProperty)
-        {
-            HandleInputChanged(Text);
-        }
-        else if (change.Property == CornerRadiusProperty ||
-                 change.Property == CompactSpaceItemPositionProperty ||
-                 change.Property == CompactSpaceOrientationProperty)
+
+        if (change.Property == CornerRadiusProperty ||
+            change.Property == CompactSpaceItemPositionProperty ||
+            change.Property == CompactSpaceOrientationProperty)
         {
             ConfigureCornerRadius();
         }
-        else if (change.Property == FormFeedbackProperty)
-        {
-            ConfigureFormFeedbackSubscription();
-        }
-
-    }
-
-    private void ConfigureFormFeedbackSubscription()
-    {
-        _feedbackStatusSubscription?.Dispose();
-        _feedbackStatusSubscription = null;
-        if (FormFeedback is { } feedback)
-        {
-            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
-                                                  .Subscribe(status => IsFormFeedbackVisible = status != FormValidateStatus.Default);
-        }
-        else
-        {
-            IsFormFeedbackVisible = false;
-        }
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _feedbackStatusSubscription?.Dispose();
-        _feedbackStatusSubscription = null;
-    }
-
-    private void ConfigureCornerRadius()
-    {
-        EffectiveCornerRadius = CompactSpace.CalculateEffectiveCornerRadius(
-            CornerRadius, 
-            IsUsedInCompactSpace, 
-            CompactSpaceItemPosition,
-            CompactSpaceOrientation);
-    }
-
-    private void ConfigureEffectiveShowClearButton()
-    {
-        if (!IsAllowClear)
-        {
-            SetCurrentValue(IsEffectiveShowClearButtonProperty, false);
-            return;
-        }
-        
-        SetCurrentValue(IsEffectiveShowClearButtonProperty, !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text));
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
 
-        if (_clearButton != null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-        }
-        
         var innerBoxDecorator = e.NameScope.Find<PixelAlignedBorder>("InnerBoxDecorator");
         if (innerBoxDecorator is not null)
         {
@@ -306,151 +53,15 @@ public class TextBox : AvaloniaTextBox,
             innerBoxDecorator.Dispatcher.Post(innerBoxDecorator.EnableTransitions);
         }
 
-        _clearButton = e.NameScope.Find<IconButton>("PART_ClearButton");
-        if (_clearButton != null)
-        {
-            _clearButton.Click += HandleClearButtonClicked;
-        }
-        SetupTextPresenterPreeditSubscription(e);
-        SetupTextViewportMetrics(e);
-        ConfigureEffectiveShowClearButton();
-        ConfigurePlaceholderTextVisibility();
-        HandleInputChanged(Text);
+        ConfigureCornerRadius();
     }
 
-    private void SetupTextPresenterPreeditSubscription(TemplateAppliedEventArgs e)
+    private void ConfigureCornerRadius()
     {
-        _preeditTextSubscription?.Dispose();
-        _preeditTextSubscription = null;
-
-        _textPresenter = e.NameScope.Find<TextPresenter>("PART_TextPresenter");
-        if (_textPresenter is not null)
-        {
-            _preeditTextSubscription = _textPresenter.GetObservable(TextPresenter.PreeditTextProperty)
-                                                     .Subscribe(_ => ConfigurePlaceholderTextVisibility());
-        }
+        EffectiveCornerRadius = CompactSpace.CalculateEffectiveCornerRadius(
+            CornerRadius,
+            IsUsedInCompactSpace,
+            CompactSpaceItemPosition,
+            CompactSpaceOrientation);
     }
-
-    private void SetupTextViewportMetrics(TemplateAppliedEventArgs e)
-    {
-        _textViewportSubscription?.Dispose();
-        _textViewportSubscription = null;
-
-        var scrollViewer = e.NameScope.Find<ScrollViewer>("PART_ScrollViewer") ??
-                           e.NameScope.Find<ScrollViewer>("ScrollViewer");
-        if (scrollViewer is null)
-        {
-            TextViewportMetrics.SetViewportWidth(this, null);
-            return;
-        }
-
-        _textViewportSubscription = TextViewportMetrics.PublishViewportWidth(this, scrollViewer, _textPresenter);
-    }
-
-    private void ConfigurePlaceholderTextVisibility()
-    {
-        SetCurrentValue(IsPlaceholderTextVisibleProperty,
-            string.IsNullOrEmpty(Text) && string.IsNullOrEmpty(_textPresenter?.PreeditText));
-    }
-
-    private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)
-    {
-        NotifyClearButtonClicked();
-    }
-    
-    protected virtual void NotifyClearButtonClicked() => Clear();
-
-    protected override void OnTextInput(TextInputEventArgs e)
-    {
-        base.OnTextInput(e);
-        HandleInputChanged(Text);
-    }
-
-    private void HandleInputChanged(string? text)
-    {
-        if (IsShowCount)
-        {
-            SetCurrentValue(CountTextProperty, $"{text?.Length ?? 0} / {MaxLength}");
-        }
-    }
-    
-    void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
-    {
-        var isUsedInCompactSpace = position != null;
-        if (IsUsedInCompactSpace != isUsedInCompactSpace)
-        {
-            IsUsedInCompactSpace = isUsedInCompactSpace;
-        }
-
-        if (CompactSpaceItemPosition != position)
-        {
-            CompactSpaceItemPosition = position;
-        }
-    }
-    
-    void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
-    {
-        if (CompactSpaceOrientation != orientation)
-        {
-            CompactSpaceOrientation = orientation;
-        }
-    }
-
-    double ICompactSpaceAware.GetBorderThickness()
-    {
-        return GetBorderThicknessForCompactSpace();
-    }
-    
-    protected virtual double GetBorderThicknessForCompactSpace()
-    {
-        return CompactSpaceOrientation == Orientation.Horizontal ? BorderThickness.Left : BorderThickness.Top;
-    }
-
-    #region 实现 FormItem 接口
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
-    {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
-    }
-
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value?.ToString());
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    void IFormItemFeedbackAware.SetFeedbackControl(FormValidateFeedback? value) => NotifySetFeedBackControl(value);
-    
-    private void HandleTextChanged()
-    {
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void NotifySetFormValue(string? value)
-    {
-        SetCurrentValue(TextProperty, value);
-    }
-
-    protected virtual string? NotifyGetFormValue()
-    {
-        return Text;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-        SetCurrentValue(TextProperty, null);
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-    }
-
-    protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
-    {
-        if (!ReferenceEquals(FormFeedback, value))
-        {
-            FormFeedback = value;
-        }
-    }
-    #endregion
 }

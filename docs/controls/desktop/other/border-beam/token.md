@@ -1,10 +1,10 @@
 # BorderBeam Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.BorderBeamToken` 的 BorderBeam 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。BorderBeam 整体架构见 [BorderBeam 桌面版架构设计](overview.md)，内部实现原理见 [BorderBeam 桌面版实现原理](implementation.md)，设计和契约变化记录见 [BorderBeam Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.BorderBeamToken` 的 BorderBeam 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。BorderBeam 整体架构见 [BorderBeam 桌面版架构设计](overview.md)，内部实现原理见 [BorderBeam 桌面版实现原理](implementation.md)，设计和契约变化记录见 [BorderBeam Changelog](changelog.md)。
 
 ## 1. 定位
 
-BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
+BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关与光束数量保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
 
 BorderBeamToken 服务以下主题和控件：
 
@@ -12,7 +12,7 @@ BorderBeamToken 服务以下主题和控件：
 - internal `BorderBeamPresenter`
 - BorderBeam 渐变归一和动画默认值
 
-BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Progress`、`EffectiveBorderThickness`、`EffectiveCornerRadius` 等实例状态。这些状态由 BorderBeam 状态模型和边界感知接口处理。
+BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Count`、`Progress`、`EffectiveBorderThickness`、`EffectiveCornerRadius` 等实例状态。这些状态由 BorderBeam 状态模型和边界感知接口处理。
 
 ## 2. Token 分类
 
@@ -59,6 +59,10 @@ BorderBeamToken
 
 BorderBeamToken 不定义业务色组，不定义 preset color 组合，不定义 `Ocean`、`Aurora`、`Sunset` 等示例色板。示例色板属于 Gallery 示例数据，不属于控件 Token。
 
+`Count` 控制单个 BorderBeam 实例沿同一边界绘制的光束数量，默认值为 `1`，非正值按 `1` 处理。它不描述
+设计系统的默认外观尺度，也不需要主题资源覆盖，因此保持为普通 StyledProperty，不新增 `Count` Token。
+“仅悬停时显示”同样通过 Style 设置现有 `IsMotionEnabled`，不新增 hover Token。
+
 ## 4. 控件家族影响
 
 BorderBeamToken 只影响 BorderBeam 自身，不应被 Card、Button、GroupBox 或输入控件主题直接引用。
@@ -89,4 +93,5 @@ BorderBeamToken 变更要求：
 | 修改 `BeamSize` / `BeamOpacity` | 验证默认高光段可见度、内容遮挡和 light / dark 主题效果。 |
 | 修改 `MotionDuration` | 验证动画周期、CPU 占用和 motion disabled 行为。 |
 | 修改 `MaxVisibleStopPercent` | 验证单色、多 stop 渐变和透明尾迹连续性。 |
+| 修改 `Count` 或 hover 组合 | 验证实例属性与 Style 行为，并确认 BorderBeamToken 和默认资源键没有变化。 |
 | 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用和生成文件。 |

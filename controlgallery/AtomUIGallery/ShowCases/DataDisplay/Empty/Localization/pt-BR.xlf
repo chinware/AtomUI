@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.EmptyShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+        <target state="translated">Simplest Uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeDescription">
+      <segment>
+        <source>Customize image source, image size, description and extra content.</source>
+        <target state="translated">Personalizar imagem source, imagem tamanho, descrição e extra conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTitle">
+      <segment>
+        <source>Customize</source>
+        <target state="translated">Personalizar</target>
+      </segment>
+    </unit>
+    <unit id="NoDescriptionDescription">
+      <segment>
+        <source>Simplest Usage with no description.</source>
+        <target state="translated">Simplest Uso com não descrição.</target>
+      </segment>
+    </unit>
+    <unit id="NoDescriptionTitle">
+      <segment>
+        <source>No description</source>
+        <target state="translated">Não descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCreateNow">
+      <segment>
+        <source>Create Now</source>
+        <target state="translated">Criar Now</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionCustomizeDescription">
+      <segment>
+        <source>Customize Description</source>
+        <target state="translated">Personalizar Descrição</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Use Empty to communicate that a container has no result, no configured content, or an optional recovery action.</source>
+        <target state="translated">Usar Vazio para communicate que a container has não resultado, não configured conteúdo, ou an opcional recovery ação.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Empty state placeholder for no data or unavailable content.</source>
+        <target state="translated">Vazio estado placeholder para não dados ou unavailable conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>AtomUI supports three sizes of buttons: small, default and large.</source>
+        <target state="translated">AtomUI oferece suporte três tamanhos de botões: pequeno, padrão e grande.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

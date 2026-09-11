@@ -1,5 +1,5 @@
-using AtomUI.Generated.AtomUI_Toolkits_GalleryBase;
-using AtomUI.Theme;
+using AtomUI.Generated.AtomUIToolkitsGalleryBase;
+using AtomUI.Registration;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -7,9 +7,13 @@ namespace AtomUI.Toolkits.GalleryBase;
 
 public static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseGalleryBase(this IThemeManagerBuilder themeManagerBuilder,
-                                                      Action<GalleryBaseOptions>? configure = null)
+    internal const string PackageId = "AtomUI.Toolkits.GalleryBase";
+
+    [ControlPackageRegistrationEntry]
+    public static IAtomUIBuilder UseGalleryBase(this IAtomUIBuilder builder,
+                                                Action<GalleryBaseOptions>? configure = null)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         if (configure is not null)
         {
             var options = new GalleryBaseOptions();
@@ -17,10 +21,20 @@ public static class ThemeManagerBuilderExtensions
             GalleryBaseConfigurationProvider.SetCurrent(options.BuildConfiguration());
         }
 
-        GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
-            new GalleryControlThemesProvider());
+        var provider = new GalleryControlThemesProvider();
+        if (AotTrimRegistration.IsEnabled)
+        {
+            AotTrimRegistrationPlanRegistry.ApplyPackage(
+                builder,
+                PackageId,
+                provider);
+        }
+        else
+        {
+            GeneratedControlPackageRegistration.Register(builder.Theme, provider);
+        }
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
 
-        return themeManagerBuilder;
+        return builder;
     }
 }

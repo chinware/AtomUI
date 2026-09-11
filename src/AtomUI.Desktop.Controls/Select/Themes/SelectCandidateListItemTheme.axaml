@@ -11,8 +11,13 @@
         <Style Selector="^:is(atom|SelectCandidateListItem)">
             <Setter Property="FontSize" Value="{atom:SelectTokenResource OptionFontSize}"/>
             <Setter Property="MinHeight" Value="{atom:SelectTokenResource OptionHeight}"/>
-            <Style Selector="^[IsSelected=False][IsCandidateSelected=True]">
-                <Setter Property="Background" Value="{atom:ListViewTokenResource ItemHoverBgColor}" />
+            <Style Selector="^[IsGroupItem=False]:pointerover">
+                <Setter Property="Foreground" Value="{atom:ListViewTokenResource ItemColor}" />
+                <Setter Property="Background" Value="{atom:ListViewTokenResource ItemBgColor}" />
+            </Style>
+
+            <Style Selector="^[IsGroupItem=False][IsSelected=False][IsCandidateSelected=True]:not(:disabled)">
+                <Setter Property="Background" Value="{atom:SelectTokenResource OptionActiveBg}" />
             </Style>
 
             <Style Selector="^[IsHideSelectedOptions=True][IsSelected=True]">

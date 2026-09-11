@@ -3,6 +3,23 @@
 本文档记录 TreeSelect 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-05
+
+- Theme
+  - Apply the reused SelectToken `MultiModePrefixIndent*` values as the extra left `Margin` of `PART_ContentLeftAddOn` in `TreeSelectAddOnDecoratedBoxTheme` for `IsMultiple=True` with a non-empty selection, aligning the TreeSelect multiple-mode prefix with its single-mode horizontal padding.
+
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record AbstractSelect as the semantic owner for TreeSelect.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
+## 2026-08-23
+
+- Architecture
+  - Align TreeSelect and `TreeSelectAddOnDecoratedBox` with the shared `InputControlFrame` surface owner.
+  - Keep tree selection, filtering and popup state in TreeSelect while reusing shared input status and Form/native validation semantics.
+
 ## 2026-07-05
 
 - API

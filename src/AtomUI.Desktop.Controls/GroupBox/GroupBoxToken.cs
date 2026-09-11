@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class GroupBoxToken : AbstractControlDesignToken
+internal sealed class GroupBoxToken : AbstractControlDesignToken
 {
     
     public GroupBoxToken()

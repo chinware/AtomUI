@@ -2,6 +2,8 @@
 
 本文档描述 TabStrip 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [TabStrip 桌面版架构设计](overview.md)，变化记录见 [TabStrip Changelog](changelog.md)。TabStrip 没有独立 Token 文档；涉及主题变量时应回到 overview 的视觉与主题模型。
 
+Popup 接入边界：`BaseTabStrip` 负责 overflow 业务状态和内容准备，`TabStripScrollViewer` 仅作为 relay 适配层，tab overflow Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 本文档覆盖 TabStrip 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
@@ -24,17 +26,18 @@
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 - Tab 拖动排序属于 `BaseTabStrip` 的集合与选择协作路径；实现应落在 `BaseTabStrip`、`TabStripItem`、滚动视口和内部拖动协作对象之间，不能把排序状态散落到 Gallery、theme 或业务数据对象中。
+- overflow 菜单属于滚动视口创建的临时呈现层；`BaseOverflowMenuItem` 只承载菜单视觉和请求转发，`BaseTabStrip` 仍是关闭状态、事件和集合变更的唯一 owner。
 - 垂直页签图标对齐属于 `BaseTabStrip` 的 owner 级布局状态；`Left` / `Right` placement 下由 owner 统一判断同组是否存在图标，再把内部保留图标槽状态投射到 `TabStripItem`，不能通过 Gallery 手工补空图标或新增 public API。
 - 默认 Line TabStrip 的 `Left` / `Right` placement 应保持紧凑的垂直节奏；相邻间距和 item 自身垂直 padding 都应按 Line 紧凑模型处理。Card TabStrip 使用独立 `CardGutter` 和 Card padding 视觉节奏，本规则不得改变 Card 外观。
 
 ## 3. 核心类职责
 
-- `BaseTabStrip`：控件核心或内部协作类型，维护 public surface、页签选择、滚动、overflow、关闭流程和拖动排序提交路径。
+- `BaseTabStrip`：控件核心或内部协作类型，维护 public surface、页签选择、滚动、overflow、统一关闭流程和拖动排序提交路径。
 - `CardTabStrip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TabStrip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TabStripItem`：集合项、节点或容器类型，承载单项选择、关闭、拖动源和插入目标状态。
 - `TabStripOverflowMenuItem`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `TabStripScrollViewer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TabStripScrollViewer`：控件核心或内部协作类型，收集 overflow 页签、复制呈现状态并把导航/关闭请求 relay 到 owner，不直接拥有关闭或集合删除语义。
 
 核心协作规则：
 
@@ -74,6 +77,12 @@ Public API / ItemsSource / Command / Event
 - 拖动排序状态流必须按 `IsTabReorderEnabled` -> pointer threshold -> Chrome-like live reorder preview -> `TabReordering` -> 逻辑集合 move -> selection/overflow recompute -> `TabReordered` 收敛。
 - 拖动过程中只能更新被拖 Tab 和兄弟 Tab 的临时 `RenderTransform`、候选目标 index 与自动滚动请求；被拖 Tab 必须被限制在当前 Tab 轨道主轴内移动，释放前不得实时移动 `ItemsSource`、`Items` 或 visual children，避免集合通知、选择状态和 container recycle 多次抖动。
 - 排序提交后选中状态按逻辑 item 重新计算，选中指示条、close button 可见性和 overflow 菜单都从同一个集合顺序派生。
+- overflow 菜单项必须从对应 `TabStripItem` 成对复制 `Content` 与 `ContentTemplate`，使 `ItemTemplate` 在主标签和溢出菜单中保持同一呈现语义；不能只复制数据对象后依赖 `ToString()` 回退。
+- overflow 菜单项还必须复制源 `TabStripItem` 的有效 `IsClosable`。该值只用于当前菜单项的视觉和交互投影，不能成为独立状态 owner。
+- `BaseOverflowMenuItemTheme` 根据 `IsClosable` 控制 `PART_ItemCloseButton` 的可见性；不可关闭项不显示关闭按钮，可关闭项才允许显示。
+- overflow 关闭请求必须回到 `BaseTabStrip.CloseTab`。ScrollViewer 和菜单项不得直接调用 `Items.Remove`；关闭成功、关闭被拒绝和 `Closing.Cancel` 三种结果必须分别驱动菜单项移除或保留。
+- `BaseTabStrip.CloseTab` 通过统一的逻辑 `IList` 解析支持可写 `ItemsSource` 和 `Items`；只读或固定大小数据源返回 false，不触发集合删除或 `Closed`。
+- `IsTabClosable` 变化时，owner 必须把新的模板级默认值同步到已生成且未被单项覆盖的 `TabStripItem`；下一次 overflow 构建再读取容器最终 `IsClosable`，不读取过期的 owner 值。
 - 垂直图标槽状态必须从 `TabStripPlacement`、同组 item 的 `HasIcon` 和容器生成状态单向推导：`Top` / `Bottom` 保持紧凑布局，不默认保留图标槽；`Left` / `Right` 中只要同一 owner 下任一 Tab 有图标，全部 `TabStripItem` 都保留同宽图标槽，未配置图标的 item 渲染空槽而不是伪造图标。
 - 图标槽保留状态是内部模板状态，不属于 public API、业务数据或 Token。它应随 item icon 变化、placement 变化、ItemsSource reset/replace/clear、container prepare/clear 和 template reapply 重新计算。
 - `TabStripPlacement` 变化是纯布局变化，必须保留当前 `SelectedItem` / `SelectedIndex` 语义，不得为了更新方向重建 item containers；否则直接作为 `TabStripItem` 的容器会把旧 `IsSelected` 容器状态反向写回 owner selection。
@@ -92,6 +101,7 @@ Public API / ItemsSource / Command / Event
 - 拖动排序获得 pointer capture、应用临时 transform、订阅 pointer move/release 或启动边缘自动滚动时，必须在 pointer released、capture lost、cancel、collection reset、template reapply、detach 中走同一释放路径。
 - 模板重套用后不得复用旧 `TabStripItem`、旧 scroll viewer、旧 transform、旧 z-index 或旧拖动会话状态；新的模板只从 public state 和当前集合重新生成可观察状态。
 - 图标槽对齐状态必须由 owner 在模板接入和容器生命周期中统一同步。`TabStripItem` 只消费内部保留图标槽状态；容器回收或重新准备时必须清理旧 item 的图标槽状态，避免上一组带图标页签影响下一组无图标页签。
+- overflow flyout 关闭、重建或集合变化时必须释放菜单项事件订阅；单项关闭只有在 owner `CloseTab` 成功后才能从 flyout 移除，取消或拒绝必须保留该菜单项直到 flyout 正常重建。
 
 稳定 template part 接入点：
 
@@ -107,6 +117,7 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 - 值提交或命令触发必须保持继承控件的事件顺序。
 - Pointer 触发选择由 `TabActivationTrigger` 决定，`PointerReleased` 默认要求 press/release 命中同一个 Tab；实现应在 owner 控件统一判断，不在 `TabStripItem` 中直接修改 `SelectedIndex`。
 - 键盘导航、focus directional navigation、access key 和程序化选择不受 `TabActivationTrigger` 影响。
+- overflow 菜单的关闭按钮只在源 Tab 可关闭时显示。点击后由 `BaseTabStrip.CloseTab` 统一执行 `IsClosable` 检查、`Closing`/`Closed` 事件、选中项切换和集合删除；ScrollViewer 不得绕过该路径。
 - 拖动排序只响应可拖动 Tab item 的主按钮拖动；关闭按钮、添加按钮、`HeaderStartExtraContent`、`HeaderEndExtraContent`、overflow 菜单项和外部内容区域不得成为 reorder target。
 - `TabStripPlacement=Top/Bottom` 时排序主轴为 X 轴，`TabStripPlacement=Left/Right` 时排序主轴为 Y 轴。被拖 Tab 只能沿主轴移动：Top/Bottom 的 Y 位移为 0，Left/Right 的 X 位移为 0；兄弟 Tab 让位和目标 index 也只能由主轴计算。
 - 真实 Tab 视口靠近边缘时允许自动滚动以暴露更多排序目标；overflow 菜单只用于导航和选择，不承载拖动排序。
@@ -121,6 +132,7 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 重新应用时的状态回放。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
+- overflow 构建：遍历真实 Tab 容器，复制 `Content`、`ContentTemplate` 和有效 `IsClosable`，创建临时菜单项并绑定导航/关闭 relay；菜单项关闭后只在 owner 关闭成功时移除，flyout 为空时再关闭宿主。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 - 激活触发：`PointerPressed` 模式直接在 press 阶段触发选择；`PointerReleased` 模式在 press 阶段记录候选项，release 阶段校验同一 pointer、同一 Tab、指针仍在 Tab bounds 内且未进入 reorder 后触发选择。
 - 取消激活：press 后移动到其他 Tab、移出当前 Tab、capture lost、控件 detach、模板重套用、进入拖动排序或源 item 被删除时清理候选激活状态，不提交选择。
@@ -132,6 +144,7 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 - 集合提交：`ItemsSource` 可写且实现 `IList` 时移动 source list；未设置 `ItemsSource` 时移动 `Items`；只读、固定大小或不可写 source 不提交 reorder，并清理临时视觉状态。
 - 事件顺序：释放时先触发可取消的 `TabReordering`；未取消且集合 move 成功后重新计算选择，再触发 `TabReordered`。
 - 异常边界：拖动期间集合 reset、item 被删除、控件禁用或模板失效时取消当前排序，不吞异常、不延迟强刷，也不把旧 index 当作可靠状态。
+- overflow 关闭边界：`CloseTab` 返回 false 或 `Closing.Cancel=True` 时不得从底层集合或 flyout 删除项；成功关闭后必须按 owner 事件顺序完成集合和选择状态更新，再清理菜单项。
 - 垂直图标槽计算：owner 只扫描当前有效 `TabStripItem` 容器或对应逻辑 item 的图标状态，得到同组 `HasAnyIconInVerticalPlacement` 语义后下发内部状态；主题结构应统一为稳定的 `IconSlot` + `ContentPresenter` + `CloseButton` 顺序。图标槽宽度沿用 TabControl 家族现有 `IconSize` / `IconSizeSM` 和 `ItemIconMargin` 语义，不新增 Token；无图标 item 的 `IconSlot` 保持占位但不显示内容。
 - Placement 切换流程：owner 更新 pseudo-class、header padding、现有 container 的 `TabStripPlacement` 和内部布局状态即可；不得调用 container refresh 作为布局刷新手段。
 
@@ -166,6 +179,8 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 拖动排序释放时必须修改逻辑集合顺序，拖动中允许用 `RenderTransform` 和临时 `ZIndex` 做实时视觉预览，但不能只调整 `Panel.Children`、`ZIndex` 或 transform 作为最终排序结果。
 - 选中项必须跟随同一个逻辑 item，不能跟随旧 index；重排后指示条、overflow 菜单和关闭状态必须从新顺序统一推导。
+- overflow 菜单不能提供独立于源 Tab 的关闭能力；`IsClosable=False` 时不得显示或执行关闭入口，所有关闭结果必须经过 `BaseTabStrip.CloseTab`。
+- `Closing` 被取消或 owner 拒绝关闭时，源 Tab、集合、选中状态和 overflow 菜单项必须保持不变；成功关闭后才允许清理对应菜单项。
 - `TabActivationTrigger` 只能改变 pointer 激活提交时机，不能改变键盘选择、access key、关闭后选择、程序化选择或拖动排序后的选中项回放语义。
 - `PointerReleased` 候选激活状态必须由控件 owner 持有并按 pointer 会话释放，不能让旧 `TabStripItem` 或旧 pointer 引用跨 template reapply / detach 存活。
 - 所有拖动临时状态必须在提交、取消、capture lost、template reapply 和 detach 时释放，不能保留旧容器或旧 adorner。
@@ -183,6 +198,8 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - Tab 激活触发变更需覆盖默认 `PointerReleased`、`PointerPressed`、press/release 同 Tab 激活、press 后移出不激活、press A release B 不激活、键盘选择不受影响，以及拖动排序释放不触发额外激活。
 - Tab 拖动排序变更需覆盖 Top/Bottom 横向排序、Left/Right 纵向排序、选中 item 跟随、可写 `ItemsSource`、未设置 `ItemsSource`、只读 source 不提交、`TabReordering` 取消、overflow 边缘自动滚动、关闭/添加/extra 区域排除、template reapply 与 detach 释放。
+- overflow 菜单呈现需覆盖数据项 `ItemTemplate` 场景，验证生成菜单项的 `Header` / `HeaderTemplate` 与源 `TabStripItem.Content` / `ContentTemplate` 一致。
+- overflow 关闭需覆盖不可关闭项按钮隐藏且不能删除、可关闭项经 `BaseTabStrip.CloseTab` 触发 `Closing`/`Closed`、取消后菜单项保留、成功后菜单项移除，以及控件支持的集合路径。
 - 垂直图标槽对齐变更需覆盖 `Left` / `Right` 下同组混合图标与无图标 Tab 的文本起点一致、全部无图标时不额外占位、`Top` / `Bottom` 保持紧凑、Line/Card 两类主题一致，以及 icon/placement/items 变化和 container recycle 后状态不串组。
 - 默认 Line 垂直 spacing / padding 变更需覆盖 `TabStrip` 在 `Left` / `Right` 下的相邻 container 主轴间距和 item 高度，并明确 Card theme 不被本规则修改。
 - `TabStripPlacement` 行为变更需覆盖直接 `TabStripItem` 与数据 item 场景，确保切换 `Top` / `Right` / `Bottom` / `Left` 后 `SelectedItem` 不变。

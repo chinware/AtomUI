@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -100,6 +101,9 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
     
     internal static readonly StyledProperty<double> GroupOverlappingProperty = 
         AvaloniaProperty.Register<AvatarGroup, double>(nameof (GroupOverlapping));
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        FlyoutHost.IsPopupPinnedOpenProperty.AddOwner<AvatarGroup>();
     
     internal double GroupSpace
     {
@@ -112,11 +116,18 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
         get => GetValue(GroupOverlappingProperty);
         set => SetValue(GroupOverlappingProperty, value);
     }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
     #endregion
     
     private Avatar? _foldCountAvatar;
     private FlyoutHost? _foldCountFlyout;
     private StackPanel? _foldCountStackPanel;
+    private IDisposable? _foldCountFlyoutPinBinding;
     private IDisposable? _motionBinding;
 
     static AvatarGroup()
@@ -329,6 +340,11 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
             {
                 Content = _foldCountStackPanel
             };
+            _foldCountFlyoutPinBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _foldCountFlyout,
+                FlyoutHost.IsPopupPinnedOpenProperty);
             ConfigureFoldAvatarCursor();
         }
 
@@ -340,10 +356,10 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
         _foldCountStackPanel?.Children.Clear();
         if (_foldCountFlyout is { } foldCountFlyout)
         {
-            if (foldCountFlyout.Flyout is { IsOpen: true } flyout)
-            {
-                flyout.Hide();
-            }
+            _foldCountFlyoutPinBinding?.Dispose();
+            _foldCountFlyoutPinBinding = null;
+            foldCountFlyout.SetCurrentValue(FlyoutHost.IsPopupPinnedOpenProperty, false);
+            foldCountFlyout.Flyout?.CloseForLifecycle();
             LogicalChildren.Remove(foldCountFlyout);
             VisualChildren.Remove(foldCountFlyout);
             foldCountFlyout.Flyout  = null;

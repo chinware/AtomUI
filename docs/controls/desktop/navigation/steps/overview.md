@@ -1,6 +1,6 @@
 # Steps 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Steps` 桌面版的最新设计定位、公共契约、状态模型、交互语义和视觉主题边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Steps 桌面版实现原理](implementation.md)，Steps Token 的专项设计见 [Steps Token 设计](token.md)，设计和契约变化记录见 [Steps Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Steps` 桌面版的最新设计定位、公共契约、状态模型、交互语义和视觉主题边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Steps 桌面版实现原理](implementation.md)，Steps Token 的专项设计见 [Steps Token 设计](token.md)，设计和契约变化记录见 [Steps Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -18,7 +18,7 @@ Steps 负责：
 
 - 展示有序步骤及其标题、副标题和详情内容。
 - 根据唯一的 `Current` 输入计算每个 item 的有效状态。
-- 展示 Indicator、Connector、Dot、Navigation、Inline 和 Progress 视觉。
+- 展示 Indicator、Connector、Dot、Navigation、Inline、Panel 和 Progress 视觉。
 - 在启用交互时发出当前步骤变更请求。
 
 Steps 不负责：
@@ -45,7 +45,7 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | 反馈 | Wave 表达真实 pointer click，不表达状态变化。 | Indicator Wave。 |
 | 密度 | 尺寸控制 Indicator、文字和间距。 | `SizeType`。 |
 
-`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程。
+`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程，`Panel` 表达面板式分段步骤。
 
 ## 3. API 与契约模型
 
@@ -59,7 +59,8 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | `Initial` | `int` | 第一个 item 的编号偏移，默认 `0`；不用于初始化或重置 `Current`。 |
 | `Status` | `StepsStatus` | 当前步骤的默认状态，默认 `Process`。 |
 | `Percent` | `double?` | 当前 Process item 的局部进度；`null` 表示不显示。 |
-| `Type` | `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation` 或 `Inline`。 |
+| `Type` | `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline` 或 `Panel`。Panel 强制采用水平等宽布局。 |
+| `PanelVariant` | `StepsPanelVariant` | Panel 的视觉变体：`Filled`（默认）或 `Outlined`。其他类型忽略。 |
 | `Orientation` | `Orientation` | 步骤排列方向，默认 `Horizontal`。 |
 | `TitlePlacement` | `Orientation` | 标题相对 Indicator 的请求布局，默认 `Horizontal`。 |
 | `SizeType` | `SizeType` | Indicator、文字和间距尺寸，默认 `Middle`。 |
@@ -105,7 +106,8 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 | 枚举 | 成员 | 语义 |
 | --- | --- | --- |
 | `StepsStatus` | `Wait`、`Process`、`Finish`、`Error` | 根当前状态、item 显式状态和有效状态。 |
-| `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline` | Steps 的完整视觉类型。 |
+| `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline`、`Panel` | Steps 的完整视觉类型。Panel 隐藏 Indicator/Connector，使用面板背景、边框和外溢箭头。 |
+| `StepsPanelVariant` | `Filled`、`Outlined` | Panel 的填充或描边变体。 |
 
 `StepsType` 同时表达原 Style 和 Indicator 类型，禁止形成 `Navigation + Dot` 等没有明确 Steps 语义的组合。
 `OutlineDot` 与 `Dot` 共享布局语义和 Dot 尺寸 Token，但 Indicator 使用透明背景和状态色边框，并且不播放 Indicator Wave。
@@ -204,7 +206,7 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | 主题文件 | 职责 |
 | --- | --- |
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
-| `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
+| `StepsItemTheme.axaml` | 统一 item 语义模板、Panel item frame、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
 
 运行时组合：
@@ -221,18 +223,27 @@ Steps
                 ├── ContentPresenter#SubHeaderPresenter
                 ├── PixelAlignedBorder#Connector
                 ├── ContentPresenter#ContentPresenter
+                ├── StepsPanelItemFrame#ItemWrapper
                 ├── PathIcon#NavigationArrow
+                ├── StepsPanelArrow#PanelArrow
                 └── PixelAlignedBorder#NavigationActiveIndicator
 ```
 
-`StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
+`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列。二者不创建状态。
+
+Panel 类型的几何规则：
+
+- Indicator 和普通 Connector 不参与可见布局。
+- ItemWrapper 覆盖完整 item 单元，PanelArrow 在非末项的外侧拉伸为楔形箭头。
+- LTR 箭头向右外溢，RTL 箭头向左外溢；末项不创建可见箭头。
+- `Filled` 使用状态背景作为面板表面，并在非首项裁出左侧 notch；`Outlined` 保留共享接缝的箭头边框，非当前 Error 项保持容器背景并使用红色文字和边框，当前 Error 项才使用浅红 active 背景。
 `OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
 ### 5.1 Item 语义样式覆盖
 
 `ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 是 `Steps` 实例级的语义槽，不是对模板内部节点的公开暴露。`Steps` 将显式值投影到每个 `StepsItem`，再由 `StepsItemTheme.axaml` 在自己的模板边界内分别应用到 Header、SubHeader 和 Connector。
 
-三项 API 分别对应 Ant Design Steps `styles.itemTitle.color`、`styles.itemSubtitle.color` 和 `styles.itemRail.background` 的语义能力，但保持 Avalonia 的强类型 `IBrush?` 契约，不公开任一模板节点。
+三项 API 分别对应步骤条标题、子标题和 rail 的语义能力，但保持 Avalonia 的强类型 `IBrush?` 契约，不公开任一模板节点。
 
 优先级固定为：
 
@@ -262,7 +273,7 @@ Steps 位于 Desktop Navigation 分类，与 Breadcrumb、Pagination、TabContro
 
 - `ItemsControl` 提供 Items、ItemsSource、ItemTemplate 和容器生成基础。
 - `StepsItem` 是公开 item 容器。
-- `StepsItemIndicator`、`StepsPanel` 和 `StepsItemLayoutPanel` 是 internal-observable 协作控件。
+- `StepsItemIndicator`、`StepsPanel`、`StepsItemLayoutPanel` 和 `StepsPanelItemFrame` 是 internal-observable 协作控件。
 - `StepsToken` 为 Steps、StepsItem 和 Indicator 提供组件级视觉资源。
 - Gallery 提供状态、布局、可点击和 Wave 的可运行示例。
 
@@ -319,13 +330,13 @@ Percent.HasValue
 
 ### 8.5 Inline Offset 模型
 
-`Offset` 对齐 Ant Design inline steps 的 offset cell 语义，只在 `Type=Inline` 时参与布局。它在可见 item 前方保留同等宽度的空 item 单元，使部分步骤可以和完整步骤条的后续列对齐。
+`Offset` 对齐 inline steps 的 offset cell 语义，只在 `Type=Inline` 时参与布局。它在可见 item 前方保留同等宽度的空 item 单元，使部分步骤可以和完整步骤条的后续列对齐。
 
 `Offset` 不参与 `StepNumber`、`Current`、`Initial` 或状态计算。声明 `Offset=2` 且只提供 Step 3-5 三个 item 时，`Current=1` 仍表示当前声明集合中的第二个 item。
 
 ### 8.6 垂直 Navigation 对齐
 
-`Type=Navigation` 且 `Orientation=Vertical` 时，`HorizontalContentAlignment` 控制整列 item 在可用宽度内的水平对齐。默认 `Center` 对齐 Ant Design navigation 的居中语义；需要贴边或填满容器时可设置为 `Left`、`Right` 或 `Stretch`。
+`Type=Navigation` 且 `Orientation=Vertical` 时，`HorizontalContentAlignment` 控制整列 item 在可用宽度内的水平对齐。默认 `Center` 对齐导航模式的居中语义；需要贴边或填满容器时可设置为 `Left`、`Right` 或 `Stretch`。
 
 该属性不改变普通垂直 Steps 的左侧流程阅读布局，也不改变水平 Navigation 的等宽布局。
 

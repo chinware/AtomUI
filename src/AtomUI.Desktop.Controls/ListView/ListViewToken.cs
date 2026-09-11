@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ListViewToken : AbstractControlDesignToken
+internal sealed class ListViewToken : AbstractControlDesignToken
 {
     /// <summary>
     /// List 内边距

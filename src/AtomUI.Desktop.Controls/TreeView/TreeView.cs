@@ -464,6 +464,9 @@ public partial class TreeView : AvaloniaTreeView,
             nameof(IsDefaultEmptyIndicatorVisible),
             o => o.IsDefaultEmptyIndicatorVisible,
             (o, v) => o.IsDefaultEmptyIndicatorVisible = v);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Flyout.IsPopupPinnedOpenProperty.AddOwner<TreeView>();
     
     internal TimeSpan MotionDuration
     {
@@ -483,6 +486,12 @@ public partial class TreeView : AvaloniaTreeView,
     {
         get => _isDefaultEmptyIndicatorVisible;
         set => SetAndRaise(IsDefaultEmptyIndicatorVisibleProperty, ref _isDefaultEmptyIndicatorVisible, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
     
     protected internal ITreeViewInteractionHandler InteractionHandler { get; }

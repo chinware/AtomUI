@@ -3,6 +3,57 @@
 本文档记录 BorderBeam 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-09
+
+- Fixed
+  - 修正默认 `Outset=null` 时的边框几何：流光现在贴合内容边界，不再整体绘制在边框外围。
+  - 修复仅作用于 `BorderBeamPresenter.Render()` 的绘制坐标，不改变 `Measure`、`Arrange`、`DesiredSize`、`Bounds` 或父容器布局。
+  - 显式 `Outset` 仍只控制 Render 阶段的绘制偏移。
+- Tests
+  - 增加默认边界不外扩、显式 `Outset` 偏移以及布局边界保持不变的回归测试。
+
+## 2026-09-08
+
+- API
+  - 新增 `Count` StyledProperty，默认值为 `1`；渲染层将非正值按一个光束处理。
+- Theme
+  - 默认 ControlTheme 通过 `TemplateBinding` 将 `Count` 转发给现有 `PART_BeamPresenter`，不增加新的
+    template part、Token 或 Visual。
+- Implementation
+  - 在单一 presenter、单一 `Progress`、单一 Animation 和单一 CancellationTokenSource 内按等距 phase
+    绘制多个光束。
+  - 一次 render 只构建一份圆角路径关键点和周长度量，由所有光束共享；draw call 随 `Count` 线性增加。
+  - `Count` 变化只触发重绘，不重启共享动画。
+- Gallery
+  - 新增 `Show on hover` 和 `Multiple beams` 延迟加载示例；hover 通过页面 Style 组合 `:pointerover` 与
+    `IsMotionEnabled`，不新增公共 hover API。
+  - `Multiple beams` 在同一稳定示例中纵向展示 `Count=3` 与 `Count=2` 两张卡片，并使用不绑定具体数量的共享文案。
+  - 新增 `Custom container` 延迟加载示例，以标准 Avalonia `Border` 验证普通内容可通过 BorderBeam 自身的
+    `BorderThickness` 和 `CornerRadius` 显式对齐边界几何，无需新增运行时 API。
+  - Show on hover、Multiple beams 和 Custom container 使用 AtomUI 当前版本 `v6.1.8` 的 Showcase 徽标。
+  - 重构 `Customized color` 示例：六组预设使用各自的用途、说明、渐变颜色和显式百分比；Card 通过动态
+    Filled Tag 展示用途与颜色停靠点，并使用最大宽度 480 的铺满式 Segmented 布局。
+  - 新增 `Duration`、`Size` 和 `Line width` 延迟加载示例，分别展示 `3s` / `6s` / `12s` 动画周期、
+    `100` / `56` / `160` 流光段尺寸，以及通过匹配 `BorderThickness=2` 对齐流光与内容边框线宽。
+  - Duration、Size 和 Line width 使用 AtomUI 当前版本 `v6.1.8` 的 Showcase 徽标。
+  - 为九个 BorderBeam 示例补充稳定 `SourceKey`，并同步英语、巴西葡萄牙语、简体中文和繁体中文资源。
+- Tests
+  - 增加 `Count` 默认值与模板转发、等距相位、非正值回退、实际绘制数量，以及 Gallery 示例和本地化契约测试。
+- Docs
+  - 落地 [BorderBeam 多光束与悬停展示设计规格](../../../../superpowers/specs/2026-09-08-border-beam-multi-beam-hover-design.md)，
+    明确 `Count` 使用单 presenter、单动画时钟和等距 phase 的架构边界。
+  - 明确悬停展示通过 `IsMotionEnabled` 与 `:pointerover` 样式组合表达，不引入 `ShowOnHover` 公共属性。
+  - 修正实现文档的模板接入描述：默认模板使用 `TemplateBinding`，BorderBeam 不在 `OnApplyTemplate` 中持有
+    template part 引用。
+  - 明确 `IBorderBeamAwareControl` 是 opt-in 几何契约，当前产品控件没有内置适配。
+
+## 2026-08-25
+
+- Fixed
+  - Pause BorderBeam's infinite Avalonia animation when the control is effectively invisible.
+- Docs
+  - Clarify that invisible includes hidden Visual ancestors, not only `BorderBeam.IsVisible=false`.
+
 ## 2026-07-14
 
 - Theme

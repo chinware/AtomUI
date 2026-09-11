@@ -41,7 +41,7 @@ public class DataGridAutoCompleteTemplateFocusTests
             var autoComplete = grid.GetVisualDescendants()
                                    .OfType<AbstractAutoComplete>()
                                    .Single();
-            var textInput = FindTextInput(autoComplete, kind);
+            var textInput = FindTextInput(autoComplete);
 
             Click(textInput, window);
             Dispatcher.UIThread.RunJobs();
@@ -72,14 +72,12 @@ public class DataGridAutoCompleteTemplateFocusTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
-            var textBox = autoComplete.GetVisualDescendants()
-                                      .OfType<TextBox>()
-                                      .Single();
+            var textInput = FindTextInput(autoComplete);
 
-            Click(textBox, window);
+            Click(textInput, window);
             Dispatcher.UIThread.RunJobs();
 
-            textBox.IsFocused.ShouldBeTrue();
+            textInput.IsFocused.ShouldBeTrue();
             autoComplete.IsKeyboardFocusWithin.ShouldBeTrue();
         }
         finally
@@ -94,10 +92,10 @@ public class DataGridAutoCompleteTemplateFocusTests
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
             AutoGenerateColumns = false,
-            ItemsSource = new List<GridRow>
+            ItemsSource = new TestDataGridSource<GridRow>(new List<GridRow>
             {
                 new("John Brown", "London")
-            },
+            }),
             Width  = 460,
             Height = 180
         };
@@ -143,11 +141,11 @@ public class DataGridAutoCompleteTemplateFocusTests
         return autoComplete;
     }
 
-    private static Control FindTextInput(AbstractAutoComplete autoComplete, AutoCompleteKind kind)
+    private static AbstractTextInput FindTextInput(AbstractAutoComplete autoComplete)
     {
-        return kind == AutoCompleteKind.TextArea
-            ? autoComplete.GetVisualDescendants().OfType<TextArea>().Single()
-            : autoComplete.GetVisualDescendants().OfType<TextBox>().Single();
+        return autoComplete.GetVisualDescendants()
+                           .OfType<AbstractTextInput>()
+                           .Single();
     }
 
     private static void Click(Control control, Window window)

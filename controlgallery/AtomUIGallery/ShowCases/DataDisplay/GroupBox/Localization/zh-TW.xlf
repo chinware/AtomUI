@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind">
+    <unit id="AutoHeightContentDetail">
+      <segment>
+        <source>When the content comes from StackPanel, Grid or explicitly sized controls, GroupBox uses the content DesiredSize to calculate its total height.</source>
+        <target state="translated">當內容來自 StackPanel、Grid 或顯式尺寸控件時，GroupBox 會使用內容的 DesiredSize 計算整體高度。</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightContentFooter">
+      <segment>
+        <source>If the parent sets Height or MaxHeight, Avalonia layout constraints still decide clipping or scrolling.</source>
+        <target state="translated">如果父容器設定了固定高度或 MaxHeight，仍然會按 Avalonia 佈局約束進行裁剪或滾動。</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightContentOverview">
+      <segment>
+        <source>The GroupBox below does not set Height, so its content area grows with the text rows.</source>
+        <target state="translated">下面的 GroupBox 沒有設定 Height，內容區域會隨著文字行數自動增長。</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightDescription">
+      <segment>
+        <source>GroupBox grows from the measured header, padding and content size when no height is set.</source>
+        <target state="translated">GroupBox 未設定高度時會根據 Header、Padding 和內容期望尺寸自動撐開。</target>
+      </segment>
+    </unit>
+    <unit id="AutoHeightTitle">
+      <segment>
+        <source>Auto height</source>
+        <target state="translated">自動高度</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic usage of the GroupBox control.</source>
+        <target state="translated">GroupBox 控件的基礎用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">資料展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="HeaderIconDescription">
+      <segment>
+        <source>GroupBox Header supports specifying Icon.</source>
+        <target state="translated">GroupBox 標題支持指定圖標。</target>
+      </segment>
+    </unit>
+    <unit id="HeaderIconTitle">
+      <segment>
+        <source>Header Icon</source>
+        <target state="translated">標題圖標</target>
+      </segment>
+    </unit>
+    <unit id="HeaderPositionDescription">
+      <segment>
+        <source>GroupBox Header supports three position types: Left, Center and Right.</source>
+        <target state="translated">GroupBox 標題支持左、中、右三種位置。</target>
+      </segment>
+    </unit>
+    <unit id="HeaderPositionTitle">
+      <segment>
+        <source>Header title Position</source>
+        <target state="translated">標題位置</target>
+      </segment>
+    </unit>
+    <unit id="HeaderStyleDescription">
+      <segment>
+        <source>GroupBox Header supports customizing some properties of color and font.</source>
+        <target state="translated">GroupBox 標題支持自定義顏色和字體等屬性。</target>
+      </segment>
+    </unit>
+    <unit id="HeaderStyleTitle">
+      <segment>
+        <source>Header title style</source>
+        <target state="translated">標題樣式</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTitleTitleInfo">
+      <segment>
+        <source>Title Info</source>
+        <target state="translated">標題信息</target>
+      </segment>
+    </unit>
+    <unit id="P2TextContentOfGroupBox">
+      <segment>
+        <source>Content of group box</source>
+        <target state="translated">分組框內容</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>GroupBox wraps related content with a bordered container and a configurable header title, position, icon and typography.</source>
+        <target state="translated">GroupBox 通過帶邊框的容器包裹相關內容，並支持配置標題、位置、圖標和字體樣式。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Group related content under a titled frame.</source>
+        <target state="translated">用帶標題的邊框容器組織相關內容。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

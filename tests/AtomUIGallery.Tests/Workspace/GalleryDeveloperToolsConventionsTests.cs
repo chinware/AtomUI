@@ -46,6 +46,95 @@ public class GalleryDeveloperToolsConventionsTests
         (diagnosticsAssemblyReference.Element("HintPath")?.Value).ShouldBe(
             "$(PkgAvaloniaUI_DiagnosticsSupport)/lib/net10.0/AvaloniaUI.DiagnosticsSupport.Avalonia.dll");
         (diagnosticsAssemblyReference.Element("Private")?.Value).ShouldBe("true");
+
+        var runtimeDependencies = new[]
+        {
+            (
+                Package: "Microsoft.Extensions.Logging.Abstractions",
+                Assembly: "Microsoft.Extensions.Logging.Abstractions",
+                HintPath:
+                "$(PkgMicrosoft_Extensions_Logging_Abstractions)/lib/net8.0/Microsoft.Extensions.Logging.Abstractions.dll"),
+            (
+                Package: "Microsoft.Extensions.DependencyInjection.Abstractions",
+                Assembly: "Microsoft.Extensions.DependencyInjection.Abstractions",
+                HintPath:
+                "$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)/lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll"),
+            (
+                Package: "Microsoft.IO.RecyclableMemoryStream",
+                Assembly: "Microsoft.IO.RecyclableMemoryStream",
+                HintPath:
+                "$(PkgMicrosoft_IO_RecyclableMemoryStream)/lib/net6.0/Microsoft.IO.RecyclableMemoryStream.dll")
+        };
+
+        foreach (var runtimeDependency in runtimeDependencies)
+        {
+            var packageReference = project.Descendants("PackageReference")
+                                          .SingleOrDefault(element =>
+                                              string.Equals(
+                                                  (string?)element.Attribute("Include"),
+                                                  runtimeDependency.Package,
+                                                  StringComparison.Ordinal));
+            packageReference.ShouldNotBeNull(
+                $"{projectPath} must restore {runtimeDependency.Package} for the Debug-only diagnostics reference.");
+            packageReference.Attribute("Condition").ShouldBeNull();
+            (packageReference.Attribute("GeneratePathProperty")?.Value).ShouldBe("true");
+            (packageReference.Attribute("ExcludeAssets")?.Value).ShouldBe("all");
+
+            var assemblyReference = project.Descendants("Reference")
+                                           .SingleOrDefault(element =>
+                                               string.Equals(
+                                                   (string?)element.Attribute("Include"),
+                                                   runtimeDependency.Assembly,
+                                                   StringComparison.Ordinal));
+            assemblyReference.ShouldNotBeNull(
+                $"{projectPath} must include {runtimeDependency.Assembly} in Debug output and deps metadata.");
+            (assemblyReference.Attribute("Condition")?.Value).ShouldBe("'$(Configuration)' == 'Debug'");
+            (assemblyReference.Element("HintPath")?.Value).ShouldBe(runtimeDependency.HintPath);
+            (assemblyReference.Element("Private")?.Value).ShouldBe("true");
+        }
+    }
+
+    [Fact]
+    public void Desktop_Release_Build_Does_Not_Implicitly_Enable_Publish_Analyzers()
+    {
+        var project = XDocument.Load(GetRepoFile(
+            "controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj"));
+        var releaseGroup = project.Descendants("PropertyGroup")
+                                  .Single(element =>
+                                      (string?)element.Attribute("Condition") ==
+                                      "'$(Configuration)' == 'Release'");
+
+        releaseGroup.Elements().ShouldNotContain(element =>
+            (element.Name.LocalName == "PublishTrimmed" ||
+             element.Name.LocalName == "PublishAot") &&
+            string.IsNullOrWhiteSpace((string?)element.Attribute("Condition")));
+        releaseGroup.Elements("PublishTrimmed")
+                    .ShouldContain(element =>
+                        ((string?)element.Attribute("Condition") ?? string.Empty)
+                        .Contains("GalleryPublishTrimmed", StringComparison.Ordinal));
+        releaseGroup.Elements("PublishAot")
+                    .ShouldContain(element =>
+                        ((string?)element.Attribute("Condition") ?? string.Empty)
+                        .Contains("GalleryPublishAot", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Browser_Normal_Build_Retains_Native_Wasm_Link_For_SkiaSharp()
+    {
+        var project = XDocument.Load(GetRepoFile(
+            "controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj"));
+        var runAot = project.Descendants("RunAOTCompilation").ShouldHaveSingleItem();
+        ((string?)runAot.Attribute("Condition")).ShouldBe("'$(WasmBuildingForNestedPublish)' == 'true'");
+        runAot.Value.ShouldBe("false");
+
+        var webcil = project.Descendants("WasmEnableWebcil").ShouldHaveSingleItem();
+        webcil.Attribute("Condition").ShouldBeNull();
+        webcil.Value.ShouldBe("false");
+
+        project.Descendants("WasmBuildNative").ShouldBeEmpty();
+        project.Descendants("Target")
+               .ShouldNotContain(element =>
+                   (string?)element.Attribute("Name") == "AtomUIUseManagedBrowserBuild");
     }
 
     private static string ReadRepoFile(string relativePath)

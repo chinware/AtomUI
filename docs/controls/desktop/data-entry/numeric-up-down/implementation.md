@@ -1,10 +1,10 @@
 # NumericUpDown 桌面版实现原理
 
-本文档描述 NumericUpDown 桌面版的内部数值同步、string mode、模板切换、ButtonSpinner 接入和 Form / CompactSpace 集成。公共设计与 API 契约见 [NumericUpDown 桌面版架构设计](overview.md)，Token 语义见 [NumericUpDown Token 设计](token.md)，变化记录见 [NumericUpDown Changelog](changelog.md)。
+本文档描述 NumericUpDown 桌面版的内部数值同步、string mode、模板切换、ButtonSpinner 接入和 Form / CompactSpace 集成。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [NumericUpDown 桌面版架构设计](overview.md)，Token 语义见 [NumericUpDown Token 设计](token.md)，变化记录见 [NumericUpDown Changelog](changelog.md)。
 
 ## 1. 实现定位
 
-NumericUpDown 的实现基于 Avalonia `NumericUpDown`，AtomUI 负责输入壳体、Addon、浮动 Handle、清除按钮、string mode、Form、CompactSpace 和 spinner 展示模式。实现文档聚焦状态同步和模板接入，不重新说明 Avalonia 基类的数值算法。
+NumericUpDown 的实现基于 Avalonia `NumericUpDown`，AtomUI 通过 `InputControlFrame` / `ButtonSpinner` 负责输入表面、Addon、浮动 Handle、清除按钮、string mode、Form、CompactSpace 和 spinner 展示模式。实现文档聚焦状态同步和模板接入，不重新说明 Avalonia 基类的数值算法。
 
 ## 2. 源码文件结构
 
@@ -16,7 +16,7 @@ NumericUpDown 的实现基于 Avalonia `NumericUpDown`，AtomUI 负责输入壳�
 - `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`：输入模式和 spinner 模式外层模板、状态传递。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownSpinnerTheme.axaml`：NumericUpDownSpinner 的 inline 模板、分隔线、加减按钮和按钮状态视觉。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinner.cs`：输入壳体和 spin 入口。
-- `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerDecoratedBox.cs`：浮动 Handle、Addon、CompactSpace 和输入状态视觉。
+- `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerDecoratedBox.cs`：在 shared frame 上扩展浮动 Handle、Addon、CompactSpace 和 spinner 布局。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerHandle.cs`：Handle 按钮和上下箭头。
 - `src/AtomUI.Desktop.Controls/Input/TextBox.cs`：文本编辑器。
 - `src/AtomUI.Desktop.Controls/Input/InputClearIconButton.cs`：清除按钮。
@@ -25,7 +25,7 @@ NumericUpDown 的实现基于 Avalonia `NumericUpDown`，AtomUI 负责输入壳�
 
 `NumericUpDown` 负责把 Avalonia 数值模型与 AtomUI 输入体系连接起来。它不复制 ButtonSpinner、TextBox 或 AddOnDecoratedBox 的视觉状态 selector。
 
-`ButtonSpinner` 是 NumericUpDown 的输入壳体边界，负责外部 AddOn、内部内容、状态视觉、浮动 Handle 和 spin 入口。
+`ButtonSpinner` 是 NumericUpDown 的输入组合边界，复用 `InputControlFrame` 的外观和 `EffectiveStatus`，负责外部 AddOn、内部内容、浮动 Handle 和 spin 入口；它不重新声明 variant/status/error/warning/disabled。
 
 `NumericUpDownSpinner` 是 NumericUpDown 专用的 internal 子控件。它以 `ButtonSpinner` 为基础主题，在 `IsButtonSpinnerFloatable=False` 时提供 inline 三段式模板，并在自己的主题中维护 `PART_DecreaseButton`、`PART_IncreaseButton` 的视觉。NumericUpDown 父主题只传递属性和内容，不进入该子控件的模板内部。
 
@@ -60,8 +60,7 @@ IsStringMode=true
 
 - `SizeType` 类型为 `CustomizableSizeType`，传递给 `ButtonSpinner`、`TextBox` 和内部 Handle；`Custom` 由主题按 `Middle` 默认分支处理。
 - `IsCustomFontSize` 通过模板接入后的 relay binding 传递给内部 `TextBox`，只参与字号覆盖判断，不参与数值状态计算。
-- `StyleVariant` 传递给 `ButtonSpinner` 和 Handle。
-- `Status` 传递给 `ButtonSpinner`，由 AddOnDecoratedBox 体系映射错误和警告状态。
+- `StyleVariant`、`Status`、`FormStatus` 和 native validation 由 NumericUpDown 的输入适配层归一后传递给 `InputControlFrame`，再由 `ButtonSpinner` 和 Handle 消费；NumericUpDown 不另建一套与 shared frame 并行的输入表面状态源。
 - `ShowButtonSpinner` 传递给 `ButtonSpinner.IsButtonSpinnerVisible`；默认输入模式由它控制浮动 Handle，spinner 模式由它控制左右 action 段。
 - `Mode` 只驱动模板选择和模式专用 part 接入，不参与数值状态计算。
 - CompactSpace 状态只作为输入壳体集成状态，不形成公开 API。
@@ -122,8 +121,8 @@ Form 集成流：
 Form.SetValue(decimal?) → NumericUpDown.Value
 NumericUpDown.ValueChanged → Form value changed
 Form.ClearValue() → NumericUpDown.Value = null
-DataValidationErrors → native error visual + ButtonSpinner/AddOn effective error state
-Form.ValidateStatus → Warning/Success/Validating extension state
+DataValidationErrors → InputControlFrame.EffectiveStatus
+Form.ValidateStatus → FormStatus → InputControlFrame + feedback
 ```
 
 Form 不直接使用 `StringValue`。需要提交原始字符串时，由业务层绑定 `StringValue`。
@@ -132,7 +131,7 @@ Form 不直接使用 `StringValue`。需要提交原始字符串时，由业务�
 
 NumericUpDown 不通过反射访问 ButtonSpinner、TextBox 或 AddOnDecoratedBox 内部状态。跨控件协同通过公开属性、稳定 template part 和接口完成。
 
-`Mode=Input` 是默认路径，必须避免 spinner 模式额外节点和额外按钮事件订阅。共享视觉问题应修在 ButtonSpinner、TextBox 或 AddOnDecoratedBox 主题层；NumericUpDown 专用的 inline 按钮视觉应修在 NumericUpDownSpinnerTheme 中，不能在 NumericUpDown 主题中复制跨模板 selector。
+`Mode=Input` 是默认路径，必须避免 spinner 模式额外节点和额外按钮事件订阅。共享视觉问题应修在 `InputControlFrameTheme` 或 ButtonSpinner 布局主题层；NumericUpDown 专用的 inline 按钮视觉应修在 NumericUpDownSpinnerTheme 中，不能在 NumericUpDown 主题中复制跨模板 selector。
 
 Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前值、文本、按钮 enabled 状态或模板切换状态写入 Token。
 

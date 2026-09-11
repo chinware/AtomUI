@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class RadioButtonToken : AbstractControlDesignToken
+internal sealed class RadioButtonToken : AbstractControlDesignToken
 {
     
     /// <summary>

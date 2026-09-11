@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using AtomUI.Controls.Primitives;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Threading;
@@ -15,6 +16,20 @@ public class DialogLifecycleTests
     static DialogLifecycleTests()
     {
         AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Dialog_Default_Placement_Matches_DialogOptions()
+    {
+        var dialog = new AtomUI.Desktop.Controls.Dialog();
+        var options = new DialogOptions();
+
+        dialog.HorizontalStartupLocation.ShouldBe(options.HorizontalStartupLocation);
+        dialog.VerticalStartupLocation.ShouldBe(options.VerticalStartupLocation);
+        dialog.HorizontalStartupLocation.ShouldBe(DialogHorizontalAnchor.Center);
+        dialog.VerticalStartupLocation.ShouldBe(DialogVerticalAnchor.Center);
+        dialog.CalculatePlacementOffset(new Size(320, 180), new Size(640, 480))
+              .ShouldBe(new Point(160, 150));
     }
 
     [Fact]

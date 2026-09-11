@@ -34,7 +34,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 Sources="{Binding DefaultImages}" />
+                                                 ItemsSource="{Binding DefaultImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -45,19 +45,8 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="{atom:SharedTokenResource SpacingLG}">
-                                <atom:ImagePreviewer Width="200"
-                                                     Source="{Binding RemoteImage}" />
-                                <Border Width="200"
-                                        Height="200"
-                                        Background="{atom:SharedTokenResource ColorFillTertiary}">
-                                    <Panel HorizontalAlignment="Center"
-                                           VerticalAlignment="Center">
-                                        <atom:SkeletonImage IsActive="True" />
-                                    </Panel>
-                                </Border>
-                            </StackPanel>
+                            <atom:ImagePreviewer Width="200"
+                                                 ItemsSource="{Binding RemoteImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -69,7 +58,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 FallbackSource="{Binding FallbackImage}" />
+                                                 ItemsSource="{Binding FallbackImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -81,8 +70,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 Sources="{Binding TwentyRemoteImages}"
-                                                 MaxConcurrentLoads="4"
+                                                 ItemsSource="{Binding TwentyRemoteImages}"
                                                  PreloadCount="1" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
@@ -95,7 +83,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 Sources="{Binding ThreeImages}" />
+                                                 ItemsSource="{Binding ThreeImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -107,8 +95,57 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 Sources="{Binding ThreeImages}"
+                                                 ItemsSource="{Binding ThreeImages}"
                                                  CoverIndex="1" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchDescription}"
+                    IsOccupyEntireRow="True"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <StackPanel Spacing="{atom:SharedTokenResource SpacingSM}"
+                                        HorizontalAlignment="Left">
+                                <atom:ImagePreviewer Width="200"
+                                                     ItemsSource="{Binding RapidImages}"
+                                                     CoverIndex="{Binding RapidCurrentIndex}"
+                                                     CurrentIndex="{Binding RapidCurrentIndex, Mode=TwoWay}"
+                                                     ImageSwitchMode="{Binding RapidSwitchMode}" />
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="{atom:SharedTokenResource SpacingSM}">
+                                    <atom:ToggleSwitch OnContent="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchModeWaitForLoaded}"
+                                                       OffContent="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchModeImmediate}"
+                                                       IsChecked="{Binding RapidWaitForLoaded}" />
+                                    <atom:Button Content="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchStart}"
+                                                 Command="{Binding StartRapidSwitchCommand}"
+                                                 IsEnabled="{Binding !IsRapidSwitchRunning}" />
+                                    <atom:Button Content="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchStop}"
+                                                 Command="{Binding StopRapidSwitchCommand}"
+                                                 IsEnabled="{Binding IsRapidSwitchRunning}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource SamePathReplacementTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource SamePathReplacementDescription}"
+                    IsVisible="{Binding IsFileReplacementAvailable}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <StackPanel Spacing="{atom:SharedTokenResource SpacingSM}"
+                                        HorizontalAlignment="Left">
+                                <atom:ImagePreviewer Width="200"
+                                                     ItemsSource="{Binding SamePathImages}" />
+                                <atom:Button Content="{gallery:ImagePreviewerShowCaseLangResource SamePathReplacementAction}"
+                                             Command="{Binding ReplaceSamePathCommand}" />
+                            </StackPanel>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -122,7 +159,7 @@
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImageGroupPreviewer CoverWidth="200"
                                                       CoverHeight="200"
-                                                      Sources="{Binding TwoImages}" />
+                                                      ItemsSource="{Binding TwoImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>

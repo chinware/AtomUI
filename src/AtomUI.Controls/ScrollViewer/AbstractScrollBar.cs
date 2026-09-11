@@ -67,9 +67,15 @@ public abstract class AbstractScrollBar : AvaloniaScrollBar, IMotionAwareControl
 
     private static double CoerceMaximum(AvaloniaObject sender, double value)
     {
-        if (value <= 0 || double.IsNaN(value) || double.IsInfinity(value))
+        if (!double.IsFinite(value))
         {
             return value;
+        }
+
+        var minimum = sender.GetValue(MinimumProperty);
+        if (value <= minimum)
+        {
+            return minimum;
         }
 
         var scale = LayoutHelper.GetLayoutScale((Layoutable)sender);
@@ -82,7 +88,9 @@ public abstract class AbstractScrollBar : AvaloniaScrollBar, IMotionAwareControl
         // additional physical pixel.  The one-pixel tolerance is intentional:
         // Wayland fractional client sizes are quantized in physical pixels and
         // otherwise make Auto visibility oscillate around the threshold.
-        return value * scale <= 1 + LayoutHelper.LayoutEpsilon ? 0 : value;
+        return (value - minimum) * scale <= 1 + LayoutHelper.LayoutEpsilon
+            ? minimum
+            : value;
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

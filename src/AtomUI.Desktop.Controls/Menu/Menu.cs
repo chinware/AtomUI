@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -31,6 +32,9 @@ public class Menu : AvaloniaMenu,
 
     public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
         Flyout.ShouldUseOverlayPopupProperty.AddOwner<Menu>();
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<Menu>();
 
     public CustomizableSizeType SizeType
     {
@@ -62,11 +66,19 @@ public class Menu : AvaloniaMenu,
         set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     private bool _isClosing;
+    private bool _isClosingForLifecycle;
     private bool _isSyncingDetachedTitleBarRadioGroup;
     private IDisposable? _detachedTitleBarPopupDismissRoot;
+    private MenuItem? _pinnedOpenMenuItem;
 
     static Menu()
     {
@@ -162,6 +174,109 @@ public class Menu : AvaloniaMenu,
         }
     }
 
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is MenuItem menuItem)
+        {
+            menuItem.IsPopupPinnedOpen = false;
+            menuItem.CloseForLifecycle();
+        }
+
+        base.ClearContainerForItemOverride(container);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                EnsurePinnedOpenMenuItem();
+            }
+            else
+            {
+                ClearPinnedOpenMenuItem();
+            }
+        }
+        else if (change.Property == SelectedIndexProperty && IsPopupPinnedOpen && !_isClosingForLifecycle)
+        {
+            EnsurePinnedOpenMenuItem();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        EnsurePinnedOpenMenuItem();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        if (IsPopupPinnedOpen)
+        {
+            ClosePinnedForLifecycle();
+        }
+
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private void EnsurePinnedOpenMenuItem()
+    {
+        if (!IsPopupPinnedOpen || !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        MenuItem? menuItem = null;
+        var index = SelectedIndex;
+        if (index >= 0 && ContainerFromIndex(index) is MenuItem selectedItem && selectedItem.HasSubMenu)
+        {
+            menuItem = selectedItem;
+        }
+        else
+        {
+            for (var i = 0; i < ItemCount; i++)
+            {
+                if (ContainerFromIndex(i) is MenuItem candidate && candidate.HasSubMenu)
+                {
+                    menuItem = candidate;
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        if (menuItem == null)
+        {
+            return;
+        }
+
+        if (!ReferenceEquals(_pinnedOpenMenuItem, menuItem))
+        {
+            if (_pinnedOpenMenuItem != null)
+            {
+                _pinnedOpenMenuItem.IsPopupPinnedOpen = false;
+                _pinnedOpenMenuItem.CloseForLifecycle();
+            }
+            _pinnedOpenMenuItem = menuItem;
+        }
+
+        SetCurrentValue(SelectedIndexProperty, index);
+        menuItem.IsPopupPinnedOpen = true;
+    }
+
+    private void ClearPinnedOpenMenuItem()
+    {
+        if (_pinnedOpenMenuItem == null)
+        {
+            return;
+        }
+
+        _pinnedOpenMenuItem.IsPopupPinnedOpen = false;
+        _pinnedOpenMenuItem = null;
+    }
+
     protected virtual void PrepareMenuItem(MenuItem menuItem, object? item, int index)
     {
     }
@@ -204,6 +319,11 @@ public class Menu : AvaloniaMenu,
 
     public override void Close()
     {
+        if (IsPopupPinnedOpen)
+        {
+            return;
+        }
+
         if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
         {
             interactionHandler.CancelPendingHoverOperations();
@@ -250,6 +370,11 @@ public class Menu : AvaloniaMenu,
 
     internal void CloseImmediately()
     {
+        if (IsPopupPinnedOpen)
+        {
+            return;
+        }
+
         if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
         {
             interactionHandler.CancelPendingHoverOperations();
@@ -271,6 +396,42 @@ public class Menu : AvaloniaMenu,
         }
 
         HandleMenuClosed();
+    }
+
+    private void ClosePinnedForLifecycle()
+    {
+        _isClosingForLifecycle = true;
+        try
+        {
+            if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
+            {
+                interactionHandler.CancelPendingHoverOperations();
+            }
+
+            _isClosing = false;
+            ClearPinnedOpenMenuItem();
+
+            for (var i = 0; i < ItemCount; i++)
+            {
+                if (ContainerFromIndex(i) is MenuItem menuItem)
+                {
+                    menuItem.CloseForLifecycle();
+                }
+            }
+
+            if (IsOpen)
+            {
+                HandleMenuClosed();
+            }
+            else
+            {
+                SetCurrentValue(SelectedIndexProperty, -1);
+            }
+        }
+        finally
+        {
+            _isClosingForLifecycle = false;
+        }
     }
 
     private void HandleMenuClosed()

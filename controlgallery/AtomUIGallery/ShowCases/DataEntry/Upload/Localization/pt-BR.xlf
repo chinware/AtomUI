@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.UploadShowCaseLangResourceKind">
+    <unit id="AvatarDescription">
+      <segment>
+        <source>Click to upload user's avatar, and validate size and format of picture with beforeUpload.</source>
+        <target state="translated">Clique para envio usuário's avatar, e validate tamanho e format de picture com beforeUpload.</target>
+      </segment>
+    </unit>
+    <unit id="AvatarTitle">
+      <segment>
+        <source>Avatar</source>
+        <target state="translated">Avatar</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DefaultFilesDescription">
+      <segment>
+        <source>Bind Files to provide an initial observable upload file list.</source>
+        <target state="translated">Bind Arquivos para fornecer an initial observable envio arquivo lista.</target>
+      </segment>
+    </unit>
+    <unit id="DefaultFilesTitle">
+      <segment>
+        <source>Default Files</source>
+        <target state="translated">Padrão Arquivos</target>
+      </segment>
+    </unit>
+    <unit id="DragAndDropDescription">
+      <segment>
+        <source>You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting.</source>
+        <target state="translated">Você pode arrastar arquivos para a specific area, para envio. Alternatively, você pode also envio por selecionando.</target>
+      </segment>
+    </unit>
+    <unit id="DragAndDropTitle">
+      <segment>
+        <source>Drag and Drop</source>
+        <target state="translated">Arrastar e Drop</target>
+      </segment>
+    </unit>
+    <unit id="FileAndDirectoryDescription">
+      <segment>
+        <source>Compose two UploadTrigger instances to select files and directories independently.</source>
+        <target state="translated">Compose dois UploadTrigger instances para selecionar arquivos e directories independently.</target>
+      </segment>
+    </unit>
+    <unit id="FileAndDirectoryTitle">
+      <segment>
+        <source>Files and directories</source>
+        <target state="translated">Arquivos e directories</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountDescription">
+      <segment>
+        <source>Limit files with maxCount. Will replace current one when maxCount is 1.</source>
+        <target state="translated">Limit arquivos com maxCount. Irá replace atual um quando maxCount é 1.</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+        <target state="translated">Max Count</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelImageSize">
+      <segment>
+        <source>Image must be smaller than 2MB!</source>
+        <target state="translated">Imagem must ser smaller than 2MB!</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelJpgPngOnly">
+      <segment>
+        <source>You can only upload JPG/PNG file!</source>
+        <target state="translated">Você pode somente envio JPG/PNG arquivo!</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelPngOnly">
+      <segment>
+        <source>You can only upload PNG file!</source>
+        <target state="translated">Você pode somente envio PNG arquivo!</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToUpload">
+      <segment>
+        <source>Click to Upload</source>
+        <target state="translated">Clique para Envio</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadDirectory">
+      <segment>
+        <source>Upload Directory</source>
+        <target state="translated">Envio Directory</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadMaxN1">
+      <segment>
+        <source>Upload (Max: 1)</source>
+        <target state="translated">Envio (Max: 1)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadMaxN3">
+      <segment>
+        <source>Upload (Max: 3)</source>
+        <target state="translated">Envio (Max: 3)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadPngOnly">
+      <segment>
+        <source>Upload PNG only</source>
+        <target state="translated">Envio PNG somente</target>
+      </segment>
+    </unit>
+    <unit id="P2ErrorServer500">
+      <segment>
+        <source>Server Error 500</source>
+        <target state="translated">Servidor Erro 500</target>
+      </segment>
+    </unit>
+    <unit id="P2ErrorUpload">
+      <segment>
+        <source>Upload error!</source>
+        <target state="translated">Envio erro!</target>
+      </segment>
+    </unit>
+    <unit id="P2TextUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">Enviar arquivo</target>
+      </segment>
+    </unit>
+    <unit id="P2UploadSuccessFormat">
+      <segment>
+        <source>{0} uploaded successfully!</source>
+        <target state="translated">{0} uploaded successfully!</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Upload supports composable file and directory triggers, drag-and-drop areas, observable Files state, picture lists, max-count constraints, success cleanup, and file type filtering.</source>
+        <target state="translated">Envio oferece suporte composable arquivo e directory triggers, arrastar-e-drop areas, observable Arquivos estado, picture listas, max-count constraints, sucesso cleanup, e arquivo tipo filtering.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select, validate, preview, and upload files with list and picture presentations.</source>
+        <target state="translated">Selecionar, validate, preview, e envio arquivos com lista e picture presentations.</target>
+      </segment>
+    </unit>
+    <unit id="PictureCircleTypeDescription">
+      <segment>
+        <source>Alternative display for picture-card.</source>
+        <target state="translated">Alternative exibir para picture-cartão.</target>
+      </segment>
+    </unit>
+    <unit id="PictureCircleTypeTitle">
+      <segment>
+        <source>Pictures with picture-circle type</source>
+        <target state="translated">Pictures com picture-círculo tipo</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWallDescription">
+      <segment>
+        <source>After users upload a picture, the thumbnail is rendered in the picture-card list and the trigger remains a separate append entry.</source>
+        <target state="translated">Depois usuários envio a picture, o thumbnail é renderizado em o picture-cartão lista e o gatilho remains a separate append entrada.</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWallTitle">
+      <segment>
+        <source>Pictures Wall</source>
+        <target state="translated">Pictures Wall</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWithListStyleDescription">
+      <segment>
+        <source>If uploaded file is a picture, the thumbnail can be shown.</source>
+        <target state="translated">Se uploaded arquivo é a picture, o thumbnail pode ser shown.</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWithListStyleTitle">
+      <segment>
+        <source>Pictures with list style</source>
+        <target state="translated">Pictures com lista estilo</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioConstraints">
+      <segment>
+        <source>Constraints</source>
+        <target state="translated">Constraints</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPictures">
+      <segment>
+        <source>Pictures</source>
+        <target state="translated">Pictures</target>
+      </segment>
+    </unit>
+    <unit id="ScrollableListDescription">
+      <segment>
+        <source>UploadList owns the scroll region, so long file lists do not require an outer ScrollViewer.</source>
+        <target state="translated">UploadList owns o scroll region, so longo arquivo listas do não require an outer ScrollViewer.</target>
+      </segment>
+    </unit>
+    <unit id="ScrollableListTitle">
+      <segment>
+        <source>Scrollable list</source>
+        <target state="translated">Scrollable lista</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveDescription">
+      <segment>
+        <source>Use SuccessAutoRemoveDelay to remove successful files after a short delay.</source>
+        <target state="translated">Usar SuccessAutoRemoveDelay para remover successful arquivos depois a curto delay.</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveTitle">
+      <segment>
+        <source>Auto remove successful files</source>
+        <target state="translated">Auto remover successful arquivos</target>
+      </segment>
+    </unit>
+    <unit id="UploadByClickingDescription">
+      <segment>
+        <source>Classic mode. File selection dialog pops up when upload button is clicked.</source>
+        <target state="translated">Classic modo. Arquivo seleção diálogo pops up quando envio botão é clicado.</target>
+      </segment>
+    </unit>
+    <unit id="UploadByClickingTitle">
+      <segment>
+        <source>Upload by clicking</source>
+        <target state="translated">Envio por clicar</target>
+      </segment>
+    </unit>
+    <unit id="UploadPngOnlyDescription">
+      <segment>
+        <source>beforeUpload only prevent upload behavior when return false or reject promise, the prevented file would still show in file list. Here is the example you can keep prevented files out of list by return UPLOAD.LIST_IGNORE.</source>
+        <target state="translated">beforeUpload only prevent upload behavior when return false or reject promise, the prevented file would still show in file list. Here is the example you can keep prevented files out of list by return UPLOAD.LIST_IGNORE.</target>
+      </segment>
+    </unit>
+    <unit id="UploadPngOnlyTitle">
+      <segment>
+        <source>Upload png file only</source>
+        <target state="translated">Envio png arquivo somente</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

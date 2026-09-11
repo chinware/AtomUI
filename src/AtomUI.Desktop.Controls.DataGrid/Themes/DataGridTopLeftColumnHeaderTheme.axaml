@@ -1,50 +1,22 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net"
     >
     <ControlTheme x:Key="{x:Type atom:DataGridTopLeftColumnHeader}" TargetType="atom:DataGridTopLeftColumnHeader">
-        <ControlTheme.BasedOn>
-            <themes:DataGridColumnHeaderTheme TargetType="atom:DataGridTopLeftColumnHeader" />
-        </ControlTheme.BasedOn>
-
         <Setter Property="Template">
-            <ControlTemplate TargetType="atom:DataGridColumnHeader">
+            <ControlTemplate TargetType="atom:DataGridTopLeftColumnHeader">
                 <Border Name="Frame"
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Panel Name="RootLayout">
-                        <ContentPresenter
-                            Name="ContentPresenter"
-                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        <atom:PixelAlignedBorder Name="VerticalSeparator"
-                                                 Width="1.0"
-                                                 BorderThickness="0,0,1,0"
-                                                 HorizontalAlignment="Right"
-                                                 IsVisible="{TemplateBinding IsSeparatorsVisible}" />
-                        <Panel Name="FocusVisual"
-                               IsVisible="False"
-                               IsHitTestVisible="False">
-                            <Rectangle Name="FocusVisualPrimary"
-                                       HorizontalAlignment="Stretch"
-                                       VerticalAlignment="Stretch"
-                                       Fill="Transparent"
-                                       IsHitTestVisible="False"
-                                       StrokeThickness="2" />
-                            <Rectangle Name="FocusVisualSecondary"
-                                       HorizontalAlignment="Stretch"
-                                       VerticalAlignment="Stretch"
-                                       Fill="Transparent"
-                                       IsHitTestVisible="False"
-                                       StrokeThickness="1" />
-                        </Panel>
-                    </Panel>
+                    <ContentPresenter
+                        Name="ContentPresenter"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}" />
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -52,16 +24,5 @@
         <Setter Property="Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
         <Setter Property="CornerRadius"
                 Value="{atom:DataGridTokenResource TableTopLeftColumnCornerRadius}" />
-
-        <Style Selector="^ /template/ atom|PixelAlignedBorder#VerticalSeparator">
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource HeaderSplitColor}" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource FontHeight}" />
-        </Style>
-
-        <Style Selector="^[IsSeparatorFullHeight=True] /template/ atom|PixelAlignedBorder#VerticalSeparator">
-            <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Height" Value="NaN" />
-        </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -14,7 +14,7 @@ public static class LLMsAggregateWriter
 
         foreach (var file in files.Where(file => file.Path.EndsWith($"/{fileName}", StringComparison.Ordinal)))
         {
-            var relativePath = "./" + Path.GetRelativePath("docs/AI/llms", file.Path).Replace(Path.DirectorySeparatorChar, '/');
+            var relativePath = "./" + Path.GetRelativePath("docs/AI/generated/llms", file.Path).Replace(Path.DirectorySeparatorChar, '/');
             builder.AppendLine($"Source: {relativePath}");
             builder.AppendLine();
             builder.AppendLine(file.Content.Trim());

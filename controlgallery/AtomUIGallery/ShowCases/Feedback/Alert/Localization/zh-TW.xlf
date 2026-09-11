@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.AlertShowCaseLangResourceKind">
+    <unit id="ApiEventCloseRequest">
+      <segment>
+        <source>Raised when the user clicks the close button.</source>
+        <target state="translated">用戶點擊關閉按鈕時觸發。</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage for short messages.</source>
+        <target state="translated">用於短消息提示的最簡單用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ClosableDescription">
+      <segment>
+        <source>To show close button.</source>
+        <target state="translated">顯示關閉按鈕。</target>
+      </segment>
+    </unit>
+    <unit id="ClosableTitle">
+      <segment>
+        <source>Closable</source>
+        <target state="translated">可關閉</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反饋</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomActionDescription">
+      <segment>
+        <source>Custom action.</source>
+        <target state="translated">自定義操作。</target>
+      </segment>
+    </unit>
+    <unit id="CustomActionTitle">
+      <segment>
+        <source>Custom action</source>
+        <target state="translated">自定義操作</target>
+      </segment>
+    </unit>
+    <unit id="DescriptionDescription">
+      <segment>
+        <source>Additional description for alert message.</source>
+        <target state="translated">為提示消息添加額外描述。</target>
+      </segment>
+    </unit>
+    <unit id="DescriptionTitle">
+      <segment>
+        <source>Description</source>
+        <target state="translated">含描述信息</target>
+      </segment>
+    </unit>
+    <unit id="IconDescription">
+      <segment>
+        <source>A relevant icon makes alert information clearer.</source>
+        <target state="translated">合適的圖標可以讓提示信息更清晰。</target>
+      </segment>
+    </unit>
+    <unit id="IconTitle">
+      <segment>
+        <source>Icon</source>
+        <target state="translated">圖標</target>
+      </segment>
+    </unit>
+    <unit id="LoopBannerDescription">
+      <segment>
+        <source>Show a loop banner.</source>
+        <target state="translated">展示循環橫幅。</target>
+      </segment>
+    </unit>
+    <unit id="LoopBannerTitle">
+      <segment>
+        <source>Loop Banner</source>
+        <target state="translated">循環橫幅</target>
+      </segment>
+    </unit>
+    <unit id="MoreTypesDescription">
+      <segment>
+        <source>There are 4 types of Alert: success, info, warning, error.</source>
+        <target state="translated">Alert 有 success、info、warning、error 四種類型。</target>
+      </segment>
+    </unit>
+    <unit id="MoreTypesTitle">
+      <segment>
+        <source>More types</source>
+        <target state="translated">更多類型</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAccept">
+      <segment>
+        <source>Accept</source>
+        <target state="translated">接受</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDecline">
+      <segment>
+        <source>Decline</source>
+        <target state="translated">拒絕</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDetail">
+      <segment>
+        <source>Detail</source>
+        <target state="translated">詳情</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDone">
+      <segment>
+        <source>Done</source>
+        <target state="translated">完成</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentErrorText">
+      <segment>
+        <source>Error Text</source>
+        <target state="translated">錯誤文本</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentICanBeAReactComponentMultipleReact">
+      <segment>
+        <source>I can be custom content, multiple controls, or just some text, Info Description Info Description Info Description Info Description</source>
+        <target state="translated">這裡可以是自定義內容、多個控件，或只是一段普通文本，信息描述 信息描述 信息描述 信息描述</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentInfoText">
+      <segment>
+        <source>Info Text</source>
+        <target state="translated">信息文本</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccessText">
+      <segment>
+        <source>Success Text</source>
+        <target state="translated">成功文本</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUndo">
+      <segment>
+        <source>UNDO</source>
+        <target state="translated">撤銷</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarningText">
+      <segment>
+        <source>Warning Text</source>
+        <target state="translated">警告文本</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarningTextWarningTextWarningTextWarningText">
+      <segment>
+        <source>Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text</source>
+        <target state="translated">警告文本 警告文本 警告文本 警告文本 警告文本 警告文本</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionAdditionalDescriptionAndInformationAboutCopywriting">
+      <segment>
+        <source>Additional description and information about copywriting.</source>
+        <target state="translated">關於提示文案的補充說明和信息。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionDetailedDescriptionAndAdviceAboutSuccessfulCopywriting">
+      <segment>
+        <source>Detailed description and advice about successful copywriting.</source>
+        <target state="translated">關於成功提示文案的詳細說明和建議。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc">
+      <segment>
+        <source>Error Description Error Description Error Description Error Description Error Description Error Description</source>
+        <target state="translated">錯誤描述 錯誤描述 錯誤描述 錯誤描述 錯誤描述 錯誤描述</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc2">
+      <segment>
+        <source>Error Description Error Description Error Description Error Description</source>
+        <target state="translated">錯誤描述 錯誤描述 錯誤描述 錯誤描述</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionInfoDescriptionInfoDescriptionInfoDescriptionInfoDescript">
+      <segment>
+        <source>Info Description Info Description Info Description Info Description</source>
+        <target state="translated">信息描述 信息描述 信息描述 信息描述</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionSuccessDescriptionSuccessDescriptionSuccessDescription">
+      <segment>
+        <source>Success Description Success Description Success Description</source>
+        <target state="translated">成功描述 成功描述 成功描述</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsAWarningNoticeAboutCopywriting">
+      <segment>
+        <source>This is a warning notice about copywriting.</source>
+        <target state="translated">這是一條關於提示文案的警告通知。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsAnErrorMessageAboutCopywriting">
+      <segment>
+        <source>This is an error message about copywriting.</source>
+        <target state="translated">這是一條關於提示文案的錯誤信息。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionWarningDescriptionWarningDescriptionWarningDescriptionWar">
+      <segment>
+        <source>Warning Description Warning Description Warning Description Warning Description</source>
+        <target state="translated">警告描述 警告描述 警告描述 警告描述</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">錯誤</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageErrorText">
+      <segment>
+        <source>Error Text</source>
+        <target state="translated">錯誤提示文本</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageInfoText">
+      <segment>
+        <source>Info Text</source>
+        <target state="translated">信息提示文本</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageInformationalNotes">
+      <segment>
+        <source>Informational Notes</source>
+        <target state="translated">信息說明</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageSuccessText">
+      <segment>
+        <source>Success Text</source>
+        <target state="translated">成功提示文本</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageSuccessTips">
+      <segment>
+        <source>Success Tips</source>
+        <target state="translated">成功提示</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageWarningText">
+      <segment>
+        <source>Warning Text</source>
+        <target state="translated">警告提示文本</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Alert displays important status information and optional actions without interrupting the current workflow.</source>
+        <target state="translated">Alert 用於展示重要狀態信息和可選操作，不打斷當前工作流。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Prominent contextual feedback message.</source>
+        <target state="translated">醒目的上下文反饋信息。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CardShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>A basic card containing a title, content and an extra corner content. Supports two sizes: default and small.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="CardInColumnDescription">
+      <segment>
+        <source>Cards usually cooperate with grid column layout in overview page.</source>
+      </segment>
+    </unit>
+    <unit id="CardInColumnTitle">
+      <segment>
+        <source>Card in column</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedContentDescription">
+      <segment>
+        <source>You can use Card.Meta to support more flexible content.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedContentTitle">
+      <segment>
+        <source>Customized content</source>
+      </segment>
+    </unit>
+    <unit id="GridCardDescription">
+      <segment>
+        <source>Grid style card content..</source>
+      </segment>
+    </unit>
+    <unit id="GridCardTitle">
+      <segment>
+        <source>Grid card</source>
+      </segment>
+    </unit>
+    <unit id="InnerCardDescription">
+      <segment>
+        <source>It can be placed inside the ordinary card to display the information of the multilevel structure.</source>
+      </segment>
+    </unit>
+    <unit id="InnerCardTitle">
+      <segment>
+        <source>Inner card</source>
+      </segment>
+    </unit>
+    <unit id="LoadingCardDescription">
+      <segment>
+        <source>Shows a loading indicator while the contents of the card is being fetched.</source>
+      </segment>
+    </unit>
+    <unit id="LoadingCardTitle">
+      <segment>
+        <source>Loading card</source>
+      </segment>
+    </unit>
+    <unit id="MoreContentConfigurationDescription">
+      <segment>
+        <source>A Card that supports cover, avatar, title and description.</source>
+      </segment>
+    </unit>
+    <unit id="MoreContentConfigurationTitle">
+      <segment>
+        <source>Support more content configuration</source>
+      </segment>
+    </unit>
+    <unit id="NoBorderDescription">
+      <segment>
+        <source>A borderless card on a gray background.</source>
+      </segment>
+    </unit>
+    <unit id="NoBorderTitle">
+      <segment>
+        <source>No border</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAppContent">
+      <segment>
+        <source>app content</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentArticleContent">
+      <segment>
+        <source>article content</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContent">
+      <segment>
+        <source>Content</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContent1">
+      <segment>
+        <source>content1</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContent2">
+      <segment>
+        <source>content2</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMore">
+      <segment>
+        <source>More</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentProjectContent">
+      <segment>
+        <source>project content</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsTheDescription">
+      <segment>
+        <source>This is the description</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderApp">
+      <segment>
+        <source>app</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderArticle">
+      <segment>
+        <source>article</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCardTitle">
+      <segment>
+        <source>Card title</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCardTitle2">
+      <segment>
+        <source>Card Title</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDefaultSizeCard">
+      <segment>
+        <source>Default size card</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEuropeStreetBeat">
+      <segment>
+        <source>Europe Street beat</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLargeSizeCard">
+      <segment>
+        <source>Large size card</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderProject">
+      <segment>
+        <source>project</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSmallSizeCard">
+      <segment>
+        <source>Small size card</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTab1">
+      <segment>
+        <source>Tab1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTab2">
+      <segment>
+        <source>Tab2</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCardContent">
+      <segment>
+        <source>Card content</source>
+      </segment>
+    </unit>
+    <unit id="P2TextThisIsTheDescription">
+      <segment>
+        <source>This is the description</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Card presents information in a contained surface. It supports headers, extra actions, cover media, metadata, grid sections, tabs, loading placeholders, hover feedback, and borderless presentation.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Group related content and actions in a compact container.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+      </segment>
+    </unit>
+    <unit id="SimpleCardDescription">
+      <segment>
+        <source>A simple card only containing a content area.</source>
+      </segment>
+    </unit>
+    <unit id="SimpleCardTitle">
+      <segment>
+        <source>Simple card</source>
+      </segment>
+    </unit>
+    <unit id="WithTabsDescription">
+      <segment>
+        <source>More content can be hosted..</source>
+      </segment>
+    </unit>
+    <unit id="WithTabsTitle">
+      <segment>
+        <source>With tabs</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -29,6 +29,20 @@ public class UploadTriggerTests
     }
 
     [Fact]
+    public void UploadTrigger_Observes_Picker_Tasks_Without_AsyncVoid()
+    {
+        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadTrigger.cs");
+        var handledIndex = source.IndexOf("e.Handled = true;", StringComparison.Ordinal);
+        var taskIndex = source.IndexOf("var task =", StringComparison.Ordinal);
+
+        source.ShouldContain("private void HandlePointerReleased");
+        source.ShouldNotContain("async void HandlePointerReleased");
+        source.ShouldContain("ObserveSelectionOperationAsync(task)");
+        handledIndex.ShouldBeGreaterThan(-1);
+        taskIndex.ShouldBeGreaterThan(handledIndex);
+    }
+
+    [Fact]
     public void UploadTrigger_Restores_Picture_Shape_Visual_Shell()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadTrigger.cs");
@@ -123,15 +137,6 @@ public class UploadTriggerTests
         uploadingTheme.ShouldContain("VerticalAlignment=\"Center\"");
         uploadingTheme.ShouldNotContain("VerticalAlignment=\"Top\"");
         uploadingTheme.ShouldNotContain("Margin=\"0, 10, 0, 0\"");
-    }
-
-    [Fact]
-    public void UploadDropZone_Enables_Drop_And_Delegates_To_Owning_Upload()
-    {
-        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadDropZone.cs");
-
-        source.ShouldContain("DragDrop.SetAllowDrop(this, true)");
-        source.ShouldContain("owner.EnqueueStorageFilesAsync(files)");
     }
 
     private static string ReadRepoFile(string relativePath)

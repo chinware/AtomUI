@@ -1,6 +1,8 @@
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Headless;
+using ReactiveUI.Avalonia;
 using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Toolkits.GalleryBase.Tests.TestAppBuilder))]
@@ -28,6 +30,7 @@ public static class TestAppBuilder
     public static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<TestApplication>()
+                         .UseReactiveUI(_ => { })
                          .UseHeadless(new AvaloniaHeadlessPlatformOptions());
     }
 }
@@ -40,6 +43,9 @@ internal sealed class TestApplication : Application
         {
             builder.UseDesktopControls();
             builder.UseGalleryBase();
+            builder.UseLanguages(
+                LanguageTags.EnUS,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
         });
     }
 }

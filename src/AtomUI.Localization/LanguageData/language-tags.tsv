@@ -1,0 +1,1071 @@
+# atomui-language-tags-schema: 1
+# iana-language-subtag-registry: 2026-06-14
+# unicode-cldr: 48
+# locale-selection: .NET 10 CultureInfo language/script/region tags; variants and extensions excluded
+# columns: Identifier<TAB>Tag<TAB>CultureName<TAB>NativeName<TAB>Direction
+Af	af	af	Afrikaans	LeftToRight
+AfNA	af-NA	af-NA	Afrikaans (Namibië)	LeftToRight
+AfZA	af-ZA	af-ZA	Afrikaans (Suid-Afrika)	LeftToRight
+Agq	agq	agq	Aghem	LeftToRight
+AgqCM	agq-CM	agq-CM	Aghem (Kàmàlûŋ)	LeftToRight
+Ain	ain	ain	アイヌ・イタㇰ	LeftToRight
+AinJP	ain-JP	ain-JP	Ainu (Japan)	LeftToRight
+Ak	ak	ak	Akan	LeftToRight
+AkGH	ak-GH	ak-GH	Akan (Gaana)	LeftToRight
+Am	am	am	አማርኛ	LeftToRight
+AmET	am-ET	am-ET	አማርኛ (ኢትዮጵያ)	LeftToRight
+Apw	apw	apw	Nṉee biyátiʼ	LeftToRight
+ApwUS	apw-US	apw-US	Apache, Western (United States)	LeftToRight
+Ar	ar	ar	العربية	RightToLeft
+Ar001	ar-001	ar-001	العربية (العالم)	RightToLeft
+ArAE	ar-AE	ar-AE	العربية (الإمارات العربية المتحدة)	RightToLeft
+ArBH	ar-BH	ar-BH	العربية (البحرين)	RightToLeft
+ArDJ	ar-DJ	ar-DJ	العربية (جيبوتي)	RightToLeft
+ArDZ	ar-DZ	ar-DZ	العربية (الجزائر)	RightToLeft
+ArEG	ar-EG	ar-EG	العربية (مصر)	RightToLeft
+ArEH	ar-EH	ar-EH	العربية (الصحراء الغربية)	RightToLeft
+ArER	ar-ER	ar-ER	العربية (إريتريا)	RightToLeft
+ArIL	ar-IL	ar-IL	العربية (إسرائيل)	RightToLeft
+ArIQ	ar-IQ	ar-IQ	العربية (العراق)	RightToLeft
+ArJO	ar-JO	ar-JO	العربية (الأردن)	RightToLeft
+ArKM	ar-KM	ar-KM	العربية (جزر القمر)	RightToLeft
+ArKW	ar-KW	ar-KW	العربية (الكويت)	RightToLeft
+ArLB	ar-LB	ar-LB	العربية (لبنان)	RightToLeft
+ArLY	ar-LY	ar-LY	العربية (ليبيا)	RightToLeft
+ArMA	ar-MA	ar-MA	العربية (المغرب)	RightToLeft
+ArMR	ar-MR	ar-MR	العربية (موريتانيا)	RightToLeft
+ArOM	ar-OM	ar-OM	العربية (عُمان)	RightToLeft
+ArPS	ar-PS	ar-PS	العربية (الأراضي الفلسطينية)	RightToLeft
+ArQA	ar-QA	ar-QA	العربية (قطر)	RightToLeft
+ArSA	ar-SA	ar-SA	العربية (المملكة العربية السعودية)	RightToLeft
+ArSD	ar-SD	ar-SD	العربية (السودان)	RightToLeft
+ArSO	ar-SO	ar-SO	العربية (الصومال)	RightToLeft
+ArSS	ar-SS	ar-SS	العربية (جنوب السودان)	RightToLeft
+ArSY	ar-SY	ar-SY	العربية (سوريا)	RightToLeft
+ArTD	ar-TD	ar-TD	العربية (تشاد)	RightToLeft
+ArTN	ar-TN	ar-TN	العربية (تونس)	RightToLeft
+ArYE	ar-YE	ar-YE	العربية (اليمن)	RightToLeft
+Arn	arn	arn	Mapudungun	LeftToRight
+ArnCL	arn-CL	arn-CL	Mapuche (Chile)	LeftToRight
+As	as	as	অসমীয়া	LeftToRight
+AsIN	as-IN	as-IN	অসমীয়া (ভাৰত)	LeftToRight
+Asa	asa	asa	Kipare	LeftToRight
+AsaTZ	asa-TZ	asa-TZ	Kipare (Tadhania)	LeftToRight
+Ast	ast	ast	asturianu	LeftToRight
+AstES	ast-ES	ast-ES	asturianu (España)	LeftToRight
+Az	az	az	azərbaycan	LeftToRight
+AzCyrl	az-Cyrl	az-Cyrl	азәрбајҹан (Кирил)	LeftToRight
+AzCyrlAZ	az-Cyrl-AZ	az-Cyrl-AZ	азәрбајҹан (Кирил, Азәрбајҹан)	LeftToRight
+AzLatn	az-Latn	az-Latn	azərbaycan (latın)	LeftToRight
+AzLatnAZ	az-Latn-AZ	az-Latn-AZ	azərbaycan (latın, Azərbaycan)	LeftToRight
+Ba	ba	ba	башҡорт	LeftToRight
+BaRU	ba-RU	ba-RU	башҡорт (Рәсәй)	LeftToRight
+Bas	bas	bas	Ɓàsàa	LeftToRight
+BasCM	bas-CM	bas-CM	Ɓàsàa (Kàmɛ̀rûn)	LeftToRight
+Be	be	be	беларуская	LeftToRight
+BeBY	be-BY	be-BY	беларуская (Беларусь)	LeftToRight
+Bem	bem	bem	Ichibemba	LeftToRight
+BemZM	bem-ZM	bem-ZM	Ichibemba (Zambia)	LeftToRight
+Ber	ber	ber	ⴰⵎⴰⵣⵉⵖ	LeftToRight
+BerLatn	ber-Latn	ber-Latn	Amaziɣ (Latin)	LeftToRight
+BerLatnMA	ber-Latn-MA	ber-Latn-MA	Amaziɣ (Latin, Lmɣrib)	LeftToRight
+BerTfng	ber-Tfng	ber-Tfng	ⴰⵎⴰⵣⵉⵖ (ⵜⴼⵏⵗ)	LeftToRight
+BerTfngMA	ber-Tfng-MA	ber-Tfng-MA	Amazigh (Tifinagh, Morocco)	LeftToRight
+Bez	bez	bez	Hibena	LeftToRight
+BezTZ	bez-TZ	bez-TZ	Hibena (Hutanzania)	LeftToRight
+Bg	bg	bg	български	LeftToRight
+BgBG	bg-BG	bg-BG	български (България)	LeftToRight
+Bgc	bgc	bgc	हरियाणवी	LeftToRight
+BgcIN	bgc-IN	bgc-IN	हरियाणवी (भारत)	LeftToRight
+Bho	bho	bho	भोजपुरी	LeftToRight
+BhoIN	bho-IN	bho-IN	भोजपुरी (भारत)	LeftToRight
+Blo	blo	blo	anii kagɩja	LeftToRight
+BloBJ	blo-BJ	blo-BJ	anii kagɩja (Benɛɛ)	LeftToRight
+Bm	bm	bm	bamanakan	LeftToRight
+BmML	bm-ML	bm-ML	bamanakan (Mali)	LeftToRight
+Bn	bn	bn	বাংলা	LeftToRight
+BnBD	bn-BD	bn-BD	বাংলা (বাংলাদেশ)	LeftToRight
+BnIN	bn-IN	bn-IN	বাংলা (ভারত)	LeftToRight
+Bo	bo	bo	བོད་སྐད་	LeftToRight
+BoCN	bo-CN	bo-CN	བོད་སྐད་ (རྒྱ་ནག)	LeftToRight
+BoIN	bo-IN	bo-IN	བོད་སྐད་ (རྒྱ་གར་)	LeftToRight
+Br	br	br	brezhoneg	LeftToRight
+BrFR	br-FR	br-FR	brezhoneg (Frañs)	LeftToRight
+Brx	brx	brx	बरʼ	LeftToRight
+BrxIN	brx-IN	brx-IN	बरʼ (भारत)	LeftToRight
+Bs	bs	bs	bosanski	LeftToRight
+BsCyrl	bs-Cyrl	bs-Cyrl	босански (ћирилица)	LeftToRight
+BsCyrlBA	bs-Cyrl-BA	bs-Cyrl-BA	босански (ћирилица, Босна и Херцеговина)	LeftToRight
+BsLatn	bs-Latn	bs-Latn	bosanski (latinica)	LeftToRight
+BsLatnBA	bs-Latn-BA	bs-Latn-BA	bosanski (latinica, Bosna i Hercegovina)	LeftToRight
+Bua	bua	bua	буряад	LeftToRight
+BuaRU	bua-RU	bua-RU	буряад (Ород Улас)	LeftToRight
+Byn	byn	byn	ብሊን	LeftToRight
+BynER	byn-ER	byn-ER	ብሊን (ኤርትራ)	LeftToRight
+Ca	ca	ca	català	LeftToRight
+CaAD	ca-AD	ca-AD	català (Andorra)	LeftToRight
+CaES	ca-ES	ca-ES	català (Espanya)	LeftToRight
+CaFR	ca-FR	ca-FR	català (França)	LeftToRight
+CaIT	ca-IT	ca-IT	català (Itàlia)	LeftToRight
+Ccp	ccp	ccp	𑄌𑄋𑄴𑄟𑄳𑄦	LeftToRight
+CcpBD	ccp-BD	ccp-BD	𑄌𑄋𑄴𑄟𑄳𑄦 (𑄝𑄁𑄣𑄘𑄬𑄌𑄴)	LeftToRight
+CcpIN	ccp-IN	ccp-IN	𑄌𑄋𑄴𑄟𑄳𑄦 (𑄞𑄢𑄧𑄖𑄴)	LeftToRight
+Ce	ce	ce	нохчийн	LeftToRight
+CeRU	ce-RU	ce-RU	нохчийн (Росси)	LeftToRight
+Ceb	ceb	ceb	Cebuano	LeftToRight
+CebPH	ceb-PH	ceb-PH	Cebuano (Philippines)	LeftToRight
+Cgg	cgg	cgg	Rukiga	LeftToRight
+CggUG	cgg-UG	cgg-UG	Rukiga (Uganda)	LeftToRight
+Cho	cho	cho	Chahta	LeftToRight
+ChoUS	cho-US	cho-US	Chahta (United States)	LeftToRight
+Chr	chr	chr	ᏣᎳᎩ	LeftToRight
+ChrUS	chr-US	chr-US	ᏣᎳᎩ (ᏌᏊ ᎢᏳᎾᎵᏍᏔᏅ ᏍᎦᏚᎩ)	LeftToRight
+Cic	cic	cic	Chikashshanompaʼ	LeftToRight
+CicUS	cic-US	cic-US	Chikashshanompaʼ (United States)	LeftToRight
+Ckb	ckb	ckb	کوردیی ناوەندی	RightToLeft
+CkbIQ	ckb-IQ	ckb-IQ	کوردیی ناوەندی (عێراق)	RightToLeft
+CkbIR	ckb-IR	ckb-IR	کوردیی ناوەندی (ئێران)	RightToLeft
+Co	co	co	corsu	LeftToRight
+CoFR	co-FR	co-FR	Corsican (France)	LeftToRight
+Cs	cs	cs	čeština	LeftToRight
+CsCZ	cs-CZ	cs-CZ	čeština (Česko)	LeftToRight
+Cst	cst	cst	Chochenyo	LeftToRight
+Csw	csw	csw	ᓀᐦᐃᓇᐍᐏᐣ	LeftToRight
+CswCA	csw-CA	csw-CA	ᓀᐦᐃᓇᐍᐏᐣ (ᑳᓇᑕ)	LeftToRight
+Cv	cv	cv	чӑваш чӗлхи	LeftToRight
+CvRU	cv-RU	cv-RU	чӑваш чӗлхи (Раҫҫей)	LeftToRight
+Cy	cy	cy	Cymraeg	LeftToRight
+CyGB	cy-GB	cy-GB	Cymraeg (Y Deyrnas Unedig)	LeftToRight
+Da	da	da	dansk	LeftToRight
+DaDK	da-DK	da-DK	dansk (Danmark)	LeftToRight
+DaGL	da-GL	da-GL	dansk (Grønland)	LeftToRight
+Dav	dav	dav	Kitaita	LeftToRight
+DavKE	dav-KE	dav-KE	Kitaita (Kenya)	LeftToRight
+De	de	de	Deutsch	LeftToRight
+DeAT	de-AT	de-AT	Deutsch (Österreich)	LeftToRight
+DeBE	de-BE	de-BE	Deutsch (Belgien)	LeftToRight
+DeCH	de-CH	de-CH	Deutsch (Schweiz)	LeftToRight
+DeDE	de-DE	de-DE	Deutsch (Deutschland)	LeftToRight
+DeIT	de-IT	de-IT	Deutsch (Italien)	LeftToRight
+DeLI	de-LI	de-LI	Deutsch (Liechtenstein)	LeftToRight
+DeLU	de-LU	de-LU	Deutsch (Luxemburg)	LeftToRight
+Dje	dje	dje	Zarmaciine	LeftToRight
+DjeNE	dje-NE	dje-NE	Zarmaciine (Nižer)	LeftToRight
+Doi	doi	doi	डोगरी	LeftToRight
+DoiIN	doi-IN	doi-IN	डोगरी (भारत)	LeftToRight
+Dsb	dsb	dsb	dolnoserbšćina	LeftToRight
+DsbDE	dsb-DE	dsb-DE	dolnoserbšćina (Nimska)	LeftToRight
+Dua	dua	dua	duálá	LeftToRight
+DuaCM	dua-CM	dua-CM	duálá (Cameroun)	LeftToRight
+Dv	dv	dv	ދިވެހިބަސް	RightToLeft
+DvMV	dv-MV	dv-MV	ދިވެހިބަސް (ދިވެހި ރާއްޖެ)	RightToLeft
+Dyo	dyo	dyo	joola	LeftToRight
+DyoSN	dyo-SN	dyo-SN	joola (Senegal)	LeftToRight
+Dz	dz	dz	རྫོང་ཁ་	LeftToRight
+DzBT	dz-BT	dz-BT	རྫོང་ཁ་། (འབྲུག།)	LeftToRight
+Ebu	ebu	ebu	Kĩembu	LeftToRight
+EbuKE	ebu-KE	ebu-KE	Kĩembu (Kenya)	LeftToRight
+Ee	ee	ee	eʋegbe	LeftToRight
+EeGH	ee-GH	ee-GH	eʋegbe (Ghana nutome)	LeftToRight
+EeTG	ee-TG	ee-TG	eʋegbe (Togo nutome)	LeftToRight
+El	el	el	Ελληνικά	LeftToRight
+ElCY	el-CY	el-CY	Ελληνικά (Κύπρος)	LeftToRight
+ElGR	el-GR	el-GR	Ελληνικά (Ελλάδα)	LeftToRight
+En	en	en	English	LeftToRight
+En001	en-001	en-001	English (world)	LeftToRight
+En150	en-150	en-150	English (Europe)	LeftToRight
+EnAE	en-AE	en-AE	English (United Arab Emirates)	LeftToRight
+EnAG	en-AG	en-AG	English (Antigua & Barbuda)	LeftToRight
+EnAI	en-AI	en-AI	English (Anguilla)	LeftToRight
+EnAL	en-AL	en-AL	English (Albania)	LeftToRight
+EnAR	en-AR	en-AR	English (Argentina)	LeftToRight
+EnAS	en-AS	en-AS	English (American Samoa)	LeftToRight
+EnAT	en-AT	en-AT	English (Austria)	LeftToRight
+EnAU	en-AU	en-AU	English (Australia)	LeftToRight
+EnBB	en-BB	en-BB	English (Barbados)	LeftToRight
+EnBD	en-BD	en-BD	English (Bangladesh)	LeftToRight
+EnBE	en-BE	en-BE	English (Belgium)	LeftToRight
+EnBG	en-BG	en-BG	English (Bulgaria)	LeftToRight
+EnBI	en-BI	en-BI	English (Burundi)	LeftToRight
+EnBM	en-BM	en-BM	English (Bermuda)	LeftToRight
+EnBN	en-BN	en-BN	English (Brunei)	LeftToRight
+EnBR	en-BR	en-BR	English (Brazil)	LeftToRight
+EnBS	en-BS	en-BS	English (Bahamas)	LeftToRight
+EnBW	en-BW	en-BW	English (Botswana)	LeftToRight
+EnBZ	en-BZ	en-BZ	English (Belize)	LeftToRight
+EnCA	en-CA	en-CA	English (Canada)	LeftToRight
+EnCC	en-CC	en-CC	English (Cocos [Keeling] Islands)	LeftToRight
+EnCH	en-CH	en-CH	English (Switzerland)	LeftToRight
+EnCK	en-CK	en-CK	English (Cook Islands)	LeftToRight
+EnCL	en-CL	en-CL	English (Chile)	LeftToRight
+EnCM	en-CM	en-CM	English (Cameroon)	LeftToRight
+EnCN	en-CN	en-CN	English (China mainland)	LeftToRight
+EnCO	en-CO	en-CO	English (Colombia)	LeftToRight
+EnCV	en-CV	en-CV	English (Cape Verde)	LeftToRight
+EnCX	en-CX	en-CX	English (Christmas Island)	LeftToRight
+EnCY	en-CY	en-CY	English (Cyprus)	LeftToRight
+EnCZ	en-CZ	en-CZ	English (Czechia)	LeftToRight
+EnDE	en-DE	en-DE	English (Germany)	LeftToRight
+EnDG	en-DG	en-DG	English (Diego Garcia)	LeftToRight
+EnDK	en-DK	en-DK	English (Denmark)	LeftToRight
+EnDM	en-DM	en-DM	English (Dominica)	LeftToRight
+EnEE	en-EE	en-EE	English (Estonia)	LeftToRight
+EnER	en-ER	en-ER	English (Eritrea)	LeftToRight
+EnES	en-ES	en-ES	English (Spain)	LeftToRight
+EnFI	en-FI	en-FI	English (Finland)	LeftToRight
+EnFJ	en-FJ	en-FJ	English (Fiji)	LeftToRight
+EnFK	en-FK	en-FK	English (Falkland Islands)	LeftToRight
+EnFM	en-FM	en-FM	English (Micronesia)	LeftToRight
+EnFR	en-FR	en-FR	English (France)	LeftToRight
+EnGB	en-GB	en-GB	English (United Kingdom)	LeftToRight
+EnGD	en-GD	en-GD	English (Grenada)	LeftToRight
+EnGE	en-GE	en-GE	English (Georgia)	LeftToRight
+EnGG	en-GG	en-GG	English (Guernsey)	LeftToRight
+EnGH	en-GH	en-GH	English (Ghana)	LeftToRight
+EnGI	en-GI	en-GI	English (Gibraltar)	LeftToRight
+EnGM	en-GM	en-GM	English (Gambia)	LeftToRight
+EnGR	en-GR	en-GR	English (Greece)	LeftToRight
+EnGS	en-GS	en-GS	English (So. Georgia & So. Sandwich Isl.)	LeftToRight
+EnGU	en-GU	en-GU	English (Guam)	LeftToRight
+EnGY	en-GY	en-GY	English (Guyana)	LeftToRight
+EnHK	en-HK	en-HK	English (Hong Kong)	LeftToRight
+EnHU	en-HU	en-HU	English (Hungary)	LeftToRight
+EnID	en-ID	en-ID	English (Indonesia)	LeftToRight
+EnIE	en-IE	en-IE	English (Ireland)	LeftToRight
+EnIL	en-IL	en-IL	English (Israel)	LeftToRight
+EnIM	en-IM	en-IM	English (Isle of Man)	LeftToRight
+EnIN	en-IN	en-IN	English (India)	LeftToRight
+EnIO	en-IO	en-IO	English (Chagos Archipelago)	LeftToRight
+EnIT	en-IT	en-IT	English (Italy)	LeftToRight
+EnJE	en-JE	en-JE	English (Jersey)	LeftToRight
+EnJM	en-JM	en-JM	English (Jamaica)	LeftToRight
+EnJP	en-JP	en-JP	English (Japan)	LeftToRight
+EnKE	en-KE	en-KE	English (Kenya)	LeftToRight
+EnKI	en-KI	en-KI	English (Kiribati)	LeftToRight
+EnKN	en-KN	en-KN	English (St Kitts & Nevis)	LeftToRight
+EnKR	en-KR	en-KR	English (South Korea)	LeftToRight
+EnKY	en-KY	en-KY	English (Cayman Islands)	LeftToRight
+EnLC	en-LC	en-LC	English (St Lucia)	LeftToRight
+EnLR	en-LR	en-LR	English (Liberia)	LeftToRight
+EnLS	en-LS	en-LS	English (Lesotho)	LeftToRight
+EnLT	en-LT	en-LT	English (Lithuania)	LeftToRight
+EnLV	en-LV	en-LV	English (Latvia)	LeftToRight
+EnMG	en-MG	en-MG	English (Madagascar)	LeftToRight
+EnMH	en-MH	en-MH	English (Marshall Islands)	LeftToRight
+EnMM	en-MM	en-MM	English (Myanmar [Burma])	LeftToRight
+EnMO	en-MO	en-MO	English (Macao)	LeftToRight
+EnMP	en-MP	en-MP	English (Northern Mariana Islands)	LeftToRight
+EnMS	en-MS	en-MS	English (Montserrat)	LeftToRight
+EnMT	en-MT	en-MT	English (Malta)	LeftToRight
+EnMU	en-MU	en-MU	English (Mauritius)	LeftToRight
+EnMV	en-MV	en-MV	English (Maldives)	LeftToRight
+EnMW	en-MW	en-MW	English (Malawi)	LeftToRight
+EnMX	en-MX	en-MX	English (Mexico)	LeftToRight
+EnMY	en-MY	en-MY	English (Malaysia)	LeftToRight
+EnNA	en-NA	en-NA	English (Namibia)	LeftToRight
+EnNF	en-NF	en-NF	English (Norfolk Island)	LeftToRight
+EnNG	en-NG	en-NG	English (Nigeria)	LeftToRight
+EnNL	en-NL	en-NL	English (Netherlands)	LeftToRight
+EnNO	en-NO	en-NO	English (Norway)	LeftToRight
+EnNR	en-NR	en-NR	English (Nauru)	LeftToRight
+EnNU	en-NU	en-NU	English (Niue)	LeftToRight
+EnNZ	en-NZ	en-NZ	English (New Zealand)	LeftToRight
+EnPG	en-PG	en-PG	English (Papua New Guinea)	LeftToRight
+EnPH	en-PH	en-PH	English (Philippines)	LeftToRight
+EnPK	en-PK	en-PK	English (Pakistan)	LeftToRight
+EnPL	en-PL	en-PL	English (Poland)	LeftToRight
+EnPN	en-PN	en-PN	English (Pitcairn Islands)	LeftToRight
+EnPR	en-PR	en-PR	English (Puerto Rico)	LeftToRight
+EnPT	en-PT	en-PT	English (Portugal)	LeftToRight
+EnPW	en-PW	en-PW	English (Palau)	LeftToRight
+EnRO	en-RO	en-RO	English (Romania)	LeftToRight
+EnRU	en-RU	en-RU	English (Russia)	LeftToRight
+EnRW	en-RW	en-RW	English (Rwanda)	LeftToRight
+EnSA	en-SA	en-SA	English (Saudi Arabia)	LeftToRight
+EnSB	en-SB	en-SB	English (Solomon Islands)	LeftToRight
+EnSC	en-SC	en-SC	English (Seychelles)	LeftToRight
+EnSD	en-SD	en-SD	English (Sudan)	LeftToRight
+EnSE	en-SE	en-SE	English (Sweden)	LeftToRight
+EnSG	en-SG	en-SG	English (Singapore)	LeftToRight
+EnSH	en-SH	en-SH	English (St Helena)	LeftToRight
+EnSI	en-SI	en-SI	English (Slovenia)	LeftToRight
+EnSK	en-SK	en-SK	English (Slovakia)	LeftToRight
+EnSL	en-SL	en-SL	English (Sierra Leone)	LeftToRight
+EnSS	en-SS	en-SS	English (South Sudan)	LeftToRight
+EnSX	en-SX	en-SX	English (Sint Maarten)	LeftToRight
+EnSZ	en-SZ	en-SZ	English (Eswatini)	LeftToRight
+EnTC	en-TC	en-TC	English (Turks & Caicos Islands)	LeftToRight
+EnTH	en-TH	en-TH	English (Thailand)	LeftToRight
+EnTK	en-TK	en-TK	English (Tokelau)	LeftToRight
+EnTO	en-TO	en-TO	English (Tonga)	LeftToRight
+EnTR	en-TR	en-TR	English (Türkiye)	LeftToRight
+EnTT	en-TT	en-TT	English (Trinidad & Tobago)	LeftToRight
+EnTV	en-TV	en-TV	English (Tuvalu)	LeftToRight
+EnTW	en-TW	en-TW	English (Taiwan)	LeftToRight
+EnTZ	en-TZ	en-TZ	English (Tanzania)	LeftToRight
+EnUA	en-UA	en-UA	English (Ukraine)	LeftToRight
+EnUG	en-UG	en-UG	English (Uganda)	LeftToRight
+EnUM	en-UM	en-UM	English (U.S. Outlying Islands)	LeftToRight
+EnUS	en-US	en-US	English (United States)	LeftToRight
+EnVC	en-VC	en-VC	English (St Vincent & the Grenadines)	LeftToRight
+EnVG	en-VG	en-VG	English (British Virgin Islands)	LeftToRight
+EnVI	en-VI	en-VI	English (U.S. Virgin Islands)	LeftToRight
+EnVU	en-VU	en-VU	English (Vanuatu)	LeftToRight
+EnWS	en-WS	en-WS	English (Samoa)	LeftToRight
+EnZA	en-ZA	en-ZA	English (South Africa)	LeftToRight
+EnZM	en-ZM	en-ZM	English (Zambia)	LeftToRight
+EnZW	en-ZW	en-ZW	English (Zimbabwe)	LeftToRight
+Eo	eo	eo	Esperanto	LeftToRight
+Eo001	eo-001	eo-001	Esperanto (mondo)	LeftToRight
+Es	es	es	español	LeftToRight
+Es003	es-003	es-003	español (América del Norte)	LeftToRight
+Es419	es-419	es-419	español (Latinoamérica)	LeftToRight
+EsAG	es-AG	es-AG	español (Antigua y Barbuda)	LeftToRight
+EsAR	es-AR	es-AR	español (Argentina)	LeftToRight
+EsBB	es-BB	es-BB	español (Barbados)	LeftToRight
+EsBM	es-BM	es-BM	español (Bermudas)	LeftToRight
+EsBO	es-BO	es-BO	español (Bolivia)	LeftToRight
+EsBQ	es-BQ	es-BQ	español (Caribe neerlandés)	LeftToRight
+EsBR	es-BR	es-BR	español (Brasil)	LeftToRight
+EsBS	es-BS	es-BS	español (Bahamas)	LeftToRight
+EsBZ	es-BZ	es-BZ	español (Belice)	LeftToRight
+EsCA	es-CA	es-CA	español (Canadá)	LeftToRight
+EsCL	es-CL	es-CL	español (Chile)	LeftToRight
+EsCO	es-CO	es-CO	español (Colombia)	LeftToRight
+EsCR	es-CR	es-CR	español (Costa Rica)	LeftToRight
+EsCU	es-CU	es-CU	español (Cuba)	LeftToRight
+EsCW	es-CW	es-CW	español (Curazao)	LeftToRight
+EsDM	es-DM	es-DM	español (Dominica)	LeftToRight
+EsDO	es-DO	es-DO	español (República Dominicana)	LeftToRight
+EsEA	es-EA	es-EA	español (Ceuta y Melilla)	LeftToRight
+EsEC	es-EC	es-EC	español (Ecuador)	LeftToRight
+EsES	es-ES	es-ES	español (España)	LeftToRight
+EsGD	es-GD	es-GD	español (Granada)	LeftToRight
+EsGQ	es-GQ	es-GQ	español (Guinea Ecuatorial)	LeftToRight
+EsGT	es-GT	es-GT	español (Guatemala)	LeftToRight
+EsGY	es-GY	es-GY	español (Guyana)	LeftToRight
+EsHN	es-HN	es-HN	español (Honduras)	LeftToRight
+EsHT	es-HT	es-HT	español (Haití)	LeftToRight
+EsIC	es-IC	es-IC	español (Canarias)	LeftToRight
+EsKN	es-KN	es-KN	español (San Cristóbal y Nieves)	LeftToRight
+EsKY	es-KY	es-KY	español (Islas Caimán)	LeftToRight
+EsLC	es-LC	es-LC	español (Santa Lucía)	LeftToRight
+EsMX	es-MX	es-MX	español (México)	LeftToRight
+EsNI	es-NI	es-NI	español (Nicaragua)	LeftToRight
+EsPA	es-PA	es-PA	español (Panamá)	LeftToRight
+EsPE	es-PE	es-PE	español (Perú)	LeftToRight
+EsPH	es-PH	es-PH	español (Filipinas)	LeftToRight
+EsPR	es-PR	es-PR	español (Puerto Rico)	LeftToRight
+EsPY	es-PY	es-PY	español (Paraguay)	LeftToRight
+EsSV	es-SV	es-SV	español (El Salvador)	LeftToRight
+EsTC	es-TC	es-TC	español (Islas Turcas y Caicos)	LeftToRight
+EsTT	es-TT	es-TT	español (Trinidad y Tobago)	LeftToRight
+EsUS	es-US	es-US	español (Estados Unidos)	LeftToRight
+EsUY	es-UY	es-UY	español (Uruguay)	LeftToRight
+EsVC	es-VC	es-VC	español (San Vicente y las Granadinas)	LeftToRight
+EsVE	es-VE	es-VE	español (Venezuela)	LeftToRight
+EsVG	es-VG	es-VG	español (Islas Vírgenes Británicas)	LeftToRight
+EsVI	es-VI	es-VI	español (Islas Vírgenes de EE. UU.)	LeftToRight
+Et	et	et	eesti	LeftToRight
+EtEE	et-EE	et-EE	eesti (Eesti)	LeftToRight
+Eu	eu	eu	euskara	LeftToRight
+EuES	eu-ES	eu-ES	euskara (Espainia)	LeftToRight
+Ewo	ewo	ewo	ewondo	LeftToRight
+EwoCM	ewo-CM	ewo-CM	ewondo (Kamərún)	LeftToRight
+Fa	fa	fa	فارسی	RightToLeft
+FaAF	fa-AF	fa-AF	فارسی (افغانستان)	RightToLeft
+FaIR	fa-IR	fa-IR	فارسی (ایران)	RightToLeft
+Ff	ff	ff	Pulaar	LeftToRight
+FfAdlm	ff-Adlm	ff-Adlm	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃)	RightToLeft
+FfAdlmBF	ff-Adlm-BF	ff-Adlm-BF	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤄𞤵𞤪𞤳𞤭𞤲𞤢 𞤊𞤢𞤧𞤮𞥅)	RightToLeft
+FfAdlmCM	ff-Adlm-CM	ff-Adlm-CM	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤑𞤢𞤥𞤢𞤪𞤵𞥅𞤲)	RightToLeft
+FfAdlmGH	ff-Adlm-GH	ff-Adlm-GH	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤘𞤢𞤲𞤢)	RightToLeft
+FfAdlmGM	ff-Adlm-GM	ff-Adlm-GM	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤘𞤢𞤥𞤦𞤭𞤴𞤢)	RightToLeft
+FfAdlmGN	ff-Adlm-GN	ff-Adlm-GN	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤘𞤭𞤲𞤫)	RightToLeft
+FfAdlmGW	ff-Adlm-GW	ff-Adlm-GW	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤘𞤭𞤲𞤫-𞤄𞤭𞤧𞤢𞤱𞤮𞥅)	RightToLeft
+FfAdlmLR	ff-Adlm-LR	ff-Adlm-LR	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤂𞤢𞤦𞤭𞤪𞤭𞤴𞤢𞥄)	RightToLeft
+FfAdlmMR	ff-Adlm-MR	ff-Adlm-MR	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤃𞤮𞤪𞤼𞤢𞤲𞤭𞥅)	RightToLeft
+FfAdlmNE	ff-Adlm-NE	ff-Adlm-NE	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤐𞤭𞥅𞤶𞤫𞤪)	RightToLeft
+FfAdlmNG	ff-Adlm-NG	ff-Adlm-NG	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤐𞤢𞤶𞤫𞤪𞤭𞤴𞤢𞥄)	RightToLeft
+FfAdlmSL	ff-Adlm-SL	ff-Adlm-SL	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤅𞤢𞤪𞤢𞤤𞤮𞤲)	RightToLeft
+FfAdlmSN	ff-Adlm-SN	ff-Adlm-SN	𞤆𞤵𞤤𞤢𞤪 (𞤀𞤁𞤂𞤢𞤃⹁ 𞤅𞤫𞤲𞤫𞤺𞤢𞥄𞤤)	RightToLeft
+FfLatn	ff-Latn	ff-Latn	Fula (Latin)	LeftToRight
+FfLatnBF	ff-Latn-BF	ff-Latn-BF	Fula (Latin, Burkina Faso)	LeftToRight
+FfLatnCM	ff-Latn-CM	ff-Latn-CM	Fula (Latin, Cameroon)	LeftToRight
+FfLatnGH	ff-Latn-GH	ff-Latn-GH	Fula (Latin, Ghana)	LeftToRight
+FfLatnGM	ff-Latn-GM	ff-Latn-GM	Fula (Latin, Gambia)	LeftToRight
+FfLatnGN	ff-Latn-GN	ff-Latn-GN	Fula (Latin, Guinea)	LeftToRight
+FfLatnGW	ff-Latn-GW	ff-Latn-GW	Fula (Latin, Guinea-Bissau)	LeftToRight
+FfLatnLR	ff-Latn-LR	ff-Latn-LR	Fula (Latin, Liberia)	LeftToRight
+FfLatnMR	ff-Latn-MR	ff-Latn-MR	Fula (Latin, Mauritania)	LeftToRight
+FfLatnNE	ff-Latn-NE	ff-Latn-NE	Fula (Latin, Niger)	LeftToRight
+FfLatnNG	ff-Latn-NG	ff-Latn-NG	Fula (Latin, Nigeria)	LeftToRight
+FfLatnSL	ff-Latn-SL	ff-Latn-SL	Fula (Latin, Sierra Leone)	LeftToRight
+FfLatnSN	ff-Latn-SN	ff-Latn-SN	Fula (Latin, Senegal)	LeftToRight
+Fi	fi	fi	suomi	LeftToRight
+FiFI	fi-FI	fi-FI	suomi (Suomi)	LeftToRight
+Fil	fil	fil	Filipino	LeftToRight
+FilPH	fil-PH	fil-PH	Filipino (Pilipinas)	LeftToRight
+Fo	fo	fo	føroyskt	LeftToRight
+FoDK	fo-DK	fo-DK	føroyskt (Danmark)	LeftToRight
+FoFO	fo-FO	fo-FO	føroyskt (Føroyar)	LeftToRight
+Fr	fr	fr	français	LeftToRight
+FrBE	fr-BE	fr-BE	français (Belgique)	LeftToRight
+FrBF	fr-BF	fr-BF	français (Burkina Faso)	LeftToRight
+FrBI	fr-BI	fr-BI	français (Burundi)	LeftToRight
+FrBJ	fr-BJ	fr-BJ	français (Bénin)	LeftToRight
+FrBL	fr-BL	fr-BL	français (Saint-Barthélemy)	LeftToRight
+FrCA	fr-CA	fr-CA	français (Canada)	LeftToRight
+FrCD	fr-CD	fr-CD	français (Congo-Kinshasa)	LeftToRight
+FrCF	fr-CF	fr-CF	français (République centrafricaine)	LeftToRight
+FrCG	fr-CG	fr-CG	français (Congo-Brazzaville)	LeftToRight
+FrCH	fr-CH	fr-CH	français (Suisse)	LeftToRight
+FrCI	fr-CI	fr-CI	français (Côte d’Ivoire)	LeftToRight
+FrCM	fr-CM	fr-CM	français (Cameroun)	LeftToRight
+FrDJ	fr-DJ	fr-DJ	français (Djibouti)	LeftToRight
+FrDZ	fr-DZ	fr-DZ	français (Algérie)	LeftToRight
+FrFR	fr-FR	fr-FR	français (France)	LeftToRight
+FrGA	fr-GA	fr-GA	français (Gabon)	LeftToRight
+FrGF	fr-GF	fr-GF	français (Guyane française)	LeftToRight
+FrGN	fr-GN	fr-GN	français (Guinée)	LeftToRight
+FrGP	fr-GP	fr-GP	français (Guadeloupe)	LeftToRight
+FrGQ	fr-GQ	fr-GQ	français (Guinée équatoriale)	LeftToRight
+FrHT	fr-HT	fr-HT	français (Haïti)	LeftToRight
+FrKM	fr-KM	fr-KM	français (Comores)	LeftToRight
+FrLU	fr-LU	fr-LU	français (Luxembourg)	LeftToRight
+FrMA	fr-MA	fr-MA	français (Maroc)	LeftToRight
+FrMC	fr-MC	fr-MC	français (Monaco)	LeftToRight
+FrMF	fr-MF	fr-MF	français (Saint-Martin)	LeftToRight
+FrMG	fr-MG	fr-MG	français (Madagascar)	LeftToRight
+FrML	fr-ML	fr-ML	français (Mali)	LeftToRight
+FrMQ	fr-MQ	fr-MQ	français (Martinique)	LeftToRight
+FrMR	fr-MR	fr-MR	français (Mauritanie)	LeftToRight
+FrMU	fr-MU	fr-MU	français (Maurice)	LeftToRight
+FrNC	fr-NC	fr-NC	français (Nouvelle-Calédonie)	LeftToRight
+FrNE	fr-NE	fr-NE	français (Niger)	LeftToRight
+FrPF	fr-PF	fr-PF	français (Polynésie française)	LeftToRight
+FrPM	fr-PM	fr-PM	français (Saint-Pierre-et-Miquelon)	LeftToRight
+FrRE	fr-RE	fr-RE	français (La Réunion)	LeftToRight
+FrRW	fr-RW	fr-RW	français (Rwanda)	LeftToRight
+FrSC	fr-SC	fr-SC	français (Seychelles)	LeftToRight
+FrSN	fr-SN	fr-SN	français (Sénégal)	LeftToRight
+FrSY	fr-SY	fr-SY	français (Syrie)	LeftToRight
+FrTD	fr-TD	fr-TD	français (Tchad)	LeftToRight
+FrTG	fr-TG	fr-TG	français (Togo)	LeftToRight
+FrTN	fr-TN	fr-TN	français (Tunisie)	LeftToRight
+FrVU	fr-VU	fr-VU	français (Vanuatu)	LeftToRight
+FrWF	fr-WF	fr-WF	français (Wallis-et-Futuna)	LeftToRight
+FrYT	fr-YT	fr-YT	français (Mayotte)	LeftToRight
+Fur	fur	fur	furlan	LeftToRight
+FurIT	fur-IT	fur-IT	furlan (Italie)	LeftToRight
+Fy	fy	fy	Frysk	LeftToRight
+FyNL	fy-NL	fy-NL	Frysk (Nederlân)	LeftToRight
+Ga	ga	ga	Gaeilge	LeftToRight
+GaGB	ga-GB	ga-GB	Gaeilge (an Ríocht Aontaithe)	LeftToRight
+GaIE	ga-IE	ga-IE	Gaeilge (Éire)	LeftToRight
+Gaa	gaa	gaa	Gã	LeftToRight
+GaaGH	gaa-GH	gaa-GH	Gã (Ghana)	LeftToRight
+Gd	gd	gd	Gàidhlig	LeftToRight
+GdGB	gd-GB	gd-GB	Gàidhlig (An Rìoghachd Aonaichte)	LeftToRight
+Gez	gez	gez	ግዕዝኛ	LeftToRight
+GezER	gez-ER	gez-ER	ግዕዝኛ (ኤርትራ)	LeftToRight
+GezET	gez-ET	gez-ET	ግዕዝኛ (ኢትዮጵያ)	LeftToRight
+Gl	gl	gl	galego	LeftToRight
+GlES	gl-ES	gl-ES	galego (España)	LeftToRight
+Gn	gn	gn	avañe’ẽ	LeftToRight
+GnPY	gn-PY	gn-PY	Guarani (Paraguay)	LeftToRight
+Gsw	gsw	gsw	Schwiizertüütsch	LeftToRight
+GswCH	gsw-CH	gsw-CH	Schwiizertüütsch (Schwiiz)	LeftToRight
+GswFR	gsw-FR	gsw-FR	Schwiizertüütsch (Frankriich)	LeftToRight
+GswLI	gsw-LI	gsw-LI	Schwiizertüütsch (Liächteschtäi)	LeftToRight
+Gu	gu	gu	ગુજરાતી	LeftToRight
+GuIN	gu-IN	gu-IN	ગુજરાતી (ભારત)	LeftToRight
+Guz	guz	guz	Ekegusii	LeftToRight
+GuzKE	guz-KE	guz-KE	Ekegusii (Kenya)	LeftToRight
+Gv	gv	gv	Gaelg	LeftToRight
+GvIM	gv-IM	gv-IM	Gaelg (Ellan Vannin)	LeftToRight
+Ha	ha	ha	Hausa	LeftToRight
+HaGH	ha-GH	ha-GH	Hausa (Gana)	LeftToRight
+HaNE	ha-NE	ha-NE	Hausa (Nijar)	LeftToRight
+HaNG	ha-NG	ha-NG	Hausa (Nijeriya)	LeftToRight
+Haw	haw	haw	ʻŌlelo Hawaiʻi	LeftToRight
+HawUS	haw-US	haw-US	ʻŌlelo Hawaiʻi (ʻAmelika Hui Pū ʻIa)	LeftToRight
+Hch	hch	hch	Wixárika	LeftToRight
+He	he	he	עברית	RightToLeft
+HeIL	he-IL	he-IL	עברית (ישראל)	RightToLeft
+Hi	hi	hi	हिन्दी	LeftToRight
+HiIN	hi-IN	hi-IN	हिन्दी (भारत)	LeftToRight
+HiLatn	hi-Latn	hi-Latn	Hindi (Latin)	LeftToRight
+HiLatnIN	hi-Latn-IN	hi-Latn-IN	Hindi (Latin, Bharat)	LeftToRight
+Hmn	hmn	hmn	𖬌𖬣𖬵	LeftToRight
+HmnCN	hmn-CN	hmn-CN	𖬌𖬣𖬵 (CN)	LeftToRight
+Hr	hr	hr	hrvatski	LeftToRight
+HrBA	hr-BA	hr-BA	hrvatski (Bosna i Hercegovina)	LeftToRight
+HrHR	hr-HR	hr-HR	hrvatski (Hrvatska)	LeftToRight
+Hsb	hsb	hsb	hornjoserbšćina	LeftToRight
+HsbDE	hsb-DE	hsb-DE	hornjoserbšćina (Němska)	LeftToRight
+Ht	ht	ht	Kreyòl Ayisyen	LeftToRight
+HtHT	ht-HT	ht-HT	Haitian Creole (Haiti)	LeftToRight
+Hu	hu	hu	magyar	LeftToRight
+HuHU	hu-HU	hu-HU	magyar (Magyarország)	LeftToRight
+Hy	hy	hy	հայերեն	LeftToRight
+HyAM	hy-AM	hy-AM	հայերեն (Հայաստան)	LeftToRight
+Ia	ia	ia	interlingua	LeftToRight
+Ia001	ia-001	ia-001	interlingua (mundo)	LeftToRight
+Id	id	id	Indonesia	LeftToRight
+IdID	id-ID	id-ID	Indonesia (Indonesia)	LeftToRight
+Ie	ie	ie	Interlingue	LeftToRight
+IeEE	ie-EE	ie-EE	Interlingue (Estonia)	LeftToRight
+Ig	ig	ig	Igbo	LeftToRight
+IgNG	ig-NG	ig-NG	Igbo (Naịjịrịa)	LeftToRight
+Ii	ii	ii	ꆈꌠꉙ	LeftToRight
+IiCN	ii-CN	ii-CN	ꆈꌠꉙ（ꍏꇩ）	LeftToRight
+Inh	inh	inh	ГӀалгӀай мотт	LeftToRight
+Io	io	io	Ido	LeftToRight
+Io001	io-001	io-001	Ido (world)	LeftToRight
+Is	is	is	íslenska	LeftToRight
+IsIS	is-IS	is-IS	íslenska (Ísland)	LeftToRight
+Isc	isc	isc	Iskonawa	LeftToRight
+It	it	it	italiano	LeftToRight
+ItCH	it-CH	it-CH	italiano (Svizzera)	LeftToRight
+ItIT	it-IT	it-IT	italiano (Italia)	LeftToRight
+ItSM	it-SM	it-SM	italiano (San Marino)	LeftToRight
+ItVA	it-VA	it-VA	italiano (Città del Vaticano)	LeftToRight
+Iu	iu	iu	ᐃᓄᒃᑎᑐᑦ	LeftToRight
+IuCA	iu-CA	iu-CA	ᐃᓄᒃᑎᑐᑦ (ᑲᓇᑕᒥ)	LeftToRight
+Ja	ja	ja	日本語	LeftToRight
+JaJP	ja-JP	ja-JP	日本語（日本）	LeftToRight
+Jbo	jbo	jbo	la .lojban.	LeftToRight
+Jbo001	jbo-001	jbo-001	Lojban (world)	LeftToRight
+Jgo	jgo	jgo	Ndaꞌa	LeftToRight
+JgoCM	jgo-CM	jgo-CM	Ndaꞌa (Kamɛlûn)	LeftToRight
+Jmc	jmc	jmc	Kimachame	LeftToRight
+JmcTZ	jmc-TZ	jmc-TZ	Kimachame (Tanzania)	LeftToRight
+Jv	jv	jv	Jawa	LeftToRight
+JvID	jv-ID	jv-ID	Jawa (Indonésia)	LeftToRight
+Ka	ka	ka	ქართული	LeftToRight
+KaGE	ka-GE	ka-GE	ქართული (საქართველო)	LeftToRight
+Kab	kab	kab	Taqbaylit	LeftToRight
+KabDZ	kab-DZ	kab-DZ	Taqbaylit (Lezzayer)	LeftToRight
+Kaj	kaj	kaj	Kaje	LeftToRight
+KajNG	kaj-NG	kaj-NG	Jju (Nigeria)	LeftToRight
+Kam	kam	kam	Kikamba	LeftToRight
+KamKE	kam-KE	kam-KE	Kikamba (Kenya)	LeftToRight
+Kcg	kcg	kcg	Katab	LeftToRight
+KcgNG	kcg-NG	kcg-NG	Tyap (Nigeria)	LeftToRight
+Kde	kde	kde	Chimakonde	LeftToRight
+KdeTZ	kde-TZ	kde-TZ	Chimakonde (Tanzania)	LeftToRight
+Kea	kea	kea	kabuverdianu	LeftToRight
+KeaCV	kea-CV	kea-CV	kabuverdianu (Kabu Verdi)	LeftToRight
+Kgp	kgp	kgp	kanhgág	LeftToRight
+KgpBR	kgp-BR	kgp-BR	kanhgág (Mrasir)	LeftToRight
+Khq	khq	khq	Koyra ciini	LeftToRight
+KhqML	khq-ML	khq-ML	Koyra ciini (Maali)	LeftToRight
+Ki	ki	ki	Gikuyu	LeftToRight
+KiKE	ki-KE	ki-KE	Gikuyu (Kenya)	LeftToRight
+Kk	kk	kk	қазақ тілі	LeftToRight
+KkArab	kk-Arab	kk-Arab	قازاق ءتىلى (اراب جازۋى)	RightToLeft
+KkArabCN	kk-Arab-CN	kk-Arab-CN	قازاق ءتىلى (اراب جازۋى، قىتاي)	RightToLeft
+KkCyrl	kk-Cyrl	kk-Cyrl	қазақ тілі (кирилл жазуы)	LeftToRight
+KkCyrlKZ	kk-Cyrl-KZ	kk-Cyrl-KZ	қазақ тілі (кирилл жазуы, Қазақстан)	LeftToRight
+KkKZ	kk-KZ	kk-KZ	қазақ тілі (Қазақстан)	LeftToRight
+Kkj	kkj	kkj	kakɔ	LeftToRight
+KkjCM	kkj-CM	kkj-CM	kakɔ (Kamɛrun)	LeftToRight
+Kl	kl	kl	kalaallisut	LeftToRight
+KlGL	kl-GL	kl-GL	kalaallisut (Kalaallit Nunaat)	LeftToRight
+Kln	kln	kln	Kalenjin	LeftToRight
+KlnKE	kln-KE	kln-KE	Kalenjin (Emetab Kenya)	LeftToRight
+Km	km	km	ខ្មែរ	LeftToRight
+KmKH	km-KH	km-KH	ខ្មែរ (កម្ពុជា)	LeftToRight
+Kn	kn	kn	ಕನ್ನಡ	LeftToRight
+KnIN	kn-IN	kn-IN	ಕನ್ನಡ (ಭಾರತ)	LeftToRight
+Ko	ko	ko	한국어	LeftToRight
+KoCN	ko-CN	ko-CN	한국어(중국 본토)	LeftToRight
+KoKP	ko-KP	ko-KP	한국어(조선민주주의인민공화국)	LeftToRight
+KoKR	ko-KR	ko-KR	한국어(대한민국)	LeftToRight
+Kok	kok	kok	कोंकणी	LeftToRight
+KokDeva	kok-Deva	kok-Deva	कोंकणी (देवनागरी)	LeftToRight
+KokDevaIN	kok-Deva-IN	kok-Deva-IN	कोंकणी (देवनागरी, भारत)	LeftToRight
+KokLatn	kok-Latn	kok-Latn	Konknni (Romi)	LeftToRight
+KokLatnIN	kok-Latn-IN	kok-Latn-IN	Konknni (Romi, Bharot)	LeftToRight
+Kpe	kpe	kpe	Kpɛlɛɛ	LeftToRight
+KpeGN	kpe-GN	kpe-GN	Kpelle (Guinea)	LeftToRight
+KpeLR	kpe-LR	kpe-LR	Kpelle (Liberia)	LeftToRight
+Ks	ks	ks	کٲشُر	RightToLeft
+KsArab	ks-Arab	ks-Arab	کٲشُر (نسخ)	RightToLeft
+KsArabIN	ks-Arab-IN	ks-Arab-IN	کٲشُر (نسخ, ہِندوستان)	RightToLeft
+KsAranIN	ks-Aran-IN	ks-Aran-IN	کٲشُر (نستعلیق, ہِندوستان)	RightToLeft
+KsDeva	ks-Deva	ks-Deva	कॉशुर (देवनागरी)	LeftToRight
+KsDevaIN	ks-Deva-IN	ks-Deva-IN	कॉशुर (देवनागरी, हिंदोस्तान)	LeftToRight
+Ksb	ksb	ksb	Kishambaa	LeftToRight
+KsbTZ	ksb-TZ	ksb-TZ	Kishambaa (Tanzania)	LeftToRight
+Ksf	ksf	ksf	rikpa	LeftToRight
+KsfCM	ksf-CM	ksf-CM	rikpa (kamɛrún)	LeftToRight
+Ksh	ksh	ksh	Kölsch	LeftToRight
+KshDE	ksh-DE	ksh-DE	Kölsch en Doütschland	LeftToRight
+Ku	ku	ku	kurdî (kurmancî)	LeftToRight
+KuLatn	ku-Latn	ku-Latn	kurdî (kurmancî) (latînî)	LeftToRight
+KuLatnIQ	ku-Latn-IQ	ku-Latn-IQ	kurdî (kurmancî) (latînî, Îraq)	LeftToRight
+KuLatnSY	ku-Latn-SY	ku-Latn-SY	kurdî (kurmancî) (latînî, Sûrîye)	LeftToRight
+KuLatnTR	ku-Latn-TR	ku-Latn-TR	kurdî (kurmancî) (latînî, Türkiye)	LeftToRight
+KuTR	ku-TR	ku-TR	kurdî (kurmancî) (Türkiye)	LeftToRight
+Kw	kw	kw	kernewek	LeftToRight
+KwGB	kw-GB	kw-GB	kernewek (Rywvaneth Unys)	LeftToRight
+Kxv	kxv	kxv	kuvi	LeftToRight
+KxvDeva	kxv-Deva	kxv-Deva	कुवि (देवनागरी)	LeftToRight
+KxvDevaIN	kxv-Deva-IN	kxv-Deva-IN	कुवि (देवनागरी, बारत)	LeftToRight
+KxvLatn	kxv-Latn	kxv-Latn	kuvi (laṭin)	LeftToRight
+KxvLatnIN	kxv-Latn-IN	kxv-Latn-IN	kuvi (laṭin, inḍiā)	LeftToRight
+KxvOrya	kxv-Orya	kxv-Orya	କୁୱି (ଅଡ଼ିଆ)	LeftToRight
+KxvOryaIN	kxv-Orya-IN	kxv-Orya-IN	କୁୱି (ଅଡ଼ିଆ, ବାରତ)	LeftToRight
+KxvTelu	kxv-Telu	kxv-Telu	కువి (తెలుగు)	LeftToRight
+KxvTeluIN	kxv-Telu-IN	kxv-Telu-IN	కువి (తెలుగు, బారతదెసాం)	LeftToRight
+Ky	ky	ky	кыргызча	LeftToRight
+KyKG	ky-KG	ky-KG	кыргызча (Кыргызстан)	LeftToRight
+Lag	lag	lag	Kɨlaangi	LeftToRight
+LagTZ	lag-TZ	lag-TZ	Kɨlaangi (Taansanía)	LeftToRight
+Lb	lb	lb	Lëtzebuergesch	LeftToRight
+LbLU	lb-LU	lb-LU	Lëtzebuergesch (Lëtzebuerg)	LeftToRight
+Lg	lg	lg	Luganda	LeftToRight
+LgUG	lg-UG	lg-UG	Luganda (Yuganda)	LeftToRight
+Lij	lij	lij	ligure	LeftToRight
+LijIT	lij-IT	lij-IT	ligure (Italia)	LeftToRight
+Lkt	lkt	lkt	Lakȟólʼiyapi	LeftToRight
+LktUS	lkt-US	lkt-US	Lakȟólʼiyapi (Mílahaŋska Tȟamákȟočhe)	LeftToRight
+Lmo	lmo	lmo	Lombard	LeftToRight
+LmoIT	lmo-IT	lmo-IT	Lombard (Italia)	LeftToRight
+Ln	ln	ln	lingála	LeftToRight
+LnAO	ln-AO	ln-AO	lingála (Angóla)	LeftToRight
+LnCD	ln-CD	ln-CD	lingála (Republíki ya Kongó Demokratíki)	LeftToRight
+LnCF	ln-CF	ln-CF	lingála (Repibiki ya Afríka ya Káti)	LeftToRight
+LnCG	ln-CG	ln-CG	lingála (Kongo)	LeftToRight
+Lo	lo	lo	ລາວ	LeftToRight
+LoLA	lo-LA	lo-LA	ລາວ (ລາວ)	LeftToRight
+Lrc	lrc	lrc	لۊری شومالی	RightToLeft
+LrcIQ	lrc-IQ	lrc-IQ	Northern Luri (Iraq)	RightToLeft
+LrcIR	lrc-IR	lrc-IR	Northern Luri (Iran)	RightToLeft
+Lt	lt	lt	lietuvių	LeftToRight
+LtLT	lt-LT	lt-LT	lietuvių (Lietuva)	LeftToRight
+Lu	lu	lu	Tshiluba	LeftToRight
+LuCD	lu-CD	lu-CD	Tshiluba (Ditunga wa Kongu)	LeftToRight
+Luo	luo	luo	Dholuo	LeftToRight
+LuoKE	luo-KE	luo-KE	Dholuo (Kenya)	LeftToRight
+Lut	lut	lut	dxʷləšucid · txʷəlšucid · xʷəlšucid	LeftToRight
+Luy	luy	luy	Luluhia	LeftToRight
+LuyKE	luy-KE	luy-KE	Luluhia (Kenya)	LeftToRight
+Lv	lv	lv	latviešu	LeftToRight
+LvLV	lv-LV	lv-LV	latviešu (Latvija)	LeftToRight
+Mai	mai	mai	मैथिली	LeftToRight
+MaiIN	mai-IN	mai-IN	मैथिली (भारत)	LeftToRight
+Mas	mas	mas	Maa	LeftToRight
+MasKE	mas-KE	mas-KE	Maa (Kenya)	LeftToRight
+MasTZ	mas-TZ	mas-TZ	Maa (Tansania)	LeftToRight
+Mer	mer	mer	Kĩmĩrũ	LeftToRight
+MerKE	mer-KE	mer-KE	Kĩmĩrũ (Kenya)	LeftToRight
+Mfe	mfe	mfe	kreol morisien	LeftToRight
+MfeMU	mfe-MU	mfe-MU	kreol morisien (Moris)	LeftToRight
+Mg	mg	mg	Malagasy	LeftToRight
+MgMG	mg-MG	mg-MG	Malagasy (Madagasikara)	LeftToRight
+Mgh	mgh	mgh	Makua	LeftToRight
+MghMZ	mgh-MZ	mgh-MZ	Makua (Umozambiki)	LeftToRight
+Mgo	mgo	mgo	metaʼ	LeftToRight
+MgoCM	mgo-CM	mgo-CM	metaʼ (Kamalun)	LeftToRight
+Mi	mi	mi	Māori	LeftToRight
+MiNZ	mi-NZ	mi-NZ	Māori (Aotearoa)	LeftToRight
+Mic	mic	mic	Lʼnuiʼsuti	LeftToRight
+MicCA	mic-CA	mic-CA	Mi’kmaw (Canada)	LeftToRight
+Mid	mid	mid	ࡌࡀࡍࡃࡀࡉࡀ	RightToLeft
+MidIQ	mid-IQ	mid-IQ	Mandaic (Iraq)	RightToLeft
+Mk	mk	mk	македонски	LeftToRight
+MkMK	mk-MK	mk-MK	македонски (Северна Македонија)	LeftToRight
+Ml	ml	ml	മലയാളം	LeftToRight
+MlIN	ml-IN	ml-IN	മലയാളം (ഇന്ത്യ)	LeftToRight
+Mn	mn	mn	монгол	LeftToRight
+MnMN	mn-MN	mn-MN	монгол (Монгол)	LeftToRight
+Mni	mni	mni	মৈতৈলোন্	LeftToRight
+MniBeng	mni-Beng	mni-Beng	মৈতৈলোন্ (বাংলা)	LeftToRight
+MniBengIN	mni-Beng-IN	mni-Beng-IN	মৈতৈলোন্ (বাংলা, ইন্দিয়া)	LeftToRight
+MniMtei	mni-Mtei	mni-Mtei	ꯃꯤꯇꯩꯂꯣꯟ (ꯃꯤꯇꯩ ꯃꯌꯦꯛ)	LeftToRight
+MniMteiIN	mni-Mtei-IN	mni-Mtei-IN	Manipuri (Meitei Mayek, India)	LeftToRight
+Moh	moh	moh	Kanienʼkéha	LeftToRight
+MohCA	moh-CA	moh-CA	Mohawk (Canada)	LeftToRight
+Mr	mr	mr	मराठी	LeftToRight
+MrIN	mr-IN	mr-IN	मराठी (भारत)	LeftToRight
+Ms	ms	ms	Bahasa Melayu	LeftToRight
+MsArab	ms-Arab	ms-Arab	بهاس ملايو (عرب)	RightToLeft
+MsArabBN	ms-Arab-BN	ms-Arab-BN	بهاس ملايو (عرب، بروني)	RightToLeft
+MsArabMY	ms-Arab-MY	ms-Arab-MY	بهاس ملايو (عرب، مليسيا)	RightToLeft
+MsBN	ms-BN	ms-BN	Bahasa Melayu (Brunei)	LeftToRight
+MsID	ms-ID	ms-ID	Bahasa Melayu (Indonesia)	LeftToRight
+MsMY	ms-MY	ms-MY	Bahasa Melayu (Malaysia)	LeftToRight
+MsSG	ms-SG	ms-SG	Bahasa Melayu (Singapura)	LeftToRight
+Mt	mt	mt	Malti	LeftToRight
+MtMT	mt-MT	mt-MT	Malti (Malta)	LeftToRight
+Mua	mua	mua	MUNDAŊ	LeftToRight
+MuaCM	mua-CM	mua-CM	MUNDAŊ (kameruŋ)	LeftToRight
+Mus	mus	mus	Mvskoke	LeftToRight
+MusUS	mus-US	mus-US	Mvskoke (United States)	LeftToRight
+My	my	my	မြန်မာ	LeftToRight
+MyMM	my-MM	my-MM	မြန်မာ (မြန်မာ)	LeftToRight
+Myv	myv	myv	эрзянь кель	LeftToRight
+MyvRU	myv-RU	myv-RU	эрзянь кель (Рузонь мастор)	LeftToRight
+Mzn	mzn	mzn	مازرونی	RightToLeft
+MznIR	mzn-IR	mzn-IR	مازرونی (ایران)	RightToLeft
+Naq	naq	naq	Khoekhoegowab	LeftToRight
+NaqNA	naq-NA	naq-NA	Khoekhoegowab (Namibiab)	LeftToRight
+Nb	nb	nb	norsk bokmål	LeftToRight
+NbNO	nb-NO	nb-NO	norsk bokmål (Norge)	LeftToRight
+NbSJ	nb-SJ	nb-SJ	norsk bokmål (Svalbard og Jan Mayen)	LeftToRight
+Nd	nd	nd	isiNdebele	LeftToRight
+NdZW	nd-ZW	nd-ZW	isiNdebele (Zimbabwe)	LeftToRight
+Nds	nds	nds	Neddersass’sch	LeftToRight
+NdsDE	nds-DE	nds-DE	Neddersass’sch (Düütschland)	LeftToRight
+NdsNL	nds-NL	nds-NL	Neddersass’sch (Nedderlannen)	LeftToRight
+Ne	ne	ne	नेपाली	LeftToRight
+NeIN	ne-IN	ne-IN	नेपाली (भारत)	LeftToRight
+NeNP	ne-NP	ne-NP	नेपाली (नेपाल)	LeftToRight
+Nez	nez	nez	nimipuutímt	LeftToRight
+Nl	nl	nl	Nederlands	LeftToRight
+NlAW	nl-AW	nl-AW	Nederlands (Aruba)	LeftToRight
+NlBE	nl-BE	nl-BE	Nederlands (België)	LeftToRight
+NlBQ	nl-BQ	nl-BQ	Nederlands (Caribisch Nederland)	LeftToRight
+NlCW	nl-CW	nl-CW	Nederlands (Curaçao)	LeftToRight
+NlNL	nl-NL	nl-NL	Nederlands (Nederland)	LeftToRight
+NlSR	nl-SR	nl-SR	Nederlands (Suriname)	LeftToRight
+NlSX	nl-SX	nl-SX	Nederlands (Sint-Maarten)	LeftToRight
+Nmg	nmg	nmg	Kwasio	LeftToRight
+NmgCM	nmg-CM	nmg-CM	Kwasio (Cameroon)	LeftToRight
+Nn	nn	nn	norsk nynorsk	LeftToRight
+NnNO	nn-NO	nn-NO	norsk nynorsk (Noreg)	LeftToRight
+Nnh	nnh	nnh	Shwóŋò ngiembɔɔn	LeftToRight
+NnhCM	nnh-CM	nnh-CM	Shwóŋò ngiembɔɔn (Kàmalûm)	LeftToRight
+Nnp	nnp	nnp	𞋒𞋀𞋉𞋃𞋕	LeftToRight
+NnpIN	nnp-IN	nnp-IN	Wancho (India)	LeftToRight
+No	no	no	norsk	LeftToRight
+Nqo	nqo	nqo	ߒߞߏ	RightToLeft
+NqoGN	nqo-GN	nqo-GN	ߒߞߏ (ߖߌ߬ߣߍ߫)	RightToLeft
+Nr	nr	nr	South Ndebele	LeftToRight
+NrZA	nr-ZA	nr-ZA	South Ndebele (South Africa)	LeftToRight
+Nso	nso	nso	Sesotho sa Leboa	LeftToRight
+NsoZA	nso-ZA	nso-ZA	Sesotho sa Leboa (Afrika Borwa)	LeftToRight
+Nus	nus	nus	Thok Nath	LeftToRight
+NusSS	nus-SS	nus-SS	Nuer (South Sudan)	LeftToRight
+Nv	nv	nv	Diné Bizaad	LeftToRight
+NvUS	nv-US	nv-US	Navajo (United States)	LeftToRight
+Ny	ny	ny	Nyanja	LeftToRight
+NyMW	ny-MW	ny-MW	Nyanja (Malawi)	LeftToRight
+Nyn	nyn	nyn	Runyankore	LeftToRight
+NynUG	nyn-UG	nyn-UG	Runyankore (Uganda)	LeftToRight
+Oc	oc	oc	occitan	LeftToRight
+OcES	oc-ES	oc-ES	occitan (Espanha)	LeftToRight
+OcFR	oc-FR	oc-FR	occitan (França)	LeftToRight
+Om	om	om	Oromoo	LeftToRight
+OmET	om-ET	om-ET	Oromoo (Itoophiyaa)	LeftToRight
+OmKE	om-KE	om-KE	Oromoo (Keeniyaa)	LeftToRight
+Or	or	or	ଓଡ଼ିଆ	LeftToRight
+OrIN	or-IN	or-IN	ଓଡ଼ିଆ (ଭାରତ)	LeftToRight
+Os	os	os	ирон	LeftToRight
+OsGE	os-GE	os-GE	ирон (Гуырдзыстон)	LeftToRight
+OsRU	os-RU	os-RU	ирон (Уӕрӕсе)	LeftToRight
+Osa	osa	osa	𐓏𐓘𐓻𐓘𐓻𐓟	LeftToRight
+OsaUS	osa-US	osa-US	𐓏𐓘𐓻𐓘𐓻𐓟 (United States)	LeftToRight
+Pa	pa	pa	ਪੰਜਾਬੀ	LeftToRight
+PaArab	pa-Arab	pa-Arab	پنجابی (نسخ)	RightToLeft
+PaArabPK	pa-Arab-PK	pa-Arab-PK	پنجابی (نسخ, پاکستان)	RightToLeft
+PaAranPK	pa-Aran-PK	pa-Aran-PK	پنجابی (نستعلیق, پاکستان)	RightToLeft
+PaGuru	pa-Guru	pa-Guru	ਪੰਜਾਬੀ (ਗੁਰਮੁਖੀ)	LeftToRight
+PaGuruIN	pa-Guru-IN	pa-Guru-IN	ਪੰਜਾਬੀ (ਗੁਰਮੁਖੀ, ਭਾਰਤ)	LeftToRight
+Pcm	pcm	pcm	Naijíriá Píjin	LeftToRight
+PcmNG	pcm-NG	pcm-NG	Naijíriá Píjin (Naijíria)	LeftToRight
+Pl	pl	pl	polski	LeftToRight
+PlPL	pl-PL	pl-PL	polski (Polska)	LeftToRight
+Pms	pms	pms	piemontèis	LeftToRight
+PmsIT	pms-IT	pms-IT	piemontèis (Italia)	LeftToRight
+Pqm	pqm	pqm	Wolastoqey	LeftToRight
+PqmCA	pqm-CA	pqm-CA	Wolastoqey (Canada)	LeftToRight
+Prg	prg	prg	prūsiskan	LeftToRight
+PrgPL	prg-PL	prg-PL	prūsiskan (Pōli)	LeftToRight
+Ps	ps	ps	پښتو	RightToLeft
+PsAF	ps-AF	ps-AF	پښتو (افغانستان)	RightToLeft
+PsPK	ps-PK	ps-PK	پښتو (پاکستان)	RightToLeft
+Pt	pt	pt	português	LeftToRight
+PtAO	pt-AO	pt-AO	português (Angola)	LeftToRight
+PtBR	pt-BR	pt-BR	português (Brasil)	LeftToRight
+PtCH	pt-CH	pt-CH	português (Suíça)	LeftToRight
+PtCV	pt-CV	pt-CV	português (Cabo Verde)	LeftToRight
+PtFR	pt-FR	pt-FR	português (França)	LeftToRight
+PtGQ	pt-GQ	pt-GQ	português (Guiné Equatorial)	LeftToRight
+PtGW	pt-GW	pt-GW	português (Guiné-Bissau)	LeftToRight
+PtLU	pt-LU	pt-LU	português (Luxemburgo)	LeftToRight
+PtMO	pt-MO	pt-MO	português (Macau)	LeftToRight
+PtMZ	pt-MZ	pt-MZ	português (Moçambique)	LeftToRight
+PtPT	pt-PT	pt-PT	português (Portugal)	LeftToRight
+PtST	pt-ST	pt-ST	português (São Tomé e Príncipe)	LeftToRight
+PtTL	pt-TL	pt-TL	português (Timor-Leste)	LeftToRight
+Qu	qu	qu	Runasimi	LeftToRight
+QuBO	qu-BO	qu-BO	Runasimi (Bolivia)	LeftToRight
+QuEC	qu-EC	qu-EC	Runasimi (Ecuador)	LeftToRight
+QuPE	qu-PE	qu-PE	Runasimi (Perú)	LeftToRight
+Raj	raj	raj	राजस्थानी	LeftToRight
+RajIN	raj-IN	raj-IN	राजस्थानी (भारत)	LeftToRight
+Rej	rej	rej	Baso Hejang	LeftToRight
+RejID	rej-ID	rej-ID	Rejang (Indonesia)	LeftToRight
+RejRjng	rej-Rjng	rej-Rjng	ꤷꤼꥋ ꤽꥍꤺꥏ (ꥆꤰ꥓ꤼꤽ ꤽꥍꤺꥏ)	LeftToRight
+RejRjngID	rej-Rjng-ID	rej-Rjng-ID	Rejang (Rejang, Indonesia)	LeftToRight
+Rhg	rhg	rhg	𐴌𐴗𐴥𐴝𐴙𐴚𐴒𐴙𐴝	RightToLeft
+RhgRohg	rhg-Rohg	rhg-Rohg	Rohingya (Hanifi)	RightToLeft
+RhgRohgBD	rhg-Rohg-BD	rhg-Rohg-BD	Rohingya (Hanifi, Bangladesh)	RightToLeft
+RhgRohgMM	rhg-Rohg-MM	rhg-Rohg-MM	Rohingya (Hanifi, Myanmar [Burma])	RightToLeft
+Rm	rm	rm	rumantsch	LeftToRight
+RmCH	rm-CH	rm-CH	rumantsch (Svizra)	LeftToRight
+Rn	rn	rn	Ikirundi	LeftToRight
+RnBI	rn-BI	rn-BI	Ikirundi (Uburundi)	LeftToRight
+Ro	ro	ro	română	LeftToRight
+RoMD	ro-MD	ro-MD	română (Republica Moldova)	LeftToRight
+RoRO	ro-RO	ro-RO	română (România)	LeftToRight
+Rof	rof	rof	Kihorombo	LeftToRight
+RofTZ	rof-TZ	rof-TZ	Kihorombo (Tanzania)	LeftToRight
+Ru	ru	ru	русский	LeftToRight
+RuBY	ru-BY	ru-BY	русский (Беларусь)	LeftToRight
+RuKG	ru-KG	ru-KG	русский (Киргизия)	LeftToRight
+RuKZ	ru-KZ	ru-KZ	русский (Казахстан)	LeftToRight
+RuMD	ru-MD	ru-MD	русский (Молдова)	LeftToRight
+RuRU	ru-RU	ru-RU	русский (Россия)	LeftToRight
+RuUA	ru-UA	ru-UA	русский (Украина)	LeftToRight
+Rw	rw	rw	Ikinyarwanda	LeftToRight
+RwRW	rw-RW	rw-RW	Ikinyarwanda (U Rwanda)	LeftToRight
+Rwk	rwk	rwk	Kiruwa	LeftToRight
+RwkTZ	rwk-TZ	rwk-TZ	Kiruwa (Tanzania)	LeftToRight
+Sa	sa	sa	संस्कृत भाषा	LeftToRight
+SaIN	sa-IN	sa-IN	संस्कृत भाषा (भारतः)	LeftToRight
+Sah	sah	sah	саха тыла	LeftToRight
+SahRU	sah-RU	sah-RU	саха тыла (Арассыыйа)	LeftToRight
+Saq	saq	saq	Kisampur	LeftToRight
+SaqKE	saq-KE	saq-KE	Kisampur (Kenya)	LeftToRight
+Sat	sat	sat	ᱥᱟᱱᱛᱟᱲᱤ	LeftToRight
+SatDeva	sat-Deva	sat-Deva	सानताड़ी (देवानागारी)	LeftToRight
+SatDevaIN	sat-Deva-IN	sat-Deva-IN	Santali (Devanagari, India)	LeftToRight
+SatOlck	sat-Olck	sat-Olck	ᱥᱟᱱᱛᱟᱲᱤ (ᱚᱞ ᱪᱤᱠᱤ)	LeftToRight
+SatOlckIN	sat-Olck-IN	sat-Olck-IN	ᱥᱟᱱᱛᱟᱲᱤ (ᱚᱞ ᱪᱤᱠᱤ, ᱤᱱᱰᱤᱭᱟ)	LeftToRight
+Sbp	sbp	sbp	Ishisangu	LeftToRight
+SbpTZ	sbp-TZ	sbp-TZ	Ishisangu (Tansaniya)	LeftToRight
+Sc	sc	sc	sardu	LeftToRight
+ScIT	sc-IT	sc-IT	sardu (Itàlia)	LeftToRight
+Scn	scn	scn	sicilianu	LeftToRight
+ScnIT	scn-IT	scn-IT	sicilianu (Italia)	LeftToRight
+Sd	sd	sd	سنڌي	RightToLeft
+SdArab	sd-Arab	sd-Arab	سنڌي (عربي)	RightToLeft
+SdArabPK	sd-Arab-PK	sd-Arab-PK	سنڌي (عربي, پاڪستان)	RightToLeft
+SdDeva	sd-Deva	sd-Deva	सिन्धी (देवनागिरी)	LeftToRight
+SdDevaIN	sd-Deva-IN	sd-Deva-IN	सिन्धी (देवनागिरी, भारत)	LeftToRight
+Se	se	se	davvisámegiella	LeftToRight
+SeFI	se-FI	se-FI	davvisámegiella (Suopma)	LeftToRight
+SeNO	se-NO	se-NO	davvisámegiella (Norga)	LeftToRight
+SeSE	se-SE	se-SE	davvisámegiella (Ruoŧŧa)	LeftToRight
+Seh	seh	seh	sena	LeftToRight
+SehMZ	seh-MZ	seh-MZ	sena (Moçambique)	LeftToRight
+Ses	ses	ses	Koyraboro senni	LeftToRight
+SesML	ses-ML	ses-ML	Koyraboro senni (Maali)	LeftToRight
+Sg	sg	sg	Sängö	LeftToRight
+SgCF	sg-CF	sg-CF	Sängö (Ködörösêse tî Bêafrîka)	LeftToRight
+Shi	shi	shi	ⵜⴰⵛⵍⵃⵉⵜ	LeftToRight
+ShiLatn	shi-Latn	shi-Latn	Tachelhit (Latin)	LeftToRight
+ShiLatnMA	shi-Latn-MA	shi-Latn-MA	Tachelhit (Latin, Morocco)	LeftToRight
+ShiTfng	shi-Tfng	shi-Tfng	Tachelhit (Tifinagh)	LeftToRight
+ShiTfngMA	shi-Tfng-MA	shi-Tfng-MA	Tachelhit (Tifinagh, Morocco)	LeftToRight
+Shn	shn	shn	တႆး	LeftToRight
+ShnMM	shn-MM	shn-MM	တႆး (မျၢၼ်ႇမႃႇ [မိူင်းမၢၼ်ႈ])	LeftToRight
+ShnTH	shn-TH	shn-TH	တႆး (မိူင်းထႆး)	LeftToRight
+Shp	shp	shp	Shipibo-Konibo	LeftToRight
+Si	si	si	සිංහල	LeftToRight
+SiLK	si-LK	si-LK	සිංහල (ශ්‍රී ලංකාව)	LeftToRight
+Sjd	sjd	sjd	Кӣллт са̄мь кӣлл	LeftToRight
+Sje	sje	sje	Bidumsámegiella	LeftToRight
+Sju	sju	sju	Ubmejesámiengiälla	LeftToRight
+Sk	sk	sk	slovenčina	LeftToRight
+SkSK	sk-SK	sk-SK	slovenčina (Slovensko)	LeftToRight
+Sl	sl	sl	slovenščina	LeftToRight
+SlSI	sl-SI	sl-SI	slovenščina (Slovenija)	LeftToRight
+Sm	sm	sm	Gagana faʻa Sāmoa	LeftToRight
+SmAS	sm-AS	sm-AS	Samoan (American Samoa)	LeftToRight
+SmWS	sm-WS	sm-WS	Samoan (Samoa)	LeftToRight
+Smn	smn	smn	anarâškielâ	LeftToRight
+SmnFI	smn-FI	smn-FI	anarâškielâ (Suomâ)	LeftToRight
+Sn	sn	sn	chiShona	LeftToRight
+SnZW	sn-ZW	sn-ZW	chiShona (Zimbabwe)	LeftToRight
+So	so	so	Soomaali	LeftToRight
+SoDJ	so-DJ	so-DJ	Soomaali (Jabuuti)	LeftToRight
+SoET	so-ET	so-ET	Soomaali (Itoobiya)	LeftToRight
+SoKE	so-KE	so-KE	Soomaali (Kenya)	LeftToRight
+SoSO	so-SO	so-SO	Soomaali (Soomaaliya)	LeftToRight
+Sq	sq	sq	shqip	LeftToRight
+SqAL	sq-AL	sq-AL	shqip (Shqipëri)	LeftToRight
+SqMK	sq-MK	sq-MK	shqip (Maqedonia e Veriut)	LeftToRight
+SqXK	sq-XK	sq-XK	shqip (Kosovë)	LeftToRight
+Sr	sr	sr	српски	LeftToRight
+SrCyrl	sr-Cyrl	sr-Cyrl	српски (ћирилица)	LeftToRight
+SrCyrlBA	sr-Cyrl-BA	sr-Cyrl-BA	српски (ћирилица, Босна и Херцеговина)	LeftToRight
+SrCyrlME	sr-Cyrl-ME	sr-Cyrl-ME	српски (ћирилица, Црна Гора)	LeftToRight
+SrCyrlRS	sr-Cyrl-RS	sr-Cyrl-RS	српски (ћирилица, Србија)	LeftToRight
+SrCyrlXK	sr-Cyrl-XK	sr-Cyrl-XK	српски (ћирилица, Косово)	LeftToRight
+SrLatn	sr-Latn	sr-Latn	srpski (latinica)	LeftToRight
+SrLatnBA	sr-Latn-BA	sr-Latn-BA	srpski (latinica, Bosna i Hercegovina)	LeftToRight
+SrLatnME	sr-Latn-ME	sr-Latn-ME	srpski (latinica, Crna Gora)	LeftToRight
+SrLatnRS	sr-Latn-RS	sr-Latn-RS	srpski (latinica, Srbija)	LeftToRight
+SrLatnXK	sr-Latn-XK	sr-Latn-XK	srpski (latinica, Kosovo)	LeftToRight
+Ss	ss	ss	siSwati	LeftToRight
+SsSZ	ss-SZ	ss-SZ	siSwati (eSwatini)	LeftToRight
+SsZA	ss-ZA	ss-ZA	Swati (South Africa)	LeftToRight
+St	st	st	Sesotho	LeftToRight
+StLS	st-LS	st-LS	Sesotho (Lesotho)	LeftToRight
+StZA	st-ZA	st-ZA	Sesotho (Afrika Borwa)	LeftToRight
+Su	su	su	Basa Sunda	LeftToRight
+SuLatn	su-Latn	su-Latn	Basa Sunda (Latin)	LeftToRight
+SuLatnID	su-Latn-ID	su-Latn-ID	Basa Sunda (Latin, Indonesia)	LeftToRight
+Sv	sv	sv	svenska	LeftToRight
+SvAX	sv-AX	sv-AX	svenska (Åland)	LeftToRight
+SvFI	sv-FI	sv-FI	svenska (Finland)	LeftToRight
+SvSE	sv-SE	sv-SE	svenska (Sverige)	LeftToRight
+Sw	sw	sw	Kiswahili	LeftToRight
+SwCD	sw-CD	sw-CD	Kiswahili (Kongo - Kinshasa)	LeftToRight
+SwKE	sw-KE	sw-KE	Kiswahili (Kenya)	LeftToRight
+SwTZ	sw-TZ	sw-TZ	Kiswahili (Tanzania)	LeftToRight
+SwUG	sw-UG	sw-UG	Kiswahili (Uganda)	LeftToRight
+Syr	syr	syr	ܣܘܪܝܝܐ	RightToLeft
+SyrIQ	syr-IQ	syr-IQ	ܣܘܪܝܝܐ (ܥܝܪܩ)	RightToLeft
+SyrSY	syr-SY	syr-SY	ܣܘܪܝܝܐ (ܣܘܪܝܐ)	RightToLeft
+Szl	szl	szl	ślōnski	LeftToRight
+SzlPL	szl-PL	szl-PL	ślōnski (Polska)	LeftToRight
+Ta	ta	ta	தமிழ்	LeftToRight
+TaIN	ta-IN	ta-IN	தமிழ் (இந்தியா)	LeftToRight
+TaLK	ta-LK	ta-LK	தமிழ் (இலங்கை)	LeftToRight
+TaMY	ta-MY	ta-MY	தமிழ் (மலேசியா)	LeftToRight
+TaSG	ta-SG	ta-SG	தமிழ் (சிங்கப்பூர்)	LeftToRight
+Te	te	te	తెలుగు	LeftToRight
+TeIN	te-IN	te-IN	తెలుగు (భారతదేశం)	LeftToRight
+Teo	teo	teo	Kiteso	LeftToRight
+TeoKE	teo-KE	teo-KE	Kiteso (Kenia)	LeftToRight
+TeoUG	teo-UG	teo-UG	Kiteso (Uganda)	LeftToRight
+Tg	tg	tg	тоҷикӣ	LeftToRight
+TgTJ	tg-TJ	tg-TJ	тоҷикӣ (Тоҷикистон)	LeftToRight
+Th	th	th	ไทย	LeftToRight
+ThTH	th-TH	th-TH	ไทย (ไทย)	LeftToRight
+Ti	ti	ti	ትግርኛ	LeftToRight
+TiER	ti-ER	ti-ER	ትግርኛ (ኤርትራ)	LeftToRight
+TiET	ti-ET	ti-ET	ትግርኛ (ኢትዮጵያ)	LeftToRight
+Tig	tig	tig	ትግረ	LeftToRight
+TigER	tig-ER	tig-ER	ትግረ (ኤርትራ)	LeftToRight
+Tk	tk	tk	türkmen dili	LeftToRight
+TkTM	tk-TM	tk-TM	türkmen dili (Türkmenistan)	LeftToRight
+Tn	tn	tn	Setswana	LeftToRight
+TnBW	tn-BW	tn-BW	Setswana (Botswana)	LeftToRight
+TnZA	tn-ZA	tn-ZA	Setswana (Aforika Borwa)	LeftToRight
+To	to	to	lea fakatonga	LeftToRight
+ToTO	to-TO	to-TO	lea fakatonga (Tonga)	LeftToRight
+Tok	tok	tok	toki pona	LeftToRight
+Tok001	tok-001	tok-001	toki pona (ma ale)	LeftToRight
+Tr	tr	tr	Türkçe	LeftToRight
+TrCY	tr-CY	tr-CY	Türkçe (Kıbrıs)	LeftToRight
+TrTR	tr-TR	tr-TR	Türkçe (Türkiye)	LeftToRight
+Trv	trv	trv	patas Taroko	LeftToRight
+TrvTW	trv-TW	trv-TW	patas Taroko (TW)	LeftToRight
+Ts	ts	ts	Xitsonga	LeftToRight
+TsZA	ts-ZA	ts-ZA	Tsonga (South Africa)	LeftToRight
+Tt	tt	tt	татар	LeftToRight
+TtRU	tt-RU	tt-RU	татар (Россия)	LeftToRight
+Twq	twq	twq	Tasawaq senni	LeftToRight
+TwqNE	twq-NE	twq-NE	Tasawaq senni (Nižer)	LeftToRight
+Tyv	tyv	tyv	Тыва	LeftToRight
+TyvRU	tyv-RU	tyv-RU	Тыва (Россия Федерациязы)	LeftToRight
+Tzm	tzm	tzm	Tamaziɣt n laṭlaṣ	LeftToRight
+TzmMA	tzm-MA	tzm-MA	Tamaziɣt n laṭlaṣ (Meṛṛuk)	LeftToRight
+Ug	ug	ug	ئۇيغۇرچە	RightToLeft
+UgCN	ug-CN	ug-CN	ئۇيغۇرچە (جۇڭگو)	RightToLeft
+Uk	uk	uk	українська	LeftToRight
+UkUA	uk-UA	uk-UA	українська (Україна)	LeftToRight
+Ur	ur	ur	اردو	RightToLeft
+UrArab	ur-Arab	ur-Arab	اردو (نسخ)	RightToLeft
+UrArabIN	ur-Arab-IN	ur-Arab-IN	اردو (نسخ،بھارت)	RightToLeft
+UrArabPK	ur-Arab-PK	ur-Arab-PK	اردو (نسخ،پاکستان)	RightToLeft
+UrAranIN	ur-Aran-IN	ur-Aran-IN	اردو (نستعلیق،بھارت)	RightToLeft
+UrAranPK	ur-Aran-PK	ur-Aran-PK	اردو (نستعلیق،پاکستان)	RightToLeft
+Uz	uz	uz	o‘zbek	LeftToRight
+UzArab	uz-Arab	uz-Arab	اوزبیک (عربی)	RightToLeft
+UzArabAF	uz-Arab-AF	uz-Arab-AF	اوزبیک (عربی, افغانستان)	RightToLeft
+UzCyrl	uz-Cyrl	uz-Cyrl	ўзбекча (Кирил)	LeftToRight
+UzCyrlUZ	uz-Cyrl-UZ	uz-Cyrl-UZ	ўзбекча (Кирил, Ўзбекистон)	LeftToRight
+UzLatn	uz-Latn	uz-Latn	o‘zbek (lotin)	LeftToRight
+UzLatnUZ	uz-Latn-UZ	uz-Latn-UZ	o‘zbek (lotin, Oʻzbekiston)	LeftToRight
+Vai	vai	vai	ꕙꔤ	LeftToRight
+VaiLatn	vai-Latn	vai-Latn	Vai (Latin)	LeftToRight
+VaiLatnLR	vai-Latn-LR	vai-Latn-LR	Vai (Latin, Liberia)	LeftToRight
+VaiVaii	vai-Vaii	vai-Vaii	Vai (Vai)	LeftToRight
+VaiVaiiLR	vai-Vaii-LR	vai-Vaii-LR	Vai (Vai, Liberia)	LeftToRight
+Ve	ve	ve	Tshivenḓa	LeftToRight
+VeZA	ve-ZA	ve-ZA	Venda (South Africa)	LeftToRight
+Vec	vec	vec	veneto	LeftToRight
+VecIT	vec-IT	vec-IT	veneto (Italia)	LeftToRight
+Vi	vi	vi	Tiếng Việt	LeftToRight
+ViVN	vi-VN	vi-VN	Tiếng Việt (Việt Nam)	LeftToRight
+Vmw	vmw	vmw	emakhuwa	LeftToRight
+VmwMZ	vmw-MZ	vmw-MZ	emakhuwa (oMosambikhi)	LeftToRight
+Vun	vun	vun	Kyivunjo	LeftToRight
+VunTZ	vun-TZ	vun-TZ	Kyivunjo (Tanzania)	LeftToRight
+Wa	wa	wa	walon	LeftToRight
+WaBE	wa-BE	wa-BE	Walloon (Belgium)	LeftToRight
+Wae	wae	wae	Walser	LeftToRight
+WaeCH	wae-CH	wae-CH	Walser (Schwiz)	LeftToRight
+Wal	wal	wal	ወላይታቱ	LeftToRight
+WalET	wal-ET	wal-ET	ወላይታቱ (ኢትዮጵያ)	LeftToRight
+Wo	wo	wo	Wolof	LeftToRight
+WoSN	wo-SN	wo-SN	Wolof (Senegaal)	LeftToRight
+Xh	xh	xh	IsiXhosa	LeftToRight
+XhZA	xh-ZA	xh-ZA	IsiXhosa (EMzantsi Afrika)	LeftToRight
+Xnr	xnr	xnr	कांगड़ी	LeftToRight
+XnrIN	xnr-IN	xnr-IN	कांगड़ी (भारत)	LeftToRight
+Xog	xog	xog	Olusoga	LeftToRight
+XogUG	xog-UG	xog-UG	Olusoga (Yuganda)	LeftToRight
+Yav	yav	yav	nuasue	LeftToRight
+YavCM	yav-CM	yav-CM	nuasue (Kemelún)	LeftToRight
+Yi	yi	yi	ייִדיש	RightToLeft
+YiUA	yi-UA	yi-UA	ייִדיש (אוקראַינע)	RightToLeft
+Yo	yo	yo	Èdè Yorùbá	LeftToRight
+YoBJ	yo-BJ	yo-BJ	Èdè Yorùbá (Bɛ̀nɛ̀)	LeftToRight
+YoNG	yo-NG	yo-NG	Èdè Yorùbá (Nàìjíríà)	LeftToRight
+Yrl	yrl	yrl	nheẽgatu	LeftToRight
+YrlBR	yrl-BR	yrl-BR	nheẽgatu (Brasiu)	LeftToRight
+YrlCO	yrl-CO	yrl-CO	ñengatú (Kurũbiya)	LeftToRight
+YrlVE	yrl-VE	yrl-VE	ñengatú (Wenesuera)	LeftToRight
+Yue	yue	yue	廣東話	LeftToRight
+YueHans	yue-Hans	yue-Hans	简体粤语	LeftToRight
+YueHansCN	yue-Hans-CN	yue-Hans-CN	简体粤语（中国大陆）	LeftToRight
+YueHant	yue-Hant	yue-Hant	繁體廣東話	LeftToRight
+YueHantCN	yue-Hant-CN	yue-Hant-CN	繁體廣東話（中國）	LeftToRight
+YueHantHK	yue-Hant-HK	yue-Hant-HK	繁體廣東話（香港）	LeftToRight
+YueHantMO	yue-Hant-MO	yue-Hant-MO	繁體廣東話（澳門）	LeftToRight
+Za	za	za	Vahcuengh	LeftToRight
+ZaCN	za-CN	za-CN	Vahcuengh (Cunghgoz)	LeftToRight
+Zgh	zgh	zgh	ⵜⴰⵎⴰⵣⵉⵖⵜ	LeftToRight
+ZghMA	zgh-MA	zgh-MA	ⵜⴰⵎⴰⵣⵉⵖⵜ (ⵍⵎⵖⵔⵉⴱ)	LeftToRight
+Zh	zh	zh	中文	LeftToRight
+ZhCN	zh-CN	zh-Hans-CN	简体中文（中国大陆）	LeftToRight
+ZhHK	zh-HK	zh-Hant-HK	繁體中文（香港）	LeftToRight
+ZhHans	zh-Hans	zh-Hans	简体中文	LeftToRight
+ZhHansCN	zh-Hans-CN	zh-Hans-CN	简体中文（中国大陆）	LeftToRight
+ZhHansHK	zh-Hans-HK	zh-Hans-HK	简体中文（香港）	LeftToRight
+ZhHansJP	zh-Hans-JP	zh-Hans-JP	简体中文（日本）	LeftToRight
+ZhHansMO	zh-Hans-MO	zh-Hans-MO	简体中文（澳门）	LeftToRight
+ZhHansMY	zh-Hans-MY	zh-Hans-MY	简体中文（马来西亚）	LeftToRight
+ZhHansSG	zh-Hans-SG	zh-Hans-SG	简体中文（新加坡）	LeftToRight
+ZhHant	zh-Hant	zh-Hant	繁體中文	LeftToRight
+ZhHantCN	zh-Hant-CN	zh-Hant-CN	繁體中文（中國大陸）	LeftToRight
+ZhHantHK	zh-Hant-HK	zh-Hant-HK	繁體中文（香港）	LeftToRight
+ZhHantJP	zh-Hant-JP	zh-Hant-JP	繁體中文（日本）	LeftToRight
+ZhHantMO	zh-Hant-MO	zh-Hant-MO	繁體中文（澳門）	LeftToRight
+ZhHantMY	zh-Hant-MY	zh-Hant-MY	繁體中文（馬來西亞）	LeftToRight
+ZhHantTW	zh-Hant-TW	zh-Hant-TW	繁體中文（台灣）	LeftToRight
+ZhMO	zh-MO	zh-Hant-MO	繁體中文（澳門）	LeftToRight
+ZhSG	zh-SG	zh-Hans-SG	简体中文（新加坡）	LeftToRight
+ZhTW	zh-TW	zh-Hant-TW	繁體中文（台灣）	LeftToRight
+Zu	zu	zu	isiZulu	LeftToRight
+ZuZA	zu-ZA	zu-ZA	isiZulu (iNingizimu Afrika)	LeftToRight

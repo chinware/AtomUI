@@ -1,7 +1,5 @@
-using System.Globalization;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
-using AtomUI.Theme.Language;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
 using Avalonia;
@@ -14,13 +12,11 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
     private readonly List<ControlTokenDescriptor> _controlTokenDescriptors = new();
     private readonly List<ControlThemeAssetDescriptor> _controlThemeAssetDescriptors = new();
     private readonly List<IControlThemesProvider> _controlThemesProviders = new();
-    private readonly List<LanguageProvider> _languageProviders = new();
     private readonly List<IThemeDefinitionResolver> _themeDefinitionResolvers = new();
     private readonly List<Action<IThemeManager>> _initializers = new();
     private readonly HashSet<ControlTokenIdentity> _registeredControlTokenIdentities = new();
     private readonly HashSet<string> _registeredControlPackageIds = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredControlThemeProviders = new(StringComparer.Ordinal);
-    private readonly HashSet<string> _registeredLanguageProviders = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredThemeDefinitionResolvers = new(StringComparer.Ordinal);
     private bool _useUserThemeDirectory;
     private string? _userThemeDirectory;
@@ -29,7 +25,6 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
     {
         ApplicationId = ThemeApplicationIdentity.ResolveDefault(application?.GetType()) ??
                         typeof(ThemeManagerBuilder).Assembly.GetName().Name!;
-        LanguageVariant = LanguageVariant.en_US;
         InitialRequest = new ThemeRequest(
             IThemeManager.DEFAULT_THEME_ID,
             null,
@@ -37,16 +32,19 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         AddThemeDefinitionResolver(CoreThemeDefinitionResolver.Create());
     }
 
-    internal LanguageVariant LanguageVariant { get; private set; }
     internal FontFamily? FontFamily { get; private set; }
     internal ThemeRequest InitialRequest { get; private set; }
     internal ThemeRequest? FollowSystemLightRequest { get; private set; }
     internal ThemeRequest? FollowSystemDarkRequest { get; private set; }
     internal IReadOnlyList<Action<IThemeManager>> Initializers => _initializers;
+    internal int InitializerCount => _initializers.Count;
+    internal IReadOnlyList<ControlPackageRegistration> ControlPackages => _controlPackages;
     internal IReadOnlyList<IThemeDefinitionResolver> ThemeDefinitionResolvers => _themeDefinitionResolvers;
     internal string? ApplicationId { get; private set; }
     internal bool UsesUserThemeDirectory => _useUserThemeDirectory;
     internal string? UserThemeDirectory => _userThemeDirectory;
+
+    private readonly List<ControlPackageRegistration> _controlPackages = new();
 
     public void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver)
     {
@@ -85,17 +83,8 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
             throw new ThemeResourceRegisterException(
                 $"Control theme provider '{package.ControlThemesProvider.Id}' is already registered.");
         }
-        foreach (var languageProvider in package.LanguageProviders)
-        {
-            var id = languageProvider.GetType().FullName ?? languageProvider.GetType().Name;
-            if (_registeredLanguageProviders.Contains(id))
-            {
-                throw new ThemeResourceRegisterException(
-                    $"Language provider '{id}' is already registered.");
-            }
-        }
-
         _registeredControlPackageIds.Add(package.Id);
+        _controlPackages.Add(package);
         foreach (var descriptor in package.Controls)
         {
             _registeredControlTokenIdentities.Add(descriptor.Identity);
@@ -104,25 +93,6 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         _controlThemeAssetDescriptors.AddRange(package.ThemeAssets);
         _registeredControlThemeProviders.Add(package.ControlThemesProvider.Id);
         _controlThemesProviders.Add(package.ControlThemesProvider);
-        foreach (var languageProvider in package.LanguageProviders)
-        {
-            var id = languageProvider.GetType().FullName ?? languageProvider.GetType().Name;
-            _registeredLanguageProviders.Add(id);
-            _languageProviders.Add(languageProvider);
-        }
-    }
-
-    public void AddLanguageProvider(LanguageProvider languageProvider)
-    {
-        ArgumentNullException.ThrowIfNull(languageProvider);
-        var id = languageProvider.GetType().FullName ?? languageProvider.GetType().Name;
-        if (!_registeredLanguageProviders.Add(id))
-        {
-            throw new ThemeResourceRegisterException(
-                $"Language provider '{id}' is already registered.");
-        }
-
-        _languageProviders.Add(languageProvider);
     }
 
     public void AddInitializer(Action<IThemeManager> initializer)
@@ -177,17 +147,6 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         FontFamily = FontFamily.Parse(fontFamily);
     }
 
-    public void WithDefaultCultureInfo(CultureInfo cultureInfo)
-    {
-        ArgumentNullException.ThrowIfNull(cultureInfo);
-        LanguageVariant = LanguageVariant.FromCultureInfo(cultureInfo);
-    }
-
-    public void WithDefaultLanguageVariant(LanguageVariant languageVariant)
-    {
-        LanguageVariant = languageVariant;
-    }
-
     internal ThemeManager Build()
     {
         var themeDefinitionResolvers = new List<IThemeDefinitionResolver>(_themeDefinitionResolvers);
@@ -220,8 +179,7 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         themeManager.EnsureRegistrationCapacity(
             _controlTokenDescriptors.Count,
             _controlThemeAssetDescriptors.Count,
-            _controlThemesProviders.Count,
-            _languageProviders.Count);
+            _controlThemesProviders.Count);
 
         foreach (var provider in _controlThemesProviders)
         {
@@ -235,11 +193,6 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         {
             themeManager.RegisterControlThemeAssetDescriptor(descriptor);
         }
-        foreach (var provider in _languageProviders)
-        {
-            themeManager.RegisterLanguageProvider(provider);
-        }
-
         return themeManager;
     }
 }

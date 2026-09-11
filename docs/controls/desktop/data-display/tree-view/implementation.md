@@ -2,6 +2,8 @@
 
 本文档描述 TreeView 桌面版的内部源码结构、状态流转、容器生命周期、默认状态回放、过滤、勾选、异步加载和拖拽实现。公共设计与 API 契约见 [TreeView 桌面版架构设计](overview.md)，Token 语义见 [TreeView Token 设计](token.md)，变化记录见 [TreeView Changelog](changelog.md)。
 
+Popup 接入边界：`TreeView` 负责业务状态和内容准备，`TreeViewFlyout` 仅作为 relay 适配层，tree Flyout Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 TreeView 的实现目标是在 Avalonia `TreeView` 基类上增加 AtomUI 树形数据展示能力，并保持 API、行为和主题契约稳定。实现文档覆盖 `TreeView`、`TreeViewItem`、`TreeViewItemHeader`、`NodeSwitcherButton`、节点数据模型、interaction handler、过滤、拖拽、异步加载和主题接入。

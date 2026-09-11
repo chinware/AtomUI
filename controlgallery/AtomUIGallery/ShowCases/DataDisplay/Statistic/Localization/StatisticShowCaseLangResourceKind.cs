@@ -1,0 +1,37 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum StatisticShowCaseLangResourceKind
+{
+    BasicTitle,
+    BasicDescription,
+    UnitTitle,
+    UnitDescription,
+    InCardTitle,
+    InCardDescription,
+    AnimatedNumberTitle,
+    AnimatedNumberDescription,
+    TimerTitle,
+    TimerDescription,
+    P2HeaderActiveUsers,
+    P2HeaderAccountBalanceCny,
+    P2HeaderFeedback,
+    P2HeaderUnmerged,
+    P2HeaderActive,
+    P2HeaderIdle,
+    P2HeaderMillionSeconds,
+    P2HeaderCountdown,
+    P2HeaderCountup,
+    P2HeaderDayLevelCountdown,
+    P2HeaderDayLevelCountup,
+    P2ContentRecharge,
+    P2DayLevelFormat,
+    ScenarioExamples,
+    PageSubtitle,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ApiEventCountdownFinished
+}

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WindowShowCaseLangResourceKind">
+    <unit id="AddOnDescription">
+      <segment>
+        <source>Place application-owned buttons in the title bar LeftAddOn/RightAddOn areas using WindowTitleBarButton and WindowTitleBarToggleButton.</source>
+        <target state="translated">通过 WindowTitleBarButton 与 WindowTitleBarToggleButton 在标题栏的 LeftAddOn/RightAddOn 扩展区放置应用自定义按钮。</target>
+      </segment>
+    </unit>
+    <unit id="AddOnHint">
+      <segment>
+        <source>The left add-on hosts a menu button and a pin toggle; the right add-on hosts search and settings buttons.</source>
+        <target state="translated">左侧扩展区提供菜单按钮与图钉开关；右侧扩展区提供搜索与设置按钮。</target>
+      </segment>
+    </unit>
+    <unit id="AddOnOpenButtonText">
+      <segment>
+        <source>Open add-on window</source>
+        <target state="translated">打开扩展区窗口</target>
+      </segment>
+    </unit>
+    <unit id="AddOnTitle">
+      <segment>
+        <source>Title bar add-on</source>
+        <target state="translated">标题栏扩展区</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The default Window shape: title, three caption buttons and standard interactions, as the baseline for other demos.</source>
+        <target state="translated">默认标题栏形态：标题、三键 caption 与标准交互，作为其他示例的对照基线。</target>
+      </segment>
+    </unit>
+    <unit id="BasicOpenButtonText">
+      <segment>
+        <source>Open basic window</source>
+        <target state="translated">打开基础窗口</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic window</source>
+        <target state="translated">基础窗口</target>
+      </segment>
+    </unit>
+    <unit id="BasicWindowHint">
+      <segment>
+        <source>This is the default look of an AtomUI Window. The title bar shows the title together with the standard caption buttons.</source>
+        <target state="translated">这是 AtomUI Window 的默认形态：标题栏显示标题与标准 caption 按钮。</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsDescription">
+      <segment>
+        <source>Compose the caption button set: hide the minimize button and show the full screen and pin buttons.</source>
+        <target state="translated">定制系统按钮组合：隐藏最小化按钮，显示全屏与图钉按钮。</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsHint">
+      <segment>
+        <source>Only full screen and pin buttons remain on the right of the title bar; minimizing is disabled for this window.</source>
+        <target state="translated">标题栏右侧仅保留全屏与图钉按钮；该窗口已禁用最小化。</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsOpenButtonText">
+      <segment>
+        <source>Open caption buttons window</source>
+        <target state="translated">打开按钮定制窗口</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsTitle">
+      <segment>
+        <source>Caption buttons</source>
+        <target state="translated">标题栏按钮定制</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">通用</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerDescription">
+      <segment>
+        <source>Customize TitleBarFrameBackground, ContentFrameBackground and a decorative WindowFrameLayer with opacity.</source>
+        <target state="translated">自定义 TitleBarFrameBackground、ContentFrameBackground 以及带透明度的装饰性 WindowFrameLayer。</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerHint">
+      <segment>
+        <source>The title bar uses a gradient, the content area a brand tint, and a corner-decorated layer floats above them.</source>
+        <target state="translated">标题栏使用渐变色，内容区使用品牌浅色，装饰层带圆角悬浮其上。</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerOpenButtonText">
+      <segment>
+        <source>Open frame layer window</source>
+        <target state="translated">打开窗框层窗口</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerTitle">
+      <segment>
+        <source>Frame layer</source>
+        <target state="translated">窗框层定制</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleDescription">
+      <segment>
+        <source>IsTitleVisible=False hides only the title text inside the title bar; the taskbar and window switching still show the OS window title. Different from IsTitleBarVisible, which hides the whole title bar.</source>
+        <target state="translated">IsTitleVisible=False 仅隐藏标题栏内的标题文字，任务栏与窗口切换仍显示系统标题；与 IsTitleBarVisible（隐藏整条标题栏）区分。</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleHint">
+      <segment>
+        <source>The title bar shows no title text, but the taskbar still shows "AtomUI Demo".</source>
+        <target state="translated">标题栏内没有标题文字，但任务栏仍显示 "AtomUI Demo"。</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleOpenButtonText">
+      <segment>
+        <source>Open title-hidden window</source>
+        <target state="translated">打开隐藏标题窗口</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleTitle">
+      <segment>
+        <source>Hide title text</source>
+        <target state="translated">隐藏标题文字</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityDescription">
+      <segment>
+        <source>Switch the Logo display policy between Auto, Always and Never.</source>
+        <target state="translated">在 Auto、Always 与 Never 之间切换 Logo 显示策略。</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityHint">
+      <segment>
+        <source>Switch the segmented control below and watch the Logo visibility change.</source>
+        <target state="translated">切换下方选项，观察 Logo 显示变化。</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityOpenButtonText">
+      <segment>
+        <source>Open Logo policy window</source>
+        <target state="translated">打开 Logo 策略窗口</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityTitle">
+      <segment>
+        <source>Logo visibility policy</source>
+        <target state="translated">Logo 显示策略</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Explore Window title bar content, window chrome and frame layer customization.</source>
+        <target state="translated">展示 AtomUI Window 的标题栏内容、窗口形态与背景层定制能力。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Window and title bar customization.</source>
+        <target state="translated">窗口与标题栏定制。</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundCaptionButtonsHint">
+      <segment>
+        <source>On macOS the system traffic lights are native: the minimize, maximize and full screen switches apply to the AtomUI-drawn buttons on Windows/Linux; only the pin switch takes effect here.</source>
+        <target state="translated">macOS 使用系统原生红绿灯按钮：最小化/最大化/全屏开关作用于 Windows/Linux 的自绘按钮，在本平台仅图钉开关生效。</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundDescription">
+      <segment>
+        <source>A live window combining every option on this page: title text, alignment, logo policy, add-ons, caption buttons and frame backgrounds.</source>
+        <target state="translated">一个组合本页全部选项的实时窗口：标题文字、对齐方式、Logo 策略、扩展区、系统按钮与窗框背景。</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundHint">
+      <segment>
+        <source>The panel on the right acts on this window's title bar and frame in real time.</source>
+        <target state="translated">右侧面板实时作用于本窗口的标题栏与窗框。</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundOpenButtonText">
+      <segment>
+        <source>Open playground</source>
+        <target state="translated">打开 Playground</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundTitle">
+      <segment>
+        <source>Playground</source>
+        <target state="translated">综合 Playground</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentDescription">
+      <segment>
+        <source>Switch the title group alignment between Auto, Left, Center, WindowCenter and Right.</source>
+        <target state="translated">在 Auto、Left、Center、WindowCenter 与 Right 之间切换标题组对齐。</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentHint">
+      <segment>
+        <source>Switch the segmented control below and watch the title group alignment change.</source>
+        <target state="translated">切换下方选项，观察标题组对齐变化。</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentOpenButtonText">
+      <segment>
+        <source>Open alignment window</source>
+        <target state="translated">打开对齐演示窗口</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentTitle">
+      <segment>
+        <source>Title alignment</source>
+        <target state="translated">标题对齐</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessDescription">
+      <segment>
+        <source>IsTitleBarVisible=False removes the built-in title bar; a custom header row and an embedded WindowTitleBar keep dragging and double-click maximize working.</source>
+        <target state="translated">IsTitleBarVisible=False 移除内置标题栏；自绘头部行与内嵌 WindowTitleBar 仍可拖动窗口、双击最大化。</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessHint">
+      <segment>
+        <source>The top area is fully custom. The embedded title bar still supports dragging and double-click to maximize.</source>
+        <target state="translated">顶部区域完全自定义。内嵌标题栏仍支持拖动与双击最大化。</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessOpenButtonText">
+      <segment>
+        <source>Open title barless window</source>
+        <target state="translated">打开无标题栏窗口</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessTitle">
+      <segment>
+        <source>Title barless</source>
+        <target state="translated">无标题栏窗口</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic button spinner.</source>
+        <target state="translated">Básico botão spinner.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="BindingClearButton">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>SelectedItem synchronizes with the ViewModel and is also the value read and written by Form.</source>
+        <target state="translated">SelectedItem synchronizes com o ViewModel e é also o valor read e written por Formulário.</target>
+      </segment>
+    </unit>
+    <unit id="BindingSelectedItemLabel">
+      <segment>
+        <source>SelectedItem</source>
+        <target state="translated">SelectedItem</target>
+      </segment>
+    </unit>
+    <unit id="BindingSetButton">
+      <segment>
+        <source>Set third line</source>
+        <target state="translated">Definir terceiro linha</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>SelectedItem binding</source>
+        <target state="translated">SelectedItem vinculação</target>
+      </segment>
+    </unit>
+    <unit id="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value</source>
+        <target state="translated">ViewModel valor</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled button spinner.</source>
+        <target state="translated">Desativado botão spinner.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="EditableFilterDescription">
+      <segment>
+        <source>Type in the ComboBox input to filter popup candidates without replacing the source items.</source>
+        <target state="translated">Tipo em o ComboBox entrada para filter popup candidates sem replacing o source itens.</target>
+      </segment>
+    </unit>
+    <unit id="EditableFilterTitle">
+      <segment>
+        <source>Editable filtering</source>
+        <target state="translated">Editable filtering</target>
+      </segment>
+    </unit>
+    <unit id="ItemsSourceDescription">
+      <segment>
+        <source>Generate structure based on ItemsSource and template.</source>
+        <target state="translated">Generate structure based em ItemsSource e template.</target>
+      </segment>
+    </unit>
+    <unit id="ItemsSourceTitle">
+      <segment>
+        <source>Generate ComboBoxItem by ItemsSource</source>
+        <target state="translated">Generate ComboBoxItem por ItemsSource</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPoemLine1">
+      <segment>
+        <source>床前明月光</source>
+        <target state="translated">床前明月光</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPoemLine2">
+      <segment>
+        <source>疑是地上霜</source>
+        <target state="translated">疑是地上霜</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPoemLine3">
+      <segment>
+        <source>举头望明月</source>
+        <target state="translated">举头望明月</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPoemLine4">
+      <segment>
+        <source>低头思故乡</source>
+        <target state="translated">低头思故乡</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+        <target state="translated">SizeType: Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+        <target state="translated">SizeType: Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+        <target state="translated">SizeType: Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+        <target state="translated">SizeType: Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">Por favor selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTypeToFilter">
+      <segment>
+        <source>Type to filter</source>
+        <target state="translated">Tipo para filter</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ComboBox combines input-style layout with dropdown selection, supporting item templates, add-ons, prefixes, suffixes, validation status, and size variants.</source>
+        <target state="translated">ComboBox combines entrada-estilo layout com dropdown seleção, supporting item templates, adicionar-ons, prefixes, suffixes, validation status, e tamanho variantes.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A selection input for choosing from a compact popup list.</source>
+        <target state="translated">A seleção entrada para choosing de a compacto popup lista.</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">Usando pre e post guias exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">Pre / Post guia</target>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">Adicionar ícones de prefixo ou sufixo dentro da entrada.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">prefixo e suffix</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para Entrada com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>ComboBox supports large (40px), default (32px), small (24px), and Custom sizes with local size properties.</source>
+        <target state="translated">ComboBox oferece suporte grande (40px), padrão (32px), pequeno (24px), e Personalizado tamanhos com local tamanho properties.</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Three sizes of Input</source>
+        <target state="translated">Três tamanhos de Entrada</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+        <target state="translated">Variantes de Entrada.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -75,6 +75,6 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
 
     private void HandleSearchButtonClick(object? sender, RoutedEventArgs e)
     {
-        OwningSearchEdit?.NotifySearchButtonClicked();
+        OwningSearchEdit?.RaiseSearchRequested(SearchTriggerSource.Button);
     }
 }

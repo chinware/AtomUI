@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.LineEditShowCaseLangResourceKind">
+    <unit id="AutoSizeTextAreaDescription">
+      <segment>
+        <source>autoSize prop for a textarea type of Input makes the height to automatically adjust based on the content. An option object can be provided to autoSize to specify the minimum and maximum number of lines the textarea will automatically adjust.</source>
+        <target state="translated">textarea 类型 Input 的 autoSize 属性会让高度根据内容自动调整。可以向 autoSize 提供选项对象，指定自动调整的最小和最大行数。</target>
+      </segment>
+    </unit>
+    <unit id="AutoSizeTextAreaTitle">
+      <segment>
+        <source>Autosizing the height to fit the content</source>
+        <target state="translated">高度自适应内容</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">基础用法示例。</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="CharacterCountingDescription">
+      <segment>
+        <source>Show character counting.</source>
+        <target state="translated">显示字数统计。</target>
+      </segment>
+    </unit>
+    <unit id="CharacterCountingTitle">
+      <segment>
+        <source>With character counting</source>
+        <target state="translated">带字数统计</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Variants of Input disabled style.</source>
+        <target state="translated">输入框禁用样式的变体。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledSearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+        <target state="translated">将标准输入框和搜索按钮组合创建搜索框的示例。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledSearchBoxTitle">
+      <segment>
+        <source>Disabled search box</source>
+        <target state="translated">禁用搜索框</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="InputSizesDescription">
+      <segment>
+        <source>There are three sizes of an Input box: large (40px), default (32px) and small (24px).</source>
+        <target state="translated">输入框有三种尺寸：大号（40px）、默认（32px）和小号（24px）。</target>
+      </segment>
+    </unit>
+    <unit id="InputSizesTitle">
+      <segment>
+        <source>Three sizes of Input</source>
+        <target state="translated">输入框三种尺寸</target>
+      </segment>
+    </unit>
+    <unit id="InputStatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为 Input 添加状态，可设置为错误或警告。</target>
+      </segment>
+    </unit>
+    <unit id="InputStatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditAntDesignDescription">
+      <segment>
+        <source>One time password input.</source>
+        <target state="translated">一次性密码输入框。</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditAntDesignTitle">
+      <segment>
+        <source>One-time password</source>
+        <target state="translated">一次性密码框</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditClearButtonText">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditCurrentValueFormat">
+      <segment>
+        <source>Current value: {0}</source>
+        <target state="translated">当前值：{0}</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditEmptyValueText">
+      <segment>
+        <source>(empty)</source>
+        <target state="translated">（空）</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormDescription">
+      <segment>
+        <source>Form validators write errors through Avalonia DataValidationErrors.</source>
+        <target state="translated">Form validator 通过 Avalonia DataValidationErrors 写入错误。</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormLabelCode">
+      <segment>
+        <source>Code</source>
+        <target state="translated">验证码</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormTitle">
+      <segment>
+        <source>OTP form validation</source>
+        <target state="translated">OTP 表单验证</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormValidationMessage">
+      <segment>
+        <source>Please enter the code</source>
+        <target state="translated">请输入验证码</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditSetValueButtonText">
+      <segment>
+        <source>Set 654321</source>
+        <target state="translated">设为 654321</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditTwoWayBindingDescription">
+      <segment>
+        <source>OtpLineEdit.Text uses one bindable value source and can be set or cleared from the ViewModel.</source>
+        <target state="translated">OtpLineEdit.Text 使用单一可绑定值源，可由 ViewModel 设置或清空。</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditTwoWayBindingTitle">
+      <segment>
+        <source>OTP two-way binding</source>
+        <target state="translated">OTP 双向绑定</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAutosizeHeightBasedOnContentLines">
+      <segment>
+        <source>Autosize height based on content lines</source>
+        <target state="translated">根据内容行数自动调整高度</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAutosizeHeightWithMinimumAndMaximumNumberOf">
+      <segment>
+        <source>Autosize height with minimum and maximum number of lines</source>
+        <target state="translated">按最小和最大行数自动调整高度</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBasicUsage">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">无边框</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCanResize">
+      <segment>
+        <source>can resize</source>
+        <target state="translated">可调整大小</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextDisableResize">
+      <segment>
+        <source>disable resize</source>
+        <target state="translated">禁止调整大小</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextDisabled">
+      <segment>
+        <source>disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEnterYourUsername">
+      <segment>
+        <source>Enter your username</source>
+        <target state="translated">输入用户名</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">错误</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextErrorWithPrefix">
+      <segment>
+        <source>Error with prefix</source>
+        <target state="translated">带前缀的错误</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充风格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputPassword">
+      <segment>
+        <source>input password</source>
+        <target state="translated">输入密码</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchLoadingDefault">
+      <segment>
+        <source>input search loading default</source>
+        <target state="translated">默认搜索加载</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchLoadingWithEnterbutton">
+      <segment>
+        <source>input search loading with enterButton</source>
+        <target state="translated">带搜索按钮的搜索加载</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchText">
+      <segment>
+        <source>input search text</source>
+        <target state="translated">输入搜索文本</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputWithClearIcon">
+      <segment>
+        <source>input with clear icon</source>
+        <target state="translated">带清除图标的输入框</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMaxlengthIsN6">
+      <segment>
+        <source>maxLength is 6</source>
+        <target state="translated">最大长度为 6</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中号</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">线框风格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTextBox">
+      <segment>
+        <source>AtomUI TextBox</source>
+        <target state="translated">AtomUI TextBox</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTextareaWithClearIcon">
+      <segment>
+        <source>textarea with clear icon</source>
+        <target state="translated">带清除图标的文本域</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">下划线</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarningWithPrefix">
+      <segment>
+        <source>Warning with prefix</source>
+        <target state="translated">带前缀的警告</target>
+      </segment>
+    </unit>
+    <unit id="P2SearchButtonTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="P2SearchButtonTextText">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索一下</target>
+      </segment>
+    </unit>
+    <unit id="P2TextMysite">
+      <segment>
+        <source>mysite</source>
+        <target state="translated">我的站点</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">无边框</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充风格</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleLeftaddonAndRightaddon">
+      <segment>
+        <source>LeftAddOn and RightAddOn</source>
+        <target state="translated">左侧附加和右侧附加</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">普通</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">下划线</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>LineEdit covers standard inputs, add-ons, clear actions, password reveal, prefixes and suffixes, validation status, SearchEdit, and TextArea scenarios.</source>
+        <target state="translated">LineEdit 覆盖标准输入框、前后置附加、清除操作、密码显示、前缀后缀、校验状态、SearchEdit 和 TextArea 场景。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Capture single-line text, search input, passwords, and multi-line text.</source>
+        <target state="translated">采集单行文本、搜索输入、密码和多行文本。</target>
+      </segment>
+    </unit>
+    <unit id="PasswordBoxDescription">
+      <segment>
+        <source>Input type of password.</source>
+        <target state="translated">密码类型输入框。</target>
+      </segment>
+    </unit>
+    <unit id="PasswordBoxTitle">
+      <segment>
+        <source>Password box</source>
+        <target state="translated">密码框</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">使用前置和后置标签的示例。</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">前置/后置标签</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">在输入框内部添加前缀或后缀图标。</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">前缀和后缀</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixToolTip">
+      <segment>
+        <source>Helpful information about this field</source>
+        <target state="translated">关于此字段的提示信息</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioState">
+      <segment>
+        <source>State</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioTextArea">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">文本域</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+        <target state="translated">将标准输入框和搜索按钮组合创建搜索框的示例。</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxTitle">
+      <segment>
+        <source>Search box</source>
+        <target state="translated">搜索框</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxWithLoadingDescription">
+      <segment>
+        <source>Search loading when onSearch.</source>
+        <target state="translated">onSearch 时显示搜索加载状态。</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxWithLoadingTitle">
+      <segment>
+        <source>Search box with loading</source>
+        <target state="translated">带加载状态的搜索框</target>
+      </segment>
+    </unit>
+    <unit id="SearchEditSizeTypeDescription">
+      <segment>
+        <source>SearchEdit supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">SearchEdit 支持大号、中号、小号，也支持通过 Custom 配合本地高度和字号自定义。</target>
+      </segment>
+    </unit>
+    <unit id="SearchEditSizeTypeTitle">
+      <segment>
+        <source>SearchEdit size</source>
+        <target state="translated">SearchEdit 尺寸</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaDescription">
+      <segment>
+        <source>For multi-line input.</source>
+        <target state="translated">用于多行输入。</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaStatusDescription">
+      <segment>
+        <source>Add status to TextArea with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为 TextArea 添加状态，可设置为错误或警告。</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaStatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaTitle">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">文本域</target>
+      </segment>
+    </unit>
+    <unit id="TextBoxDescription">
+      <segment>
+        <source>AtomUI TextBox keeps the native TextBox API while using the LineEdit border, hover, and focus visuals.</source>
+        <target state="translated">AtomUI TextBox 保留原生 TextBox API，同时使用 LineEdit 的边框、悬停和聚焦视觉。</target>
+      </segment>
+    </unit>
+    <unit id="TextBoxTitle">
+      <segment>
+        <source>TextBox</source>
+        <target state="translated">TextBox</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+        <target state="translated">输入框的变体。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">变体</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Input box with the remove icon, click the icon to delete everything.</source>
+        <target state="translated">带移除图标的输入框，点击图标可清空全部内容。</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">带清除图标</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

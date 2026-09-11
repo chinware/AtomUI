@@ -1,6 +1,8 @@
 # ComboBox 桌面版实现原理
 
-本文档描述 ComboBox 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ComboBox 桌面版架构设计](overview.md)，变化记录见 [ComboBox Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ComboBox Token 设计](token.md)。
+本文档描述 ComboBox 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ComboBox 桌面版架构设计](overview.md)，输入表面共享状态见 [输入控件共享架构设计](../../data-entry/input-control-architecture-design.md)，候选列表状态契约见 [候选列表统一交互设计](../../data-entry/select/candidate-interaction-design.md)，变化记录见 [ComboBox Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ComboBox Token 设计](token.md)。
+
+Popup 接入边界：`ComboBox` 负责业务状态和内容准备，template Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
 
 ## 1. 实现定位
 
@@ -57,7 +59,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize`、`RightAddOnTemplate`。
 - 选择与集合：`SelectedItem`、`SelectedIndex`、`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled`。
-- 交互与状态：`IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement`。
+- 交互与状态：`IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`FormStatus`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement`。
 - 视觉与布局：`SizeType`、`StyleVariant`。
 - 其他稳定入口：`LeftAddOn`、`RightAddOn`。
 
@@ -68,6 +70,7 @@ Public API / ItemsSource / Command / Event
 - `IFormItemAware` 的值读写直接映射到 `SelectedItem`：`SetFormValue(value)` 保留对象实例并设置选择，`GetFormValue()` 返回选择对象，`ClearFormValue()` 清空选择。
 - 非编辑态选中内容溢出提示由 `OverflowTip` 托管，只在 `SelectedContentPresenter` 视觉溢出时写入 `ToolTip.Tip`，延迟和位置分别映射到 `ToolTip.ShowDelay` 与 `ToolTip.Placement`；非编辑态显示节点以外层 `AddOnDecoratedBox` 作为 `PlacementTarget`，避免 tooltip 左边按内部文本 padding 对齐；编辑态输入文本仍由 `PART_EditableTextBox` 自己承载，不自动开启该提示。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
+- popup 候选必须由单一 active candidate owner 驱动：鼠标命中可用 `ComboBoxItem` 时只迁移候选，不滚动、不提交；`Up` / `Down` 复用同一状态并允许滚动，`Enter` 从 active candidate 写入真实 `SelectedItem`。容器 recycle、ItemsSource / filter 变化和 popup close 必须清理旧投影。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 
 ## 5. 生命周期与模板接入
@@ -77,6 +80,7 @@ Public API / ItemsSource / Command / Event
 - 构造阶段只注册必要状态，不依赖 template part。
 - 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
+- `FormFeedback.ValidateStatus` 属于外部对象订阅，在 logical detach 时释放，并在 logical attach 时按当前 feedback 状态重新建立。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 
@@ -100,6 +104,7 @@ ComboBox 的交互事件应从输入源收敛到控件级语义事件：
 - 弹层、窗口或 overlay 类路径必须稳定处理打开、关闭、取消、重复打开和宿主失活。
 - 集合类路径必须稳定处理 container prepare、clear、过滤、分组和虚拟化回收。
 - 输入类路径必须保持 Form、validation、clear、placeholder 和键盘行为一致。
+- `FormStatus` 由 `IFormItemAware.NotifyValidateStatus` 写入并绑定到 `AddOnDecoratedBox`；它不能覆盖 `Status`，也不能绕过 `DataValidationErrors` 另建 native error。`AddOnDecoratedBox` 通过共享 `EffectiveStatus` 负责 warning/error 视觉投影。
 - Form 值变化通知可以由展示值变化触发，但真实表单值 owner 始终是 `SelectedItem`，不能使用 `SelectionBoxItem` 或 `ToString()` 作为替代状态。
 
 当前没有抽取到控件专属 public 事件；交互语义主要通过继承事件、命令、属性变化和 Gallery 可观察行为体现。

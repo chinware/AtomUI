@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ListBoxToken : AbstractControlDesignToken
+internal sealed class ListBoxToken : AbstractControlDesignToken
 {
     
     public ListBoxToken()

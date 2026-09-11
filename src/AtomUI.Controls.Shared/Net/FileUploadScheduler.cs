@@ -1,201 +1,449 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 
 namespace AtomUI.Controls;
 
 internal class FileUploadScheduler : IFileUploadScheduler
 {
+    private readonly object _scheduleSyncRoot = new();
+    private readonly SemaphoreSlim _maintenanceGate = new(1, 1);
     private SemaphoreSlim _concurrentSemaphore;
     private IFileUploadTransport? _transport;
     private readonly ConcurrentQueue<FileUploadTask> _pendingQueue = new();
     private readonly ConcurrentDictionary<Guid, FileUploadTask> _runningTasks = new();
     private int _isScheduleEnabledFlag = 1;
 
-    public IFileUploadTransport? Transport => _transport;
+    public IFileUploadTransport? Transport
+    {
+        get
+        {
+            lock (_scheduleSyncRoot)
+            {
+                return _transport;
+            }
+        }
+    }
     
     public FileUploadScheduler(IFileUploadTransport? transport = null, int maxConcurrentTasks = 3)
     {
+        ArgumentOutOfRangeException.ThrowIfLessThan(maxConcurrentTasks, 1);
         _transport           = transport;
         _concurrentSemaphore = new SemaphoreSlim(maxConcurrentTasks);
     }
     
     public void EnqueueTask(FileUploadTask task)
     {
-        Debug.Assert(_transport != null);
+        Debug.Assert(Transport != null);
         _pendingQueue.Enqueue(task);
-        _ = TryStartNextUploadAsync();
+        TryStartNextUploads();
     }
-    
-    private async Task TryStartNextUploadAsync()
-    {
-        if (_transport == null || !IsScheduleEnabled())
-        {
-            return;
-        }
 
-        while (_concurrentSemaphore.CurrentCount > 0 && _pendingQueue.TryDequeue(out var task))
+    private void TryStartNextUploads()
+    {
+        while (TryPrepareNextUpload(
+                   out var task,
+                   out var transport,
+                   out var cancellationTokenSource,
+                   out var executionCompletion))
         {
-            if (task.Status != FileUploadStatus.Pending)
-            {
-                continue;
-            }
-            
-            await _concurrentSemaphore.WaitAsync();
-            
-            if (task.Status != FileUploadStatus.Pending)
-            {
-                _concurrentSemaphore.Release();
-                continue; 
-            }
-            
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken       = cancellationTokenSource.Token;
-            task.CancellationTokenSource = cancellationTokenSource;
-            task.Status                  = FileUploadStatus.Uploading;
-            _runningTasks.TryAdd(task.Id, task);
-   
             Debug.Assert(task.UploadFileInfo != null);
-            
+
             var progress = new Progress<FileUploadProgress>(report =>
             {
-                task.Progress = report.Percentage;
-                task.UploadProgressHandler?.Invoke(task.Id, task.UploadFileInfo, task.Progress);
-            });
-            
-            task.ExecutionTask = Task.Run(async () =>
-            {
-                FileUploadResult? result = null;
-                try
+                var taskProgress = report.Percentage;
+                if (!TryRecordUploadProgress(task, taskProgress))
                 {
-                    result = await _transport.UploadAsync(
-                        task.UploadFileInfo,
-                        task.Context,
-                        progress,
-                        cancellationToken
-                    );
+                    return;
+                }
 
-                    task.Result = result;
-                    task.Status = result.IsSuccess ? FileUploadStatus.Success : FileUploadStatus.Failed;
-                    if (!result.IsSuccess)
+                task.UploadProgressHandler?.Invoke(task.Id, task.UploadFileInfo, taskProgress);
+            });
+
+            var executionTask = Task.Run(() => ExecuteUploadAsync(
+                task,
+                transport,
+                progress,
+                cancellationTokenSource.Token));
+            _ = ObserveExecutionTaskAsync(task, executionTask, executionCompletion);
+        }
+    }
+
+    private bool TryPrepareNextUpload(
+        out FileUploadTask task,
+        out IFileUploadTransport transport,
+        out CancellationTokenSource cancellationTokenSource,
+        out TaskCompletionSource executionCompletion)
+    {
+        lock (_scheduleSyncRoot)
+        {
+            if (_transport is null || !IsScheduleEnabledCore() || !_concurrentSemaphore.Wait(0))
+            {
+                task = null!;
+                transport = null!;
+                cancellationTokenSource = null!;
+                executionCompletion = null!;
+                return false;
+            }
+
+            while (_pendingQueue.TryDequeue(out var candidate))
+            {
+                lock (candidate)
+                {
+                    if (candidate.Status != FileUploadStatus.Pending)
                     {
-                        Debug.WriteLine(
-                            $"Upload failed: {task.UploadFileInfo.FilePath}, Reason: {result.UserFriendlyMessage}");
-                        task.UploadFailedHandler?.Invoke(task.Id, task.UploadFileInfo, result);
+                        continue;
                     }
-                    else
-                    {
-                        task.UploadCompletedHandler?.Invoke(task.Id, task.UploadFileInfo, result);
-                    }
+
+                    cancellationTokenSource = new CancellationTokenSource();
+                    executionCompletion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                    candidate.CancellationTokenSource = cancellationTokenSource;
+                    candidate.ExecutionTask           = executionCompletion.Task;
+                    candidate.Status                  = FileUploadStatus.Uploading;
+                    _runningTasks.TryAdd(candidate.Id, candidate);
+                    task = candidate;
+                    transport = _transport;
+                    return true;
                 }
-                catch (OperationCanceledException)
+            }
+
+            _concurrentSemaphore.Release();
+            task = null!;
+            transport = null!;
+            cancellationTokenSource = null!;
+            executionCompletion = null!;
+            return false;
+        }
+    }
+
+    private async Task ExecuteUploadAsync(
+        FileUploadTask task,
+        IFileUploadTransport transport,
+        IProgress<FileUploadProgress> progress,
+        CancellationToken cancellationToken)
+    {
+        FileUploadResult result;
+        FileUploadStatus status;
+        try
+        {
+            result = await transport.UploadAsync(
+                task.UploadFileInfo!,
+                task.Context,
+                progress,
+                cancellationToken);
+
+            status = result.IsSuccess ? FileUploadStatus.Success : FileUploadStatus.Failed;
+            if (!result.IsSuccess)
+            {
+                Debug.WriteLine(
+                    $"Upload failed: {task.UploadFileInfo!.Path}, Reason: {result.UserFriendlyMessage}");
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            status = FileUploadStatus.Cancelled;
+            result = FileUploadResult.CancelledResult("upload cancelled");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Upload error: {task.UploadFileInfo!.Path}, Error: {ex.Message}");
+            status = FileUploadStatus.Failed;
+            result = FileUploadResult.FailureResult(FileUploadErrorCode.Unknown, ex.Message);
+        }
+        SetUploadResult(task, status, result);
+        try
+        {
+            switch (status)
+            {
+                case FileUploadStatus.Success:
+                    task.UploadCompletedHandler?.Invoke(task.Id, task.UploadFileInfo!, result);
+                    break;
+                case FileUploadStatus.Cancelled:
+                    task.UploadCancelledHandler?.Invoke(task.Id, task.UploadFileInfo!, result);
+                    break;
+                default:
+                    task.UploadFailedHandler?.Invoke(task.Id, task.UploadFileInfo!, result);
+                    break;
+            }
+        }
+        finally
+        {
+            lock (task)
+            {
+                task.CancellationTokenSource?.Dispose();
+                task.CancellationTokenSource = null;
+            }
+            _runningTasks.TryRemove(task.Id, out _);
+            _concurrentSemaphore.Release();
+            TryStartNextUploads();
+        }
+    }
+
+    private static async Task ObserveExecutionTaskAsync(
+        FileUploadTask uploadTask,
+        Task executionTask,
+        TaskCompletionSource executionCompletion)
+    {
+        try
+        {
+            await executionTask.ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Upload completion callback failed: {ex.Message}");
+        }
+        finally
+        {
+            executionCompletion.TrySetResult();
+            lock (uploadTask)
+            {
+                if (ReferenceEquals(uploadTask.ExecutionTask, executionCompletion.Task))
                 {
-                    task.Status = FileUploadStatus.Cancelled;
-                    task.UploadCancelledHandler?.Invoke(task.Id, task.UploadFileInfo, FileUploadResult.CancelledResult("upload cancelled"));
+                    uploadTask.ExecutionTask = null;
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Upload error: {task.UploadFileInfo.FilePath}, Error: {ex.Message}");
-                    task.Status = FileUploadStatus.Failed;
-                    task.UploadFailedHandler?.Invoke(task.Id, task.UploadFileInfo, FileUploadResult.FailureResult(FileUploadErrorCode.Unknown, ex.Message));
-                }
-                finally
-                {
-                    _runningTasks.TryRemove(task.Id, out _);
-                    _concurrentSemaphore.Release();
-                    task.CancellationTokenSource?.Dispose();
-                    task.CancellationTokenSource = null;
-                    task.ExecutionTask = null;
-                    _ = TryStartNextUploadAsync();
-                }
-            }, cancellationToken);
+            }
+        }
+    }
+
+    private static bool TryRecordUploadProgress(FileUploadTask task, double progress)
+    {
+        lock (task)
+        {
+            if (task.Status != FileUploadStatus.Uploading)
+            {
+                return false;
+            }
+
+            task.Progress = progress;
+            return true;
+        }
+    }
+
+    private static void SetUploadResult(
+        FileUploadTask task,
+        FileUploadStatus status,
+        FileUploadResult result)
+    {
+        lock (task)
+        {
+            task.Result = result;
+            task.Status = status;
         }
     }
     
     public async Task CancelUploadAsync(FileUploadTask task)
     {
-        if (task.Status == FileUploadStatus.Uploading)
+        Task? executionTask;
+        var notifyPendingCancellation = false;
+        lock (task)
         {
-            if (task.CancellationTokenSource != null)
+            executionTask = task.ExecutionTask;
+            if (task.Status == FileUploadStatus.Uploading)
             {
-                await task.CancellationTokenSource.CancelAsync();
+                task.CancellationTokenSource?.Cancel();
+            }
+            else if (task.Status == FileUploadStatus.Pending)
+            {
+                task.Status = FileUploadStatus.Cancelled;
+                notifyPendingCancellation = true;
             }
         }
-        else if (task.Status == FileUploadStatus.Pending)
+
+        if (notifyPendingCancellation)
         {
-            task.Status = FileUploadStatus.Cancelled;
             task.UploadCancelledHandler?.Invoke(task.Id,
                 task.UploadFileInfo!,
                 FileUploadResult.CancelledResult("upload cancelled"));
+        }
+
+        if (executionTask is not null)
+        {
+            await executionTask.ConfigureAwait(false);
         }
     }
     
     public async Task CancelAllAsync(CancellationToken cancellationToken = default)
     {
-        var wasScheduleEnabled = IsScheduleEnabled();
-        DisableSchedule();
-
-        while (_pendingQueue.TryDequeue(out var pendingTask))
+        await _maintenanceGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (pendingTask.Status == FileUploadStatus.Pending)
+            var wasScheduleEnabled = DisableScheduleCore();
+            try
             {
-                pendingTask.Status = FileUploadStatus.Cancelled;
-                pendingTask.UploadCancelledHandler?.Invoke(pendingTask.Id,
-                    pendingTask.UploadFileInfo!,
-                    FileUploadResult.CancelledResult("upload cancelled"));
+                await CancelAllCoreAsync(cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (wasScheduleEnabled)
+                {
+                    EnableSchedule();
+                }
             }
         }
-
-        var runningTasks = _runningTasks.Values.ToArray();
-        foreach (var task in runningTasks)
+        finally
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            await CancelUploadAsync(task);
-        }
-
-        var executionTasks = runningTasks
-                             .Select(task => task.ExecutionTask)
-                             .Where(task => task != null)
-                             .Cast<Task>()
-                             .ToArray();
-        if (executionTasks.Length > 0)
-        {
-            await Task.WhenAll(executionTasks).WaitAsync(cancellationToken);
-        }
-
-        if (wasScheduleEnabled)
-        {
-            EnableSchedule();
+            _maintenanceGate.Release();
         }
     }
 
     public async Task SetMaxConcurrentTasksAsync(int taskCount, CancellationToken cancellationToken = default)
     {
-        await CancelAllAsync(cancellationToken);
-        _concurrentSemaphore.Dispose();
-        _concurrentSemaphore = new SemaphoreSlim(taskCount);
-        EnableSchedule();
+        ArgumentOutOfRangeException.ThrowIfLessThan(taskCount, 1);
+        await _maintenanceGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var wasScheduleEnabled = DisableScheduleCore();
+            try
+            {
+                await CancelAllCoreAsync(cancellationToken).ConfigureAwait(false);
+                lock (_scheduleSyncRoot)
+                {
+                    _concurrentSemaphore.Dispose();
+                    _concurrentSemaphore = new SemaphoreSlim(taskCount);
+                }
+            }
+            finally
+            {
+                if (wasScheduleEnabled)
+                {
+                    EnableSchedule();
+                }
+            }
+        }
+        finally
+        {
+            _maintenanceGate.Release();
+        }
     }
 
-    public async Task SetTransportAsync(IFileUploadTransport transport, CancellationToken cancellationToken = default)
+    public async Task SetTransportAsync(IFileUploadTransport? transport, CancellationToken cancellationToken = default)
     {
-        await CancelAllAsync(cancellationToken);
-        _transport = transport;
-        EnableSchedule();
+        await _maintenanceGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var wasScheduleEnabled = DisableScheduleCore();
+            try
+            {
+                await CancelAllCoreAsync(cancellationToken).ConfigureAwait(false);
+                lock (_scheduleSyncRoot)
+                {
+                    _transport = transport;
+                }
+            }
+            finally
+            {
+                if (wasScheduleEnabled)
+                {
+                    EnableSchedule();
+                }
+            }
+        }
+        finally
+        {
+            _maintenanceGate.Release();
+        }
     }
 
     public void DisableSchedule()
     {
-        Interlocked.Exchange(ref _isScheduleEnabledFlag, 0);
+        DisableScheduleCore();
     }
 
     public void EnableSchedule()
     {
-        Interlocked.Exchange(ref _isScheduleEnabledFlag, 1);
+        lock (_scheduleSyncRoot)
+        {
+            Volatile.Write(ref _isScheduleEnabledFlag, 1);
+        }
+        TryStartNextUploads();
     }
 
     public bool IsScheduleEnabled()
     {
-        return Interlocked.CompareExchange(ref _isScheduleEnabledFlag, 1, 1) == 1;
+        return Volatile.Read(ref _isScheduleEnabledFlag) == 1;
+    }
+
+    private async Task CancelAllCoreAsync(CancellationToken cancellationToken)
+    {
+        FileUploadTask[] pendingTasks;
+        FileUploadTask[] runningTasks;
+        lock (_scheduleSyncRoot)
+        {
+            var pending = new List<FileUploadTask>();
+            while (_pendingQueue.TryDequeue(out var pendingTask))
+            {
+                pending.Add(pendingTask);
+            }
+            pendingTasks = pending.ToArray();
+            runningTasks = _runningTasks.Values.ToArray();
+        }
+
+        List<Exception>? callbackExceptions = null;
+        foreach (var pendingTask in pendingTasks)
+        {
+            var notifyCancellation = false;
+            lock (pendingTask)
+            {
+                if (pendingTask.Status == FileUploadStatus.Pending)
+                {
+                    pendingTask.Status = FileUploadStatus.Cancelled;
+                    notifyCancellation = true;
+                }
+            }
+
+            if (!notifyCancellation)
+            {
+                continue;
+            }
+
+            try
+            {
+                pendingTask.UploadCancelledHandler?.Invoke(
+                    pendingTask.Id,
+                    pendingTask.UploadFileInfo!,
+                    FileUploadResult.CancelledResult("upload cancelled"));
+            }
+            catch (Exception ex)
+            {
+                (callbackExceptions ??= []).Add(ex);
+            }
+        }
+
+        var runningCancellationTasks = new Task[runningTasks.Length];
+        for (var index = 0; index < runningTasks.Length; index++)
+        {
+            runningCancellationTasks[index] = CancelUploadAsync(runningTasks[index]);
+        }
+
+        if (runningCancellationTasks.Length > 0)
+        {
+            await Task.WhenAll(runningCancellationTasks)
+                      .WaitAsync(cancellationToken)
+                      .ConfigureAwait(false);
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (callbackExceptions is { Count: 1 })
+        {
+            ExceptionDispatchInfo.Capture(callbackExceptions[0]).Throw();
+        }
+        if (callbackExceptions is { Count: > 1 })
+        {
+            throw new AggregateException(callbackExceptions);
+        }
+    }
+
+    private bool DisableScheduleCore()
+    {
+        lock (_scheduleSyncRoot)
+        {
+            return Interlocked.Exchange(ref _isScheduleEnabledFlag, 0) == 1;
+        }
+    }
+
+    private bool IsScheduleEnabledCore()
+    {
+        return Volatile.Read(ref _isScheduleEnabledFlag) == 1;
     }
 }

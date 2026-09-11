@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.2-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.8-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
@@ -64,14 +64,16 @@ Token 和本地化开发的源代码生成器。欢迎提交 Issue、PR 和改�
 #### 运行环境
 
 .NET 8 及其以上（开发期支持 .NET 10）<br>
-Avalonia 12.1.x<br>
+Avalonia 12.1.2<br>
 支持 Windows、macOS、Linux 跨平台<br>
 
 #### 最新版本说明
 
-AtomUI 6.1.2 为 Gallery 新增浅色、深色和跟随系统外观模式，修复 Dialog 和 Drawer 在绘制窗口 chrome 上的
-mask 覆盖问题，并修复 Splitter 在交叉轴无限约束下的测量问题。升级前请查看
-[更新日志](./CHANGELOG.zh-CN.md) 了解发布详情。
+AtomUI 6.1.8 重构 DataGrid 为基于 Range 的 `IDataGridSource`，引入不可变查询与选择状态；图片加载改用封闭的
+`ImageSource` 类型层次与独立的缓存读写策略；具体 `[ControlDesignToken]` 类型现在必须为 `sealed`。本版本还新增
+`Window.IsTitleVisible`，统一 NavMenu 激活顺序，修复 Select 家族多选模式的 Prefix 间距，并完善 trimmed 应用的
+NativeAOT linked-registration 闭包。本版本包含 DataGrid、图片加载和主题 Token 的破坏性变更；升级前请查看
+[更新日志](./CHANGELOG.zh-CN.md)。
 
 #### 感谢通明湖中心孵化 AtomUI OSS
 
@@ -106,7 +108,7 @@ mask 覆盖问题，并修复 Splitter 在交叉轴无限约束下的测量问�
 
 #### 开始使用
 
-AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用需要按需添加 DataGrid、ColorPicker 等可选包。
+AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用需要按需添加 DataGrid、ColorPicker、Extras 等可选包。
 下面示例使用当前项目最新版本。
 
 目前我们已经发布的包如下：
@@ -124,12 +126,14 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Desktop.Controls             | 桌面控件库 — 主要安装包                  |
 | AtomUI.Desktop.Controls.DataGrid    | DataGrid 数据表格控件（按需引入）          |
 | AtomUI.Desktop.Controls.ColorPicker | ColorPicker 颜色选择器控件（按需引入）      |
+| AtomUI.Desktop.Controls.Extras      | 补充桌面控件（按需引入）                    |
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.2
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.2
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.2
+dotnet add package AtomUI.Desktop.Controls --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.8
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -156,9 +160,10 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.2"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.2"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.2"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.8"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
@@ -195,9 +200,9 @@ internal class Program
 ###### 在 `Application` 类中启用 `AtomUI`
 
 ```csharp
-using System.Globalization;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Markup.Xaml;
@@ -210,12 +215,15 @@ public partial class App : Application
 
         this.UseAtomUI(builder =>
         {
-            builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
+            builder.UseLanguages(
+                LanguageTags.ZhCN,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
             builder.UseDesktopColorPicker();   // 可选
             builder.UseDesktopDataGrid();      // 可选
+            builder.UseDesktopExtras();        // 可选
         });
     }
 }
@@ -258,6 +266,25 @@ Gallery 项目覆盖面较完整。如果您希望先看更小的入门项目，
 
 这些示例展示了更紧凑的应用搭建方式，更适合作为新项目起点。
 
+#### 赞助商
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="https://sophnet.com/">
+        <img src="./resources/images/readme/sponsors/sophnet.png" height="56" alt="SophNet"/>
+      </a>
+      <p>SophNet 提供稳定高效的 AI 模型 API 平台，帮助开发者快速接入大模型能力。</p>
+    </td>
+    <td align="center" width="50%">
+      <a href="https://hsy.com/aboutus/">
+        <img src="./resources/images/readme/sponsors/hsycloud.svg" height="56" alt="火数云"/>
+      </a>
+      <p>火数云提供云服务器、高防与 GPU 算力服务，支持企业安全、可靠地完成业务上云。</p>
+    </td>
+  </tr>
+</table>
+
 #### 致谢
 
 <div>
@@ -281,16 +308,6 @@ Avalonia 是一个跨平台的 .NET UI 框架，使用 XAML 语言设计界面�
 使用 AtomUI OSS 的项目需要遵循 LGPL v3 协议。<strong>商业应用，包括公司内部项目、个人商业项目和外包项目，
 在使用已发布二进制包链接的情况下可以免费使用</strong>。如果基于源码定制 AtomUI，则需要按协议开放修改代码，
 或购买商业授权。商业授权请联系：北京秦派软件科技有限公司。
-
-#### 特别感谢
-
-<div>
-    <div align="left">
-      <h1>RoutinAI</h1>
-       <img width="154" height="151" src="./resources/images/readme/RoutinAI.png"/>
-    </div>
-[RoutinAI](https://routin.ai/) 是一个企业级统一 LLM API 网关，提供单一、类型安全的接口，可访问来自 GPT、Claude 和 Gemini 系列的 100 多个主流大语言模型，包括 gpt-5.4、claude-opus-4-6 和 gemini-3.1-pro-preview 等模型。它通过提供零延迟边缘路由、无需修改代码即可无缝切换模型、统一计费以及带有消费上限和访问策略的集中治理，消除了管理多个 AI 供应商的复杂性。
-</div>
 
 ### 🤝 贡献
 

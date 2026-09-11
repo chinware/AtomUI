@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.TransferLangResourceKind">
+    <unit id="DeSelectAll">
+      <segment>
+        <source>deselect all data</source>
+      </segment>
+    </unit>
+    <unit id="InvertSelectCurrentPage">
+      <segment>
+        <source>invert current page</source>
+      </segment>
+    </unit>
+    <unit id="Item">
+      <segment>
+        <source>item</source>
+      </segment>
+    </unit>
+    <unit id="Items">
+      <segment>
+        <source>items</source>
+      </segment>
+    </unit>
+    <unit id="RemoveAll">
+      <segment>
+        <source>remove all data</source>
+      </segment>
+    </unit>
+    <unit id="RemoveCurrentPage">
+      <segment>
+        <source>remove current page</source>
+      </segment>
+    </unit>
+    <unit id="SelectAll">
+      <segment>
+        <source>select all data</source>
+      </segment>
+    </unit>
+    <unit id="SelectCurrentPage">
+      <segment>
+        <source>select current page</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

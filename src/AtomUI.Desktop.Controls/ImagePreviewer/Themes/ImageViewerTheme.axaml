@@ -19,7 +19,7 @@
                     <Border Name="PART_LoadingPresenter"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            IsVisible="{TemplateBinding IsCurrentImageLoading}">
+                            IsVisible="False">
                         <Panel HorizontalAlignment="Center"
                                VerticalAlignment="Center">
                             <atom:Spin IsSpinning="True"
@@ -92,6 +92,9 @@
         </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+        </Style>
+        <Style Selector="^:loading:not(:has-image) /template/ Border#PART_LoadingPresenter">
+            <Setter Property="IsVisible" Value="True" />
         </Style>
         <Style Selector="^ /template/ atom|Icon#DefaultErrorIcon">
             <Setter Property="Width" Value="48" />

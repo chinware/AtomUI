@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using Avalonia.Platform.Storage;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Upload;
@@ -14,6 +15,15 @@ public class UploadViewModel : ReactiveObject, IRoutableViewModel
     public string? UrlPathSegment => ID.ToString();
 
     public IFileUploadTransport UploadTransport { get; } = new UploadMockTransport();
+
+    public IReadOnlyList<FilePickerFileType> PngFileTypes { get; } =
+    [
+        new FilePickerFileType("PNG")
+        {
+            Patterns = ["*.png"],
+            MimeTypes = ["image/png"]
+        }
+    ];
 
     private ObservableCollection<UploadFileItem>? _defaultFiles;
 

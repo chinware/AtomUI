@@ -5,6 +5,15 @@
 
 namespace AtomUI.Desktop.Controls;
 
+public enum DataGridLoadState
+{
+    Idle,
+    Loading,
+    Refreshing,
+    Ready,
+    Error
+}
+
 /// <summary>
 /// Used to specify action to take out of edit mode.
 /// </summary>

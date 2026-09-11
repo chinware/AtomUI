@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class PopupConfirmToken : AbstractControlDesignToken
+internal sealed class PopupConfirmToken : AbstractControlDesignToken
 {
     
     public PopupConfirmToken()

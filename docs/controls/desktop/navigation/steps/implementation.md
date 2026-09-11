@@ -6,7 +6,7 @@
 
 Steps 的实现目标是在 `ItemsControl` 容器体系内，把根输入和 item 显式状态确定性投影为视觉状态。实现不依赖 Selection、模板应用顺序、VisualTree attach 顺序或上一次计算结果。
 
-本文档覆盖 `Steps`、`StepsItem`、`StepsItemIndicator`、两个 internal LayoutPanel 和三个主题文件的稳定职责。通用 ItemsControl、TokenResource、Motion 和 PathIcon 实现不在本文档重复说明。
+本文档覆盖 `Steps`、`StepsItem`、`StepsItemIndicator`、两个 internal LayoutPanel、Panel item frame 和三个主题文件的稳定职责。通用 ItemsControl、TokenResource、Motion 和 PathIcon 实现不在本文档重复说明。
 
 ## 2. 源码文件结构
 
@@ -15,8 +15,10 @@ Steps 的实现目标是在 `ItemsControl` 容器体系内，把根输入和 ite
 - `src/AtomUI.Desktop.Controls/Steps/Steps.cs`：public API、事件、容器生成、根输入分发和 item 状态协调。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItem.cs`：public item 契约、internal 派生状态、owner 生命周期和激活入口。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItemIndicator.cs`：Indicator 状态、Wave part、Progress 绘制和渲染失效。
-- `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation 等宽、Inline 和垂直 stack 布局。
-- `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow 和 NavigationActiveIndicator 的 item 内布局。
+- `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation/Panel 等宽、Inline 和垂直 stack 布局。
+- `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow、PanelArrow 和 NavigationActiveIndicator 的 item 内布局。
+- `src/AtomUI.Desktop.Controls/Steps/StepsPanelArrow.cs`：internal 可拉伸 Panel 楔形箭头绘制控件，负责 LTR/RTL 三角形和边框。
+- `src/AtomUI.Desktop.Controls/Steps/StepsPanelItemFrame.cs`：Panel item 的视觉外框；Filled 非首项使用左侧 notch 几何裁剪，Outlined 保持完整边框。
 - `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 控件 Token。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`：根模板和 StepsPanel。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemTheme.axaml`：统一 item 语义模板和状态样式。
@@ -67,9 +69,11 @@ Indicator 是 internal-observable 视觉控件：
 ### 3.4 LayoutPanel
 
 - `StepsPanel` 只排列 StepsItem，不读取 Status、不生成视觉。
+- `StepsPanel` 在 `Type=Panel` 时忽略请求的垂直方向，强制水平排列并为所有可见 item 分配等宽单元。
 - `StepsPanel.Offset` 只在 Inline 水平等宽布局中保留前置空单元，不影响状态编号。
 - `StepsPanel.HorizontalContentAlignment` 只在垂直 Navigation 布局中控制 item 列的水平对齐，默认居中。
-- `StepsItemLayoutPanel` 只排列固定语义子节点，不读取 Current、不修改 item 属性；垂直 item 间距由面板自身测量高度承担，不放进内容区域 padding。
+- `StepsItemLayoutPanel` 只排列固定语义子节点，不读取 Current、不修改 item 属性；Panel 下隐藏 Indicator/Connector 的节点不进入有效几何，ItemWrapper 覆盖完整单元，非首项内容按 `panel-padding + item-base-width` 内缩，PanelArrow 溢出到相邻单元外侧。
+- `StepsPanelItemFrame` 只承担 Panel item 的形状职责：Filled 非首项按箭头宽度裁出左侧 notch，避免后续 item 的矩形背景盖住前一项箭头；Outlined 不裁剪主体，只由箭头边框覆盖共享接缝。
 
 两个 Panel 都通过 `AffectsMeasure` / `AffectsArrange` 响应相关布局属性，不依赖根控件手工重建 Grid definitions。
 
@@ -172,7 +176,9 @@ Steps (public)
                 ├── ContentPresenter#SubHeaderPresenter (internal-observable)
                 ├── PixelAlignedBorder#Connector (internal-observable)
                 ├── ContentPresenter#ContentPresenter (internal-observable)
+                ├── StepsPanelItemFrame#ItemWrapper (internal-observable)
                 ├── PathIcon#NavigationArrow (internal-observable)
+                ├── StepsPanelArrow#PanelArrow (internal-observable)
                 └── PixelAlignedBorder#NavigationActiveIndicator (internal-observable)
 ```
 
@@ -188,6 +194,8 @@ Steps (public)
 | `PART_WaveSpirit` | wave decorator | `StepsItemIndicatorTheme.axaml` | Indicator template | IsMotionEnabled、pointer click | internal-observable | 不由用户直接调用。 |
 | `Connector` | border | `StepsItemTheme.axaml` | StepsItem template | ConnectorStatus、Type | internal-observable | ConnectorStatus 来自下一个 item EffectiveStatus。 |
 | `NavigationArrow` | path icon | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、SizeType | internal-observable | 只在 Navigation 类型可见。 |
+| `ItemWrapper` | Panel item frame | `StepsItemTheme.axaml` / `StepsPanelItemFrame.cs` | StepsItem template | Type、PanelVariant、IsFirst、SizeType | internal-observable | Filled 非首项裁出 notch；Outlined 保留边框主体。 |
+| `PanelArrow` | internal control | `StepsItemTheme.axaml` / `StepsPanelArrow.cs` | StepsItem template | Type、PanelVariant、SizeType、FlowDirection | internal-observable | 只在 Panel 非末项可见。 |
 | `NavigationActiveIndicator` | border | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、IsCurrent | internal-observable | 只在 Navigation 当前项可见。 |
 
 ## 6. 生命周期与模板接入
@@ -270,7 +278,8 @@ CanInvoke=false 时不进入 Tab 焦点序列，不显示 hand cursor 和 clicka
 - Horizontal Default + horizontal title：非末 item 参与伸展，末 item 使用内容宽度。
 - Horizontal Dot / OutlineDot / vertical title / Inline：item 等宽，indicator 居中，rail 从当前 indicator 指向下一项。
 - Horizontal Navigation：item 等宽。
-- Inline：按 Ant Design 的 inline + dot + vertical-title 组合排列，item 等宽，dot 上方 rail 连通，content 不参与显示；`Offset` 会在可见 item 前方保留同等数量的空 item 单元。
+- Panel：强制水平 item 等宽；Indicator 和 Connector 隐藏，PanelArrow 在非末项外侧绘制可拉伸楔形。
+- Inline：按 inline + dot + vertical-title 组合排列，item 等宽，dot 上方 rail 连通，content 不参与显示；`Offset` 会在可见 item 前方保留同等数量的空 item 单元。
 - Vertical：按 DesiredSize 顺序堆叠。
 
 `StepsItemLayoutPanel` 根据 Type、Orientation 和 EffectiveTitlePlacement 排列固定语义节点。Connector 的方向和伸展范围由布局 Panel 决定，状态由 item 投影决定。

@@ -1,17 +1,22 @@
+using AtomUI;
+using AtomUI.Generated.AtomUIGallery;
 using AtomUI.Theme;
 using AtomUI.Theme.Definitions;
-using AtomUI.Theme.Language;
-using AtomUI.Toolkits.GalleryBase;
 
 namespace AtomUIGallery;
 
 public static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseGalleryControls(this IThemeManagerBuilder themeManagerBuilder)
+    /// <summary>
+    /// Registers Gallery-level services shared by all hosts. The GalleryBase control package
+    /// entry (UseGalleryBase) must be invoked directly by the application project so the
+    /// linked-registration plan can see it.
+    /// </summary>
+    public static IAtomUIBuilder UseGalleryControls(this IAtomUIBuilder builder)
     {
-        ArgumentNullException.ThrowIfNull(themeManagerBuilder);
-        themeManagerBuilder.UseGalleryBase(AtomUIGalleryModule.Configure);
-        themeManagerBuilder.AddThemeDefinitionResolver(
+        ArgumentNullException.ThrowIfNull(builder);
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
+        builder.Theme.AddThemeDefinitionResolver(
             new AvaloniaAssetThemeDefinitionResolver(
                 "AtomUIGallery.BuiltInThemes",
                 [
@@ -22,11 +27,6 @@ public static class ThemeManagerBuilderExtensions
                 ],
                 typeof(ThemeManagerBuilderExtensions).Assembly.GetName().Version?.ToString() ?? "0"));
 
-        var languageProviders = LanguageProviderPool.GetLanguageProviders();
-        foreach (var languageProvider in languageProviders)
-        {
-            themeManagerBuilder.AddLanguageProvider(languageProvider);
-        }
-        return themeManagerBuilder;
+        return builder;
     }
 }

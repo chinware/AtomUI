@@ -1,3 +1,6 @@
+using AtomUI.Controls;
+using Avalonia;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Shouldly;
 using Xunit;
@@ -27,11 +30,10 @@ public class ImagePreviewerTitleTests
     [Fact]
     public void DefaultImagePreviewTitleResolver_Uses_DisplayName_From_Stream_Source()
     {
-        var source = new StreamImagePreviewSource(
+        var item = new ImagePreviewItem(new StreamImageSource(
             _ => new ValueTask<Stream>(Stream.Null),
-            displayName: "stream image.png",
-            contentType: "image/png");
-        var context = new ImagePreviewTitleResolveContext(source, 0, 1);
+            displayName: "stream image.png"));
+        var context = new ImagePreviewTitleResolveContext(item, 0, 1);
 
         DefaultImagePreviewTitleResolver.Instance.ResolveTitle(context).ShouldBe("stream image.png");
     }
@@ -92,6 +94,31 @@ public class ImagePreviewerTitleTests
     }
 
     [Fact]
+    public void ImagePreviewerDialog_Item_Title_ShortCircuits_The_Resolver()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var resolver = new CountingTitleResolver();
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer();
+            var dialog = new ImagePreviewerDialog(new Avalonia.Controls.Window(), previewer)
+            {
+                PreviewTitleResolver = resolver,
+                ItemsSource =
+                [
+                    new ImagePreviewEntry(new ImagePreviewItem(
+                        ImageSource.Parse("avares://AtomUI.Tests/Assets/source.png"))
+                    {
+                        Title = "Item title"
+                    })
+                ]
+            };
+
+            dialog.EffectivePreviewTitle.ShouldBe("Item title");
+            resolver.CallCount.ShouldBe(0);
+        });
+    }
+
+    [Fact]
     public void ImagePreviewerDialog_ItemsSource_Change_Preserves_CurrentIndex()
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -102,8 +129,8 @@ public class ImagePreviewerTitleTests
                 CurrentIndex = 1,
                 ItemsSource =
                 [
-                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/first.png")),
-                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/second.png"))
+                    CreateEntry("avares://AtomUI.Tests/Assets/first.png"),
+                    CreateEntry("avares://AtomUI.Tests/Assets/second.png")
                 ]
             };
 
@@ -169,8 +196,7 @@ public class ImagePreviewerTitleTests
             {
                 ItemsSource =
                 [
-                    new ImagePreviewItem(
-                        new UriImagePreviewSource("avares://AtomUI.Tests/Assets/source.png"))
+                    CreateEntry("avares://AtomUI.Tests/Assets/source.png")
                 ]
             };
             var titleBar = new ImagePreviewerTitleBar();
@@ -190,10 +216,15 @@ public class ImagePreviewerTitleTests
             {
                 ItemsSource =
                 [
-                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/first.png")),
-                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/second.png"))
+                    CreateEntry("avares://AtomUI.Tests/Assets/first.png"),
+                    CreateEntry("avares://AtomUI.Tests/Assets/second.png")
                 ],
-                CurrentImage = LoadedImageSource.CreateSvg("<svg />", new Avalonia.Size(10, 10)),
+                CurrentImage = new DrawingImage(
+                    new GeometryDrawing
+                    {
+                        Brush = Brushes.Transparent,
+                        Geometry = new RectangleGeometry(new Rect(0, 0, 10, 10))
+                    }),
                 ImageScaleX  = 1.0,
                 ImageScaleY  = 1.0
             };
@@ -259,8 +290,8 @@ public class ImagePreviewerTitleTests
                 CurrentIndex = 1,
                 ItemsSource =
                 [
-                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/first.png")),
-                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/second.png"))
+                    CreateEntry("avares://AtomUI.Tests/Assets/first.png"),
+                    CreateEntry("avares://AtomUI.Tests/Assets/second.png")
                 ]
             };
 
@@ -301,8 +332,8 @@ public class ImagePreviewerTitleTests
 
     private static string? Resolve(string source)
     {
-        var sourceUri = new UriImagePreviewSource(source);
-        var context   = new ImagePreviewTitleResolveContext(sourceUri, 0, 1);
+        var item    = new ImagePreviewItem(ImageSource.Parse(source));
+        var context = new ImagePreviewTitleResolveContext(item, 0, 1);
         return DefaultImagePreviewTitleResolver.Instance.ResolveTitle(context);
     }
 
@@ -311,9 +342,14 @@ public class ImagePreviewerTitleTests
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer();
         var dialog = new ImagePreviewerDialog(new Avalonia.Controls.Window(), previewer)
         {
-            ItemsSource = sources.Select(source => new ImagePreviewItem(new UriImagePreviewSource(source))).ToList()
+            ItemsSource = sources.Select(CreateEntry).ToList()
         };
         return dialog;
+    }
+
+    private static ImagePreviewEntry CreateEntry(string source)
+    {
+        return new ImagePreviewEntry(new ImagePreviewItem(ImageSource.Parse(source)));
     }
 
     private static string GetRepoFile(string relativePath)
@@ -355,7 +391,7 @@ public class ImagePreviewerTitleTests
             _prefix = prefix;
         }
 
-        public string? ResolveTitle(ImagePreviewTitleResolveContext context)
+        public string? ResolveTitle(in ImagePreviewTitleResolveContext context)
         {
             var fileName = DefaultImagePreviewTitleResolver.Instance.ResolveTitle(context);
             return $"{_prefix}:{fileName}:{context.CurrentIndex + 1}/{context.Count}";
@@ -371,7 +407,19 @@ public class ImagePreviewerTitleTests
 
         public void ConfigureTitleBar(WindowTitleBar titleBar)
         {
+            titleBar.AttachHost(this);
             NotifyConfigureTitleBar(titleBar);
+        }
+    }
+
+    private sealed class CountingTitleResolver : IImagePreviewTitleResolver
+    {
+        internal int CallCount { get; private set; }
+
+        public string? ResolveTitle(in ImagePreviewTitleResolveContext context)
+        {
+            CallCount++;
+            return "Resolver title";
         }
     }
 }

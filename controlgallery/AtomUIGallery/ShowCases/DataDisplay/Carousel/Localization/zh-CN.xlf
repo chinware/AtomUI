@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CarouselShowCaseLangResourceKind">
+    <unit id="AutoScrollDescription">
+      <segment>
+        <source>Timing of scrolling to the next card/picture.</source>
+        <target state="translated">定时滚动到下一张卡片或图片。</target>
+      </segment>
+    </unit>
+    <unit id="AutoScrollTitle">
+      <segment>
+        <source>Scroll automatically</source>
+        <target state="translated">自动滚动</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic usage.</source>
+        <target state="translated">基础用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="CardShapePositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+        <target state="translated">标签位置可为左、右、上或下。在移动端会自动切换到顶部。</target>
+      </segment>
+    </unit>
+    <unit id="CardShapePositionTitle">
+      <segment>
+        <source>Card Shape Position</source>
+        <target state="translated">卡片形态位置</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">数据展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="DotsProgressDescription">
+      <segment>
+        <source>Show progress of dots.</source>
+        <target state="translated">显示指示点的进度。</target>
+      </segment>
+    </unit>
+    <unit id="DotsProgressTitle">
+      <segment>
+        <source>Progress of dots</source>
+        <target state="translated">指示点进度</target>
+      </segment>
+    </unit>
+    <unit id="FadeInDescription">
+      <segment>
+        <source>Slides use fade for transition.</source>
+        <target state="translated">幻灯片使用淡入效果进行过渡。</target>
+      </segment>
+    </unit>
+    <unit id="FadeInTitle">
+      <segment>
+        <source>Fade in</source>
+        <target state="translated">淡入切换</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">底部</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左侧</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右侧</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">顶部</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPaginationPosition">
+      <segment>
+        <source>Pagination Position:</source>
+        <target state="translated">Pagination Position:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Carousel cycles through images, cards, or promotion panels. It supports autoplay, pagination positions, fade transitions, navigation arrows, infinite scrolling, progress indicators, and swipe gestures.</source>
+        <target state="translated">Carousel 用于轮播图片、卡片或推广内容，支持自动播放、分页位置、淡入切换、导航箭头、无限循环、进度指示和滑动手势。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display a rotating set of content panels in a limited space.</source>
+        <target state="translated">在有限空间中轮播展示多组内容面板。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SwitchArrowsDescription">
+      <segment>
+        <source>Show the arrows for switching.</source>
+        <target state="translated">显示用于切换的箭头。</target>
+      </segment>
+    </unit>
+    <unit id="SwitchArrowsTitle">
+      <segment>
+        <source>Arrows for switching</source>
+        <target state="translated">切换箭头</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

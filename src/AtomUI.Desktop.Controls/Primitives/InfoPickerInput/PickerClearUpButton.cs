@@ -66,6 +66,12 @@ internal class PickerClearUpButton : TemplatedControl
         _clearButton = e.NameScope.Get<IconButton>("PART_ClearButton");
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureFormFeedbackSubscription();
+    }
+
     private void HandleButtonClick(RoutedEventArgs args)
     {
         if (IsInClearMode && ReferenceEquals(args.Source, _clearButton))
@@ -87,6 +93,12 @@ internal class PickerClearUpButton : TemplatedControl
     {
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            IsFormFeedbackVisible = false;
+            return;
+        }
+
         if (FormFeedback is { } feedback)
         {
             _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)

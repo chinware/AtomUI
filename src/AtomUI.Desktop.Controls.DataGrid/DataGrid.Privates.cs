@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text;
-using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -68,6 +67,14 @@ public partial class DataGrid
             nameof(EffectivePaginationVisibility),
             o => o.EffectivePaginationVisibility,
             (o, v) => o.EffectivePaginationVisibility = v);
+
+    internal static readonly DirectProperty<DataGrid, bool> EffectiveIsOperatingProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, bool>(
+            nameof(EffectiveIsOperating),
+            o => o.EffectiveIsOperating);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Flyout.IsPopupPinnedOpenProperty.AddOwner<DataGrid>();
     
 
     internal bool IsGroupHeaderMode
@@ -110,15 +117,23 @@ public partial class DataGrid
 
     private DataGridPaginationVisibility _effectivePaginationVisibility;
 
+    internal bool EffectiveIsOperating => _effectiveIsOperating;
+
+    private bool _effectiveIsOperating;
+
     internal bool IsEmptyDataSource
     {
         get => _isEmptyDataSource;
         set => SetAndRaise(IsEmptyDataSourceProperty, ref _isEmptyDataSource, value);
     }
 
-    private bool _isEmptyDataSource = false;
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
 
-    internal IndexToValueTable<DataGridRowGroupInfo> RowGroupHeadersTable { get; private set; }
+    private bool _isEmptyDataSource = false;
 
     internal DataGridDisplayData DisplayData { get; private set; }
 
@@ -126,7 +141,7 @@ public partial class DataGrid
 
     internal double RowDetailsHeightEstimate { get; private set; }
 
-    internal DataGridDataConnection DataConnection { get; private set; }
+    internal DataGridRangeDataAccess RangeDataAccess { get; private set; }
 
     internal int AnchorSlot { get; private set; }
 
@@ -159,19 +174,8 @@ public partial class DataGrid
     private int NoSelectionChangeCount
     {
         get => _noSelectionChangeCount;
-        set
-        {
-            _noSelectionChangeCount = value;
-            if (value == 0)
-            {
-                FlushSelectionChanged();
-            }
-        }
+        set => _noSelectionChangeCount = value;
     }
-
-    // This flag indicates whether selection has actually changed during a selection operation,
-    // and exists to ensure that FlushSelectionChanged doesn't unnecessarily raise SelectionChanged.
-    internal bool SelectionHasChanged { get; set; }
 
     /// <summary>
     /// Indicates whether or not to use star-sizing logic.  If the DataGrid has infinite available space,
@@ -179,8 +183,8 @@ public partial class DataGrid
     /// 10,000 pixels in order to show the developer that star columns shouldn't be used.
     /// </summary>
     internal bool UsesStarSizing => ColumnsInternal.VisibleStarColumnCount > 0 &&
-                                    (!RowsPresenterAvailableSize.HasValue ||
-                                     !double.IsPositiveInfinity(RowsPresenterAvailableSize.Value.Width));
+                                    (!_columnViewportWidth.HasValue ||
+                                     !double.IsPositiveInfinity(_columnViewportWidth.Value));
 
     /// <summary>
     /// Indicates whether or not at least one auto-sizing column is waiting for all the rows
@@ -189,32 +193,7 @@ public partial class DataGrid
     internal bool AutoSizingColumns
     {
         get => _autoSizingColumns;
-        set
-        {
-            if (_autoSizingColumns && !value)
-            {
-                double adjustment = CellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
-                AdjustColumnWidths(0, adjustment, false);
-                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
-                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
-                {
-                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
-                    if (!column.IsVisible)
-                    {
-                        continue;
-                    }
-
-                    column.IsInitialDesiredWidthDetermined = true;
-                }
-
-                ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
-                ComputeScrollBarsLayout();
-                InvalidateColumnHeadersMeasure();
-                InvalidateRowsMeasure(true);
-            }
-
-            _autoSizingColumns = value;
-        }
+        private set => _autoSizingColumns = value;
     }
 
     internal int? MouseOverRowIndex
@@ -282,7 +261,6 @@ public partial class DataGrid
     private const double DefaultMinColumnWidth = 20;
     private const double DefaultMaxColumnWidth = double.PositiveInfinity;
 
-    private INotifyCollectionChanged? _topLevelGroup;
     private ContentControl? _clipboardContentControl;
 
     private Visual? _bottomRightCorner;
@@ -300,8 +278,10 @@ public partial class DataGrid
     // prevents reentry into the VerticalScroll event handler
     private Queue<Action> _lostFocusActions;
     private IndexToValueTable<bool> _showDetailsTable;
+    private readonly Dictionary<DataGridRowKey, bool> _rangeDetailsVisibility = [];
+    private readonly Dictionary<DataGridRowKey, double> _rangeMeasuredDetailsHeights = [];
+    private readonly Dictionary<DataGridRowKey, (long DataGeneration, int Slot)> _rangeDetailsSlotHints = [];
     private IndexToValueTable<double> _rowDetailsHeightEstimateTable;
-    private DataGridSelectedItemsCollection _selectedItems;
     private double _rowHeaderDesiredWidth;
     private int? _mouseOverRowIndex; // -1 is used for the 'new row'
     private bool _makeFirstDisplayedCellCurrentCellPending;
@@ -333,7 +313,6 @@ public partial class DataGrid
     // this is a workaround only for the scenarios where we need it, it is not all encompassing nor always updated
     private RoutedEventArgs? _editingEventArgs;
     private bool _executingLostFocusActions;
-    private bool _flushCurrentCellChanged;
     private bool _focusEditingControl;
     private Visual? _focusedObject;
     private byte _horizontalScrollChangesIgnored;
@@ -350,10 +329,10 @@ public partial class DataGrid
     internal double VerticalOffset => _verticalOffset;
 
     private byte _verticalScrollChangesIgnored;
-    private DataGridDefaultFilter? _defaultFilter;
     private bool _templatedApplied;
     private Pagination? _topPagination;
     private Pagination? _bottomPagination;
+    private bool _synchronizingRangePagination;
 
     private void FlushCurrentCellChanged()
     {
@@ -362,34 +341,14 @@ public partial class DataGrid
             return;
         }
 
-        if (SelectionHasChanged)
-        {
-            // selection is changing, don't raise CurrentCellChanged until it's done
-            _flushCurrentCellChanged = true;
-            FlushSelectionChanged();
-            return;
-        }
-
-        // We don't want to expand all intermediate currency positions, so we only expand
-        // the last current item before we flush the event
-        if (_collapsedSlotsTable.Contains(CurrentSlot))
-        {
-            var rowGroupInfo = RowGroupHeadersTable.GetValueAt(RowGroupHeadersTable.GetPreviousIndex(CurrentSlot));
-            Debug.Assert(rowGroupInfo != null);
-            ExpandRowGroupParentChain(rowGroupInfo.Level, rowGroupInfo.Slot);
-        }
-
         if (CurrentColumn != _previousCurrentColumn
             || CurrentItem != _previousCurrentItem)
         {
-            CoerceSelectedItem();
             _previousCurrentColumn = CurrentColumn;
             _previousCurrentItem   = CurrentItem;
 
             NotifyCurrentCellChanged(EventArgs.Empty);
         }
-
-        _flushCurrentCellChanged = false;
     }
 
     private void HandleKeyDown(object? sender, KeyEventArgs e)
@@ -418,7 +377,17 @@ public partial class DataGrid
             var scrollHeight     = 0d;
 
             // Vertical scroll handling
-            if (delta.Y > 0)
+            if (IsRangePresentationActive)
+            {
+                if (!MathUtils.IsZero(delta.Y) &&
+                    QueueRangeScrollOffset(
+                        _rangeDesiredOffset - delta.Y,
+                        delta.Y < 0 ? 1 : -1))
+                {
+                    handled = true;
+                }
+            }
+            else if (delta.Y > 0)
             {
                 scrollHeight = Math.Max(-_verticalOffset, -delta.Y);
             }
@@ -489,7 +458,7 @@ public partial class DataGrid
                     forCurrentCellChange: false,
                     forceHorizontalScroll: true);
             Debug.Assert(success);
-            if (CurrentColumnIndex != -1 && SelectedItem == null)
+            if (CurrentColumnIndex != -1 && Selection.IsEmpty)
             {
                 SetRowSelection(CurrentSlot, isSelected: true, setAnchorSlot: true);
             }
@@ -618,48 +587,25 @@ public partial class DataGrid
         return true;
     }
 
-    /// <summary>
-    /// call when: selection changes or SelectedItems object changes
-    /// </summary>
-    internal void CoerceSelectedItem()
-    {
-        object? selectedItem = null;
-
-        if (SelectionMode == DataGridSelectionMode.Extended &&
-            CurrentSlot != -1 &&
-            _selectedItems.ContainsSlot(CurrentSlot))
-        {
-            selectedItem = CurrentItem;
-        }
-        else if (_selectedItems.Count > 0)
-        {
-            selectedItem = _selectedItems[0];
-        }
-
-        SetValueNoCallback(SelectedItemProperty, selectedItem);
-
-        // Update the SelectedIndex
-        int newIndex = -1;
-
-        if (selectedItem != null)
-        {
-            newIndex = DataConnection.IndexOf(selectedItem);
-        }
-
-        SetValueNoCallback(SelectedIndexProperty, newIndex);
-    }
-
     internal IEnumerable<object?> GetSelectionInclusive(int startRowIndex, int endRowIndex)
     {
-        int endSlot = SlotFromRowIndex(endRowIndex);
-        foreach (int slot in _selectedItems.GetSlots(SlotFromRowIndex(startRowIndex)))
+        if (_rangePresentationIndex is null ||
+            GetCommittedSelectionScope() is not { } scope)
         {
-            if (slot > endSlot)
+            yield break;
+        }
+        foreach (var block in _rangePresentationIndex.Snapshot.Blocks)
+        {
+            foreach (var entry in block.Entries)
             {
-                break;
+                if (entry.Kind == DataGridSourceEntryKind.Data &&
+                    entry.WindowDataIndex >= startRowIndex &&
+                    entry.WindowDataIndex <= endRowIndex &&
+                    Selection.Contains(entry.RowKey, entry.DataIndex, scope))
+                {
+                    yield return entry.Item;
+                }
             }
-
-            yield return DataConnection.GetDataItem(RowIndexFromSlot(slot));
         }
     }
 
@@ -673,11 +619,6 @@ public partial class DataGrid
             // is no longer relevant, so we should force a cancel edit.
             CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
 
-            // We want to persist selection throughout a reset, so store away the selected items when needed.
-            List<object>? selectedItemsCache = _selectedItems.SelectedItemsCache.Count > 0
-                ? new List<object>(_selectedItems.SelectedItemsCache)
-                : null;
-
             if (recycleRows)
             {
                 RefreshRows(recycleRows, clearRows: true);
@@ -687,16 +628,6 @@ public partial class DataGrid
                 RefreshRowsAndColumns(clearRows: true);
             }
 
-            // Re-select the old items
-            if (selectedItemsCache != null)
-            {
-                _selectedItems.SelectedItemsCache = selectedItemsCache;
-            }
-            else
-            {
-                _selectedItems.UpdateIndexes();
-            }
-            CoerceSelectedItem();
             if (RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.Collapsed)
             {
                 UpdateRowDetailsVisibilityMode(RowDetailsVisibilityMode);
@@ -723,17 +654,17 @@ public partial class DataGrid
         return false;
     }
 
-    // Returns the item or the CollectionViewGroup that is used as the DataContext for a given slot.
-    // If the DataContext is an item, rowIndex is set to the index of the item within the collection
+    // Returns the committed item or group entry for a display slot.
     internal object? ItemFromSlot(int slot, ref int rowIndex)
     {
-        if (RowGroupHeadersTable.Contains(slot))
+        if (!TryGetCommittedRangeEntry(slot, out var entry))
         {
-            return RowGroupHeadersTable.GetValueAt(slot)?.CollectionViewGroup;
+            return null;
         }
-
-        rowIndex = RowIndexFromSlot(slot);
-        return DataConnection.GetDataItem(rowIndex);
+        rowIndex = entry.Kind == DataGridSourceEntryKind.Data
+            ? entry.WindowDataIndex
+            : -1;
+        return entry.Kind == DataGridSourceEntryKind.Data ? entry.Item : entry.Group;
     }
 
     internal bool ProcessDownKey(KeyEventArgs e)
@@ -825,7 +756,7 @@ public partial class DataGrid
     /// Selects items and updates currency based on parameters
     /// </summary>
     /// <param name="columnIndex">column index to make current</param>
-    /// <param name="item">data item or CollectionViewGroup to make current</param>
+    /// <param name="item">A committed data item to make current.</param>
     /// <param name="backupSlot">slot to use in case the item is no longer valid</param>
     /// <param name="action">selection action to perform</param>
     /// <param name="scrollIntoView">whether or not the new current item should be scrolled into view</param>
@@ -836,19 +767,7 @@ public partial class DataGrid
         _noCurrentCellChangeCount++;
         try
         {
-            int slot = -1;
-            if (item is DataGridCollectionViewGroup group)
-            {
-                DataGridRowGroupInfo? groupInfo = RowGroupInfoFromCollectionViewGroup(group);
-                if (groupInfo != null)
-                {
-                    slot = groupInfo.Slot;
-                }
-            }
-            else
-            {
-                slot = SlotFromRowIndex(DataConnection.IndexOf(item));
-            }
+            var slot = FindCommittedRangeSlot(item);
 
             if (slot == -1)
             {
@@ -917,7 +836,7 @@ public partial class DataGrid
                     if (!SetCurrentCellCore(
                             columnIndex, slot,
                             commitEdit: true,
-                            endRowEdit: SlotFromRowIndex(SelectedIndex) != slot)
+                            endRowEdit: CurrentSlot != slot)
                         || (scrollIntoView &&
                             !ScrollSlotIntoView(
                                 columnIndex, slot,
@@ -954,6 +873,33 @@ public partial class DataGrid
 
         Debug.Assert(_vScrollBar != null);
         Debug.Assert(MathUtils.LessThanOrClose(_vScrollBar.Value, _vScrollBar.Maximum));
+
+        if (IsRangePresentationActive)
+        {
+            double targetOffset;
+            int direction;
+            if (scrollEventType == ScrollEventType.SmallIncrement)
+            {
+                targetOffset = _rangeDesiredOffset + Math.Max(
+                    GetVerticalSmallScrollIncrease(),
+                    GetRangeDefaultHeight());
+                direction = 1;
+            }
+            else if (scrollEventType == ScrollEventType.SmallDecrement)
+            {
+                targetOffset = _rangeDesiredOffset - Math.Max(
+                    NegVerticalOffset,
+                    GetRangeDefaultHeight());
+                direction = -1;
+            }
+            else
+            {
+                targetOffset = _vScrollBar.Value;
+                direction = targetOffset.CompareTo(_rangeDesiredOffset);
+            }
+            QueueRangeScrollOffset(targetOffset, Math.Sign(direction));
+            return;
+        }
 
         _verticalScrollChangesIgnored++;
         try
@@ -1142,90 +1088,26 @@ public partial class DataGrid
                 columnIndex = -1;
             }
 
+            if (IsRangePresentationActive &&
+                slot >= 0 &&
+                slot < SlotCount &&
+                !TryGetCommittedRangeEntry(slot, out _))
+            {
+                return QueueRangeNavigation(columnIndex, slot, action);
+            }
+
             if (IsSlotOutOfSelectionBounds(slot) || (columnIndex != -1 && IsColumnOutOfBounds(columnIndex)))
             {
                 return false;
             }
 
-            int     newCurrentPosition = -1;
-            object? item               = ItemFromSlot(slot, ref newCurrentPosition);
-
-            if (EditingRow != null && slot != EditingRow.Slot && !CommitEdit(DataGridEditingUnit.Row, true))
+            if (EditingRow != null && slot != EditingRow.Slot &&
+                !CommitEdit(DataGridEditingUnit.Row, true))
             {
                 return false;
             }
-
-            if (item == null)
-            {
-                return false;
-            }
-
-            if (DataConnection.CollectionView != null &&
-                DataConnection.CollectionView.CurrentPosition != newCurrentPosition)
-            {
-                DataConnection.MoveCurrentTo(item, slot, columnIndex, action, scrollIntoView);
-            }
-            else
-            {
-                ProcessSelectionAndCurrency(columnIndex, item, slot, action, scrollIntoView);
-            }
-        }
-        finally
-        {
-            NoCurrentCellChangeCount--;
-            NoSelectionChangeCount--;
-        }
-
-        return _successfullyUpdatedSelection;
-    }
-
-    internal void UpdateStateOnCurrentChanged(object? currentItem, int currentPosition)
-    {
-        if (currentItem == CurrentItem && currentItem == SelectedItem && currentPosition == SelectedIndex)
-        {
-            // The DataGrid's CurrentItem is already up-to-date, so we don't need to do anything
-            return;
-        }
-
-        Debug.Assert(ColumnsInternal.RowGroupSpacerColumn != null);
-        int columnIndex = CurrentColumnIndex;
-        if (columnIndex == -1)
-        {
-            if (IsColumnOutOfBounds(_desiredCurrentColumnIndex) ||
-                (ColumnsInternal.RowGroupSpacerColumn.IsRepresented &&
-                 _desiredCurrentColumnIndex == ColumnsInternal.RowGroupSpacerColumn.Index))
-            {
-                columnIndex = FirstDisplayedNonFillerColumnIndex;
-            }
-            else
-            {
-                columnIndex = _desiredCurrentColumnIndex;
-            }
-        }
-
-        _desiredCurrentColumnIndex = -1;
-
-        try
-        {
-            _noSelectionChangeCount++;
-            _noCurrentCellChangeCount++;
-
-            if (!CommitEdit())
-            {
-                CancelEdit(DataGridEditingUnit.Row, false);
-            }
-
-            ClearRowSelection(true);
-            if (currentItem == null)
-            {
-                SetCurrentCellCore(-1, -1);
-            }
-            else
-            {
-                int slot = SlotFromRowIndex(currentPosition);
-                ProcessSelectionAndCurrency(columnIndex, currentItem, slot, DataGridSelectionAction.SelectCurrent,
-                    false);
-            }
+            ApplyRangeSelectionAndCurrency(columnIndex, slot, action, scrollIntoView);
+            return _successfullyUpdatedSelection;
         }
         finally
         {
@@ -1313,6 +1195,8 @@ public partial class DataGrid
                 CheckFrozenColumnCount();
             }
         }
+
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     private void SetupColumnGroupFrozenState()
@@ -1360,158 +1244,6 @@ public partial class DataGrid
         }
     }
 
-    /// <summary>
-    /// ItemsSourceProperty property changed handler.
-    /// </summary>
-    /// <param name="e">The event arguments.</param>
-    private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        if (!_areHandlersSuspended)
-        {
-            Debug.Assert(DataConnection != null);
-
-            var oldCollectionView = DataConnection.CollectionView;
-
-            var oldValue       = (IEnumerable?)change.OldValue;
-            var newItemsSource = (IEnumerable?)change.NewValue;
-
-            if (LoadingOrUnloadingRow)
-            {
-                SetValueNoCallback(ItemsSourceProperty, oldValue);
-                throw DataGridError.DataGrid.CannotChangeItemsWhenLoadingRows();
-            }
-
-            // Try to commit edit on the old DataSource, but force a cancel if it fails
-            if (!CommitEdit())
-            {
-                CancelEdit(DataGridEditingUnit.Row, false);
-            }
-
-            if (DataConnection.DataSource != null)
-            {
-                DataConnection.UnWireEvents(DataConnection.DataSource);
-            }
-
-            DataConnection.ClearDataProperties();
-            ClearRowGroupHeadersTable();
-
-            // The old selected indexes are no longer relevant. There's a perf benefit from
-            // updating the selected indexes with a null DataSource, because we know that all
-            // of the previously selected indexes have been removed from selection
-            DataConnection.DataSource = null;
-            _selectedItems.UpdateIndexes();
-            CoerceSelectedItem();
-
-            // Wrap an IEnumerable in an ICollectionView if it's not already one
-            bool                     setDefaultSelection = false;
-            IDataGridCollectionView? newCollectionView;
-            if (newItemsSource is IDataGridCollectionView)
-            {
-                setDefaultSelection = true;
-                newCollectionView   = (IDataGridCollectionView)newItemsSource;
-            }
-            else
-            {
-                newCollectionView = newItemsSource is not null
-                    ? DataGridDataConnection.CreateView(newItemsSource)
-                    : default;
-            }
-
-            if (oldCollectionView != null)
-            {
-                oldCollectionView.CollectionChanged -= HandleDataCollectionViewChanged;
-                if (oldCollectionView is DataGridCollectionView oldDataGridCollectionView)
-                {
-                    oldDataGridCollectionView.PageChanging -= HandlePageChanging;
-                    oldDataGridCollectionView.PageChanged  -= HandlePageChanged;
-                }
-            }
-
-            if (newCollectionView != null)
-            {
-                newCollectionView.CollectionChanged += HandleDataCollectionViewChanged;
-                if (newCollectionView is DataGridCollectionView newDataGridCollectionView)
-                {
-                    newDataGridCollectionView.PageChanging += HandlePageChanging;
-                    newDataGridCollectionView.PageChanged  += HandlePageChanged;
-                }
-
-                IsEmptyDataSource = newCollectionView.IsEmpty;
-                if (newCollectionView.Filter == null)
-                {
-                    // TODO 不知道这样循环会不会有内存泄露的风险
-                    _defaultFilter           = new DataGridDefaultFilter(newCollectionView);
-                    newCollectionView.Filter = _defaultFilter;
-                }
-            }
-            else
-            {
-                IsEmptyDataSource = true;
-            }
-
-            DataConnection.DataSource = newCollectionView;
-
-            if (oldCollectionView != DataConnection.CollectionView)
-            {
-                RaisePropertyChanged(CollectionViewProperty, oldCollectionView, newCollectionView);
-            }
-
-            if (DataConnection.DataSource != null)
-            {
-                // Setup the column headers
-                if (DataConnection.DataType != null)
-                {
-                    int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
-                    for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
-                    {
-                        DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
-                        if (column is DataGridBoundColumn boundColumn)
-                        {
-                            boundColumn.SetHeaderFromBinding();
-                        }
-                    }
-                }
-
-                DataConnection.WireEvents(DataConnection.DataSource);
-            }
-
-            // Wait for the current cell to be set before we raise any SelectionChanged events
-            _makeFirstDisplayedCellCurrentCellPending = true;
-
-            // Clear out the old rows and remove the generated columns
-            ClearRows(false); //recycle
-            RemoveAutoGeneratedColumns();
-
-            // Set the SlotCount (from the data count and number of row group headers) before we make the default selection
-            PopulateRowGroupHeadersTable();
-            SelectedItem = null;
-            if (DataConnection.CollectionView != null && setDefaultSelection)
-            {
-                SelectedItem = DataConnection.CollectionView.CurrentItem;
-            }
-
-            // Treat this like the DataGrid has never been measured because all calculations at
-            // this point are invalid until the next layout cycle.  For instance, the ItemsSource
-            // can be set when the DataGrid is not part of the visual tree
-            _measured = false;
-            ReConfigurePagination();
-            InvalidateMeasure();
-            UpdatePseudoClasses();
-        }
-    }
-
-    private void HandleDataCollectionViewChanged(object? sender, NotifyCollectionChangedEventArgs args)
-    {
-        if (sender is DataGridCollectionView view)
-        {
-            IsEmptyDataSource = view.IsEmpty;
-            NotifyDataCollectionViewChanged(view, args);
-        }
-    }
-    
-    protected virtual void NotifyDataCollectionViewChanged(DataGridCollectionView view, NotifyCollectionChangedEventArgs args)
-    {}
-
     internal void UpdatePseudoClasses()
     {
         int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
@@ -1548,14 +1280,15 @@ public partial class DataGrid
                 column.HeaderCell.IsMiddleVisible = true;
             }
 
-            column.HeaderCell.CanUserSort       = column.CanUserSort;
+            column.HeaderCell.CanUserSort       = column.EffectiveCanUserSort;
+            column.HeaderCell.SupportedSortDirections = column.EffectiveSupportedSortDirections;
             column.HeaderCell.CanUserFilter     = column.CanUserFilter;
             column.HeaderCell.IsSorterTooltipVisible = column.IsSorterTooltipVisible;
             visibleColumnIndex++;
         }
 
         PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, visibleColumnCount == 0);
-        PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());
+        PseudoClasses.Set(DataGridPseudoClass.EmptyRows, TotalEntryCount == 0);
     }
 
     private void SetValueNoCallback<T>(AvaloniaProperty<T> property, T value,
@@ -1576,11 +1309,6 @@ public partial class DataGrid
     {
         if (IsColumnHeadersVisible)
         {
-            if (_topLeftCornerHeader is DataGridColumnHeader cornerHeader)
-            {
-                cornerHeader.IsSeparatorFullHeight = AreVerticalGridLinesVisible;
-            }
-
             double totalColumnsWidth = 0;
             foreach (DataGridColumn column in ColumnsInternal)
             {
@@ -1639,6 +1367,9 @@ public partial class DataGrid
         }
 
         row.Cells.Insert(column.Index, newCell);
+        // 新建单元格在选中行等场景下没有机会经过回收/当前格刷新路径，
+        // 创建时按行与网格的当前状态初始化伪类，保证 :selected 等状态不缺失
+        newCell.UpdatePseudoClasses();
     }
 
     private bool BeginCellEdit(RoutedEventArgs editingEventArgs)
@@ -1718,19 +1449,8 @@ public partial class DataGrid
     //TODO Validation
     private bool BeginRowEdit(DataGridRow dataGridRow)
     {
-        Debug.Assert(EditingRow == null);
-        Debug.Assert(dataGridRow != null);
-
-        Debug.Assert(CurrentSlot >= -1);
-        Debug.Assert(CurrentSlot < SlotCount);
-
-        if (DataConnection.BeginEdit(dataGridRow.DataContext))
-        {
-            EditingRow = dataGridRow;
-            GenerateEditingElements();
-            return true;
-        }
-
+        // Inline editing requires a key-based edit buffer and is not entered by
+        // the range-backed control; mutations use EditRowAsync instead.
         return false;
     }
 
@@ -1741,31 +1461,7 @@ public partial class DataGrid
             return true;
         }
 
-        Debug.Assert(EditingRow != null && EditingRow.Index >= -1);
-        Debug.Assert(EditingRow.Slot < SlotCount);
-        Debug.Assert(CurrentColumn != null);
-
-        object? dataItem = EditingRow.DataContext;
-        if (!DataConnection.CancelEdit(dataItem))
-        {
-            return false;
-        }
-
-        foreach (DataGridColumn column in Columns)
-        {
-            if (!exitEditingMode && column.Index == _editingColumnIndex && column is DataGridBoundColumn)
-            {
-                continue;
-            }
-
-            PopulateCellContent(
-                isCellEdited: !exitEditingMode && column.Index == _editingColumnIndex,
-                dataGridColumn: column,
-                dataGridRow: EditingRow,
-                dataGridCell: EditingRow.Cells[column.Index]);
-        }
-
-        return true;
+        return false;
     }
 
     private bool CommitEditForOperation(int columnIndex, int slot, bool forCurrentCellChange)
@@ -1827,14 +1523,7 @@ public partial class DataGrid
             return false;
         }
 
-        DataConnection.EndEdit(EditingRow.DataContext);
-
-        if (!exitEditingMode)
-        {
-            DataConnection.BeginEdit(EditingRow.DataContext);
-        }
-
-        return true;
+        return false;
     }
 
     private void CompleteCellsCollection(DataGridRow dataGridRow)
@@ -1847,6 +1536,15 @@ public partial class DataGrid
             {
                 AddNewCellPrivate(dataGridRow, ColumnsItemsInternal[columnIndex]);
             }
+        }
+
+        // Recycled rows retain their cells and OwningColumn references, so assigning the same column
+        // does not invoke DataGridCell.OnOwningColumnSet again. Reproject transient column state here
+        // before the row is presented for a new query generation.
+        for (int columnIndex = 0; columnIndex < dataGridRow.Cells.Count; columnIndex++)
+        {
+            var cell = dataGridRow.Cells[columnIndex];
+            cell.IsSorting = cell.OwningColumn?.SortState.Direction is not null;
         }
     }
 
@@ -1945,7 +1643,9 @@ public partial class DataGrid
                 {
                     // Would we still need a horizontal scrollbar without the vertical one?
                     UpdateDisplayedRows(DisplayData.FirstScrollingSlot, cellsHeight);
-                    if (DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount)
+                    if (IsRangePresentationActive
+                            ? MathUtils.GreaterThan(totalVisibleHeight, cellsHeight)
+                            : DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount)
                     {
                         needHorizScrollbar =
                             MathUtils.LessThan(totalVisibleFrozenWidth, cellsWidth - vertScrollBarWidth);
@@ -1968,7 +1668,9 @@ public partial class DataGrid
             if (allowVertScrollbar &&
                 MathUtils.GreaterThan(cellsHeight, 0) &&
                 MathUtils.LessThanOrClose(vertScrollBarWidth, cellsWidth) &&
-                DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount)
+                (IsRangePresentationActive
+                    ? MathUtils.GreaterThan(totalVisibleHeight, cellsHeight)
+                    : DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount))
             {
                 cellsWidth -= vertScrollBarWidth;
                 Debug.Assert(cellsWidth >= 0);
@@ -1995,7 +1697,9 @@ public partial class DataGrid
                 UpdateDisplayedRows(firstScrollingSlot, cellsHeight);
                 if (cellsHeight > 0 &&
                     vertScrollBarWidth <= cellsWidth &&
-                    DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount)
+                    (IsRangePresentationActive
+                        ? MathUtils.GreaterThan(totalVisibleHeight, cellsHeight)
+                        : DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount))
                 {
                     cellsWidth -= vertScrollBarWidth;
                     Debug.Assert(cellsWidth >= 0);
@@ -2018,7 +1722,9 @@ public partial class DataGrid
             {
                 if (cellsHeight > 0 &&
                     MathUtils.LessThanOrClose(vertScrollBarWidth, cellsWidth) &&
-                    DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount)
+                    (IsRangePresentationActive
+                        ? MathUtils.GreaterThan(totalVisibleHeight, cellsHeight)
+                        : DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount))
                 {
                     cellsWidth -= vertScrollBarWidth;
                     Debug.Assert(cellsWidth >= 0);
@@ -2050,7 +1756,9 @@ public partial class DataGrid
                 ComputeDisplayedColumns();
             }
 
-            needVertScrollbar = DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount;
+            needVertScrollbar = IsRangePresentationActive
+                ? MathUtils.GreaterThan(totalVisibleHeight, cellsHeight)
+                : DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount;
         }
         else
         {
@@ -2058,7 +1766,9 @@ public partial class DataGrid
             Debug.Assert(allowHorizScrollbar && allowVertScrollbar);
             DisplayData.FirstDisplayedScrollingCol = ComputeFirstVisibleScrollingColumn();
             ComputeDisplayedColumns();
-            needVertScrollbar  = DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount;
+            needVertScrollbar = IsRangePresentationActive
+                ? MathUtils.GreaterThan(totalVisibleHeight, cellsHeight)
+                : DisplayData.NumTotallyDisplayedScrollingElements != VisibleSlotCount;
             needHorizScrollbar = totalVisibleWidth > cellsWidth && totalVisibleFrozenWidth < cellsWidth;
         }
 
@@ -2284,6 +1994,23 @@ public partial class DataGrid
     //TODO: Check
     private void HandleIsEnabledChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        if (!IsEnabled)
+        {
+            CancelRowReorder();
+            SuspendPopupPinnedOpenFilterTarget();
+        }
+        else
+        {
+            RefreshPopupPinnedOpenFilterTarget();
+        }
+    }
+
+    private void HandleCanUserReorderRowsChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (!CanUserReorderRows)
+        {
+            CancelRowReorder();
+        }
     }
 
     private void HandleFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs change)
@@ -2648,15 +2375,12 @@ public partial class DataGrid
     //TODO Validation
     private bool EndRowEdit(DataGridEditAction editAction, bool exitEditingMode, bool raiseEvents)
     {
-        if (EditingRow == null || DataConnection.CommittingEdit)
+        if (EditingRow == null)
         {
             return true;
         }
 
-        if (_editingColumnIndex != -1 || (editAction == DataGridEditAction.Cancel && raiseEvents &&
-                                          !((DataConnection.EditableCollectionView != null &&
-                                             DataConnection.EditableCollectionView.CanCancelEdit) ||
-                                            (EditingRow.DataContext is IEditableObject))))
+        if (_editingColumnIndex != -1)
         {
             // Ending the row edit will fail immediately under the following conditions:
             // 1. We haven't ended the cell edit yet.
@@ -2750,7 +2474,7 @@ public partial class DataGrid
     //TODO TabStop
     private void ExitEdit(bool keepFocus)
     {
-        if (EditingRow == null || DataConnection.CommittingEdit)
+        if (EditingRow == null)
         {
             Debug.Assert(_editingColumnIndex == -1);
             return;
@@ -2786,32 +2510,6 @@ public partial class DataGrid
         {
             element.LostFocus -= HandleExternalEditingElementLostFocus;
             HandleLostFocus(sender, e);
-        }
-    }
-
-    private void FlushSelectionChanged()
-    {
-        if (SelectionHasChanged && _noSelectionChangeCount == 0 && !_makeFirstDisplayedCellCurrentCellPending)
-        {
-            CoerceSelectedItem();
-            if (NoCurrentCellChangeCount != 0)
-            {
-                // current cell is changing, don't raise SelectionChanged until it's done
-                return;
-            }
-
-            SelectionHasChanged = false;
-
-            if (_flushCurrentCellChanged)
-            {
-                FlushCurrentCellChanged();
-            }
-
-            SelectionChangedEventArgs e = _selectedItems.GetSelectionChangedEventArgs();
-            if (e.AddedItems.Count > 0 || e.RemovedItems.Count > 0)
-            {
-                NotifySelectionChanged(e);
-            }
         }
     }
 
@@ -2924,14 +2622,9 @@ public partial class DataGrid
 
     private bool IsSlotOutOfSelectionBounds(int slot)
     {
-        if (RowGroupHeadersTable.Contains(slot))
-        {
-            Debug.Assert(slot >= 0 && slot < SlotCount);
-            return false;
-        }
-
-        int rowIndex = RowIndexFromSlot(slot);
-        return rowIndex < 0 || rowIndex >= DataConnection.Count;
+        return slot < 0 ||
+               slot >= SlotCount ||
+               !TryGetCommittedRangeEntry(slot, out _);
     }
 
     private void MakeFirstDisplayedCellCurrentCell()
@@ -2944,41 +2637,17 @@ public partial class DataGrid
             return;
         }
 
-        if (SlotCount != SlotFromRowIndex(DataConnection.Count))
+        var slot = -1;
+        for (var candidate = 0; candidate < SlotCount; candidate++)
         {
-            _makeFirstDisplayedCellCurrentCellPending = true;
-            return;
-        }
-
-        // No current cell, therefore no selection either - try to set the current cell to the
-        // ItemsSource's ICollectionView.CurrentItem if it exists, otherwise use the first displayed cell.
-        int slot = 0;
-        if (DataConnection.CollectionView != null)
-        {
-            if (DataConnection.CollectionView.IsCurrentBeforeFirst ||
-                DataConnection.CollectionView.IsCurrentAfterLast)
+            if (!TryGetCommittedRangeEntry(candidate, out var entry))
             {
-                slot = RowGroupHeadersTable.Contains(0) ? 0 : -1;
+                break;
             }
-            else
+            if (entry.Kind == DataGridSourceEntryKind.Data)
             {
-                slot = SlotFromRowIndex(DataConnection.CollectionView.CurrentPosition);
-            }
-        }
-        else
-        {
-            if (SelectedIndex == -1)
-            {
-                // Try to default to the first row
-                slot = SlotFromRowIndex(0);
-                if (!IsSlotVisible(slot))
-                {
-                    slot = -1;
-                }
-            }
-            else
-            {
-                slot = SlotFromRowIndex(SelectedIndex);
+                slot = candidate;
+                break;
             }
         }
 
@@ -2988,7 +2657,10 @@ public partial class DataGrid
             columnIndex = _desiredCurrentColumnIndex;
         }
 
-        SetAndSelectCurrentCell(columnIndex, slot, forceCurrentCellSelection: false);
+        if (slot >= 0 && columnIndex >= 0)
+        {
+            SetAndSelectCurrentCell(columnIndex, slot, forceCurrentCellSelection: false);
+        }
         AnchorSlot                                = slot;
         _makeFirstDisplayedCellCurrentCellPending = false;
         _desiredCurrentColumnIndex                = -1;
@@ -3263,7 +2935,8 @@ public partial class DataGrid
                     ? DataGridSelectionAction.SelectFromAnchorToCurrent
                     : DataGridSelectionAction.SelectCurrent;
 
-                UpdateSelectionAndCurrency(lastVisibleColumnIndex, lastVisibleSlot, action, scrollIntoView: true);
+                var targetSlot = IsRangePresentationActive ? SlotCount - 1 : lastVisibleSlot;
+                UpdateSelectionAndCurrency(lastVisibleColumnIndex, targetSlot, action, scrollIntoView: true);
             }
         }
         finally
@@ -3387,7 +3060,8 @@ public partial class DataGrid
                     ? DataGridSelectionAction.SelectFromAnchorToCurrent
                     : DataGridSelectionAction.SelectCurrent;
 
-                UpdateSelectionAndCurrency(firstVisibleColumnIndex, firstVisibleSlot, action, scrollIntoView: true);
+                var targetSlot = IsRangePresentationActive ? 0 : firstVisibleSlot;
+                UpdateSelectionAndCurrency(firstVisibleColumnIndex, targetSlot, action, scrollIntoView: true);
             }
         }
         finally
@@ -3433,10 +3107,9 @@ public partial class DataGrid
             }
             else
             {
-                if (RowGroupHeadersTable.Contains(CurrentSlot))
+                if (IsRangeGroupSlot(CurrentSlot))
                 {
-                    CollapseRowGroup(RowGroupHeadersTable.GetValueAt(CurrentSlot)!.CollectionViewGroup,
-                        collapseAllSubgroups: false);
+                    CollapseGroup(GetCommittedRangeEntry(CurrentSlot).Group!.Key);
                 }
                 else if (CurrentColumnIndex == -1)
                 {
@@ -3481,7 +3154,7 @@ public partial class DataGrid
             {
                 desiredSlot = firstVisibleSlot;
                 action      = DataGridSelectionAction.SelectCurrent;
-                Debug.Assert(_selectedItems.Count == 0);
+                Debug.Assert(Selection.IsEmpty);
             }
             else
             {
@@ -3540,7 +3213,9 @@ public partial class DataGrid
                 columnIndex = CurrentColumnIndex;
                 action = (shift && SelectionMode == DataGridSelectionMode.Extended)
                     ? action = DataGridSelectionAction.SelectFromAnchorToCurrent
-                    : action = DataGridSelectionAction.SelectCurrent;
+                    : IsRangePresentationActive
+                        ? DataGridSelectionAction.None
+                        : DataGridSelectionAction.SelectCurrent;
             }
 
             UpdateSelectionAndCurrency(columnIndex, nextPageSlot, action, scrollIntoView: true);
@@ -3596,7 +3271,9 @@ public partial class DataGrid
                 columnIndex = CurrentColumnIndex;
                 action = (shift && SelectionMode == DataGridSelectionMode.Extended)
                     ? DataGridSelectionAction.SelectFromAnchorToCurrent
-                    : DataGridSelectionAction.SelectCurrent;
+                    : IsRangePresentationActive
+                        ? DataGridSelectionAction.None
+                        : DataGridSelectionAction.SelectCurrent;
             }
 
             UpdateSelectionAndCurrency(columnIndex, previousPageSlot, action, scrollIntoView: true);
@@ -3643,10 +3320,9 @@ public partial class DataGrid
             }
             else
             {
-                if (RowGroupHeadersTable.Contains(CurrentSlot))
+                if (IsRangeGroupSlot(CurrentSlot))
                 {
-                    ExpandRowGroup(RowGroupHeadersTable.GetValueAt(CurrentSlot)!.CollectionViewGroup,
-                        expandAllSubgroups: false);
+                    ExpandGroup(GetCommittedRangeEntry(CurrentSlot).Group!.Key);
                 }
                 else if (CurrentColumnIndex == -1)
                 {
@@ -3740,7 +3416,7 @@ public partial class DataGrid
             neighborSlot   = GetPreviousVisibleSlot(CurrentSlot);
             if (EditingRow != null)
             {
-                while (neighborSlot != -1 && RowGroupHeadersTable.Contains(neighborSlot))
+                while (neighborSlot != -1 && IsRangeGroupSlot(neighborSlot))
                 {
                     neighborSlot = GetPreviousVisibleSlot(neighborSlot);
                 }
@@ -3752,7 +3428,7 @@ public partial class DataGrid
             neighborSlot   = GetNextVisibleSlot(CurrentSlot);
             if (EditingRow != null)
             {
-                while (neighborSlot < SlotCount && RowGroupHeadersTable.Contains(neighborSlot))
+                while (neighborSlot < SlotCount && IsRangeGroupSlot(neighborSlot))
                 {
                     neighborSlot = GetNextVisibleSlot(neighborSlot);
                 }
@@ -3820,7 +3496,7 @@ public partial class DataGrid
             NoSelectionChangeCount--;
         }
 
-        if (_successfullyUpdatedSelection && !RowGroupHeadersTable.Contains(targetSlot))
+        if (_successfullyUpdatedSelection && !IsRangeGroupSlot(targetSlot))
         {
             BeginCellEdit(e);
         }
@@ -3980,7 +3656,12 @@ public partial class DataGrid
     // columnIndex = 2, rowIndex = 2 --> current cell is an inner cell
     // columnIndex = -1, rowIndex = -1 --> current cell is reset
     // columnIndex = -1, rowIndex = 2 --> Unexpected
-    private bool SetCurrentCellCore(int columnIndex, int slot, bool commitEdit, bool endRowEdit)
+    private bool SetCurrentCellCore(
+        int columnIndex,
+        int slot,
+        bool commitEdit,
+        bool endRowEdit,
+        bool updateRangeCurrentKey = true)
     {
         Debug.Assert(columnIndex < ColumnsItemsInternal.Count);
         Debug.Assert(slot < SlotCount);
@@ -3990,9 +3671,8 @@ public partial class DataGrid
         if (columnIndex == CurrentColumnIndex &&
             slot == CurrentSlot)
         {
-            Debug.Assert(DataConnection != null);
             Debug.Assert(_editingColumnIndex == -1 || _editingColumnIndex == CurrentColumnIndex);
-            Debug.Assert(EditingRow == null || EditingRow.Slot == CurrentSlot || DataConnection.CommittingEdit);
+            Debug.Assert(EditingRow == null || EditingRow.Slot == CurrentSlot);
             return true;
         }
 
@@ -4000,13 +3680,10 @@ public partial class DataGrid
         DataGridCellCoordinates oldCurrentCell      = new DataGridCellCoordinates(CurrentCellCoordinates);
 
         object? newCurrentItem = null;
-        if (!RowGroupHeadersTable.Contains(slot))
+        if (TryGetCommittedRangeEntry(slot, out var rangeEntry) &&
+            rangeEntry.Kind == DataGridSourceEntryKind.Data)
         {
-            int rowIndex = RowIndexFromSlot(slot);
-            if (rowIndex >= 0 && rowIndex < DataConnection.Count)
-            {
-                newCurrentItem = DataConnection.GetDataItem(rowIndex);
-            }
+            newCurrentItem = rangeEntry.Item;
         }
 
         if (CurrentColumnIndex > -1)
@@ -4020,7 +3697,8 @@ public partial class DataGrid
                 oldDisplayedElement = DisplayData.GetDisplayedElement(oldCurrentCell.Slot);
             }
 
-            if (!RowGroupHeadersTable.Contains(oldCurrentCell.Slot) && !_temporarilyResetCurrentCell)
+            if (!IsRangeGroupSlot(oldCurrentCell.Slot) &&
+                !_temporarilyResetCurrentCell)
             {
                 bool keepFocus = ContainsFocus;
                 if (commitEdit)
@@ -4032,8 +3710,16 @@ public partial class DataGrid
                     }
 
                     // Resetting the current cell: setting it to (-1, -1) is not considered setting it out of bounds
-                    if ((columnIndex != -1 && slot != -1 && IsInnerCellOutOfSelectionBounds(columnIndex, slot)) ||
-                        IsInnerCellOutOfSelectionBounds(oldCurrentCell.ColumnIndex, oldCurrentCell.Slot))
+                    var isOldCurrentCellOutOfBounds = IsRangePresentationActive
+                        ? IsInnerCellOutOfBounds(
+                            oldCurrentCell.ColumnIndex,
+                            oldCurrentCell.Slot)
+                        : IsInnerCellOutOfSelectionBounds(
+                            oldCurrentCell.ColumnIndex,
+                            oldCurrentCell.Slot);
+                    if ((columnIndex != -1 && slot != -1 &&
+                         IsInnerCellOutOfSelectionBounds(columnIndex, slot)) ||
+                        isOldCurrentCellOutOfBounds)
                     {
                         return false;
                     }
@@ -4051,11 +3737,6 @@ public partial class DataGrid
             }
         }
 
-        if (newCurrentItem != null)
-        {
-            slot = SlotFromRowIndex(DataConnection.IndexOf(newCurrentItem));
-        }
-
         if (slot == -1 && columnIndex != -1)
         {
             return false;
@@ -4063,6 +3744,21 @@ public partial class DataGrid
 
         CurrentColumnIndex = columnIndex;
         CurrentSlot        = slot;
+
+        if (updateRangeCurrentKey)
+        {
+            if (TryGetCommittedRangeEntry(slot, out var currentEntry) &&
+                currentEntry.Kind == DataGridSourceEntryKind.Data)
+            {
+                SetCurrentRowKeyFromCoordinates(
+                    currentEntry.RowKey,
+                    currentEntry.DataIndex);
+            }
+            else
+            {
+                SetCurrentRowKeyFromCoordinates(null, -1);
+            }
+        }
 
         if (_temporarilyResetCurrentCell)
         {
@@ -4249,8 +3945,7 @@ public partial class DataGrid
                 if (needVertScrollbar && !double.IsInfinity(cellsHeight))
                 {
                     // maximum travel distance -- not the total height
-                    _vScrollBar.Maximum = totalVisibleHeight - cellsHeight;
-                    Debug.Assert(_vScrollBar.Maximum >= 0);
+                    _vScrollBar.Maximum = Math.Max(0, totalVisibleHeight - cellsHeight);
 
                     // total height of the display area
                     _vScrollBar.ViewportSize = cellsHeight;
@@ -4426,7 +4121,7 @@ public partial class DataGrid
                         }
                         else if (GetRowSelection(slot)) // Unselecting single row or Selecting a previously multi-selected row
                         {
-                            if (!ctrl && SelectionMode == DataGridSelectionMode.Extended && _selectedItems.Count != 0)
+                            if (!ctrl && SelectionMode == DataGridSelectionMode.Extended && !Selection.IsEmpty)
                             {
                                 // Unselect everything except the row that was clicked on
                                 action = DataGridSelectionAction.SelectCurrent;
@@ -4472,40 +4167,6 @@ public partial class DataGrid
         }
 
         return true;
-    }
-
-    // Recursively expands parent RowGroupHeaders from the top down
-    private void ExpandRowGroupParentChain(int level, int slot)
-    {
-        if (level < 0)
-        {
-            return;
-        }
-
-        int                   previousHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(slot + 1);
-        DataGridRowGroupInfo? rowGroupInfo       = null;
-        while (previousHeaderSlot >= 0)
-        {
-            rowGroupInfo = RowGroupHeadersTable.GetValueAt(previousHeaderSlot);
-            Debug.Assert(rowGroupInfo != null);
-            if (level == rowGroupInfo.Level)
-            {
-                if (_collapsedSlotsTable.Contains(rowGroupInfo.Slot))
-                {
-                    // Keep going up the chain
-                    ExpandRowGroupParentChain(level - 1, rowGroupInfo.Slot - 1);
-                }
-
-                if (!rowGroupInfo.IsVisible)
-                {
-                    EnsureRowGroupVisibility(rowGroupInfo, true, false);
-                }
-
-                return;
-            }
-
-            previousHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(previousHeaderSlot);
-        }
     }
 
     /// <summary>
@@ -4570,7 +4231,8 @@ public partial class DataGrid
     {
         KeyboardHelper.GetMetaKeyState(this, modifiers, out bool ctrl, out bool shift, out bool alt);
 
-        if (ctrl && !shift && !alt && ClipboardCopyMode != DataGridClipboardCopyMode.None && SelectedItems.Count > 0)
+        var selectedItems = GetLoadedSelectionObjects();
+        if (ctrl && !shift && !alt && ClipboardCopyMode != DataGridClipboardCopyMode.None && selectedItems.Count > 0)
         {
             var textBuilder = new StringBuilder();
 
@@ -4596,9 +4258,9 @@ public partial class DataGrid
                 AppendClipboardContent(textBuilder, headerArgs);
             }
 
-            for (int index = 0; index < SelectedItems.Count; index++)
+            for (int index = 0; index < selectedItems.Count; index++)
             {
-                var item = SelectedItems[index];
+                var item = selectedItems[index];
                 Debug.Assert(item != null);
                 DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(
                     item,
@@ -4637,104 +4299,9 @@ public partial class DataGrid
     {
         if (!_areHandlersSuspended)
         {
-            ClearRowSelection(resetAnchorSlot: true);
-        }
-    }
-
-    private void HandleSelectedIndexChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        if (!_areHandlersSuspended)
-        {
-            int index = (int)(change.NewValue ?? 0);
-
-            // GetDataItem returns null if index is >= Count, we do not check newValue
-            // against Count here to avoid enumerating through an Enumerable twice
-            // Setting SelectedItem coerces the finally value of the SelectedIndex
-            object? newSelectedItem = (index < 0) ? null : DataConnection.GetDataItem(index);
-            SelectedItem = newSelectedItem;
-            if (SelectedItem != newSelectedItem)
-            {
-                SetValueNoCallback(SelectedIndexProperty, (int)(change.OldValue ?? 0));
-            }
-        }
-    }
-
-    private void HandleSelectedItemChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        if (!_areHandlersSuspended)
-        {
-            int rowIndex = (change.NewValue == null) ? -1 : DataConnection.IndexOf(change.NewValue);
-            if (rowIndex == -1)
-            {
-                // If the Item is null or it's not found, clear the Selection
-                if (!CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
-                {
-                    // Edited value couldn't be committed or aborted
-                    SetValueNoCallback(SelectedItemProperty, change.OldValue);
-                    return;
-                }
-
-                // Clear all row selections
-                ClearRowSelection(resetAnchorSlot: true);
-
-                if (DataConnection.CollectionView != null)
-                {
-                    DataConnection.CollectionView.MoveCurrentTo(null);
-                }
-            }
-            else
-            {
-                int slot = SlotFromRowIndex(rowIndex);
-                if (slot != CurrentSlot)
-                {
-                    if (!CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
-                    {
-                        // Edited value couldn't be committed or aborted
-                        SetValueNoCallback(SelectedItemProperty, change.OldValue);
-                        return;
-                    }
-
-                    if (slot >= SlotCount || slot < -1)
-                    {
-                        if (DataConnection.CollectionView != null)
-                        {
-                            DataConnection.CollectionView.MoveCurrentToPosition(rowIndex);
-                        }
-                    }
-                }
-
-                int oldSelectedIndex = SelectedIndex;
-                SetValueNoCallback(SelectedIndexProperty, rowIndex);
-                try
-                {
-                    _noSelectionChangeCount++;
-                    int columnIndex = CurrentColumnIndex;
-
-                    if (columnIndex == -1)
-                    {
-                        columnIndex = FirstDisplayedNonFillerColumnIndex;
-                    }
-
-                    if (IsSlotOutOfSelectionBounds(slot))
-                    {
-                        ClearRowSelection(slotException: slot, setAnchorSlot: true);
-                        return;
-                    }
-
-                    UpdateSelectionAndCurrency(columnIndex, slot, DataGridSelectionAction.SelectCurrent,
-                        scrollIntoView: false);
-                }
-                finally
-                {
-                    NoSelectionChangeCount--;
-                }
-
-                if (!_successfullyUpdatedSelection)
-                {
-                    SetValueNoCallback(SelectedIndexProperty, oldSelectedIndex);
-                    SetValueNoCallback(SelectedItemProperty, change.OldValue);
-                }
-            }
+            AnchorSlot = -1;
+            _rangeSelectionAnchorDataIndex = -1;
+            Selection = Selection.NormalizeForMode(SelectionMode);
         }
     }
 
@@ -4868,7 +4435,7 @@ public partial class DataGrid
 
     private void ConfigurePaginationVisibility()
     {
-        if (PageSize == 0)
+        if ((PageRequest?.DataCount ?? PageSize) == 0)
         {
             EffectivePaginationVisibility = DataGridPaginationVisibility.None;
         }

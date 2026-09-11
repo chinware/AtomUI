@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CollapseShowCaseLangResourceKind">
+    <unit id="AccordionDescription">
+      <segment>
+        <source>In accordion mode, only one panel can be expanded at a time.</source>
+        <target state="translated">在手風琴模式下，同一時間只能展開一個面板。</target>
+      </segment>
+    </unit>
+    <unit id="AccordionTitle">
+      <segment>
+        <source>Accordion</source>
+        <target state="translated">手風琴</target>
+      </segment>
+    </unit>
+    <unit id="BorderlessDescription">
+      <segment>
+        <source>A borderless style of Collapse.</source>
+        <target state="translated">無邊框樣式的 Collapse。</target>
+      </segment>
+    </unit>
+    <unit id="BorderlessTitle">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">無邊框</target>
+      </segment>
+    </unit>
+    <unit id="CollapseDescription">
+      <segment>
+        <source>By default, any number of panels can be expanded at a time. The first panel is expanded in this example.</source>
+        <target state="translated">默認情況下，可以同時展開任意數量的面板。本示例中第一個面板處於展開狀態。</target>
+      </segment>
+    </unit>
+    <unit id="CollapseTitle">
+      <segment>
+        <source>Collapse</source>
+        <target state="translated">折疊面板</target>
+      </segment>
+    </unit>
+    <unit id="CollapsibleDescription">
+      <segment>
+        <source>Specify the trigger area of collapsible by collapsible.</source>
+        <target state="translated">通過 collapsible 指定折疊觸發區域。</target>
+      </segment>
+    </unit>
+    <unit id="CollapsibleTitle">
+      <segment>
+        <source>Collapsible</source>
+        <target state="translated">可折疊觸發區域</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">數據展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomPaddingDescription">
+      <segment>
+        <source>Please set custom header margins and content spacing.</source>
+        <target state="translated">請設置自定義標題邊距和內容間距。</target>
+      </segment>
+    </unit>
+    <unit id="CustomPaddingTitle">
+      <segment>
+        <source>Custom Header And Content Padding</source>
+        <target state="translated">自定義標題和內容間距</target>
+      </segment>
+    </unit>
+    <unit id="ExpandIconLocationDescription">
+      <segment>
+        <source>The expand icon can be placed in front or in the back.</source>
+        <target state="translated">展開圖標可以放在前方或後方。</target>
+      </segment>
+    </unit>
+    <unit id="ExpandIconLocationTitle">
+      <segment>
+        <source>Expand icon location</source>
+        <target state="translated">展開圖標位置</target>
+      </segment>
+    </unit>
+    <unit id="GhostCollapseDescription">
+      <segment>
+        <source>Making collapse's background to transparent.</source>
+        <target state="translated">讓 Collapse 的背景透明。</target>
+      </segment>
+    </unit>
+    <unit id="GhostCollapseTitle">
+      <segment>
+        <source>Ghost Collapse</source>
+        <target state="translated">幽靈折疊面板</target>
+      </segment>
+    </unit>
+    <unit id="NestedPanelDescription">
+      <segment>
+        <source>Collapse is nested inside the Collapse.</source>
+        <target state="translated">在 Collapse 內嵌套 Collapse。</target>
+      </segment>
+    </unit>
+    <unit id="NestedPanelTitle">
+      <segment>
+        <source>Nested panel</source>
+        <target state="translated">嵌套面板</target>
+      </segment>
+    </unit>
+    <unit id="NoArrowDescription">
+      <segment>
+        <source>You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component.</source>
+        <target state="translated">可以向 CollapsePanel 傳入 IsShowExpandIcon={False} 來隱藏箭頭圖標。</target>
+      </segment>
+    </unit>
+    <unit id="NoArrowTitle">
+      <segment>
+        <source>No Arrow</source>
+        <target state="translated">隱藏箭頭</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnd">
+      <segment>
+        <source>End</source>
+        <target state="translated">結束</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">開始</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsDefaultSizePanelHeader">
+      <segment>
+        <source>This is default size panel header</source>
+        <target state="translated">這是默認尺寸面板標題</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsLargeSizePanelHeader">
+      <segment>
+        <source>This is large size panel header</source>
+        <target state="translated">這是大尺寸面板標題</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeaderN1">
+      <segment>
+        <source>This is panel header 1</source>
+        <target state="translated">這是面板標題 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeaderN2">
+      <segment>
+        <source>This is panel header 2</source>
+        <target state="translated">這是面板標題 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeaderN3">
+      <segment>
+        <source>This is panel header 3</source>
+        <target state="translated">這是面板標題 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsSmallSizePanelHeader">
+      <segment>
+        <source>This is small size panel header</source>
+        <target state="translated">這是小尺寸面板標題</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanOnlyBeCollapsedByClicking">
+      <segment>
+        <source>This panel can only be collapsed by clicking text</source>
+        <target state="translated">只能點擊文字折疊此面板</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanOnlyBeCollapsedByClicking2">
+      <segment>
+        <source>This panel can only be collapsed by clicking icon</source>
+        <target state="translated">只能點擊圖標折疊此面板</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanTBeCollapsed">
+      <segment>
+        <source>This panel can't be collapsed</source>
+        <target state="translated">此面板不能折疊</target>
+      </segment>
+    </unit>
+    <unit id="P2TextADogIsATypeOfDomesticatedAnimal">
+      <segment>
+        <source>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</source>
+        <target state="translated">狗是一種被馴養的動物。它以忠誠和可靠著稱，在世界各地許多家庭中都是受歡迎的成員。</target>
+      </segment>
+    </unit>
+    <unit id="P2TextExpandIconPosition">
+      <segment>
+        <source>Expand Icon Position:</source>
+        <target state="translated">展開圖標位置：</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDefaultSize">
+      <segment>
+        <source>Default Size</source>
+        <target state="translated">默認尺寸</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleLargeSize">
+      <segment>
+        <source>Large Size</source>
+        <target state="translated">大尺寸</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSmallSize">
+      <segment>
+        <source>Small Size</source>
+        <target state="translated">小尺寸</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Collapse organizes dense information into panels. It supports accordion behavior, nested panels, borderless and ghost styles, custom spacing, icon placement, and icon-only trigger mode.</source>
+        <target state="translated">Collapse 用於把密集信息分組到多個面板中，支持手風琴、嵌套面板、無邊框與幽靈樣式、自定義間距、圖標位置和僅圖標觸發展開。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Stack related content sections that can expand or collapse independently.</source>
+        <target state="translated">將相關內容組織成可獨立展開和收起的面板。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">外觀</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBehavior">
+      <segment>
+        <source>Behavior</source>
+        <target state="translated">行為</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Ant Design supports a default collapse size as well as a large and small size. If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.</source>
+        <target state="translated">Ant Design 支持默認、大號和小號三種折疊面板尺寸。需要大號或小號時分別設置 size 屬性；省略 size 屬性時使用默認尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

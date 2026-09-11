@@ -225,6 +225,7 @@ internal class DrawerContainer : ContentControl
     private int _pushTransformVersion;
     private CompositeDisposable? _drawerBindingDisposables;
     private IDisposable? _hostMarginSubscription;
+    private IDisposable? _drawnChromeOverlaySuppression;
 
     internal void BindToDrawer(Drawer drawer)
     {
@@ -259,7 +260,7 @@ internal class DrawerContainer : ContentControl
             PrepareOpenVisualState(drawer.IsMotionEnabled);
             ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
             ConfigureHostMargin(drawer.OpenOn);
-            AttachToLayer(ResolveHostLayer(layer, drawer.OpenOn));
+            AttachToLayer(layer);
             ApplyTemplate();
             PrepareOpenVisualState(drawer.IsMotionEnabled);
             Dispatcher.InvokeAsync(async () =>
@@ -298,6 +299,16 @@ internal class DrawerContainer : ContentControl
                 drawer.NotifyOpened();
             });
 
+        }
+    }
+
+    internal void UpdateOpenOn(Control? openOn, ScopeAwareAdornerLayer? layer)
+    {
+        ScopeAwareAdornerLayer.SetAdornedElement(this, openOn);
+        ConfigureHostMargin(openOn);
+        if (layer is not null)
+        {
+            AttachToLayer(layer);
         }
     }
 
@@ -440,17 +451,6 @@ internal class DrawerContainer : ContentControl
         }
     }
 
-    private static ScopeAwareAdornerLayer ResolveHostLayer(
-        ScopeAwareAdornerLayer fallbackLayer,
-        Control? host)
-    {
-        return host is Window window &&
-               window.GetDrawnDrawerOverlayLayer() is { } drawnLayer &&
-               drawnLayer.IsAttachedToVisualTree()
-            ? drawnLayer
-            : fallbackLayer;
-    }
-
     private void DetachFromLayer(ScopeAwareAdornerLayer? layer)
     {
         if (this.GetVisualParent() is Panel currentParent)
@@ -469,6 +469,10 @@ internal class DrawerContainer : ContentControl
     private void ConfigureHostMargin(Control? host)
     {
         _hostMarginSubscription?.Dispose();
+        _drawnChromeOverlaySuppression?.Dispose();
+        _drawnChromeOverlaySuppression = host is Window window
+            ? window.SuppressDrawnChromeOverlay()
+            : null;
         _hostMarginSubscription = host is null
             ? null
             : TopLevelMarginBinder.BindWindowFrameGeometry(
@@ -493,6 +497,8 @@ internal class DrawerContainer : ContentControl
     {
         _hostMarginSubscription?.Dispose();
         _hostMarginSubscription = null;
+        _drawnChromeOverlaySuppression?.Dispose();
+        _drawnChromeOverlaySuppression = null;
         Margin       = default;
         CornerRadius = default;
     }

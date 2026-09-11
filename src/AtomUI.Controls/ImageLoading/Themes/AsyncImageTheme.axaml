@@ -1,0 +1,40 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+  <ControlTheme x:Key="{x:Type atom:AsyncImage}" TargetType="atom:AsyncImage">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Panel ClipToBounds="True">
+                <Image Name="PART_ImagePresenter"
+                       Source="{TemplateBinding LoadedImage}"
+                       Stretch="{TemplateBinding Stretch}"
+                       StretchDirection="{TemplateBinding StretchDirection}"
+                       IsVisible="False" />
+                <ContentPresenter Name="PART_LoadingPresenter"
+                                  Content="{TemplateBinding LoadingContent}"
+                                  ContentTemplate="{TemplateBinding LoadingContentTemplate}"
+                                  HorizontalContentAlignment="Stretch"
+                                  VerticalContentAlignment="Center"
+                                  IsVisible="False" />
+                <ContentPresenter Name="PART_ErrorPresenter"
+                                  Content="{TemplateBinding ErrorContent}"
+                                  ContentTemplate="{TemplateBinding ErrorContentTemplate}"
+                                  HorizontalContentAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  IsVisible="False" />
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+    <Style Selector="^:has-image /template/ Image#PART_ImagePresenter">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:loading:not(:has-image) /template/ ContentPresenter#PART_LoadingPresenter">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:failed /template/ ContentPresenter#PART_ErrorPresenter">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

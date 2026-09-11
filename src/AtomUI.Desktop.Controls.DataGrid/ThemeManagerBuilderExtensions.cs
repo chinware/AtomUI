@@ -1,15 +1,28 @@
-using AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid;
-using AtomUI.Theme;
-
+using AtomUI.Generated.AtomUIDesktopControlsDataGrid;
+using AtomUI.Registration;
 namespace AtomUI.Desktop.Controls;
 
 public static class DataGridThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopDataGrid(this IThemeManagerBuilder themeManagerBuilder)
+    internal const string PackageId = "AtomUI.Desktop.Controls.DataGrid";
+
+    [ControlPackageRegistrationEntry]
+    public static IAtomUIBuilder UseDesktopDataGrid(this IAtomUIBuilder builder)
     {
-        GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
-            new AtomUIDataGridThemesProvider());
-        return themeManagerBuilder;
+        ArgumentNullException.ThrowIfNull(builder);
+        var provider = new AtomUIDataGridThemesProvider();
+        if (AotTrimRegistration.IsEnabled)
+        {
+            AotTrimRegistrationPlanRegistry.ApplyPackage(
+                builder,
+                PackageId,
+                provider);
+        }
+        else
+        {
+            GeneratedControlPackageRegistration.Register(builder.Theme, provider);
+        }
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
+        return builder;
     }
 }

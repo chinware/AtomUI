@@ -37,8 +37,8 @@ xmlns:gallery="https://atomui.net/toolkits/gallery-base"
 ```csharp
 public static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseGalleryBase(
-        this IThemeManagerBuilder builder,
+    public static IAtomUIBuilder UseGalleryBase(
+        this IAtomUIBuilder builder,
         Action<GalleryBaseOptions>? configure = null);
 }
 ```
@@ -46,7 +46,8 @@ public static class ThemeManagerBuilderExtensions
 入口职责：
 
 - 注册 GalleryBase 生成的 exact CLR type/identity Control descriptor、ControlTheme asset manifest 和主题 Provider。
-- 注册 GalleryBase 语言 Provider 池。
+- 通过 `GeneratedLanguageModuleRegistration` 把 GalleryBase Catalog 与内置 Translation Bundle 注册到
+  `builder.Localization`。
 - 构建并保存 `GalleryBaseConfiguration`。
 
 入口不维护逐 Control Token 列表、主题 URI 列表或聚合 AXAML；这些内容由构建期生成结果提供。
@@ -83,7 +84,7 @@ AtomUIGallery 当前产品主题目录由 XML definition 唯一描述，显示�
 `UseUserThemeDirectory()` 追加用户目录；Browser Gallery 只使用随应用发布的显式 Resolver。Gallery 不提供独立的
 reload command 或菜单，宿主需要刷新用户主题时直接调用 `IThemeManager.ReloadThemesAsync()`。Catalog 的冲突、
 首次用户来源降级、整批原子刷新和删除当前用户主题后的默认回退语义以
-[Core 主题系统设计](../core/theme-system.md)为准。
+[主题系统架构](../../architecture/systems/theming/runtime.md)为准。
 
 ## Shell 主题选择状态
 
@@ -173,7 +174,7 @@ identity、零 Own Token descriptor 和 `XxxTokenResource`。
 Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
 ```
 
-`GalleryShowCaseHeaderToken` 只承载 Gallery 文档页头的结构性视觉值，例如 margin、间距、字号、metadata 卡片边框和默认宽度。分类、状态、引入版本 Tag 的颜色仍通过 `GalleryShowCaseHeader` 属性传给 AtomUI `Tag`，不在 token 中写死具体业务状态。
+`GalleryShowCaseHeaderToken` 只承载 Gallery 文档页头的结构性视觉值，例如 margin、间距、字号、metadata 卡片边框和默认宽度。metadata label/value 属于页头信息文本，默认通过同一字体 token 跟随全局 UI 字体；等宽字体只用于 `GalleryCodeViewer` 等代码展示控件。分类、状态、引入版本 Tag 的颜色仍通过 `GalleryShowCaseHeader` 属性传给 AtomUI `Tag`，不在 token 中写死具体业务状态。
 
 ## Global Token 使用规则
 
@@ -193,36 +194,20 @@ Global Token 时使用对应的 `XxxTokenResource`；只有要求该值永远跟
 品牌蓝、AtomUI logo 色或产品状态色。
 产品色应通过产品页面或产品品牌配置表达。
 
-## Shell 本地化
+## 通用页头本地化
 
-GalleryBase 提供 Shell 语言资源：
+GalleryBase 只提供产品无关的 ShowCase Header metadata 资源：
 
 ```text
 Localization/
-  GalleryShellLang/
-    en_US.cs
-    zh_CN.cs
-    zh_TW.cs
-  GalleryNavigationLang/
-    en_US.cs
-    zh_CN.cs
-    zh_TW.cs
+  GalleryShowCaseHeaderLang/
+    GalleryShowCaseHeaderLangResourceKind.cs
+    en-US.xlf
+    zh-CN.xlf
+    zh-TW.xlf
 ```
 
 资源范围：
-
-| 资源 | 示例 |
-|---|---|
-| 设置菜单 | Settings |
-| 窗口选项 | Window Options |
-| 主题菜单 | Theme |
-| 暗色模式 | Dark Mode |
-| 紧凑模式 | Compact Mode |
-| 动效 | Motion |
-| 语言菜单 | Language |
-| 搜索提示 | Search |
-
-GalleryBase 也提供 ShowCase Header 的通用 metadata label：
 
 | 资源 | 示例 |
 |---|---|
@@ -243,7 +228,8 @@ GalleryBase 也提供 ShowCase Header 的通用 metadata label：
 - `Design Token` 页面内容
 - 控件分类、稳定状态、Preview 状态和页面描述
 
-这些由产品项目定义。
+这些由产品项目定义。设置菜单、主题、语言和搜索等 Shell 文案也归产品项目的 Workspace Catalog，GalleryBase
+不定义产品导航或 Shell 语言资源。
 
 ## 产品导航文案
 
@@ -259,23 +245,21 @@ public sealed class GalleryLanguageText : IGalleryLocalizedText
 
 刷新策略：
 
-- Shell 监听 `ThemeManager.LanguageVariantChanged`。
-- Header 是 `IGalleryLocalizedText` 时重新解析。
+- Shell 监听 `ILanguageManager.LanguageChanged`。
+- Header 是 `IGalleryLocalizedText` 时通过 `ILocalizer` 重新解析。
 - Header 是字符串时保持不变。
 
-## 语言 Provider 注册
+## 语言模块注册
 
-GalleryBase 的 `UseGalleryBase` 注册自己的语言 Provider：
+GalleryBase 的 Catalog 和三种内置语言由生成器编译进 owning assembly。`UseGalleryBase` 只调用生成的模块注册入口，
+不扫描程序集，也不维护 Provider 池：
 
 ```csharp
-var languageProviders = LanguageProviderPool.GetLanguageProviders();
-foreach (var provider in languageProviders)
-{
-    builder.AddLanguageProviders(provider);
-}
+GeneratedLanguageModuleRegistration.Register(builder.Localization);
 ```
 
-产品语言 Provider 仍由产品项目自己的注册扩展加入。GalleryBase 不扫描产品程序集。
+产品 Catalog 采用同一 `[LanguageCatalog]` + XLIFF 约定，并由产品自己的生成模块注册入口加入。宿主只需在
+`UseAtomUI(...)` 配置阶段调用产品模块扩展；GalleryBase 不扫描产品程序集。
 
 ## Browser 主题限制
 
@@ -294,8 +278,8 @@ Browser 使用同一套主题 Provider，但要避免：
 - GalleryBase AssemblyInfo 不包含产品 ShowCase namespace。
 - `UseGalleryBase` 注册 GalleryBase token 和 theme provider。
 - `GalleryControlThemesProvider` 包含 `GalleryShowCaseHeaderTheme.axaml`。
-- GalleryBase 语言 Provider 不包含产品页面语言资源。
-- GalleryBase 语言 Provider 包含 ShowCase Header metadata 通用 label。
+- GalleryBase Language Module 不包含产品页面 Catalog。
+- GalleryBase Language Module 包含 ShowCase Header metadata 的通用 label Catalog。
 - 主题文件不包含 `AtomUIGallery/Assets` 或产品 URI。
 - Browser 构建时能解析 GalleryBase theme provider。
 - 语言切换后 Shell 菜单状态和文案刷新。

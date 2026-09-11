@@ -171,6 +171,9 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     
     internal static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<Flyout>();
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        PopupControl.IsPopupPinnedOpenProperty.AddOwner<Flyout>();
     
     private bool _isArrowVisibleEffective;
 
@@ -202,6 +205,12 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         set => SetValue(ArrowPositionProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
     
     private object? _pointerHorizontalOffsetTokenKey;
@@ -209,6 +218,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     private CompositeDisposable? _globalResourceBindingDisposables;
     private IDisposable? _pointerHorizontalOffsetBinding;
     private IDisposable? _pointerVerticalOffsetBinding;
+    private bool _hasPendingPinnedOpen;
 
     static Flyout()
     {
@@ -262,6 +272,20 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         _globalResourceBindingDisposables?.Dispose();
         _globalResourceBindingDisposables = null;
     }
+
+    internal void CloseForLifecycle()
+    {
+        if (IsOpen)
+        {
+            base.HideCore(canCancel: false);
+        }
+        else
+        {
+            CancelPendingPinnedOpen();
+        }
+
+        ReleaseGlobalResourceBindings();
+    }
     
     private Popup CreatePopup()
     {
@@ -281,11 +305,13 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup[!PopupControl.IsMotionEnabledProperty]        = this[!IsMotionEnabledProperty];
         popup[!PopupControl.MarginToAnchorProperty]         = this[!MarginToAnchorProperty];
         popup[!PopupControl.IsPointAtCenterProperty]        = this[!IsPointAtCenterProperty];
+        popup[!PopupControl.IsPopupPinnedOpenProperty]      = this[!IsPopupPinnedOpenProperty];
         popup[!PopupControl.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayPopupProperty];
         popup[!AvaloniaPopup.IsLightDismissEnabledProperty] = this[!IsLightDismissEnabledProperty];
         this[!IsPopupHorizontalFlippedProperty]             = popup[!PopupControl.IsHorizontalFlippedProperty];
         this[!IsPopupVerticalFlippedProperty]               = popup[!PopupControl.IsVerticalFlippedProperty];
 
+        popup.Opened += HandlePopupOpened;
         popup.Opened += this.OnPopupOpened;
         popup.Closed += this.OnPopupClosed;
         popup.AddClosingEventHandler(HandlePopupClosing);
@@ -330,8 +356,49 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         }
     }
 
+    private void HandlePopupOpened(object? sender, EventArgs e)
+    {
+        _hasPendingPinnedOpen = false;
+    }
+
+    protected override void OnOpening(CancelEventArgs args)
+    {
+        base.OnOpening(args);
+        if (!args.Cancel &&
+            IsPopupPinnedOpen &&
+            Popup is PopupControl popup &&
+            !popup.CanOpenPinnedPopup())
+        {
+            _hasPendingPinnedOpen = true;
+            args.Cancel = true;
+        }
+    }
+
+    private void CancelPendingPinnedOpen()
+    {
+        if (!_hasPendingPinnedOpen)
+        {
+            return;
+        }
+
+        _hasPendingPinnedOpen = false;
+        if (Popup is PopupControl popup)
+        {
+            popup.CloseForLifecycle();
+            popup.PlacementTarget = null;
+            popup.SetPopupParent(null);
+        }
+        Target = null;
+        ReleaseGlobalResourceBindings();
+    }
+
     protected override bool HideCore(bool canCancel = true)
     {
+        if (canCancel && IsPopupPinnedOpen)
+        {
+            return false;
+        }
+
         if (canCancel && IsMotionEnabled && CloseMotion is not null && Popup.IsOpen)
         {
             Popup.IsOpen = false;
@@ -344,6 +411,10 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
     {
         EnsureGlobalResourceBindings(placementTarget);
+        if (Popup is PopupControl popup)
+        {
+            popup.SetCurrentValue(PopupControl.IsPopupPinnedOpenProperty, IsPopupPinnedOpen);
+        }
         return base.ShowAtCore(placementTarget, showAtPointer);
     }
 
@@ -368,6 +439,12 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        if (change.Property == IsPopupPinnedOpenProperty &&
+            !change.GetNewValue<bool>())
+        {
+            CancelPendingPinnedOpen();
+        }
+
         if (change.Property == IsArrowVisibleProperty ||
             change.Property == PlacementProperty ||
             change.Property == RequestedPlacementProperty ||

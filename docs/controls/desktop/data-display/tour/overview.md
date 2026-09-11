@@ -1,6 +1,8 @@
 # Tour 桌面版架构设计
 
-本文档定义 `Tour` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Tour 桌面版实现原理](implementation.md)，Tour Token 的专项设计见 [Tour Token 设计](token.md)，设计和契约变化记录见 [Tour Changelog](changelog.md)。
+本文档定义 `Tour` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Tour 桌面版实现原理](implementation.md)，Tour Token 的专项设计见 [Tour Token 设计](token.md)，设计和契约变化记录见 [Tour Changelog](changelog.md)。
+
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `Tour`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 `Tour.IsOpen` 并 relay 到 `PART_Popup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
 ## 1. 控件定位
 
@@ -51,8 +53,9 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 主要公开类型与枚举：
 
-- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`。
 - 枚举：`TourPlacementMode`、`TourStyleType`。
+- 本地化 Catalog：`TourLangResourceKind`。
 
 稳定 template part：
 
@@ -119,9 +122,7 @@ Tour 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 - `TourStepOption`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TourStepsView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TourToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TourLangResourceKind`：稳定的本地化 Catalog enum；内置翻译由同目录三种语言 XLIFF 提供并在编译期生成。
 
 集成关系：
 

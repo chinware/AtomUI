@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind">
+    <unit id="ArrowDescription">
+      <segment>
+        <source>Support show, hide or keep arrow in the center.</source>
+        <target state="translated">支持显示、隐藏或保持箭头居中。</target>
+      </segment>
+    </unit>
+    <unit id="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+        <target state="translated">箭头</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic example. The size of the floating layer depends on the contents region.</source>
+        <target state="translated">最基础的示例。浮层大小取决于内容区域。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">数据展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBL">
+      <segment>
+        <source>BL</source>
+        <target state="translated">下左</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBR">
+      <segment>
+        <source>BR</source>
+        <target state="translated">下右</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">下方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">居中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickMe">
+      <segment>
+        <source>Click me</source>
+        <target state="translated">点击我</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFocusMe">
+      <segment>
+        <source>Focus me</source>
+        <target state="translated">聚焦我</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+        <target state="translated">隐藏</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">移入我</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLB">
+      <segment>
+        <source>LB</source>
+        <target state="translated">左下</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLT">
+      <segment>
+        <source>LT</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左侧</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRB">
+      <segment>
+        <source>RB</source>
+        <target state="translated">右下</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRT">
+      <segment>
+        <source>RT</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右侧</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentShow">
+      <segment>
+        <source>Show</source>
+        <target state="translated">显示</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTL">
+      <segment>
+        <source>TL</source>
+        <target state="translated">上左</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTR">
+      <segment>
+        <source>TR</source>
+        <target state="translated">上右</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">上方</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTheMostBasicExample">
+      <segment>
+        <source>The most basic example.</source>
+        <target state="translated">这是最基础的示例。</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>InfoFlyout anchors a custom floating panel to a target control, with configurable trigger modes, placement and arrow behavior.</source>
+        <target state="translated">InfoFlyout 可以把自定义浮层锚定到目标控件上，并支持配置触发方式、弹出位置和箭头行为。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display rich contextual content in a floating layer.</source>
+        <target state="translated">在浮层中展示更丰富的上下文内容。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+        <target state="translated">提供 12 种弹出位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysDescription">
+      <segment>
+        <source>Mouse to click, focus and move in.</source>
+        <target state="translated">通过鼠标点击、获得焦点和移入触发。</target>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysTitle">
+      <segment>
+        <source>Three ways to trigger</source>
+        <target state="translated">三种触发方式</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

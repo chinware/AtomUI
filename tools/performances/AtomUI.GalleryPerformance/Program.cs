@@ -10,6 +10,69 @@ using AtomUI.Desktop.Controls;
 using AtomUIGallery.Desktop;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.ShowCases;
+using AtomUIGallery.ShowCases.Alert;
+using AtomUIGallery.ShowCases.AutoComplete;
+using AtomUIGallery.ShowCases.Avatar;
+using AtomUIGallery.ShowCases.Badge;
+using AtomUIGallery.ShowCases.Breadcrumb;
+using AtomUIGallery.ShowCases.Button;
+using AtomUIGallery.ShowCases.ButtonSpinner;
+using AtomUIGallery.ShowCases.Calendar;
+using AtomUIGallery.ShowCases.Card;
+using AtomUIGallery.ShowCases.Carousel;
+using AtomUIGallery.ShowCases.Cascader;
+using AtomUIGallery.ShowCases.CheckBox;
+using AtomUIGallery.ShowCases.Collapse;
+using AtomUIGallery.ShowCases.ColorPicker;
+using AtomUIGallery.ShowCases.ComboBox;
+using AtomUIGallery.ShowCases.DataGrid;
+using AtomUIGallery.ShowCases.DatePicker;
+using AtomUIGallery.ShowCases.Descriptions;
+using AtomUIGallery.ShowCases.Drawer;
+using AtomUIGallery.ShowCases.DropdownButton;
+using AtomUIGallery.ShowCases.Empty;
+using AtomUIGallery.ShowCases.Expander;
+using AtomUIGallery.ShowCases.FloatButton;
+using AtomUIGallery.ShowCases.Form;
+using AtomUIGallery.ShowCases.GroupBox;
+using AtomUIGallery.ShowCases.Icon;
+using AtomUIGallery.ShowCases.ImagePreviewer;
+using AtomUIGallery.ShowCases.InfoFlyout;
+using AtomUIGallery.ShowCases.LineEdit;
+using AtomUIGallery.ShowCases.List;
+using AtomUIGallery.ShowCases.Mentions;
+using AtomUIGallery.ShowCases.Menu;
+using AtomUIGallery.ShowCases.Message;
+using AtomUIGallery.ShowCases.Modal;
+using AtomUIGallery.ShowCases.Notification;
+using AtomUIGallery.ShowCases.NumberUpDown;
+using AtomUIGallery.ShowCases.Overview;
+using AtomUIGallery.ShowCases.Pagination;
+using AtomUIGallery.ShowCases.PopupConfirm;
+using AtomUIGallery.ShowCases.ProgressBar;
+using AtomUIGallery.ShowCases.QRCode;
+using AtomUIGallery.ShowCases.RadioButton;
+using AtomUIGallery.ShowCases.Rate;
+using AtomUIGallery.ShowCases.Result;
+using AtomUIGallery.ShowCases.Segmented;
+using AtomUIGallery.ShowCases.Select;
+using AtomUIGallery.ShowCases.Skeleton;
+using AtomUIGallery.ShowCases.Slider;
+using AtomUIGallery.ShowCases.Space;
+using AtomUIGallery.ShowCases.Spin;
+using AtomUIGallery.ShowCases.SplitButton;
+using AtomUIGallery.ShowCases.Splitter;
+using AtomUIGallery.ShowCases.Statistic;
+using AtomUIGallery.ShowCases.Steps;
+using AtomUIGallery.ShowCases.TabControl;
+using AtomUIGallery.ShowCases.TimePicker;
+using AtomUIGallery.ShowCases.Timeline;
+using AtomUIGallery.ShowCases.ToggleSwitch;
+using AtomUIGallery.ShowCases.Tour;
+using AtomUIGallery.ShowCases.Transfer;
+using AtomUIGallery.ShowCases.TreeSelect;
+using AtomUIGallery.ShowCases.TreeView;
+using AtomUIGallery.ShowCases.Upload;
 using AtomUIGallery.Workspace.Views;
 using Avalonia;
 using Avalonia.Controls;
@@ -28,12 +91,17 @@ internal static class Program
 {
     private static readonly Size WindowSize = new(1300, 900);
     private static readonly Rect WindowBounds = new(0, 0, WindowSize.Width, WindowSize.Height);
+#if DEBUG
+    private const string BuildConfiguration = "Debug";
+#else
+    private const string BuildConfiguration = "Release";
+#endif
     private const string ColdChildSamplePrefix = "__ATOMUI_COLD_SAMPLE__";
-    private static readonly ShowCaseSpec AboutUs = new(
-        "AboutUsPage",
-        AboutUsViewModel.ID,
-        "AtomUIGallery.ShowCases.Views.AboutUsPage",
-        "controlgallery/AtomUIGallery/ShowCases/Views/General/AboutUsPage.axaml",
+    private static readonly ShowCaseSpec Overview = new(
+        "OverviewPage",
+        OverviewViewModel.ID,
+        "AtomUIGallery.ShowCases.Overview.OverviewPage",
+        "controlgallery/AtomUIGallery/ShowCases/General/Overview/Views/OverviewPage.axaml",
         stats => stats.VisualCount > 0);
     private static readonly IReadOnlyDictionary<string, ShowCaseSpec> ShowCases =
         new Dictionary<string, ShowCaseSpec>(StringComparer.OrdinalIgnoreCase)
@@ -277,8 +345,8 @@ internal static class Program
             ["combobox"] = new(
                 "ComboBoxShowCase",
                 ComboBoxViewModel.ID,
-                "AtomUIGallery.ShowCases.Views.ComboBoxShowCase",
-                "controlgallery/AtomUIGallery/ShowCases/Views/Navigation/ComboBoxShowCase.axaml",
+                "AtomUIGallery.ShowCases.ComboBox.ComboBoxShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml",
                 stats => stats.ComboBoxCount > 0),
             ["pagination"] = new(
                 "PaginationShowCase",
@@ -465,7 +533,30 @@ internal static class Program
             window.Height        = WindowSize.Height;
             window.Show();
 
-            WaitForRoute(window, AboutUs, options.Timeout);
+            WaitForRoute(window, Overview, options.Timeout);
+
+            if (options.ResizeTrace)
+            {
+                TriggerNavigation(window, showCase);
+                var route = WaitForRoute(window, showCase, options.Timeout);
+                var resizeResult = GalleryResizeProbe.Run(
+                    window,
+                    route,
+                    new GalleryResizeProbeOptions(
+                        1300,
+                        1728,
+                        1,
+                        options.Warmup,
+                        options.Iterations,
+                        options.ResizeForceMaterialized,
+                        options.Label));
+                var resizeOutput = GalleryResizeProbe.RenderMarkdown(resizeResult);
+                Console.WriteLine(resizeOutput);
+                WriteMarkdownOutput(resizeOutput, options);
+                window.Close();
+                Dispatcher.UIThread.RunJobs();
+                return 0;
+            }
 
             if (options.TraceNavigation)
             {
@@ -483,25 +574,25 @@ internal static class Program
                 [
                     MeasureNavigation(window, 0, "Cold", options, showCase)
                 ];
-                NavigateToAboutUs(window, options);
+                NavigateToOverview(window, options);
             }
             else
             {
                 _ = MeasureNavigation(window, 0, "Priming", options, showCase);
-                NavigateToAboutUs(window, options);
+                NavigateToOverview(window, options);
             }
 
             for (var i = 0; i < options.Warmup; i++)
             {
                 _ = MeasureNavigation(window, i + 1, "Warmup", options, showCase);
-                NavigateToAboutUs(window, options);
+                NavigateToOverview(window, options);
             }
 
             var samples = new List<NavigationSample>(options.Iterations);
             for (var i = 0; i < options.Iterations; i++)
             {
                 samples.Add(MeasureNavigation(window, i + 1, "Measured", options, showCase));
-                NavigateToAboutUs(window, options);
+                NavigateToOverview(window, options);
             }
 
             var result = NavigationResult.Create(options.Label, coldRuns, samples);
@@ -553,7 +644,7 @@ internal static class Program
         window.Height        = WindowSize.Height;
         window.Show();
 
-        WaitForRoute(window, AboutUs, options.Timeout);
+        WaitForRoute(window, Overview, options.Timeout);
         var sample = MeasureNavigation(window, options.ColdChildIteration, "Cold", options, showCase);
         var dto    = ColdChildSampleDto.FromSample(sample);
         Console.WriteLine(ColdChildSamplePrefix + JsonSerializer.Serialize(dto));
@@ -650,15 +741,15 @@ internal static class Program
         {
             MeasureNavigationTrace(window, 0, "Cold", options, showCase)
         };
-        NavigateToAboutUs(window, options);
+        NavigateToOverview(window, options);
         samples.Add(MeasureNavigationTrace(window, 1, "Second", options, showCase));
 
         var builder = new StringBuilder();
         builder.AppendLine($"# {showCase.Label} navigation trace - {options.Label}");
         builder.AppendLine();
         builder.AppendLine($"- Timestamp: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
-        builder.AppendLine($"- Configuration: Debug, headless, {WindowSize.Width:0}x{WindowSize.Height:0} window");
-        builder.AppendLine("- Measurement: AboutUs route settled -> trigger navigation -> route visual tree and layout stable");
+        builder.AppendLine($"- Configuration: {BuildConfiguration}, headless, {WindowSize.Width:0}x{WindowSize.Height:0} window");
+        builder.AppendLine("- Measurement: Overview route settled -> trigger navigation -> route visual tree and layout stable");
         builder.AppendLine();
         builder.AppendLine("| Phase | Trigger | Total ms | Trigger ms | First found ms | First ready ms | Stable ms | Pump count | Pump total ms | Max pump ms | Stats count | Stats total ms | Scan total ms | Alloc KB | Visuals | Alert | MarqueeLabel | AddOnDecoratedBox | CompactSpace | CompactSpaceItem | LineEdit | Button | ButtonSpinner | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | CheckBox | CheckBoxGroup | CheckBoxIndicator | Collapse | CollapseItem | Collapse content motion | Collapse expand button |");
         builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
@@ -807,10 +898,10 @@ internal static class Program
         panel.Children.Remove(items[index]);
     }
 
-    private static void NavigateToAboutUs(WorkspaceWindow window, PerfOptions options)
+    private static void NavigateToOverview(WorkspaceWindow window, PerfOptions options)
     {
-        ExecuteNavigateCommand(window, AboutUsViewModel.ID);
-        WaitForRoute(window, AboutUs, options.Timeout);
+        ExecuteNavigateCommand(window, OverviewViewModel.ID);
+        WaitForRoute(window, Overview, options.Timeout);
     }
 
     private static void ExecuteNavigateCommand(WorkspaceWindow window, EntityKey key)
@@ -1197,7 +1288,7 @@ internal static class Program
         builder.AppendLine("# SpaceShowCase item performance breakdown");
         builder.AppendLine();
         builder.AppendLine($"- Timestamp: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
-        builder.AppendLine($"- Configuration: Debug, headless, {WindowSize.Width.ToString(CultureInfo.InvariantCulture)}x{WindowSize.Height.ToString(CultureInfo.InvariantCulture)} window");
+        builder.AppendLine($"- Configuration: {BuildConfiguration}, headless, {WindowSize.Width.ToString(CultureInfo.InvariantCulture)}x{WindowSize.Height.ToString(CultureInfo.InvariantCulture)} window");
         builder.AppendLine("- Measurement: construct the real SpaceShowCase, keep one real ShowCaseItem before ShowCasePanel template/layout, then time attach/template/layout until stable.");
         if (options.SpaceItemsWithoutTreeCascaderSelect)
         {
@@ -1284,8 +1375,8 @@ internal static class Program
         builder.AppendLine($"# {showCase.Label} navigation performance - {result.Label}");
         builder.AppendLine();
         builder.AppendLine($"- Timestamp: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
-        builder.AppendLine($"- Configuration: Debug, headless, {WindowSize.Width.ToString(CultureInfo.InvariantCulture)}x{WindowSize.Height.ToString(CultureInfo.InvariantCulture)} window");
-        builder.AppendLine($"- Measurement: AboutUs route settled -> trigger {showCase.Label} navigation -> visual tree and layout stable");
+        builder.AppendLine($"- Configuration: {BuildConfiguration}, headless, {WindowSize.Width.ToString(CultureInfo.InvariantCulture)}x{WindowSize.Height.ToString(CultureInfo.InvariantCulture)} window");
+        builder.AppendLine($"- Measurement: Overview route settled -> trigger {showCase.Label} navigation -> route visual tree and layout stable");
         builder.AppendLine($"- Route type: `{showCase.RouteTypeName}`");
         builder.AppendLine($"- XAML source: `{Path.GetFullPath(showCase.XamlPath)}`");
         builder.AppendLine($"- Cold first navigation samples: {result.ColdRuns.Count}");
@@ -1650,7 +1741,9 @@ internal sealed record PerfOptions(
     bool SpaceItemsWithoutTreeCascader,
     bool SpaceItemsWithoutTreeCascaderSelect,
     bool TraceNavigation,
-    int? SpaceRemoveItem)
+    int? SpaceRemoveItem,
+    bool ResizeTrace,
+    bool ResizeForceMaterialized)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -1668,6 +1761,8 @@ internal sealed record PerfOptions(
         var spaceItemsWithoutTreeCascaderSelect = false;
         var traceNavigation = false;
         var spaceRemoveItem = default(int?);
+        var resizeTrace = false;
+        var resizeForceMaterialized = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -1730,6 +1825,12 @@ internal sealed record PerfOptions(
                 case "--trace-navigation":
                     traceNavigation = true;
                     break;
+                case "--resize-trace":
+                    resizeTrace = true;
+                    break;
+                case "--resize-force-materialized":
+                    resizeForceMaterialized = true;
+                    break;
                 case "--space-remove-item" when i + 1 < args.Length &&
                                                 int.TryParse(args[i + 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedItem):
                     showCase        = "space";
@@ -1753,7 +1854,9 @@ internal sealed record PerfOptions(
             spaceItemsWithoutTreeCascader,
             spaceItemsWithoutTreeCascaderSelect,
             traceNavigation,
-            spaceRemoveItem);
+            spaceRemoveItem,
+            resizeTrace,
+            resizeForceMaterialized);
     }
 }
 

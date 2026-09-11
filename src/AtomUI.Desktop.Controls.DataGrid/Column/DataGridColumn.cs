@@ -68,6 +68,16 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     public static readonly StyledProperty<DataGridSortDirections> SupportedSortDirectionsProperty =
         AvaloniaProperty.Register<DataGridColumn, DataGridSortDirections>(nameof(SupportedSortDirections), DataGridSortDirections.All);
 
+    public static readonly StyledProperty<DataGridFieldId?> FieldIdProperty =
+        AvaloniaProperty.Register<DataGridColumn, DataGridFieldId?>(
+            nameof(FieldId),
+            validate: static value => !value.HasValue || value.Value.IsValid);
+
+    public static readonly DirectProperty<DataGridColumn, DataGridColumnSortState> SortStateProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumn, DataGridColumnSortState>(
+            nameof(SortState),
+            column => column.SortState);
+
     public static readonly StyledProperty<IEnumerable?> FiltersProperty =
         AvaloniaProperty.Register<DataGridColumn, IEnumerable?>(nameof(Filters));
 
@@ -75,15 +85,6 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
         AvaloniaProperty.Register<DataGridColumn, IList?>(
             nameof(SelectedFilterValues),
             defaultBindingMode: BindingMode.TwoWay);
-
-    public static readonly StyledProperty<string?> FilterTextMemberPathProperty =
-        AvaloniaProperty.Register<DataGridColumn, string?>(nameof(FilterTextMemberPath));
-
-    public static readonly StyledProperty<string?> FilterValueMemberPathProperty =
-        AvaloniaProperty.Register<DataGridColumn, string?>(nameof(FilterValueMemberPath));
-
-    public static readonly StyledProperty<string?> FilterChildrenMemberPathProperty =
-        AvaloniaProperty.Register<DataGridColumn, string?>(nameof(FilterChildrenMemberPath));
 
     public static readonly StyledProperty<DataGridFilterPresenterMode> FilterPresenterModeProperty =
         AvaloniaProperty.Register<DataGridColumn, DataGridFilterPresenterMode>(nameof(FilterPresenterMode));
@@ -161,6 +162,14 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
         get => GetValue(SupportedSortDirectionsProperty);
         set => SetValue(SupportedSortDirectionsProperty, value);
     }
+
+    public DataGridFieldId? FieldId
+    {
+        get => GetValue(FieldIdProperty);
+        set => SetValue(FieldIdProperty, value);
+    }
+
+    public DataGridColumnSortState SortState => _sortState;
     
     public HorizontalAlignment HeaderContentHorizontalAlignment
     {
@@ -285,9 +294,9 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     {
         get
         {
-            var canUserFilter = CanUserFilterInternal ??
-                                OwningGrid?.CanUserFilterColumns ??
-                                DataGrid.DefaultCanUserFilterColumns;
+            var canUserFilter = OwningGrid is null
+                ? CanUserFilterInternal ?? DataGrid.DefaultCanUserFilterColumns
+                : EffectiveCanUserFilter;
             if (HasHeaderCell)
             {
                 HeaderCell.CanUserFilter = canUserFilter;
@@ -299,8 +308,9 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
             CanUserFilterInternal = value;
             if (HasHeaderCell)
             {
-                HeaderCell.CanUserFilter = value;
+                HeaderCell.CanUserFilter = EffectiveCanUserFilter;
             }
+            OwningGrid?.RefreshPopupPinnedOpenFilterTarget();
         }
     }
 
@@ -334,47 +344,13 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     /// <returns>
     /// true if the user can sort the column; false if the user cannot sort the column. The default is the current <see cref="P:AtomUI.Desktop.Controls.DataGrid.CanUserSortColumns" /> property value.
     /// </returns>
-    public bool CanUserSort
+    public bool? CanUserSort
     {
-        get
-        {
-            var canUserSort = false;
-            if (CanUserSortInternal.HasValue)
-            {
-                canUserSort = CanUserSortInternal.Value;
-            } 
-            else if (OwningGrid != null && OwningGrid.CanUserSortColumns)
-            {
-                string? propertyPath = GetSortPropertyName();
-                Type?  propertyType = OwningGrid.DataConnection.GetPropertyType(propertyPath);
-            
-                // if the type is nullable, then we will compare the non-nullable type
-                if (propertyType != null && propertyType.IsNullableType())
-                {
-                    propertyType = TypeHelper.GetNonNullableType(propertyType);
-                }
-            
-                // return whether or not the property type can be compared
-                canUserSort = typeof(IComparable).IsAssignableFrom(propertyType);
-            }
-            else
-            {
-                canUserSort = DataGrid.DefaultCanUserSortColumns;
-            }
-
-            if (HasHeaderCell)
-            {
-                HeaderCell.CanUserSort = canUserSort;
-            }
-            return canUserSort;
-        }
+        get => CanUserSortInternal;
         set
         {
             CanUserSortInternal = value;
-            if (HasHeaderCell)
-            {
-                HeaderCell.CanUserSort = value;
-            }
+            RefreshSortProjection();
         }
     }
 
@@ -462,25 +438,10 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     public virtual BindingBase? ClipboardContentBinding { get; set; }
     
     /// <summary>
-    /// Holds the name of the member to use for sorting, if not using the default.
-    /// </summary>
-    public string? SortMemberPath { get; set; }
-
-    /// <summary>
     /// Gets or sets an object associated with this column.
     /// </summary>
     public object? Tag { get; set; }
 
-    /// <summary>
-    /// Holds a Comparer to use for sorting, if not using the default.
-    /// </summary>
-    public IComparer? CustomSortComparer { get; set; }
-    
-    /// <summary>
-    /// Holds the name of the member to use for filter, if not using the default.
-    /// </summary>
-    public string? FilterMemberPath { get; set; }
-    
     /// <summary>
     /// Filter menu config
     /// </summary>
@@ -494,24 +455,6 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     {
         get => GetValue(SelectedFilterValuesProperty);
         set => SetValue(SelectedFilterValuesProperty, value);
-    }
-
-    public string? FilterTextMemberPath
-    {
-        get => GetValue(FilterTextMemberPathProperty);
-        set => SetValue(FilterTextMemberPathProperty, value);
-    }
-
-    public string? FilterValueMemberPath
-    {
-        get => GetValue(FilterValueMemberPathProperty);
-        set => SetValue(FilterValueMemberPathProperty, value);
-    }
-
-    public string? FilterChildrenMemberPath
-    {
-        get => GetValue(FilterChildrenMemberPathProperty);
-        set => SetValue(FilterChildrenMemberPathProperty, value);
     }
 
     public DataGridFilterPresenterMode FilterPresenterMode
@@ -738,18 +681,20 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
         if (owningGrid != null)
         {
             RegisterFilterCollectionSubscriptions();
+            RefreshSortProjection();
         }
     }
 
     internal void NotifyOwningGridAttachedAfterColumnCollectionUpdate()
     {
+        RefreshSortProjection();
         PruneSelectedFilterValuesToFilterItems();
-        ApplySelectedFilterValuesToFilterDescriptions();
+        ApplySelectedFilterValuesToQuery();
     }
     
     protected internal virtual void NotifyOwningGridAboutToDetached()
     {
-        RemoveFilterDescriptionProjection();
+        RemoveFilterQueryProjection();
         ReleaseFilterCollectionSubscriptions();
     }
     
@@ -804,16 +749,29 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
                 
             }
         }
+        else if (change.Property == FieldIdProperty ||
+                 change.Property == SupportedSortDirectionsProperty)
+        {
+            RefreshSortProjection();
+        }
         else if (change.Property == FiltersProperty)
         {
-            RegisterFilterItemsSource(change.OldValue as IEnumerable, change.NewValue as IEnumerable);
+            RegisterFilterItems(change.OldValue as IEnumerable, change.NewValue as IEnumerable);
             PruneSelectedFilterValuesToFilterItems();
             NotifyFilterItemsChanged();
+        }
+        else if (change.Property == FilterPresenterModeProperty ||
+                 change.Property == FilterSelectionModeProperty)
+        {
+            if (HasHeaderCell)
+            {
+                HeaderCell.NotifyFilterConfigurationChanged();
+            }
         }
         else if (change.Property == SelectedFilterValuesProperty)
         {
             RegisterSelectedFilterValues(change.OldValue as IList, change.NewValue as IList);
-            ApplySelectedFilterValuesToFilterDescriptions();
+            ApplySelectedFilterValuesToQuery();
             NotifySelectedFilterValuesChanged();
         }
     }

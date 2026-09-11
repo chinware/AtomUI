@@ -1,4 +1,4 @@
-using System.ComponentModel;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Utils;
 using Avalonia;
@@ -15,8 +15,8 @@ namespace AtomUI.Desktop.Controls;
 internal class ImagePreviewerOverlayHost : ContentControl,
                                            IMotionAwareControl
 {
-    public static readonly StyledProperty<IList<ImagePreviewItem>?> ItemsSourceProperty =
-        AvaloniaProperty.Register<ImagePreviewerOverlayHost, IList<ImagePreviewItem>?>(nameof(ItemsSource));
+    public static readonly StyledProperty<IList<ImagePreviewEntry>?> ItemsSourceProperty =
+        AvaloniaProperty.Register<ImagePreviewerOverlayHost, IList<ImagePreviewEntry>?>(nameof(ItemsSource));
 
     public static readonly StyledProperty<bool> IsImageMovableProperty =
         ImagePreviewer.IsImageMovableProperty.AddOwner<ImagePreviewerOverlayHost>();
@@ -59,7 +59,7 @@ internal class ImagePreviewerOverlayHost : ContentControl,
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<ImagePreviewerOverlayHost, Transform?>(nameof(Transform));
 
-    public IList<ImagePreviewItem>? ItemsSource
+    public IList<ImagePreviewEntry>? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
@@ -147,8 +147,8 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     public TopLevel ParentTopLevel { get; }
 
-    internal static readonly DirectProperty<ImagePreviewerOverlayHost, LoadedImageSource?> CurrentImageProperty =
-        AvaloniaProperty.RegisterDirect<ImagePreviewerOverlayHost, LoadedImageSource?>(
+    internal static readonly DirectProperty<ImagePreviewerOverlayHost, IImage?> CurrentImageProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerOverlayHost, IImage?>(
             nameof(CurrentImage),
             o => o.CurrentImage,
             (o, v) => o.CurrentImage = v);
@@ -231,9 +231,9 @@ internal class ImagePreviewerOverlayHost : ContentControl,
             o => o.SuppressTransformAnimation,
             (o, v) => o.SuppressTransformAnimation = v);
 
-    private LoadedImageSource? _currentImage;
+    private IImage? _currentImage;
 
-    internal LoadedImageSource? CurrentImage
+    internal IImage? CurrentImage
     {
         get => _currentImage;
         set => SetAndRaise(CurrentImageProperty, ref _currentImage, value);
@@ -347,7 +347,8 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     private readonly AbstractImagePreviewer _imagePreviewer;
     private readonly ImageViewer _imageViewer;
-    private ImagePreviewItem? _currentItem;
+    private readonly ImagePreviewDisplayTracker _displayTracker;
+    private INotifyCollectionChanged? _observedItemsSource;
     private IconButton? _closeButton;
     private ImageSwitchTransformPolicy _switchTransformPolicy = ImageSwitchTransformPolicy.CreateDefault();
 
@@ -428,6 +429,10 @@ internal class ImagePreviewerOverlayHost : ContentControl,
     {
         ParentTopLevel  = parent;
         _imagePreviewer = imagePreviewer;
+        _displayTracker = new ImagePreviewDisplayTracker(
+            () => _imagePreviewer.ImageSwitchMode,
+            UpdateCurrentImageState,
+            () => _imagePreviewer.LatestLoadedFullEntry);
         _imageViewer    = CreateImageViewer();
         Content         = _imageViewer;
 
@@ -508,6 +513,7 @@ internal class ImagePreviewerOverlayHost : ContentControl,
         }
         else if (change.Property == ItemsSourceProperty)
         {
+            ObserveItemsSource();
             SetCurrentValue(IsMultiImagesProperty, ItemsSource?.Count > 1);
             Count = ItemsSource?.Count ?? 0;
             HandleCurrentIndexChanged();
@@ -522,8 +528,46 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     public void Close(Action? callback = null)
     {
-        SetCurrentItem(null);
+        UnobserveItemsSource();
+        _displayTracker.Clear();
         callback?.Invoke();
+    }
+
+    private void ObserveItemsSource()
+    {
+        var source = ItemsSource as INotifyCollectionChanged;
+        if (ReferenceEquals(_observedItemsSource, source))
+        {
+            return;
+        }
+        if (_observedItemsSource is not null)
+        {
+            _observedItemsSource.CollectionChanged -= HandleItemsSourceCollectionChanged;
+        }
+        _observedItemsSource = source;
+        if (_observedItemsSource is not null)
+        {
+            _observedItemsSource.CollectionChanged += HandleItemsSourceCollectionChanged;
+        }
+    }
+
+    private void UnobserveItemsSource()
+    {
+        if (_observedItemsSource is not null)
+        {
+            _observedItemsSource.CollectionChanged -= HandleItemsSourceCollectionChanged;
+            _observedItemsSource = null;
+        }
+    }
+
+    private void HandleItemsSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        // 有效集合增量变更时 CurrentIndex 属性值可能不变（如封顶裁剪后索引稳定），
+        // 但索引处的 entry 已更换：宿主必须与 previewer 的 ConfigureCurrentEntry 同步重配
+        // 当前项，否则显示跟踪会持有过期（可能已 Dispose）的 entry，表现为预览窗口白屏。
+        SetCurrentValue(IsMultiImagesProperty, ItemsSource?.Count > 1);
+        Count = ItemsSource?.Count ?? 0;
+        HandleCurrentIndexChanged();
     }
 
     private void HandleCloseButtonClicked(object? sender, RoutedEventArgs e)
@@ -536,16 +580,29 @@ internal class ImagePreviewerOverlayHost : ContentControl,
         if (ItemsSource is { Count: > 0 } items)
         {
             var currentIndex = ResolveDisplayCurrentIndex(items.Count);
-            SetCurrentItem(items[currentIndex]);
+            _displayTracker.SetCurrentItem(items[currentIndex]);
             SetCurrentValue(IsFirstImageProperty, currentIndex == 0);
             SetCurrentValue(IsLastImageProperty, currentIndex == items.Count - 1);
         }
         else if (ItemsSource == null || ItemsSource?.Count == 0)
         {
-            SetCurrentItem(null);
+            _displayTracker.SetCurrentItem(null);
             SetCurrentValue(IsLastImageProperty, false);
             SetCurrentValue(IsFirstImageProperty, false);
         }
+    }
+
+    internal void RefreshImageSwitchMode()
+    {
+        _displayTracker.Refresh();
+    }
+
+    private void UpdateCurrentImageState()
+    {
+        SetCurrentValue(CurrentImageProperty, _displayTracker.EffectiveImage);
+        SetCurrentValue(IsCurrentImageLoadingProperty, _displayTracker.IsCurrentLoading);
+        SetCurrentValue(IsCurrentImageFailedProperty, _displayTracker.IsCurrentFailed);
+        UpdateScaleCapability();
     }
 
     private int ResolveDisplayCurrentIndex(int count)
@@ -561,47 +618,6 @@ internal class ImagePreviewerOverlayHost : ContentControl,
         }
 
         return CurrentIndex;
-    }
-
-    private void SetCurrentItem(ImagePreviewItem? item)
-    {
-        if (ReferenceEquals(_currentItem, item))
-        {
-            UpdateCurrentImageState();
-            return;
-        }
-
-        if (_currentItem != null)
-        {
-            _currentItem.PropertyChanged -= HandleCurrentItemPropertyChanged;
-        }
-
-        _currentItem = item;
-        if (_currentItem != null)
-        {
-            _currentItem.PropertyChanged += HandleCurrentItemPropertyChanged;
-        }
-
-        UpdateCurrentImageState();
-    }
-
-    private void HandleCurrentItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == nameof(ImagePreviewItem.LoadedSource) ||
-            args.PropertyName == nameof(ImagePreviewItem.State) ||
-            args.PropertyName == nameof(ImagePreviewItem.IsLoading) ||
-            args.PropertyName == nameof(ImagePreviewItem.IsFailed))
-        {
-            UpdateCurrentImageState();
-        }
-    }
-
-    private void UpdateCurrentImageState()
-    {
-        SetCurrentValue(CurrentImageProperty, _currentItem?.LoadedSource);
-        SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsLoading == true);
-        SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFailed == true);
-        UpdateScaleCapability();
     }
 
     private void UpdateScaleCapability()

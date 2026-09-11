@@ -2,7 +2,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using AtomUICalendarMode = AtomUI.Desktop.Controls.CalendarMode;
@@ -22,12 +22,12 @@ public partial class CalendarShowCase : GalleryReactiveUserControl<CalendarViewM
         {
             RefreshSelectableCalendarText();
 
-            var languageManager = Application.Current?.GetLanguageManager();
+            var languageManager = GalleryLocalization.GetLanguageManager();
             if (languageManager is not null)
             {
-                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshSelectableCalendarText();
-                languageManager.LanguageVariantChanged += handler;
-                Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshSelectableCalendarText();
+                languageManager.LanguageChanged += handler;
+                Disposable.Create(() => languageManager.LanguageChanged -= handler)
                           .DisposeWith(disposables);
             }
         });

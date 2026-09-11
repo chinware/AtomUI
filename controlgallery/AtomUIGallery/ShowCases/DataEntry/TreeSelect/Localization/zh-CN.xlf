@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind">
+    <unit id="AsynchronousLoadingDescription">
+      <segment>
+        <source>Asynchronous loading tree node.</source>
+        <target state="translated">异步加载树节点。</target>
+      </segment>
+    </unit>
+    <unit id="AsynchronousLoadingTitle">
+      <segment>
+        <source>Asynchronous loading</source>
+        <target state="translated">异步加载</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">最基础的用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="BindingClearButton">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>SelectedItem and SelectedItems are two-way bindable by default, including in-place collection changes.</source>
+        <target state="translated">SelectedItem 和 SelectedItems 默认支持双向绑定，也支持集合原地变更同步。</target>
+      </segment>
+    </unit>
+    <unit id="BindingMultipleLabel">
+      <segment>
+        <source>Multiple selected items</source>
+        <target state="translated">多选绑定</target>
+      </segment>
+    </unit>
+    <unit id="BindingSetMultipleButton">
+      <segment>
+        <source>Select two nodes</source>
+        <target state="translated">选择两个节点</target>
+      </segment>
+    </unit>
+    <unit id="BindingSetSingleButton">
+      <segment>
+        <source>Select your leaf</source>
+        <target state="translated">选择你的叶子</target>
+      </segment>
+    </unit>
+    <unit id="BindingSingleLabel">
+      <segment>
+        <source>Single selected item</source>
+        <target state="translated">单选绑定</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>Binding</source>
+        <target state="translated">绑定</target>
+      </segment>
+    </unit>
+    <unit id="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value:</source>
+        <target state="translated">ViewModel 值：</target>
+      </segment>
+    </unit>
+    <unit id="CheckableDescription">
+      <segment>
+        <source>Multiple and checkable.</source>
+        <target state="translated">多选且可勾选。</target>
+      </segment>
+    </unit>
+    <unit id="CheckableTitle">
+      <segment>
+        <source>Checkable</source>
+        <target state="translated">可勾选</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="GenerateFromTreeDataDescription">
+      <segment>
+        <source>The tree structure can be populated using treeData property. This is a quick and easy way to provide the tree content.</source>
+        <target state="translated">可以使用 treeData 属性填充树结构，这是一种快速简单地提供树内容的方式。</target>
+      </segment>
+    </unit>
+    <unit id="GenerateFromTreeDataTitle">
+      <segment>
+        <source>Generate from tree data</source>
+        <target state="translated">由树数据生成</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountDescription">
+      <segment>
+        <source>You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.</source>
+        <target state="translated">可以设置 maxCount 属性控制最多可选项数量。超过限制后，选项会变为禁用状态。</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+        <target state="translated">最大数量</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionDescription">
+      <segment>
+        <source>Multiple selection usage.</source>
+        <target state="translated">多选用法。</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionTitle">
+      <segment>
+        <source>Multiple Selection</source>
+        <target state="translated">多选</target>
+      </segment>
+    </unit>
+    <unit id="P2AddOnPrefix">
+      <segment>
+        <source>Prefix</source>
+        <target state="translated">前缀</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomleft">
+      <segment>
+        <source>Bottom Left</source>
+        <target state="translated">左下</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomright">
+      <segment>
+        <source>Bottom Right</source>
+        <target state="translated">右下</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默认</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>Top Left</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>Top Right</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode">
+      <segment>
+        <source>Child Node</source>
+        <target state="translated">子节点</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode1">
+      <segment>
+        <source>Child Node 1</source>
+        <target state="translated">子节点 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode2">
+      <segment>
+        <source>Child Node 2</source>
+        <target state="translated">子节点 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode3">
+      <segment>
+        <source>Child Node 3</source>
+        <target state="translated">子节点 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode4">
+      <segment>
+        <source>Child Node 4</source>
+        <target state="translated">子节点 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode5">
+      <segment>
+        <source>Child Node 5</source>
+        <target state="translated">子节点 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode6">
+      <segment>
+        <source>Child Node 6</source>
+        <target state="translated">子节点 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode7">
+      <segment>
+        <source>Child Node 7</source>
+        <target state="translated">子节点 7</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExpandToLoad">
+      <segment>
+        <source>Expand to load</source>
+        <target state="translated">展开加载</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf1">
+      <segment>
+        <source>Leaf 1</source>
+        <target state="translated">叶子 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf11">
+      <segment>
+        <source>Leaf 11</source>
+        <target state="translated">叶子 11</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf2">
+      <segment>
+        <source>Leaf 2</source>
+        <target state="translated">叶子 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf3">
+      <segment>
+        <source>Leaf 3</source>
+        <target state="translated">叶子 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf4">
+      <segment>
+        <source>Leaf 4</source>
+        <target state="translated">叶子 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf5">
+      <segment>
+        <source>Leaf 5</source>
+        <target state="translated">叶子 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf6">
+      <segment>
+        <source>Leaf 6</source>
+        <target state="translated">叶子 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMyLeaf">
+      <segment>
+        <source>My leaf</source>
+        <target state="translated">我的叶子</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNode1">
+      <segment>
+        <source>Node 1</source>
+        <target state="translated">节点 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNode2">
+      <segment>
+        <source>Node 2</source>
+        <target state="translated">节点 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent1">
+      <segment>
+        <source>Parent 1</source>
+        <target state="translated">父节点 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent10">
+      <segment>
+        <source>Parent 1-0</source>
+        <target state="translated">父节点 1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent11">
+      <segment>
+        <source>Parent 1-1</source>
+        <target state="translated">父节点 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSss">
+      <segment>
+        <source>Node SSS</source>
+        <target state="translated">节点 SSS</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTreeNode">
+      <segment>
+        <source>Tree Node</source>
+        <target state="translated">树节点</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYourLeaf">
+      <segment>
+        <source>Your leaf</source>
+        <target state="translated">你的叶子</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentShowIcon">
+      <segment>
+        <source>Show icon</source>
+        <target state="translated">显示图标</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentShowLeafIcon">
+      <segment>
+        <source>Show leaf icon</source>
+        <target state="translated">显示叶子图标</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentTreeLine">
+      <segment>
+        <source>Tree line</source>
+        <target state="translated">树线</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentShowIcon">
+      <segment>
+        <source>Show icon</source>
+        <target state="translated">显示图标</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentShowLeafIcon">
+      <segment>
+        <source>Show leaf icon</source>
+        <target state="translated">显示叶子图标</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentTreeLine">
+      <segment>
+        <source>Tree line</source>
+        <target state="translated">树线</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">请选择</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+        <target state="translated">弹出位置：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TreeSelect combines an input selector with tree navigation, making it suitable for hierarchical categories, organization nodes, permissions, and other nested option sets.</source>
+        <target state="translated">TreeSelect 将输入选择器与树形导航结合，适用于层级分类、组织节点、权限和其他嵌套选项集合。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select values from hierarchical data in a compact input.</source>
+        <target state="translated">在紧凑输入框中从层级数据里选择值。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+        <target state="translated">可以通过 placement 手动指定弹出层位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Custom prefix and suffixIcon.</source>
+        <target state="translated">自定义 prefix 和 suffixIcon。</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+        <target state="translated">前缀和后缀</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">外观</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBehavior">
+      <segment>
+        <source>Behavior</source>
+        <target state="translated">行为</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ShowTreeLineDescription">
+      <segment>
+        <source>Use treeLine to show the line style.</source>
+        <target state="translated">使用 treeLine 显示线条样式。</target>
+      </segment>
+    </unit>
+    <unit id="ShowTreeLineTitle">
+      <segment>
+        <source>Show Tree Line</source>
+        <target state="translated">显示树线</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>TreeSelect supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">TreeSelect 支持大号、中号、小号，也支持通过 Custom 配合本地高度和字号自定义。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Sizes</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to TreeSelect with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为 TreeSelect 添加状态，可设置为错误或警告。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of TreeSelect, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">TreeSelect 提供四种变体：描边、填充、无边框和下划线。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">变体</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

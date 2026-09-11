@@ -27,7 +27,7 @@ internal static class VisualLayerManagerReflectionExtensions
     private static readonly Lazy<PropertyInfo> PopupOverlayLayerPropertyInfo = new Lazy<PropertyInfo>(() =>
         typeof(AvaloniaVisualLayerManager).GetPropertyInfoOrThrow("PopupOverlayLayer",
             BindingFlags.Instance | BindingFlags.NonPublic));
-    
+
     #endregion
     
     internal static void AddLayer(this AvaloniaVisualLayerManager visualLayerManager, Control layer, int zindex)

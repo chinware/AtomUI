@@ -38,7 +38,7 @@ Application.ResourcesChanged
           Gallery ShowCase visual tree
 ```
 
-This exact pattern leaked `DataGridColumn`, `DataGridColumnGroupItem`, and `NavMenuNode`. Full case study: `docs/engineering/avalonia-dynamic-resource-memory-leak-case-study.md`.
+This exact pattern leaked `DataGridColumn`, `DataGridColumnGroupItem`, and `NavMenuNode`. Full case study: `docs/engineering/case-studies/avalonia-dynamic-resource-memory-leak-case-study.md`.
 
 ## Required Patterns
 

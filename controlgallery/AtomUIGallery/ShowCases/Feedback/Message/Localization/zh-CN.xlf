@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MessageShowCaseLangResourceKind">
+    <unit id="ApiMethodManagerShow">
+      <segment>
+        <source>Shows an IMessage instance and applies optional style classes.</source>
+        <target state="translated">显示一个 IMessage 实例，并应用可选样式类。</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage for Message.</source>
+        <target state="translated">Message 的最简单用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="CallbackDescription">
+      <segment>
+        <source>The above example will display a new message when the old message is about to close.</source>
+        <target state="translated">上面的示例会在旧消息即将关闭时显示一条新消息。</target>
+      </segment>
+    </unit>
+    <unit id="CallbackTitle">
+      <segment>
+        <source>Callback</source>
+        <target state="translated">回调</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="LoadingIndicatorDescription">
+      <segment>
+        <source>Display a global loading indicator, which is dismissed by itself asynchronously.</source>
+        <target state="translated">显示一个全局加载指示器，并异步自动关闭。</target>
+      </segment>
+    </unit>
+    <unit id="LoadingIndicatorTitle">
+      <segment>
+        <source>Message with loading indicator</source>
+        <target state="translated">带加载指示器的消息</target>
+      </segment>
+    </unit>
+    <unit id="OtherTypesDescription">
+      <segment>
+        <source>Messages of success, error and warning types.</source>
+        <target state="translated">success、error 和 warning 类型的消息。</target>
+      </segment>
+    </unit>
+    <unit id="OtherTypesTitle">
+      <segment>
+        <source>Other types of message</source>
+        <target state="translated">其他消息类型</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisplayALoadingIndicator">
+      <segment>
+        <source>Display a loading indicator</source>
+        <target state="translated">显示加载指示器</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisplayNormalMessage">
+      <segment>
+        <source>Display normal message</source>
+        <target state="translated">显示普通消息</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">错误</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentInfo">
+      <segment>
+        <source>Info</source>
+        <target state="translated">信息</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccess">
+      <segment>
+        <source>Success</source>
+        <target state="translated">成功</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageActionInProgress">
+      <segment>
+        <source>Action in progress...</source>
+        <target state="translated">操作进行中...</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageError">
+      <segment>
+        <source>This is an error message.</source>
+        <target state="translated">这是一条错误消息。</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageHelloAtomUIAvalonia">
+      <segment>
+        <source>Hello, AtomUI/Avalonia!</source>
+        <target state="translated">你好，AtomUI/Avalonia！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageInformation">
+      <segment>
+        <source>This is an information message.</source>
+        <target state="translated">这是一条信息消息。</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageLoadingFinished">
+      <segment>
+        <source>Loading finished</source>
+        <target state="translated">加载完成</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageSuccess">
+      <segment>
+        <source>This is a success message.</source>
+        <target state="translated">这是一条成功消息。</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageWarning">
+      <segment>
+        <source>This is a warning message.</source>
+        <target state="translated">这是一条警告消息。</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Message displays brief feedback at the top layer of the current window. It is useful for save results, validation feedback, async progress, and chained completion notices.</source>
+        <target state="translated">Message 在当前窗口顶层显示简短反馈，适用于保存结果、校验反馈、异步进度和连续完成提示。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Global prompt messages for lightweight operation feedback.</source>
+        <target state="translated">用于轻量级操作反馈的全局提示消息。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

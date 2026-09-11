@@ -7,7 +7,7 @@ namespace AtomUI.Desktop.Controls;
 /// Calendar 控件的 Design Token，收敛为八个公开视觉语义。
 /// </summary>
 [ControlDesignToken]
-internal class CalendarToken : AbstractControlDesignToken
+internal sealed class CalendarToken : AbstractControlDesignToken
 {
 
     public CalendarToken()

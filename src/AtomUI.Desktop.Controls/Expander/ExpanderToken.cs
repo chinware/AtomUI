@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ExpanderToken : AbstractControlDesignToken
+internal sealed class ExpanderToken : AbstractControlDesignToken
 {
     
     public ExpanderToken()

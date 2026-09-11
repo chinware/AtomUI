@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind">
+    <unit id="BackTopDescription">
+      <segment>
+        <source>BackTop makes it easy to go back to the top of the page.</source>
+        <target state="translated">BackTop makes isso easy para go voltar para o superior de o página.</target>
+      </segment>
+    </unit>
+    <unit id="BackTopTitle">
+      <segment>
+        <source>BackTop</source>
+        <target state="translated">BackTop</target>
+      </segment>
+    </unit>
+    <unit id="BadgeDescription">
+      <segment>
+        <source>FloatButton with Badge.</source>
+        <target state="translated">FloatButton com Badge.</target>
+      </segment>
+    </unit>
+    <unit id="BadgeTitle">
+      <segment>
+        <source>Badge</source>
+        <target state="translated">Badge</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">O most básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="CommandDescription">
+      <segment>
+        <source>FloatButtonHost forwards commands to the hosted button, and FloatButton items inside a group inherit the host data context for command binding.</source>
+        <target state="translated">FloatButtonHost forwards commands para o hosted botão, e FloatButton itens inside a grupo inherit o host dados context para command vinculação.</target>
+      </segment>
+    </unit>
+    <unit id="CommandTitle">
+      <segment>
+        <source>Command</source>
+        <target state="translated">Command</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">Geral</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="ControlledModeDescription">
+      <segment>
+        <source>Set the component to controlled mode through open. IsOpen binds two-way by default and works together with trigger.</source>
+        <target state="translated">Definir o component para controlled modo through abrir. IsOpen binds dois-way por padrão e funciona together com gatilho.</target>
+      </segment>
+    </unit>
+    <unit id="ControlledModeTitle">
+      <segment>
+        <source>Controlled mode</source>
+        <target state="translated">Controlled modo</target>
+      </segment>
+    </unit>
+    <unit id="DescriptionDescription">
+      <segment>
+        <source>Setting the description property allows you to show a FloatButton with a description.</source>
+        <target state="translated">Configuração o descrição propriedade permite você para mostrar a FloatButton com a descrição.</target>
+      </segment>
+    </unit>
+    <unit id="DescriptionTitle">
+      <segment>
+        <source>Description</source>
+        <target state="translated">Descrição</target>
+      </segment>
+    </unit>
+    <unit id="GroupDescription">
+      <segment>
+        <source>When multiple buttons are used together, FloatButtonGroup is recommended. By setting the shape property of FloatButton.Group, you can change the group shape. The FloatButton.Group shape overrides the shape of FloatButtons inside.</source>
+        <target state="translated">When multiple buttons are used together, FloatButtonGroup is recommended. By setting the shape property of FloatButton.Group, you can change the group shape. The FloatButton.Group shape overrides the shape of FloatButtons inside.</target>
+      </segment>
+    </unit>
+    <unit id="GroupTitle">
+      <segment>
+        <source>FloatButton Group</source>
+        <target state="translated">FloatButton Grupo</target>
+      </segment>
+    </unit>
+    <unit id="MenuModeDescription">
+      <segment>
+        <source>Open menu mode with trigger, which could be hover or click.</source>
+        <target state="translated">Abrir menu modo com gatilho, which could ser sobreposição ou clique.</target>
+      </segment>
+    </unit>
+    <unit id="MenuModeTitle">
+      <segment>
+        <source>Menu mode</source>
+        <target state="translated">Menu modo</target>
+      </segment>
+    </unit>
+    <unit id="P2CommandCount">
+      <segment>
+        <source>Executed</source>
+        <target state="translated">Executed</target>
+      </segment>
+    </unit>
+    <unit id="P2CommandGroupChild">
+      <segment>
+        <source>Group child</source>
+        <target state="translated">Grupo child</target>
+      </segment>
+    </unit>
+    <unit id="P2CommandHost">
+      <segment>
+        <source>Host</source>
+        <target state="translated">Host</target>
+      </segment>
+    </unit>
+    <unit id="P2CommandSource">
+      <segment>
+        <source>Source</source>
+        <target state="translated">Source</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionHelpInfo">
+      <segment>
+        <source>HELP INFO</source>
+        <target state="translated">HELP INFORMAÇÃO</target>
+      </segment>
+    </unit>
+    <unit id="P2TextScrollToBottom">
+      <segment>
+        <source>Scroll to bottom</source>
+        <target state="translated">Scroll para inferior</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipDocuments">
+      <segment>
+        <source>Documents</source>
+        <target state="translated">Documents</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipSinceN5N25N0">
+      <segment>
+        <source>Since 5.25.0+</source>
+        <target state="translated">Since 5.25.0+</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>FloatButton provides quick access to important actions, grouped menus, badges, and back-to-top behavior while keeping controls anchored to the active content area.</source>
+        <target state="translated">FloatButton provides quick access para important ações, grouped menus, badges, e voltar-para-superior behavior while keeping controles anchored para o active conteúdo area.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Floating actions that stay available inside a scrollable region.</source>
+        <target state="translated">Floating ações que stay disponível inside a scrollable region.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Customize animation placement. Four preset placements are provided: top, right, bottom, and left. The default placement is top.</source>
+        <target state="translated">Personalizar animation posicionamento. Four predefinido placements são fornecido: superior, direita, inferior, e esquerda. O padrão posicionamento é superior.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ShapeDescription">
+      <segment>
+        <source>Change the shape of the FloatButton with the shape property.</source>
+        <target state="translated">Alterar o forma de o FloatButton com o forma propriedade.</target>
+      </segment>
+    </unit>
+    <unit id="ShapeTitle">
+      <segment>
+        <source>Shape</source>
+        <target state="translated">Forma</target>
+      </segment>
+    </unit>
+    <unit id="TooltipDescription">
+      <segment>
+        <source>Setting the tooltip property shows the FloatButton with a tooltip.</source>
+        <target state="translated">Configuração o tooltip propriedade shows o FloatButton com a tooltip.</target>
+      </segment>
+    </unit>
+    <unit id="TooltipTitle">
+      <segment>
+        <source>FloatButton with tooltip</source>
+        <target state="translated">FloatButton com tooltip</target>
+      </segment>
+    </unit>
+    <unit id="TypeDescription">
+      <segment>
+        <source>Change the type of the FloatButton with the type property.</source>
+        <target state="translated">Alterar o tipo de o FloatButton com o tipo propriedade.</target>
+      </segment>
+    </unit>
+    <unit id="TypeTitle">
+      <segment>
+        <source>Type</source>
+        <target state="translated">Tipo</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

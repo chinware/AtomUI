@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.2-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.8-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-stars-shield]][github-stars-link]
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
@@ -70,14 +70,17 @@ requests are welcome.
 #### Requirements
 
 .NET 8 or later (development supports .NET 10)<br>
-Avalonia 12.1.x<br>
+Avalonia 12.1.2<br>
 Windows, macOS and Linux<br>
 
 #### Latest Release Notes
 
-AtomUI 6.1.2 adds Light, Dark and Follow System appearance modes to the Gallery, fixes Dialog and Drawer masks over
-drawn window chrome, and fixes Splitter measurement with an unconstrained cross axis. Review the
-[Changelog](./CHANGELOG.md) for release details.
+AtomUI 6.1.8 reworks DataGrid around a range-based `IDataGridSource` with immutable query and selection state,
+replaces the image-source model with a closed `ImageSource` hierarchy and independent cache policies, and requires
+concrete `[ControlDesignToken]` types to be sealed. It also adds `Window.IsTitleVisible`, tightens NavMenu activation,
+fixes Select-family multi-select spacing, and improves NativeAOT linked-registration closure for trimmed applications.
+This release contains breaking DataGrid, image-loading and theme-token API changes; review the
+[Changelog](./CHANGELOG.md) before upgrading.
 
 #### Incubator
 
@@ -111,7 +114,7 @@ Thanks to Tongming Lake Center for their incubation support of AtomUI OSS
 ##### Add NuGet packages
 
 AtomUI is distributed through NuGet. Install the main desktop controls package first, then add optional packages such as
-DataGrid and ColorPicker only when your application needs them. The examples below use the latest project version.
+DataGrid, ColorPicker and Extras only when your application needs them. The examples below use the latest project version.
 
 The packages we have released are as follows:
 
@@ -128,12 +131,14 @@ The packages we have released are as follows:
 | AtomUI.Desktop.Controls             | Desktop control library — the main package                                 |
 | AtomUI.Desktop.Controls.DataGrid    | DataGrid control (opt-in)                                                  |
 | AtomUI.Desktop.Controls.ColorPicker | ColorPicker control (opt-in)                                               |
+| AtomUI.Desktop.Controls.Extras      | Supplemental desktop controls (opt-in)                                     |
 | AtomUI.Generator                    | Source generators for custom controls, tokens and localization             |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.2
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.2
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.2
+dotnet add package AtomUI.Desktop.Controls --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.8
 ```
 
 You can also install the packages from your IDE's NuGet package manager. In Rider, open:
@@ -161,9 +166,10 @@ Search for "AtomUI" and install the packages your project needs.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.2"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.2"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.2"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.8"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
@@ -200,9 +206,9 @@ internal class Program
 ###### Enable `AtomUI` in the `Application` Class
 
 ```csharp
-using System.Globalization;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Markup.Xaml;
@@ -215,12 +221,15 @@ public partial class App : Application
 
         this.UseAtomUI(builder =>
         {
-            builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
+            builder.UseLanguages(
+                LanguageTags.EnUS,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
             builder.UseDesktopColorPicker();   // optional
             builder.UseDesktopDataGrid();      // optional
+            builder.UseDesktopExtras();        // optional
         });
     }
 }
@@ -276,6 +285,25 @@ The gallery is intentionally comprehensive. If you prefer compact starter projec
 
 These samples show smaller application setups that are easier to copy into a new project.
 
+#### Sponsors
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="https://sophnet.com/">
+        <img src="./resources/images/readme/sponsors/sophnet.png" height="56" alt="SophNet"/>
+      </a>
+      <p>SophNet provides an AI model API platform for stable, efficient model integration.</p>
+    </td>
+    <td align="center" width="50%">
+      <a href="https://hsy.com/aboutus/">
+        <img src="./resources/images/readme/sponsors/hsycloud.svg" height="56" alt="HSY"/>
+      </a>
+      <p>HSY provides cloud servers, DDoS protection and GPU compute services for secure business cloud deployment.</p>
+    </td>
+  </tr>
+</table>
+
 #### Acknowledgements
 
 <div>
@@ -301,16 +329,6 @@ Projects using AtomUI OSS must comply with LGPL v3. <strong>Commercial applicati
 software, personal commercial products and outsourced projects, may use AtomUI for free when linking to the published
 binaries</strong>. If you customize AtomUI from source code, you must either open source the modified code under the
 license terms or purchase a commercial license. For commercial licensing, contact Beijing Qinware Technology Co., Ltd.
-
-#### Special thanks
-
-<div>
-    <div align="left">
-      <h1>RoutinAI</h1>
-       <img width="154" height="151" src="./resources/images/readme/RoutinAI.png"/>
-    </div>
-[RoutinAI](https://routin.ai/) is an enterprise-grade unified LLM API gateway that provides a single, type-safe interface to access over 100 leading large language models from the GPT, Claude, and Gemini families, including models such as gpt-5.4, claude-opus-4-6, and gemini-3.1-pro-preview. It eliminates the complexity of managing multiple AI vendors by providing zero-latency edge routing, seamless model switching without code modifications, unified billing, and centralized governance with spending caps and access policies.
-</div>
 
 ### 🤝 Contributing
 

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind">
+    <unit id="CircularProgressBarDescription">
+      <segment>
+        <source>A circular progress bar.</source>
+        <target state="translated">环形进度条。</target>
+      </segment>
+    </unit>
+    <unit id="CircularProgressBarTitle">
+      <segment>
+        <source>Circular progress bar</source>
+        <target state="translated">环形进度条</target>
+      </segment>
+    </unit>
+    <unit id="CircularStepsDescription">
+      <segment>
+        <source>A circular progress bar that support steps and color segments, default gap is 2px.</source>
+        <target state="translated">支持步骤和颜色分段的环形进度条，默认间隔为 2px。</target>
+      </segment>
+    </unit>
+    <unit id="CircularStepsTitle">
+      <segment>
+        <source>Circular progress bar whit steps</source>
+        <target state="translated">带步骤的环形进度条</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomLineGradientDescription">
+      <segment>
+        <source>Gradient encapsulation, circle and dashboard will ignore strokeLinecap when setting gradient.</source>
+        <target state="translated">渐变封装；设置渐变时 circle 和 dashboard 会忽略 strokeLinecap。</target>
+      </segment>
+    </unit>
+    <unit id="CustomLineGradientTitle">
+      <segment>
+        <source>Custom line gradient</source>
+        <target state="translated">自定义线性渐变</target>
+      </segment>
+    </unit>
+    <unit id="CustomTextFormatDescription">
+      <segment>
+        <source>You can set a custom text by setting the format prop.</source>
+        <target state="translated">可以通过设置 format 属性自定义文本。</target>
+      </segment>
+    </unit>
+    <unit id="CustomTextFormatTitle">
+      <segment>
+        <source>Custom text format</source>
+        <target state="translated">自定义文本格式</target>
+      </segment>
+    </unit>
+    <unit id="DashboardDescription">
+      <segment>
+        <source>By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.</source>
+        <target state="translated">设置 type=dashboard 可以轻松获得仪表盘样式进度条。修改 gapDegree 可设置缺口角度。</target>
+      </segment>
+    </unit>
+    <unit id="DashboardTitle">
+      <segment>
+        <source>Dashboard</source>
+        <target state="translated">仪表盘</target>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>A dynamic progress bar is better.</source>
+        <target state="translated">动态进度条效果更好。</target>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">动态进度</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeDescription">
+      <segment>
+        <source>Appropriate for a narrow area.</source>
+        <target state="translated">适合较窄区域。</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeTitle">
+      <segment>
+        <source>Mini size progress bar</source>
+        <target state="translated">迷你尺寸进度条</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAdd">
+      <segment>
+        <source>Add</source>
+        <target state="translated">Add</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSub">
+      <segment>
+        <source>Sub</source>
+        <target state="translated">Sub</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ProgressBar, StepsProgressBar, CircleProgress, and DashboardProgress cover linear, stepped, circular, and dashboard progress indicators with status, size, gradient, and layout options.</source>
+        <target state="translated">ProgressBar、StepsProgressBar、CircleProgress 和 DashboardProgress 覆盖线性、步骤、环形与仪表盘进度展示，并支持状态、尺寸、渐变和布局配置。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Visualize task completion and operation progress.</source>
+        <target state="translated">展示任务完成度与操作进度。</target>
+      </segment>
+    </unit>
+    <unit id="PercentPositionDescription">
+      <segment>
+        <source>Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.</source>
+        <target state="translated">改变进度值的位置，可使用 percentPosition 将进度值调整到进度条内部、外部或底部。</target>
+      </segment>
+    </unit>
+    <unit id="PercentPositionTitle">
+      <segment>
+        <source>Change progress value position</source>
+        <target state="translated">调整进度值位置</target>
+      </segment>
+    </unit>
+    <unit id="ProgressBarDescription">
+      <segment>
+        <source>A standard progress bar.</source>
+        <target state="translated">标准进度条。</target>
+      </segment>
+    </unit>
+    <unit id="ProgressBarTitle">
+      <segment>
+        <source>Progress bar</source>
+        <target state="translated">进度条</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">进阶</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">布局</target>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarDescription">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+        <target state="translated">更小的环形进度条。</target>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarTitle">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+        <target state="translated">更小的环形进度条</target>
+      </segment>
+    </unit>
+    <unit id="StepsDescription">
+      <segment>
+        <source>A progress bar with steps.</source>
+        <target state="translated">带步骤的进度条。</target>
+      </segment>
+    </unit>
+    <unit id="StepsPercentPositionDescription">
+      <segment>
+        <source>Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.</source>
+        <target state="translated">改变步骤进度值的位置，可使用 percentPosition 将进度值调整到进度条内部、外部或底部。</target>
+      </segment>
+    </unit>
+    <unit id="StepsPercentPositionTitle">
+      <segment>
+        <source>Change progress value position for StepsProgressBar</source>
+        <target state="translated">调整步骤进度值位置</target>
+      </segment>
+    </unit>
+    <unit id="StepsTitle">
+      <segment>
+        <source>Progress bar with steps</source>
+        <target state="translated">步骤进度条</target>
+      </segment>
+    </unit>
+    <unit id="StrokeLinecapDescription">
+      <segment>
+        <source>By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.</source>
+        <target state="translated">设置 strokeLinecap='butt' 可以将线帽从 round 改为 butt，更多信息请参考 stroke-linecap。</target>
+      </segment>
+    </unit>
+    <unit id="StrokeLinecapTitle">
+      <segment>
+        <source>Stroke Linecap</source>
+        <target state="translated">线帽样式</target>
+      </segment>
+    </unit>
+    <unit id="SuccessSegmentDescription">
+      <segment>
+        <source>Show several parts of progress with different status.</source>
+        <target state="translated">展示多个不同状态的进度片段。</target>
+      </segment>
+    </unit>
+    <unit id="SuccessSegmentTitle">
+      <segment>
+        <source>Progress bar with success segment</source>
+        <target state="translated">带成功分段的进度条</target>
+      </segment>
+    </unit>
+    <unit id="ToggleDisabledStatusDescription">
+      <segment>
+        <source>The progress bar is in the disabled state and uses the disabled style.</source>
+        <target state="translated">进度条处于禁用状态并使用禁用样式。</target>
+      </segment>
+    </unit>
+    <unit id="ToggleDisabledStatusTitle">
+      <segment>
+        <source>toggle disabled status</source>
+        <target state="translated">切换禁用状态</target>
+      </segment>
+    </unit>
+    <unit id="VerticalLinearDescription">
+      <segment>
+        <source>Ordinary linear progress bar, supports position specification of additional areas</source>
+        <target state="translated">普通线性进度条，支持指定附加区域的位置。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalLinearTitle">
+      <segment>
+        <source>Vertical progress bar</source>
+        <target state="translated">垂直线性进度条</target>
+      </segment>
+    </unit>
+    <unit id="VerticalStepsDescription">
+      <segment>
+        <source>Ordinary step progress bar, supports position specification of additional areas</source>
+        <target state="translated">普通步骤进度条，支持指定附加区域的位置。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalStepsTitle">
+      <segment>
+        <source>Vertical progress bar</source>
+        <target state="translated">垂直步骤进度条</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

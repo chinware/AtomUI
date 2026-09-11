@@ -1,5 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -105,6 +106,9 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
     internal static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
         AvaloniaProperty.Register<MenuItem, bool>(nameof(ShouldUseOverlayPopup));
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<MenuItem>();
+
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -135,7 +139,15 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
         set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     internal bool IsPointerOverSubMenu => _popup?.IsPointerOverPopup ?? false;
+
+    private IDisposable? _popupPinnedOpenBinding;
 
     #endregion
 
@@ -193,6 +205,13 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
                  change.Property == IsScrollEnabledProperty)
         {
             ConfigureMaxPopupHeight();
+        }
+        else if (((change.Property == IsPopupPinnedOpenProperty && change.GetNewValue<bool>()) ||
+                  (change.Property == IsSubMenuOpenProperty && !change.GetNewValue<bool>() && IsPopupPinnedOpen)) &&
+                 HasSubMenu &&
+                 !IsSubMenuOpen)
+        {
+            SetCurrentValue(IsSubMenuOpenProperty, true);
         }
     }
 
@@ -288,8 +307,18 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         ClearDetachedTitleBarPopupPlacement();
+        _popupPinnedOpenBinding?.Dispose();
+        _popupPinnedOpenBinding = null;
         base.OnApplyTemplate(e);
         _popup = e.NameScope.Find<Popup>("PART_Popup");
+        if (_popup != null)
+        {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _popup,
+                Popup.IsPopupPinnedOpenProperty);
+        }
         ConfigureDetachedTitleBarPopupPlacement();
         UpdatePseudoClasses();
         ConfigureMaxPopupHeight();
@@ -319,6 +348,20 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
         }
 
         IsSubMenuOpen = false;
+    }
+
+    internal void CloseForLifecycle()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is MenuItem childMenuItem)
+            {
+                childMenuItem.CloseForLifecycle();
+            }
+        }
+
+        _popup?.CloseForLifecycle();
+        SetCurrentValue(IsSubMenuOpenProperty, false);
     }
 
     private void CloseOwningMenuBeforeClickHandler(RoutedEventArgs e)

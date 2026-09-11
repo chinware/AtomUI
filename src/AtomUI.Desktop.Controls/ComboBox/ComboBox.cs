@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -252,6 +253,12 @@ public class ComboBox : AvaloniaComboBox,
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<ComboBox, FormValidateFeedback?>(nameof(FormFeedback));
 
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<ComboBox>();
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<ComboBox>();
+
     internal static readonly DirectProperty<ComboBox, bool> IsFormFeedbackVisibleProperty =
         AvaloniaProperty.RegisterDirect<ComboBox, bool>(
             nameof(IsFormFeedbackVisible),
@@ -293,6 +300,18 @@ public class ComboBox : AvaloniaComboBox,
         set => SetValue(FormFeedbackProperty, value);
     }
 
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     private bool _isFormFeedbackVisible;
 
     internal bool IsFormFeedbackVisible
@@ -321,11 +340,13 @@ public class ComboBox : AvaloniaComboBox,
 
     private Popup? _popup;
     private IDisposable? _deactivationSubscription;
+    private IDisposable? _popupPinnedOpenBinding;
     private ComboBoxHandle? _comboBoxHandle;
     private AddOnDecoratedBox? _addOnDecoratedBox;
     private AvaloniaTextBox? _editableTextBox;
     private IDisposable? _editableTextBoxTextSubscription;
     private TextBlock? _editableTextBoxPlaceholder;
+    private int _popupLifecycleCloseDepth;
     private TextPresenter? _editableTextBoxPresenter;
     private IDisposable? _editableTextBoxPreeditTextSubscription;
     private string? _editableTextBeforeUserEditKeyDown;
@@ -386,6 +407,8 @@ public class ComboBox : AvaloniaComboBox,
 
         if (_popup != null)
         {
+            _popupPinnedOpenBinding?.Dispose();
+            _popupPinnedOpenBinding = null;
             _popup.Opened -= HandlePopupOpened;
             _popup.OverlayInputPassThroughElement = null;
         }
@@ -403,6 +426,11 @@ public class ComboBox : AvaloniaComboBox,
         _popup = e.NameScope.Find<Popup>("PART_Popup");
         if (_popup != null)
         {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _popup,
+                Popup.IsPopupPinnedOpenProperty);
             _popup.Opened += HandlePopupOpened;
         }
         if (_editableTextBox != null)
@@ -436,10 +464,31 @@ public class ComboBox : AvaloniaComboBox,
         base.OnAttachedToVisualTree(e);
         _deactivationSubscription =
             TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
+        if (IsPopupPinnedOpen && !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+        }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureFormFeedbackSubscription();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _popupLifecycleCloseDepth++;
+        try
+        {
+            _popup?.CloseForLifecycle();
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+        finally
+        {
+            _popupLifecycleCloseDepth--;
+        }
+
         base.OnDetachedFromVisualTree(e);
         _deactivationSubscription?.Dispose();
         _deactivationSubscription = null;
@@ -518,7 +567,17 @@ public class ComboBox : AvaloniaComboBox,
     {
         base.OnPropertyChanged(change);
 
+        if (change.Property == IsDropDownOpenProperty &&
+            !IsDropDownOpen &&
+            IsPopupPinnedOpen &&
+            _popupLifecycleCloseDepth == 0)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+            return;
+        }
+
         if (change.Property == StatusProperty ||
+            change.Property == FormStatusProperty ||
             change.Property == DataValidationErrors.HasErrorsProperty ||
             change.Property == DataValidationErrors.ErrorsProperty)
         {
@@ -551,6 +610,12 @@ public class ComboBox : AvaloniaComboBox,
             {
                 ClearCandidateItemSelection();
             }
+        }
+        else if (change.Property == IsPopupPinnedOpenProperty &&
+                 change.GetNewValue<bool>() &&
+                 !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
         }
         else if (change.Property == FormFeedbackProperty)
         {
@@ -611,6 +676,16 @@ public class ComboBox : AvaloniaComboBox,
         if (!IsDropDownOpen)
         {
             PseudoClasses.Set(StdPseudoClass.Pressed, true);
+        }
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        if (IsDropDownOpen && e.Pointer.Type == PointerType.Mouse &&
+            GetContainerFromEventSource(e.Source) is ComboBoxItem comboBoxItem)
+        {
+            TrySetCandidateFromContainer(comboBoxItem);
         }
     }
     
@@ -704,17 +779,9 @@ public class ComboBox : AvaloniaComboBox,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
-        }
-        else
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
     
@@ -743,6 +810,12 @@ public class ComboBox : AvaloniaComboBox,
     {
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            IsFormFeedbackVisible = false;
+            return;
+        }
+
         if (FormFeedback is { } feedback)
         {
             _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
@@ -756,8 +829,9 @@ public class ComboBox : AvaloniaComboBox,
 
     private void UpdatePseudoClasses()
     {
+        var effectiveStatus = InputControlState.ResolveEffectiveStatus(this, Status, FormStatus);
         PseudoClasses.Set(StdPseudoClass.Warning,
-            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
+            effectiveStatus == InputControlStatus.Warning);
     }
 
     private void ConfigureMaxDropdownHeight()
@@ -910,7 +984,16 @@ public class ComboBox : AvaloniaComboBox,
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
         RefreshFilteredItemVisibility();
-        FocusEditableTextBox(NavigationMethod.Unspecified);
+
+        if (IsEditable)
+        {
+            FocusEditableTextBox(NavigationMethod.Unspecified);
+        }
+        else if (TopLevel.GetTopLevel(this)?.FocusManager.GetFocusedElement() is Visual focusedVisual &&
+                 _popup?.IsInsidePopup(focusedVisual) == true)
+        {
+            Focus(NavigationMethod.Unspecified);
+        }
     }
 
     private void HandleEditableTextBoxTextInput(TextInputEventArgs e)
@@ -1079,23 +1162,49 @@ public class ComboBox : AvaloniaComboBox,
 
     private void SetCandidateSelectedIndex(int index)
     {
+        if (SetCandidateSelectedIndexCore(index) && index != -1)
+        {
+            ScrollIntoView(index);
+        }
+    }
+
+    private void SetCandidateSelectedIndexWithoutScroll(int index)
+    {
+        SetCandidateSelectedIndexCore(index);
+    }
+
+    private bool SetCandidateSelectedIndexCore(int index)
+    {
         if (_candidateSelectedIndex == index)
         {
             if (index == -1)
             {
                 ClearCandidateItemVisualSelection();
             }
-            return;
+            else
+            {
+                SelectCandidateItemVisual(index);
+            }
+            return false;
         }
 
         ClearCandidateItemVisualSelection();
         _candidateSelectedIndex = index;
         SelectCandidateItemVisual(_candidateSelectedIndex);
 
-        if (_candidateSelectedIndex != -1)
+        return true;
+    }
+
+    private bool TrySetCandidateFromContainer(ComboBoxItem comboBoxItem)
+    {
+        var index = IndexFromContainer(comboBoxItem);
+        if (index < 0 || !IsCandidateItemSelectable(index))
         {
-            ScrollIntoView(_candidateSelectedIndex);
+            return false;
         }
+
+        SetCandidateSelectedIndexWithoutScroll(index);
+        return true;
     }
 
     private void ClearCandidateItemSelection()

@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind">
+    <unit id="AsyncLoadDataDescription">
+      <segment>
+        <source>To load data asynchronously when click to expand a treeNode.</source>
+        <target state="translated">Para load dados asynchronously quando clique para expand a treeNode.</target>
+      </segment>
+    </unit>
+    <unit id="AsyncLoadDataTitle">
+      <segment>
+        <source>load data asynchronously</source>
+        <target state="translated">load dados asynchronously</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.</source>
+        <target state="translated">O most básico uso, tell você how para usar checkable, selectable, desativado, defaultExpandKeys, e etc.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="BlockNodeDescription">
+      <segment>
+        <source>Block Node.</source>
+        <target state="translated">Block Nó.</target>
+      </segment>
+    </unit>
+    <unit id="BlockNodeTitle">
+      <segment>
+        <source>Block Node</source>
+        <target state="translated">Block Nó</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="ContextMenuDescription">
+      <segment>
+        <source>Right-click any node to open a context menu. Toggle IsSelectOnRightClick to switch between following the right-clicked node (default) and keeping the existing selection untouched.</source>
+        <target state="translated">Direita-clique any nó para abrir a context menu. Toggle IsSelectOnRightClick para alternância between seguinte o direita-clicado nó (padrão) e keeping o existing seleção untouched.</target>
+      </segment>
+    </unit>
+    <unit id="ContextMenuTitle">
+      <segment>
+        <source>Context menu</source>
+        <target state="translated">Context menu</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeExpandIconDescription">
+      <segment>
+        <source>customize collapse/expand icon of tree node</source>
+        <target state="translated">personalizar recolhimento/expand ícone de árvore nó</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeExpandIconTitle">
+      <segment>
+        <source>Customize collapse/expand icon</source>
+        <target state="translated">Personalizar recolhimento/expand ícone</target>
+      </segment>
+    </unit>
+    <unit id="DraggableDescription">
+      <segment>
+        <source>Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode.</source>
+        <target state="translated">Arrastar treeNode para insert depois o outro treeNode ou insert into o outro pai TreeNode.</target>
+      </segment>
+    </unit>
+    <unit id="DraggableTitle">
+      <segment>
+        <source>draggable</source>
+        <target state="translated">draggable</target>
+      </segment>
+    </unit>
+    <unit id="EmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default TreeView empty content.</source>
+        <target state="translated">Usar EmptyIndicator para replace o padrão TreeView vazio conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="EmptyIndicatorTitle">
+      <segment>
+        <source>Custom empty indicator</source>
+        <target state="translated">Personalizado vazio indicator</target>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateDescription">
+      <segment>
+        <source>You can use the Template mechanism to generate tree nodes</source>
+        <target state="translated">Você pode usar o Template mechanism para generate árvore nodes</target>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateTitle">
+      <segment>
+        <source>Generate by template</source>
+        <target state="translated">Generate por template</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBlock">
+      <segment>
+        <source>Block</source>
+        <target state="translated">Block</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWholeline">
+      <segment>
+        <source>WholeLine</source>
+        <target state="translated">WholeLine</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAaaa">
+      <segment>
+        <source>aaaa</source>
+        <target state="translated">aaaa</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCcc">
+      <segment>
+        <source>ccc</source>
+        <target state="translated">ccc</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN1">
+      <segment>
+        <source>child 1</source>
+        <target state="translated">child 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN2">
+      <segment>
+        <source>child 2</source>
+        <target state="translated">child 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode">
+      <segment>
+        <source>Child Node</source>
+        <target state="translated">Child Nó</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">Excluir</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExpandToLoad">
+      <segment>
+        <source>Expand to load</source>
+        <target state="translated">Expand para load</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf">
+      <segment>
+        <source>leaf</source>
+        <target state="translated">leaf</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeafN1">
+      <segment>
+        <source>leaf 1</source>
+        <target state="translated">leaf 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeafN2">
+      <segment>
+        <source>leaf 2</source>
+        <target state="translated">leaf 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0">
+      <segment>
+        <source>0-0</source>
+        <target state="translated">0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0">
+      <segment>
+        <source>0-0-0</source>
+        <target state="translated">0-0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0N0">
+      <segment>
+        <source>0-0-0-0</source>
+        <target state="translated">0-0-0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0N1">
+      <segment>
+        <source>0-0-0-1</source>
+        <target state="translated">0-0-0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0N2">
+      <segment>
+        <source>0-0-0-2</source>
+        <target state="translated">0-0-0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1">
+      <segment>
+        <source>0-0-1</source>
+        <target state="translated">0-0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1N0">
+      <segment>
+        <source>0-0-1-0</source>
+        <target state="translated">0-0-1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1N1">
+      <segment>
+        <source>0-0-1-1</source>
+        <target state="translated">0-0-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1N2">
+      <segment>
+        <source>0-0-1-2</source>
+        <target state="translated">0-0-1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N2">
+      <segment>
+        <source>0-0-2</source>
+        <target state="translated">0-0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1">
+      <segment>
+        <source>0-1</source>
+        <target state="translated">0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0">
+      <segment>
+        <source>0-1-0</source>
+        <target state="translated">0-1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0N0">
+      <segment>
+        <source>0-1-0-0</source>
+        <target state="translated">0-1-0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0N1">
+      <segment>
+        <source>0-1-0-1</source>
+        <target state="translated">0-1-0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0N2">
+      <segment>
+        <source>0-1-0-2</source>
+        <target state="translated">0-1-0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1">
+      <segment>
+        <source>0-1-1</source>
+        <target state="translated">0-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1N0">
+      <segment>
+        <source>0-1-1-0</source>
+        <target state="translated">0-1-1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1N1">
+      <segment>
+        <source>0-1-1-1</source>
+        <target state="translated">0-1-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1N2">
+      <segment>
+        <source>0-1-1-2</source>
+        <target state="translated">0-1-1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N2">
+      <segment>
+        <source>0-1-2</source>
+        <target state="translated">0-1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N2">
+      <segment>
+        <source>0-2</source>
+        <target state="translated">0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewNode">
+      <segment>
+        <source>New Node</source>
+        <target state="translated">New Nó</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewNodeFormat">
+      <segment>
+        <source>{0} / new ({1})</source>
+        <target state="translated">{0} / new ({1})</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNodeFallback">
+      <segment>
+        <source>node</source>
+        <target state="translated">nó</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent">
+      <segment>
+        <source>parent</source>
+        <target state="translated">pai</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>parent 1</source>
+        <target state="translated">pai 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N0">
+      <segment>
+        <source>parent 1-0</source>
+        <target state="translated">pai 1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N1">
+      <segment>
+        <source>parent 1-1</source>
+        <target state="translated">pai 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N2">
+      <segment>
+        <source>parent 1-2</source>
+        <target state="translated">pai 1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN2">
+      <segment>
+        <source>parent 2</source>
+        <target state="translated">pai 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN2N0">
+      <segment>
+        <source>parent 2-0</source>
+        <target state="translated">pai 2-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRename">
+      <segment>
+        <source>Rename</source>
+        <target state="translated">Rename</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRenamedFormat">
+      <segment>
+        <source>{0} (renamed)</source>
+        <target state="translated">{0} (renamed)</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSss">
+      <segment>
+        <source>sss</source>
+        <target state="translated">sss</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTreeNode">
+      <segment>
+        <source>Tree Node</source>
+        <target state="translated">Árvore Nó</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXxx">
+      <segment>
+        <source>xxx</source>
+        <target state="translated">xxx</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No tree nodes to display</source>
+        <target state="translated">Não árvore nodes para exibir</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIsselectonrightclick">
+      <segment>
+        <source>IsSelectOnRightClick:</source>
+        <target state="translated">IsSelectOnRightClick:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNodeHoverMode">
+      <segment>
+        <source>Node hover mode:</source>
+        <target state="translated">Nó sobreposição modo:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedItemBinding">
+      <segment>
+        <source>SelectedItem</source>
+        <target state="translated">SelectedItem</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedItemsBinding">
+      <segment>
+        <source>SelectedItems</source>
+        <target state="translated">SelectedItems</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowicon">
+      <segment>
+        <source>showIcon:</source>
+        <target state="translated">showIcon:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowleaficon">
+      <segment>
+        <source>ShowLeafIcon:</source>
+        <target state="translated">ShowLeafIcon:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowline">
+      <segment>
+        <source>showLine:</source>
+        <target state="translated">showLine:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TreeView organizes nested data into expandable nodes and supports templated data sources, checkbox selection, filtering, custom switcher icons, context menus, and lazy child loading.</source>
+        <target state="translated">TreeView organizes nested dados into expandable nodes e oferece suporte templated dados sources, checkbox seleção, filtering, personalizado switcher ícones, context menus, e lazy child carregando.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display hierarchical data with selectable, checkable, searchable, draggable, and async-loaded nodes.</source>
+        <target state="translated">Exibir hierarchical dados com selectable, checkable, searchable, draggable, e async-loaded nodes.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SearchableByTemplateDescription">
+      <segment>
+        <source>Searchable Tree use ItemsSource datasource.</source>
+        <target state="translated">Searchable Árvore usar ItemsSource datasource.</target>
+      </segment>
+    </unit>
+    <unit id="SearchableByTemplateTitle">
+      <segment>
+        <source>Searchable by TreeDataTemplate</source>
+        <target state="translated">Searchable por TreeDataTemplate</target>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable Tree.</source>
+        <target state="translated">Searchable Árvore.</target>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">Searchable</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingDescription">
+      <segment>
+        <source>Bind SelectedItem to a node object instance, then click a node or action button to watch the bound value update.</source>
+        <target state="translated">Bind SelectedItem para a nó object instance, then clique a nó ou ação botão para watch o bound valor update.</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectBoth">
+      <segment>
+        <source>Select both</source>
+        <target state="translated">Selecionar both</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectFirst">
+      <segment>
+        <source>Select parent 1-0</source>
+        <target state="translated">Selecionar pai 1-0</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectSecond">
+      <segment>
+        <source>Select parent 1-1</source>
+        <target state="translated">Selecionar pai 1-1</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingTitle">
+      <segment>
+        <source>SelectedItem binding</source>
+        <target state="translated">SelectedItem vinculação</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingValueTitle">
+      <segment>
+        <source>Bound value</source>
+        <target state="translated">Bound valor</target>
+      </segment>
+    </unit>
+    <unit id="SelectionItemsBindingDescription">
+      <segment>
+        <source>Bind SelectedItems to node object instances, then click nodes or action buttons to watch the selected collection update.</source>
+        <target state="translated">Bind SelectedItems para nó object instances, then clique nodes ou ação botões para watch o selecionado collection update.</target>
+      </segment>
+    </unit>
+    <unit id="SelectionItemsBindingTitle">
+      <segment>
+        <source>SelectedItems binding</source>
+        <target state="translated">SelectedItems vinculação</target>
+      </segment>
+    </unit>
+    <unit id="TreeWithLineDescription">
+      <segment>
+        <source>Tree with connected line between nodes, turn on by showLine, customize the preset icon by switcherIcon.</source>
+        <target state="translated">Árvore com connected linha between nodes, turn em por showLine, personalizar o predefinido ícone por switcherIcon.</target>
+      </segment>
+    </unit>
+    <unit id="TreeWithLineTitle">
+      <segment>
+        <source>Tree with line</source>
+        <target state="translated">Árvore com linha</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

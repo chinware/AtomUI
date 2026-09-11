@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ModalShowCaseLangResourceKind">
+    <unit id="ApiMethodDialogShowDialogModalAsync">
+      <segment>
+        <source>Creates and displays a modal dialog through the static API.</source>
+      </segment>
+    </unit>
+    <unit id="AsynchronouslyCloseDescription">
+      <segment>
+        <source>Asynchronously close a modal dialog when the OK button is pressed. For example, you can use this pattern when you submit a form.</source>
+      </segment>
+    </unit>
+    <unit id="AsynchronouslyCloseTitle">
+      <segment>
+        <source>Asynchronously close</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic modal.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="CustomFooterButtonsDescription">
+      <segment>
+        <source>You can use standard buttons along with custom buttons.</source>
+      </segment>
+    </unit>
+    <unit id="CustomFooterButtonsTitle">
+      <segment>
+        <source>Custom Footer Buttons</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeFooterButtonPropsDescription">
+      <segment>
+        <source>Change dialog button properties by specifying a callback function.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeFooterButtonPropsTitle">
+      <segment>
+        <source>Customize footer buttons props</source>
+      </segment>
+    </unit>
+    <unit id="LoadingDescription">
+      <segment>
+        <source>Set the loading status of Modal.</source>
+      </segment>
+    </unit>
+    <unit id="LoadingTitle">
+      <segment>
+        <source>Loading</source>
+      </segment>
+    </unit>
+    <unit id="ManualUpdateDestroyDescription">
+      <segment>
+        <source>Manually updating and destroying a modal through instance.</source>
+      </segment>
+    </unit>
+    <unit id="ManualUpdateDestroyTitle">
+      <segment>
+        <source>Manual to update destroy</source>
+      </segment>
+    </unit>
+    <unit id="MessageBoxStyleDescription">
+      <segment>
+        <source>MessageBox supports Confirm, Information, Warning, and Error</source>
+      </segment>
+    </unit>
+    <unit id="MessageBoxStyleTitle">
+      <segment>
+        <source>MessageBox Style</source>
+      </segment>
+    </unit>
+    <unit id="OpenDraggableModalDescription">
+      <segment>
+        <source>Custom modal content render and enable implements draggable.</source>
+      </segment>
+    </unit>
+    <unit id="OpenDraggableModalTitle">
+      <segment>
+        <source>Open Draggable Modal</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentConfirm">
+      <segment>
+        <source>Confirm</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustomButton">
+      <segment>
+        <source>Custom Button</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentError">
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentInformation">
+      <segment>
+        <source>Information</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenBeforeCloseDialog">
+      <segment>
+        <source>Open BeforeCloseAsync Dialog</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenCustomviewDialog">
+      <segment>
+        <source>Open CustomView Dialog</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModal">
+      <segment>
+        <source>Open Modal</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalOverlay">
+      <segment>
+        <source>Open Modal Overlay</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalToCloseInN5s">
+      <segment>
+        <source>Open modal to close in 5s</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalWindow">
+      <segment>
+        <source>Open Modal Window</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalWithAsyncLogic">
+      <segment>
+        <source>Open Modal with async logic</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalWithCustomizedButtonProps">
+      <segment>
+        <source>Open Modal with customized button props</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenOverlayDialog">
+      <segment>
+        <source>Open Overlay Dialog</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenWindowDialog">
+      <segment>
+        <source>Open Window Dialog</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccess">
+      <segment>
+        <source>Success</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarning">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+    <unit id="P2RunSecond">
+      <segment>
+        <source> second.</source>
+      </segment>
+    </unit>
+    <unit id="P2RunThisModalWillBeDestroyedAfter">
+      <segment>
+        <source>This modal will be destroyed after </source>
+      </segment>
+    </unit>
+    <unit id="P2TextAge">
+      <segment>
+        <source>Age</source>
+      </segment>
+    </unit>
+    <unit id="P2TextBlaBla">
+      <segment>
+        <source>Bla bla ...</source>
+      </segment>
+    </unit>
+    <unit id="P2TextContentOfTheModal">
+      <segment>
+        <source>Content of the modal</source>
+      </segment>
+    </unit>
+    <unit id="P2TextDayBeforeYesterdayISawARabbitAnd">
+      <segment>
+        <source>Day before yesterday I saw a rabbit, and yesterday a deer, and today, you.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextJustDonTLearnPhysicsAtSchoolAnd">
+      <segment>
+        <source>Just don't learn physics at school and your life will be full of magic and miracles.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextName">
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="P2TextNativeWindow">
+      <segment>
+        <source>Native Window:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSomeContents">
+      <segment>
+        <source>Some contents...</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSomeDescriptions">
+      <segment>
+        <source>Some descriptions</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSomeMessagesSomeMessages">
+      <segment>
+        <source>some messages...some messages...</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleAsynchronouslyCloseModal">
+      <segment>
+        <source>Asynchronously close Modal</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleBasicModal">
+      <segment>
+        <source>Basic Modal</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleBasicWindowModal">
+      <segment>
+        <source>Basic Window Modal</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleConfirm">
+      <segment>
+        <source>Confirm</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleDoYouWantToDeleteTheseItems">
+      <segment>
+        <source>Do you want to delete these items?</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleDraggableModal">
+      <segment>
+        <source>Draggable Modal</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleLoadingModal">
+      <segment>
+        <source>Loading Modal</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleOperationSuccessful">
+      <segment>
+        <source>Operation successful</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleStaticApi">
+      <segment>
+        <source>Static API</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleThisIsANotificationMessage">
+      <segment>
+        <source>This is a notification message</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleThisIsAWarningMessage">
+      <segment>
+        <source>This is a warning message</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleThisIsAnErrorMessage">
+      <segment>
+        <source>This is an error message</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleTitle">
+      <segment>
+        <source>Title</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Modal displays a dialog above the current page or window. It is useful for confirmations, async operations, message boxes, and custom dialog content.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Modal dialogs for focused decisions and blocking workflows.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="StaticDialogApiDescription">
+      <segment>
+        <source>Creating a Dialog using the static method of Dialog.</source>
+      </segment>
+    </unit>
+    <unit id="StaticDialogApiTitle">
+      <segment>
+        <source>Static Dialog API</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -8,8 +8,10 @@ namespace AtomUI.Desktop.Controls;
 
 internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandler
 {
-    private bool _currentPressedIsValid;
-    private NavMenuItem? _latestClickedItem;
+    private NavMenuItem? _pressedItem;
+    private IPointer? _pressedPointer;
+    private Control? _pressedCaptureTarget;
+    private NavMenuItem? _pointerHoldItem;
     private NavMenuItem? _keyboardActiveItem;
 
     internal INavMenu? Menu { get; private set; }
@@ -18,11 +20,45 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
     public void Detach(NavMenu navMenu) => DetachCore(navMenu);
 
-    public abstract void Select(NavMenuItem menuItem);
+    protected abstract void ActivateSubMenuItem(NavMenuItem menuItem);
+
+    public void CommitItemActivation(NavMenuItem menuItem)
+    {
+        if (Menu is null || !IsInteractiveMenuItem(menuItem))
+        {
+            return;
+        }
+
+        if (menuItem.HasSubMenu)
+        {
+            ActivateSubMenuItem(menuItem);
+        }
+        else if ((Menu as NavMenu)?.SelectNavMenuItem(menuItem) != true)
+        {
+            return;
+        }
+
+        RaiseItemInvocation(menuItem);
+    }
 
     public void ClearSelection()
     {
         (Menu as NavMenu)?.ClearSelectionState();
+    }
+
+    public void Forget(NavMenuItem menuItem)
+    {
+        if (ReferenceEquals(_keyboardActiveItem, menuItem))
+        {
+            ClearKeyboardActiveItem();
+        }
+
+        if (ReferenceEquals(_pressedItem, menuItem))
+        {
+            CancelTransaction();
+        }
+
+        OnForgotten(menuItem);
     }
 
     internal void AttachCore(INavMenu navMenu)
@@ -35,6 +71,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         Menu                 =  navMenu;
         Menu.PointerPressed  += PointerPressed;
         Menu.PointerReleased += PointerReleased;
+        Menu.PointerMoved    += PointerMoved;
         if (Menu is InputElement inputElement)
         {
             inputElement.KeyDown += KeyDown;
@@ -51,6 +88,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
         Menu.PointerPressed  -= PointerPressed;
         Menu.PointerReleased -= PointerReleased;
+        Menu.PointerMoved    -= PointerMoved;
         if (Menu is InputElement inputElement)
         {
             inputElement.KeyDown -= KeyDown;
@@ -59,7 +97,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
         ClearKeyboardActiveItem();
         Menu = null;
-        ResetPressState();
+        CancelTransaction();
     }
 
     protected virtual void OnAttached(INavMenu navMenu)
@@ -70,46 +108,126 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
     {
     }
 
+    protected virtual void OnForgotten(NavMenuItem menuItem)
+    {
+    }
+
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        ResetPressState();
-
         var sourceControl = e.Source as Control;
         var menuItem      = GetMenuItemCore(sourceControl);
-        if (menuItem is null || !menuItem.ItemHeader.IsVisualAncestorOf(sourceControl))
+        var itemHeader    = menuItem?.ItemHeader;
+        if (menuItem is null || itemHeader is null || !itemHeader.IsVisualAncestorOf(sourceControl))
         {
             return;
         }
 
-        _currentPressedIsValid = true;
-        _latestClickedItem     = menuItem;
         if (sender is Visual visual &&
             e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
         {
-            Select(menuItem);
+            BeginTransaction(menuItem, itemHeader, e.Pointer);
             e.Handled = true;
         }
     }
 
-    protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
+    protected virtual void PointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_latestClickedItem is null || !_currentPressedIsValid)
+        if (_pressedItem is null || !ReferenceEquals(e.Pointer, _pressedPointer))
         {
             return;
         }
 
+        SetPointerHoldItem(IsPointerOverItem(_pressedItem, e) ? _pressedItem : null);
+    }
+
+    protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (_pressedItem is null || !ReferenceEquals(e.Pointer, _pressedPointer))
+        {
+            return;
+        }
+
+        var pressedItem  = _pressedItem;
+        var shouldCommit = e.InitialPressMouseButton == MouseButton.Left &&
+                           IsInteractiveMenuItem(pressedItem) &&
+                           IsPointerOverItem(pressedItem, e);
+        if (!shouldCommit)
+        {
+            CancelTransaction();
+            return;
+        }
+
+        EndTransaction(preservePointerHold: true);
         try
         {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                Click(_latestClickedItem);
-                e.Handled = true;
-            }
+            CommitItemActivation(pressedItem);
+            e.Handled = true;
         }
         finally
         {
-            ResetPressState();
+            SetPointerHoldItem(null);
         }
+    }
+
+    private void BeginTransaction(NavMenuItem menuItem, Control captureTarget, IPointer pointer)
+    {
+        CancelTransaction();
+        _pressedItem          = menuItem;
+        _pressedPointer       = pointer;
+        _pressedCaptureTarget = captureTarget;
+        // PointerCaptureLostEvent 是 Direct 路由：平台捕获丢失只派发给捕获目标自身，
+        // 因此事务期间直接订阅捕获目标，而不是挂接到菜单根上。
+        captureTarget.PointerCaptureLost += PressedItemCaptureLost;
+        SetPointerHoldItem(menuItem);
+        pointer.Capture(captureTarget);
+        menuItem.Focus();
+    }
+
+    private void PressedItemCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+    {
+        if (ReferenceEquals(e.Pointer, _pressedPointer))
+        {
+            CancelTransaction();
+        }
+    }
+
+    private void CancelTransaction() => EndTransaction(preservePointerHold: false);
+
+    private void EndTransaction(bool preservePointerHold)
+    {
+        var pointer       = _pressedPointer;
+        var captureTarget = _pressedCaptureTarget;
+        _pressedItem          = null;
+        _pressedPointer       = null;
+        _pressedCaptureTarget = null;
+        if (captureTarget is not null)
+        {
+            captureTarget.PointerCaptureLost -= PressedItemCaptureLost;
+        }
+        pointer?.Capture(null);
+        if (!preservePointerHold)
+        {
+            SetPointerHoldItem(null);
+        }
+    }
+
+    private void SetPointerHoldItem(NavMenuItem? item)
+    {
+        if (ReferenceEquals(_pointerHoldItem, item))
+        {
+            return;
+        }
+
+        var previousItem = _pointerHoldItem;
+        _pointerHoldItem = item;
+        previousItem?.SetCurrentValue(NavMenuItem.IsPointerHoldProperty, false);
+        item?.SetCurrentValue(NavMenuItem.IsPointerHoldProperty, true);
+    }
+
+    private static bool IsPointerOverItem(NavMenuItem item, PointerEventArgs e)
+    {
+        var position = e.GetPosition(item);
+        return item.GetVisualAt(position) is not null;
     }
 
     protected virtual void KeyDown(object? sender, KeyEventArgs e)
@@ -236,7 +354,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        var parentItem = activeItem.Parent as NavMenuItem;
+        var parentItem = activeItem.SemanticParentItem;
         if (parentItem is not null)
         {
             if (navMenu.EffectiveMode != NavMenuMode.Inline)
@@ -261,23 +379,32 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         var activeItem = GetValidKeyboardActiveItem();
         var owner      = forcedOwner ?? ResolveKeyboardNavigationOwner(navMenu, activeItem);
         var items      = navMenu.EffectiveMode == NavMenuMode.Inline && forcedOwner is null
-            ? CollectVisibleInlineItems(navMenu)
-            : CollectDirectNavigationItems(owner);
+            ? EnumerateVisibleInlineNavigationItems(navMenu)
+            : EnumerateDirectNavigationItems(owner);
 
-        if (items.Count == 0)
+        if (activeItem is not null)
+        {
+            var adjacentItem = FindAdjacentNavigationItem(
+                items,
+                activeItem,
+                delta,
+                out _,
+                out var activeItemFound);
+            if (activeItemFound)
+            {
+                SetKeyboardActiveItem(adjacentItem!);
+                return;
+            }
+        }
+
+        var initialItem = ResolveInitialKeyboardTarget(navMenu, items, delta);
+        if (initialItem is null)
         {
             ClearKeyboardActiveItem();
             return;
         }
 
-        var activeIndex = activeItem is null ? -1 : items.IndexOf(activeItem);
-        if (activeIndex == -1)
-        {
-            SetKeyboardActiveItem(items[ResolveInitialKeyboardTargetIndex(navMenu, items, delta)]);
-            return;
-        }
-
-        SetKeyboardActiveItem(items[WrapIndex(activeIndex + delta, items.Count)]);
+        SetKeyboardActiveItem(initialItem);
     }
 
     private void CommitKeyboardActiveItem(NavMenu navMenu)
@@ -289,21 +416,13 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        if (activeItem.HasSubMenu)
+        if (activeItem.HasSubMenu && navMenu.EffectiveMode != NavMenuMode.Inline)
         {
-            if (navMenu.EffectiveMode == NavMenuMode.Inline)
-            {
-                Select(activeItem);
-            }
-            else
-            {
-                TryOpenSubmenuAndActivateFirstChild(navMenu, activeItem);
-            }
+            TryOpenSubmenuAndActivateFirstChild(navMenu, activeItem);
             return;
         }
 
-        Select(activeItem);
-        Click(activeItem);
+        CommitItemActivation(activeItem);
     }
 
     private void CloseKeyboardActiveBranch(NavMenu navMenu)
@@ -316,7 +435,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        var parentItem = activeItem?.Parent as NavMenuItem;
+        var parentItem = activeItem?.SemanticParentItem;
         if (parentItem is not null && parentItem.IsSubMenuOpen)
         {
             parentItem.Close();
@@ -342,88 +461,122 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         item.Open();
         navMenu.ExecutePendingContainerLayout(item);
 
-        var children = CollectDirectNavigationItems(item);
-        if (children.Count == 0)
+        var firstChild = FindFirstNavigationItem(EnumerateDirectNavigationItems(item));
+        if (firstChild is null)
         {
             SetKeyboardActiveItem(item);
             return true;
         }
 
-        SetKeyboardActiveItem(children[0]);
+        SetKeyboardActiveItem(firstChild);
         return true;
     }
 
     private ItemsControl ResolveKeyboardNavigationOwner(NavMenu navMenu, NavMenuItem? activeItem)
     {
-        if (activeItem?.Parent is ItemsControl owner &&
+        if (activeItem is not null &&
             (navMenu.EffectiveMode != NavMenuMode.Horizontal || !activeItem.IsTopLevel))
         {
-            return owner;
+            return activeItem.SemanticParentItem is not null
+                ? activeItem.SemanticParentItem
+                : navMenu;
         }
 
         return navMenu;
     }
 
-    private List<NavMenuItem> CollectVisibleInlineItems(ItemsControl owner)
+    private static IEnumerable<NavMenuItem> EnumerateVisibleInlineNavigationItems(ItemsControl owner)
     {
-        var items = new List<NavMenuItem>();
-        CollectVisibleInlineItems(owner, items);
-        return items;
-    }
-
-    private void CollectVisibleInlineItems(ItemsControl owner, List<NavMenuItem> items)
-    {
-        var directItems = CollectDirectNavigationItems(owner);
-        foreach (var item in directItems)
+        foreach (var item in EnumerateDirectNavigationItems(owner))
         {
-            items.Add(item);
+            yield return item;
             if (item.HasSubMenu && item.IsSubMenuOpen)
             {
-                CollectVisibleInlineItems(item, items);
+                foreach (var child in EnumerateVisibleInlineNavigationItems(item))
+                {
+                    yield return child;
+                }
             }
         }
     }
 
-    private static int ResolveInitialKeyboardTargetIndex(
+    private static NavMenuItem? ResolveInitialKeyboardTarget(
         NavMenu navMenu,
-        IReadOnlyList<NavMenuItem> items,
+        IEnumerable<NavMenuItem> items,
         int delta)
     {
         if (navMenu.SelectedItem is not null &&
             TryFindSelectedNavigationItem(navMenu, navMenu.SelectedItem) is { } selectedItem)
         {
-            var selectedIndex = IndexOfItem(items, selectedItem);
-            if (selectedIndex != -1)
+            var adjacentItem = FindAdjacentNavigationItem(
+                items,
+                selectedItem,
+                delta,
+                out var firstItem,
+                out var selectedItemFound);
+            if (selectedItemFound)
             {
-                return WrapIndex(selectedIndex + delta, items.Count);
+                return adjacentItem;
             }
+
+            return firstItem;
         }
 
-        return 0;
+        return FindFirstNavigationItem(items);
     }
 
-    private static int IndexOfItem(IReadOnlyList<NavMenuItem> items, NavMenuItem target)
+    private static NavMenuItem? FindAdjacentNavigationItem(
+        IEnumerable<NavMenuItem> items,
+        NavMenuItem anchor,
+        int delta,
+        out NavMenuItem? firstItem,
+        out bool anchorFound)
     {
-        for (var i = 0; i < items.Count; i++)
+        firstItem = null;
+        anchorFound = false;
+        NavMenuItem? previousItem = null;
+        NavMenuItem? lastItem = null;
+
+        foreach (var item in items)
         {
-            if (ReferenceEquals(items[i], target))
+            firstItem ??= item;
+            if (delta > 0 && anchorFound)
             {
-                return i;
+                return item;
             }
+
+            if (ReferenceEquals(item, anchor))
+            {
+                anchorFound = true;
+                if (delta < 0 && previousItem is not null)
+                {
+                    return previousItem;
+                }
+            }
+
+            previousItem = item;
+            lastItem = item;
         }
 
-        return -1;
+        return anchorFound
+            ? delta < 0 ? lastItem : firstItem
+            : null;
+    }
+
+    private static NavMenuItem? FindFirstNavigationItem(IEnumerable<NavMenuItem> items)
+    {
+        foreach (var item in items)
+        {
+            return item;
+        }
+
+        return null;
     }
 
     private static NavMenuItem? TryFindSelectedNavigationItem(ItemsControl owner, INavMenuNode selectedNode)
     {
-        for (var i = 0; i < owner.ItemCount; i++)
+        foreach (var item in NavMenuSemanticNavigator.EnumerateDirectItems(owner))
         {
-            if (owner.ContainerFromIndex(i) is not NavMenuItem item)
-            {
-                continue;
-            }
-
             if (IsInteractiveMenuItem(item) &&
                 ReferenceEquals(((INavMenuItem)item).Node, selectedNode))
             {
@@ -440,26 +593,21 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         return null;
     }
 
-    private static List<NavMenuItem> CollectDirectNavigationItems(ItemsControl owner)
+    private static IEnumerable<NavMenuItem> EnumerateDirectNavigationItems(ItemsControl owner)
     {
-        var items = new List<NavMenuItem>();
-        for (var i = 0; i < owner.ItemCount; i++)
+        foreach (var container in NavMenuSemanticNavigator.EnumerateDirectItems(owner))
         {
-            if (owner.ContainerFromIndex(i) is NavMenuItem container &&
-                IsInteractiveMenuItem(container))
+            if (IsInteractiveMenuItem(container))
             {
-                items.Add(container);
+                yield return container;
             }
         }
-
-        return items;
     }
 
     private NavMenuItem? FindDeepestOpenItem(ItemsControl owner)
     {
         NavMenuItem? deepestOpenItem = null;
-        var directItems = CollectDirectNavigationItems(owner);
-        foreach (var item in directItems)
+        foreach (var item in EnumerateDirectNavigationItems(owner))
         {
             if (!item.IsSubMenuOpen)
             {
@@ -484,41 +632,51 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        ClearKeyboardActiveItem();
+        var previousItem = _keyboardActiveItem;
         _keyboardActiveItem = item;
-        item.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, true);
+        UpdateActiveVisual(previousItem);
+        UpdateActiveVisual(item);
     }
 
     private void ClearKeyboardActiveItem()
     {
-        if (_keyboardActiveItem is not null)
+        var previousItem = _keyboardActiveItem;
+        _keyboardActiveItem = null;
+        UpdateActiveVisual(previousItem);
+    }
+
+    private void UpdateActiveVisual(NavMenuItem? item)
+    {
+        if (item is not null)
         {
-            _keyboardActiveItem.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, false);
-            _keyboardActiveItem = null;
+            item.SetCurrentValue(
+                NavMenuItem.IsKeyboardActiveProperty,
+                ReferenceEquals(item, _keyboardActiveItem));
         }
     }
 
     private static bool IsInteractiveMenuItem(NavMenuItem? item)
     {
-        return item is { IsVisible: true, IsEffectivelyEnabled: true };
-    }
-
-    private static int WrapIndex(int index, int count)
-    {
-        if (index < 0)
+        if (item is not { IsEffectivelyVisible: true, IsEffectivelyEnabled: true })
         {
-            return count - 1;
+            return false;
         }
 
-        if (index >= count)
+        var parentItem = item.SemanticParentItem;
+        while (parentItem is not null)
         {
-            return 0;
+            if (!parentItem.IsSubMenuOpen)
+            {
+                return false;
+            }
+
+            parentItem = parentItem.SemanticParentItem;
         }
 
-        return index;
+        return true;
     }
 
-    protected virtual void Click(INavMenuItem item)
+    protected virtual void RaiseItemInvocation(INavMenuItem item)
     {
         (item as IClickableControl)?.RaiseClick();
         if (Menu is NavMenu navMenu)
@@ -559,11 +717,5 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         }
 
         return target;
-    }
-
-    private void ResetPressState()
-    {
-        _currentPressedIsValid = false;
-        _latestClickedItem     = null;
     }
 }

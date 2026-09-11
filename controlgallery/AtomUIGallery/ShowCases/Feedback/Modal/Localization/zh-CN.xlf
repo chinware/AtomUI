@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ModalShowCaseLangResourceKind">
+    <unit id="ApiMethodDialogShowDialogModalAsync">
+      <segment>
+        <source>Creates and displays a modal dialog through the static API.</source>
+        <target state="translated">通过静态 API 创建并显示模态对话框。</target>
+      </segment>
+    </unit>
+    <unit id="AsynchronouslyCloseDescription">
+      <segment>
+        <source>Asynchronously close a modal dialog when the OK button is pressed. For example, you can use this pattern when you submit a form.</source>
+        <target state="translated">按下确定按钮后异步关闭模态框。例如提交表单时可以使用这种模式。</target>
+      </segment>
+    </unit>
+    <unit id="AsynchronouslyCloseTitle">
+      <segment>
+        <source>Asynchronously close</source>
+        <target state="translated">异步关闭</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic modal.</source>
+        <target state="translated">基础模态框。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="CustomFooterButtonsDescription">
+      <segment>
+        <source>You can use standard buttons along with custom buttons.</source>
+        <target state="translated">可以同时使用标准按钮和自定义按钮。</target>
+      </segment>
+    </unit>
+    <unit id="CustomFooterButtonsTitle">
+      <segment>
+        <source>Custom Footer Buttons</source>
+        <target state="translated">自定义页脚按钮</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeFooterButtonPropsDescription">
+      <segment>
+        <source>Change dialog button properties by specifying a callback function.</source>
+        <target state="translated">通过指定回调函数修改对话框按钮属性。</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeFooterButtonPropsTitle">
+      <segment>
+        <source>Customize footer buttons props</source>
+        <target state="translated">自定义页脚按钮属性</target>
+      </segment>
+    </unit>
+    <unit id="LoadingDescription">
+      <segment>
+        <source>Set the loading status of Modal.</source>
+        <target state="translated">设置 Modal 的加载状态。</target>
+      </segment>
+    </unit>
+    <unit id="LoadingTitle">
+      <segment>
+        <source>Loading</source>
+        <target state="translated">加载状态</target>
+      </segment>
+    </unit>
+    <unit id="ManualUpdateDestroyDescription">
+      <segment>
+        <source>Manually updating and destroying a modal through instance.</source>
+        <target state="translated">通过实例手动更新和销毁模态框。</target>
+      </segment>
+    </unit>
+    <unit id="ManualUpdateDestroyTitle">
+      <segment>
+        <source>Manual to update destroy</source>
+        <target state="translated">手动更新和销毁</target>
+      </segment>
+    </unit>
+    <unit id="MessageBoxStyleDescription">
+      <segment>
+        <source>MessageBox supports Confirm, Information, Warning, and Error</source>
+        <target state="translated">MessageBox 支持 Confirm、Information、Warning 和 Error。</target>
+      </segment>
+    </unit>
+    <unit id="MessageBoxStyleTitle">
+      <segment>
+        <source>MessageBox Style</source>
+        <target state="translated">MessageBox 样式</target>
+      </segment>
+    </unit>
+    <unit id="OpenDraggableModalDescription">
+      <segment>
+        <source>Custom modal content render and enable implements draggable.</source>
+        <target state="translated">自定义模态框内容渲染并启用拖拽。</target>
+      </segment>
+    </unit>
+    <unit id="OpenDraggableModalTitle">
+      <segment>
+        <source>Open Draggable Modal</source>
+        <target state="translated">可拖拽模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentConfirm">
+      <segment>
+        <source>Confirm</source>
+        <target state="translated">确认</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustomButton">
+      <segment>
+        <source>Custom Button</source>
+        <target state="translated">自定义按钮</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">错误</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentInformation">
+      <segment>
+        <source>Information</source>
+        <target state="translated">信息</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenBeforeCloseDialog">
+      <segment>
+        <source>Open BeforeCloseAsync Dialog</source>
+        <target state="translated">打开关闭前校验对话框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenCustomviewDialog">
+      <segment>
+        <source>Open CustomView Dialog</source>
+        <target state="translated">打开自定义视图对话框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModal">
+      <segment>
+        <source>Open Modal</source>
+        <target state="translated">打开模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalOverlay">
+      <segment>
+        <source>Open Modal Overlay</source>
+        <target state="translated">打开浮层模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalToCloseInN5s">
+      <segment>
+        <source>Open modal to close in 5s</source>
+        <target state="translated">打开 5 秒后关闭的模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalWindow">
+      <segment>
+        <source>Open Modal Window</source>
+        <target state="translated">打开窗口模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalWithAsyncLogic">
+      <segment>
+        <source>Open Modal with async logic</source>
+        <target state="translated">打开带异步逻辑的模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenModalWithCustomizedButtonProps">
+      <segment>
+        <source>Open Modal with customized button props</source>
+        <target state="translated">打开自定义按钮属性的模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenOverlayDialog">
+      <segment>
+        <source>Open Overlay Dialog</source>
+        <target state="translated">打开浮层对话框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenWindowDialog">
+      <segment>
+        <source>Open Window Dialog</source>
+        <target state="translated">打开窗口对话框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccess">
+      <segment>
+        <source>Success</source>
+        <target state="translated">成功</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2RunSecond">
+      <segment>
+        <source> second.</source>
+        <target state="translated"> 秒后销毁。</target>
+      </segment>
+    </unit>
+    <unit id="P2RunThisModalWillBeDestroyedAfter">
+      <segment>
+        <source>This modal will be destroyed after </source>
+        <target state="translated">此模态框将在 </target>
+      </segment>
+    </unit>
+    <unit id="P2TextAge">
+      <segment>
+        <source>Age</source>
+        <target state="translated">年龄</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBlaBla">
+      <segment>
+        <source>Bla bla ...</source>
+        <target state="translated">一些文本 ...</target>
+      </segment>
+    </unit>
+    <unit id="P2TextContentOfTheModal">
+      <segment>
+        <source>Content of the modal</source>
+        <target state="translated">模态框内容</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDayBeforeYesterdayISawARabbitAnd">
+      <segment>
+        <source>Day before yesterday I saw a rabbit, and yesterday a deer, and today, you.</source>
+        <target state="translated">前天我看见一只兔子，昨天看见一头鹿，而今天看见了你。</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJustDonTLearnPhysicsAtSchoolAnd">
+      <segment>
+        <source>Just don't learn physics at school and your life will be full of magic and miracles.</source>
+        <target state="translated">只要别在学校学物理，生活就会充满魔法和奇迹。</target>
+      </segment>
+    </unit>
+    <unit id="P2TextName">
+      <segment>
+        <source>Name</source>
+        <target state="translated">姓名</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNativeWindow">
+      <segment>
+        <source>Native Window:</source>
+        <target state="translated">原生窗口：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSomeContents">
+      <segment>
+        <source>Some contents...</source>
+        <target state="translated">一些内容...</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSomeDescriptions">
+      <segment>
+        <source>Some descriptions</source>
+        <target state="translated">一些描述</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSomeMessagesSomeMessages">
+      <segment>
+        <source>some messages...some messages...</source>
+        <target state="translated">一些消息...一些消息...</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleAsynchronouslyCloseModal">
+      <segment>
+        <source>Asynchronously close Modal</source>
+        <target state="translated">异步关闭模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleBasicModal">
+      <segment>
+        <source>Basic Modal</source>
+        <target state="translated">基础模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleBasicWindowModal">
+      <segment>
+        <source>Basic Window Modal</source>
+        <target state="translated">基础窗口模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleConfirm">
+      <segment>
+        <source>Confirm</source>
+        <target state="translated">确认</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDoYouWantToDeleteTheseItems">
+      <segment>
+        <source>Do you want to delete these items?</source>
+        <target state="translated">是否删除这些项目？</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDraggableModal">
+      <segment>
+        <source>Draggable Modal</source>
+        <target state="translated">可拖拽模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleLoadingModal">
+      <segment>
+        <source>Loading Modal</source>
+        <target state="translated">加载中模态框</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">普通</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleOperationSuccessful">
+      <segment>
+        <source>Operation successful</source>
+        <target state="translated">操作成功</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleStaticApi">
+      <segment>
+        <source>Static API</source>
+        <target state="translated">静态 API</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleThisIsANotificationMessage">
+      <segment>
+        <source>This is a notification message</source>
+        <target state="translated">这是一条通知消息</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleThisIsAWarningMessage">
+      <segment>
+        <source>This is a warning message</source>
+        <target state="translated">这是一条警告消息</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleThisIsAnErrorMessage">
+      <segment>
+        <source>This is an error message</source>
+        <target state="translated">这是一条错误消息</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleTitle">
+      <segment>
+        <source>Title</source>
+        <target state="translated">标题</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Modal displays a dialog above the current page or window. It is useful for confirmations, async operations, message boxes, and custom dialog content.</source>
+        <target state="translated">Modal 在当前页面或窗口之上显示对话框，适用于确认操作、异步流程、消息框以及自定义对话框内容。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Modal dialogs for focused decisions and blocking workflows.</source>
+        <target state="translated">用于聚焦决策和阻塞式流程的模态对话框。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="StaticDialogApiDescription">
+      <segment>
+        <source>Creating a Dialog using the static method of Dialog.</source>
+        <target state="translated">使用 Dialog 的静态方法创建对话框。</target>
+      </segment>
+    </unit>
+    <unit id="StaticDialogApiTitle">
+      <segment>
+        <source>Static Dialog API</source>
+        <target state="translated">静态对话框 API</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

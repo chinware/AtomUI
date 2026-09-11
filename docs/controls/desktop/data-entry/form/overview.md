@@ -1,6 +1,6 @@
 # Form 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Form` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Form 桌面版实现原理](implementation.md)，Form Token 的专项设计见 [Form Token 设计](token.md)，设计和契约变化记录见 [Form Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Form` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。输入控件共享分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Form 桌面版实现原理](implementation.md)，Form Token 的专项设计见 [Form Token 设计](token.md)，设计和契约变化记录见 [Form Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -76,7 +76,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 - `FieldName` 是表单值读写和验证消息聚合的字段键。
 - `Content` 必须实现 `IFormItemAware`，除非该表单项显式关闭内容类型验证。
 - `Validators` 按 `ValidateStrategy` 执行；error 结果写入内容控件的 `DataValidationErrors`，并同步投射到 `ValidateStatus`、`ValidateResult`、错误消息和 feedback。
-- `Warning`、`Validating` 和 `Success` 是 Form 扩展状态，不写成 `DataValidationErrors` error。
+- `Warning`、`Validating` 和 `Success` 是 Form 扩展状态，写入内容控件的 `FormStatus`；它们不写成 `DataValidationErrors` error。
 - `ValidateTrigger` 可以继承 Form 默认值，也可以在 FormItem 上覆盖。
 - `ValidateDebounce` 只影响延迟触发的表单项验证，不改变手动验证和提交验证的契约。
 - `Help` 与验证消息共同决定表单项辅助信息区域是否保留空间。
@@ -102,7 +102,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 | `IInputControlStyleVariantAware` | 接收 Form 的 `StyleVariant`。 |
 | `IMotionAwareControl` | 接收 Form 的 `IsMotionEnabled`。 |
 
-`FormItemDecorator` 用于把一个或多个输入控件组合成单个表单项内容。它自身实现 Form 接入接口，并把 value、validate status、feedback、size、motion 和 style variant 转发给子控件；涉及 error 时必须保持 `DataValidationErrors` 与子控件验证目标一致。
+`FormItemDecorator` 用于把一个或多个输入控件组合成单个表单项内容。它自身实现 Form 接入接口，并把 value、`FormStatus`、feedback、size、motion 和 style variant 转发给子控件；涉及 error 时必须保持 Form-owned `DataValidationErrors` 与子控件 `NativeValidationStatus` 目标一致。
 
 ### 3.4 按钮契约
 

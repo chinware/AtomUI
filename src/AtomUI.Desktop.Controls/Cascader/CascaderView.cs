@@ -728,6 +728,13 @@ public partial class CascaderView : TemplatedControl,
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
+        if (e.Pointer.Type == PointerType.Mouse &&
+            GetContainerFromEventSource(e.Source) is { } activeCandidate &&
+            activeCandidate.IsVisible && activeCandidate.IsEnabled && !activeCandidate.IsLoading)
+        {
+            SetKeyboardCandidate(activeCandidate);
+        }
+
         if (e.Source is Visual source)
         {
             if (ExpandTrigger == CascaderViewExpandTrigger.Hover)
@@ -950,7 +957,8 @@ public partial class CascaderView : TemplatedControl,
 
             for (var i = 0; i < levelList.ItemCount; i++)
             {
-                if (levelList.ContainerFromIndex(i) is CascaderViewItem item && item.IsEnabled)
+                if (levelList.ContainerFromIndex(i) is CascaderViewItem item &&
+                    item.IsVisible && item.IsEnabled && !item.IsLoading)
                 {
                     candidates.Add(item);
                 }

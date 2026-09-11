@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MentionsShowCaseLangResourceKind">
+    <unit id="AsynchronousLoadingDescription">
+      <segment>
+        <source>async.</source>
+        <target state="translated">異步加載。</target>
+      </segment>
+    </unit>
+    <unit id="AsynchronousLoadingTitle">
+      <segment>
+        <source>Asynchronous loading</source>
+        <target state="translated">異步加載</target>
+      </segment>
+    </unit>
+    <unit id="AutoSizeDescription">
+      <segment>
+        <source>Height autoSize.</source>
+        <target state="translated">高度自動調整。</target>
+      </segment>
+    </unit>
+    <unit id="AutoSizeTitle">
+      <segment>
+        <source>autoSize</source>
+        <target state="translated">自動高度</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest use.</source>
+        <target state="translated">最簡單的用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTriggerTokenDescription">
+      <segment>
+        <source>Customize Trigger Token by prefix props. Default to @, array also supported.</source>
+        <target state="translated">通過 prefix 屬性自定義觸發標記，默認為 @，也支持數組。</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTriggerTokenTitle">
+      <segment>
+        <source>Customize Trigger Token</source>
+        <target state="translated">自定義觸發標記</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyDescription">
+      <segment>
+        <source>Configure disabled and readOnly.</source>
+        <target state="translated">配置 disabled 和 readOnly。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyTitle">
+      <segment>
+        <source>disabled or readOnly</source>
+        <target state="translated">禁用或只讀</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetMention">
+      <segment>
+        <source>Set mention</source>
+        <target state="translated">設置提及</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">無邊框</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定義</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充風格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputToMentionPeopleToMentionTag">
+      <segment>
+        <source>input @ to mention people, # to mention tag</source>
+        <target state="translated">輸入 @ 提及成員，輸入 # 提及標籤</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大號</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中號</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">線框風格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小號</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsDisabledMentions">
+      <segment>
+        <source>this is disabled Mentions</source>
+        <target state="translated">這是禁用狀態的 Mentions</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsReadonlyMentions">
+      <segment>
+        <source>this is readOnly Mentions</source>
+        <target state="translated">這是只讀狀態的 Mentions</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">下划線</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBoundValue">
+      <segment>
+        <source>Bound value:</source>
+        <target state="translated">綁定值：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Mentions provides trigger-based candidate popups, async option loading, custom trigger tokens, input variants, placement, status and auto-size scenarios.</source>
+        <target state="translated">Mentions 提供基於觸發符的候選彈窗、異步選項加載、自定義觸發符、輸入變體、彈出位置、狀態和自動高度場景。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Mention people, tags or custom entities while typing.</source>
+        <target state="translated">在輸入過程中提及成員、標籤或自定義實體。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Change the suggestions placement.</source>
+        <target state="translated">改變建議列表的彈出位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">彈出位置</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>Mentions supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">Mentions 支持大號、中號、小號，也支持通過 Custom 配合本地高度和字號自定義。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Mentions size</source>
+        <target state="translated">Mentions 尺寸</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Mentions with status, which could be error or warning.</source>
+        <target state="translated">通過 status 為 Mentions 添加狀態，可設置為錯誤或警告。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding, so typing or clearing the input updates the ViewModel without an explicit binding mode.</source>
+        <target state="translated">Value 現在默認雙向綁定，輸入或清空內容會直接更新 ViewModel，無需顯式設置綁定模式。</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
+        <target state="translated">Value 綁定</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Mentions, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Mentions 提供四種變體：描邊、填充、無邊框和下划線。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">變體</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Customize clear button.</source>
+        <target state="translated">自定義清除按鈕。</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">帶清除圖標</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

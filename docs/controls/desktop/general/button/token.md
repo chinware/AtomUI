@@ -1,6 +1,6 @@
 # Button Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.ButtonToken` 的 Button 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Button 整体架构见 [Button 桌面版架构设计](overview.md)，内部实现原理见 [Button 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Button Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.ButtonToken` 的 Button 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Button 整体架构见 [Button 桌面版架构设计](overview.md)，内部实现原理见 [Button 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Button Changelog](changelog.md)。
 
 ## 1. 定位
 
@@ -157,7 +157,6 @@ ButtonToken 不定义 `BlueSolidHoverBg`、`PurpleFilledActiveBg` 这类组合 T
 ButtonToken 当前被 Button 家族主题共同引用。Token 变更必须评估：
 
 - 默认 Button
-- Browser Button
 - DropdownButton
 - SplitButton
 - HyperLinkButton

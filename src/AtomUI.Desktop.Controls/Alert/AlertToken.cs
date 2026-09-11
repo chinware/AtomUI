@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class AlertToken : AbstractControlDesignToken
+internal sealed class AlertToken : AbstractControlDesignToken
 {
 
     public AlertToken()

@@ -2,6 +2,8 @@
 
 数据录入类桌面控件文档放在本目录，覆盖文本、选择、日期时间、颜色、上传、穿梭和表单输入能力。
 
+- [输入控件共享架构设计](input-control-architecture-design.md)
+
 ## 控件文档
 
 - [AutoComplete 桌面版架构设计](auto-complete/overview.md)
@@ -82,5 +84,6 @@
 - [TreeSelect Changelog](tree-select/changelog.md)
 - [Upload 桌面版架构设计](upload/overview.md)
 - [Upload 桌面版实现原理](upload/implementation.md)
+- [Upload 拖动上传设计](upload/drag-drop-design.md)
 - [Upload Token 设计](upload/token.md)
 - [Upload Changelog](upload/changelog.md)

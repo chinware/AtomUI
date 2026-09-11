@@ -1,6 +1,6 @@
 # Drawer 桌面版架构设计
 
-本文档定义 `Drawer` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Drawer 桌面版实现原理](implementation.md)，Drawer Token 的专项设计见 [Drawer Token 设计](token.md)，设计和契约变化记录见 [Drawer Changelog](changelog.md)。
+本文档定义 `Drawer` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Drawer 桌面版实现原理](implementation.md)，Drawer Token 的专项设计见 [Drawer Token 设计](token.md)，设计和契约变化记录见 [Drawer Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -81,7 +81,7 @@ Public API / inherited command / item source / user input
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 - TopLevel Drawer 使用 Window visible frame：包含 managed/drawn 标题栏，排除透明 frame shadow；该规则不按 OS 或 CSD 模式分叉。
-- drawn decorations 暴露 Drawer host 时按能力优先使用；host 不存在时回退到原 `ScopeAwareAdornerLayer`。
+- Drawer container 始终保留在 owning `TopLevel` 的 `ScopeAwareAdornerLayer`；Window drawn decorations 只绘制 chrome，不作为 Drawer host。
 
 ## 5. 视觉与主题模型
 
@@ -117,7 +117,7 @@ Drawer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - 与 ThemeManager、SharedToken、ControlTheme、控件文档和 Gallery ShowCase 示例保持一致。
 - 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
 - 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
-- 与 Overlay Dialog 共享 drawn-host 能力检测、visible frame 和 `WindowVisualLayerClip` 外轮廓规则，但不共享容器、motion、嵌套 push 或关闭状态。
+- 与 Overlay Dialog 共享 owning `TopLevel`、visible frame、`WindowVisualLayerClip` 外轮廓和 drawn chrome suppression 租约规则，但不共享容器、motion、嵌套 push 或关闭状态。
 
 ## 7. 兼容性不变量
 
@@ -129,7 +129,7 @@ Drawer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 不按 `OsType` 或 `IsCsdEnabled` 为 Drawer 建立平行窗口几何；Window 的 `FrameShadowThickness` 和实际 drawn host 是唯一能力信号。
+- 不按 `OsType` 或 `IsCsdEnabled` 为 Drawer 建立平行窗口几何；Window 发布的 frame 与 titlebar metrics 是唯一几何信号。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
@@ -138,13 +138,15 @@ Drawer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 
 Drawer 涉及弹层、窗口或 overlay 宿主时，打开状态、取消事件、定位和宿主释放必须保持一致。重复打开、关闭、窗口失活和 template reapply 都必须释放旧宿主引用。
 
-TopLevel Drawer 的宿主和几何遵循以下顺序：
+TopLevel Drawer 的宿主和几何遵循以下规则：
 
-1. AtomUI Window 的 drawn decorations overlay 暴露 `PART_DrawerOverlayLayerHost` 时使用该 host，使 mask 和 Drawer surface 位于 managed/drawn 标题栏之上。
-2. drawn host 不可用时使用 `ScopeAwareAdornerLayer` fallback，保留局部 Drawer 作用域语义。
-3. 无论 host 路径或 CSD 状态，Drawer root 和百分比 `DialogSize` 都使用 Window visible frame；visible frame 由完整 layer 只排除 `FrameShadowThickness` 得到，标题栏仍属于可用范围。
+1. Drawer container 使用 placement target 所属 `ScopeAwareAdornerLayer`，保持在 owning Window `TopLevel` 的视觉树中。
+2. Window Drawer 活跃时获取 drawn chrome suppression lease，使 mask 覆盖 managed/drawn titlebar 区域；最后一个 Dialog/Drawer lease 释放后恢复 chrome。
+3. 无论 CSD 状态，Drawer root 和百分比 `DialogSize` 都使用 Window visible frame；visible frame 由完整 layer 只排除 `FrameShadowThickness` 得到，标题栏仍属于可用范围。
 4. Window CornerRadius 只用于 Drawer root clip；窗口最终外轮廓继续由 `WindowVisualLayerClip` 统一裁剪。
-5. 嵌套 Drawer 复用父 Drawer container 当前所在的 `ScopeAwareAdornerLayer`；当 decorations overlay 不能反查 `TopLevel` 时，不得丢弃已经存在的包含层或重新注入平行 layer。
+5. 嵌套 Drawer 复用父 Drawer container 当前所在的 `ScopeAwareAdornerLayer`，不得重新注入平行 layer。
+6. 任意 popup-bearing 内容沿 placement target 解析同一 TopLevel 的 Avalonia popup/light-dismiss 层；关闭时直接从 scope layer 移除 container，并对称释放 host geometry 与 chrome lease。直接 Popup、Flyout、ToolTip、ContextMenu 及控件家族清单统一维护在 [Modal 内容弹层叠放设计](../modal/popup-layering-design.md)，Drawer 不复制第二份清单。
+7. Drawer 已打开时修改 `OpenOn`，container 必须同步迁移 adorned target、scope layer、visible-frame 订阅和 Window chrome lease；嵌套 Drawer 跟随同一 effective target，旧 Window 不得残留 suppression 引用。
 
 ### 8.2 动效模型
 
@@ -191,5 +193,9 @@ LLMS 导出来源：
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
 | 状态模型 | 覆盖 open/close、motion、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
+| Window/Popup 集成 | 运行 Drawer/Window 回归，并复用 Modal Popup 原语、控件家族、DataGrid 与入口库存测试验证共享 owning TopLevel popup 不变量。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |
+
+当前本专项平台证据：Windows 已测试，macOS 已测试；Linux X11/Wayland 未测试。该状态只说明最终 owning
+TopLevel/chrome suppression/popup 分层方案的实机证据，不代表 Drawer 的其他平台能力已被本次验收覆盖。

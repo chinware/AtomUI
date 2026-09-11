@@ -1,10 +1,10 @@
 # Select Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.SelectToken` 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Select 整体架构见 [Select 桌面版架构设计](overview.md)，内部实现原理见 [Select 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Select Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.SelectToken` 的专属语义、分类、使用范围和兼容边界。共享输入表面分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Select 整体架构见 [Select 桌面版架构设计](overview.md)，内部实现原理见 [Select 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Select Changelog](changelog.md)。
 
 ## 1. 定位
 
-SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
+SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入表面的通用边框、圆角、状态色、focus ring、disabled 背景、CompactSpace 和 AddOn 结构来自 `InputControlFrameTheme`、SharedToken 和 PopupHostToken；SelectToken 不复制这些共享职责。
 
 SelectToken 不承载以下状态：
 
@@ -47,9 +47,14 @@ SelectToken 不承载以下状态：
 - `MultiModePadding`
 - `MultiModePaddingSM`
 - `MultiModePaddingLG`
+- `MultiModePrefixIndent`
+- `MultiModePrefixIndentSM`
+- `MultiModePrefixIndentLG`
 - `SelectAffixPadding`
 
 这些 Token 控制 Select 输入区域和多选内容区域的 padding。单选模式主要使用输入框默认内容布局；多选和 Tags 模式根据是否已有选中项切换普通 padding 与 multi mode padding。
+
+`MultiModePadding*` 的左值服务于标签区域（较小的起点），`MultiModePrefixIndent*` 作为 `PART_ContentLeftAddOn`（prefix）的额外左 Margin，使多选 / Tags 模式下有选中项时 prefix 的左内缩与单选模式一致（对齐 Ant Design：selector 小左内缩 + prefix 自身 margin 补偿）。两者之和等于对应尺寸的单选水平内边距。
 
 `SizeType=Custom` 在主题中与 `Middle` 共享 `Padding` 和 `MultiModePadding` 分支。它不是独立 Token 组。
 
@@ -64,7 +69,7 @@ SelectToken 不承载以下状态：
 SelectToken 使用路径：
 
 ```text
-SharedToken
+SharedToken / InputControlFrameTheme
    ↓
 SelectToken
    ↓
@@ -104,7 +109,7 @@ Token 变更要求：
 
 - 不擅自重命名或删除现有 Token。
 - 不把实例数据、过滤状态、loading 状态、选择集合、popup 打开状态或 Form 状态迁移为 Token。
-- 不在 SelectToken 中复制 AddOnDecoratedBox 的边框、圆角、focus、error、warning 或 disabled 通用状态 Token。
+- 不在 SelectToken 中复制 `InputControlFrame` 的边框、圆角、focus、error、warning 或 disabled 通用状态 Token。
 - 不把 `DisplayPageSize`、`MaxCount`、`MaxTagCount` 或 `IsResponsiveTagMode` 变成 Token；它们是实例行为属性。
 - 需要破坏性变更时，必须先说明影响范围并获得授权。
 

@@ -60,6 +60,8 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
 
     #endregion
 
+    internal IMotionActorLayout? MotionLayout { get; set; }
+
     /// <summary>
     /// RenderTransform/MatrixTransform applied to MotionTransformRoot.
     /// </summary>
@@ -96,6 +98,21 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
 
         ContentProperty.Changed
                        .AddClassHandler<BaseMotionActor>((x, _) => x.HandleContentChanged());
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return MotionLayout?.Measure(availableSize) ?? base.MeasureOverride(availableSize);
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        return MotionLayout?.Arrange(finalSize) ?? base.ArrangeOverride(finalSize);
+    }
+
+    protected override void ArrangeCore(Rect finalRect)
+    {
+        base.ArrangeCore(MotionLayout?.ConstrainArrangeRect(finalRect) ?? finalRect);
     }
 
     protected virtual void ApplyMotionTransform()

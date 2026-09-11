@@ -33,7 +33,6 @@
         <Setter Property="Padding" Value="{atom:SharedTokenResource Padding}"/>
         <Setter Property="Header" Value="{atom:UploadLangResource DragUploadHead}"/>
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
-        <Setter Property="DragDrop.AllowDrop" Value="True"/>
         
         <Style Selector="^ /template/ atom|DashedBorder#Frame">
             <Setter Property="StrokeDashArray" Value="4, 2"/>

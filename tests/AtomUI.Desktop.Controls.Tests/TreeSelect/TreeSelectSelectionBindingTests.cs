@@ -329,6 +329,163 @@ public class TreeSelectSelectionBindingTests
         });
     }
 
+    [Fact]
+    public void CheckedItems_Popup_Reopen_Continues_To_Sync_Cascading_Selection()
+    {
+        var firstChild = new TreeItemNode { Header = "First", Value = "first" };
+        var secondChild = new TreeItemNode { Header = "Second", Value = "second" };
+        var parentNode = new TreeItemNode
+        {
+            Header   = "Parent",
+            Value    = "parent",
+            Children = [firstChild, secondChild]
+        };
+        var viewModel = new TreeSelectBindingViewModel
+        {
+            SelectedItems = new ObservableCollection<ITreeItemNode>()
+        };
+        var treeSelect = new Desktop.Controls.TreeSelect
+        {
+            Width              = 240,
+            IsDefaultExpandAll = true,
+            IsMotionEnabled    = false,
+            IsTreeCheckable    = true,
+            ItemsSource        = [parentNode],
+            PlaceholderText    = "Please select"
+        };
+        treeSelect.Bind(
+            Desktop.Controls.TreeSelect.SelectedItemsProperty,
+            new Binding(nameof(TreeSelectBindingViewModel.SelectedItems))
+            {
+                Source = viewModel,
+                Mode   = BindingMode.TwoWay
+            });
+
+        ShowInWindow(treeSelect, () =>
+        {
+            treeSelect.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var treeView = GetPopupTreeView(treeSelect);
+            var parentContainer = treeView.ContainerFromItem(parentNode)
+                                         .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+            parentContainer.ContainerFromItem(firstChild)
+                           .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>();
+
+            treeSelect.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            treeSelect.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var reopenedParentContainer = treeView.ContainerFromItem(parentNode)
+                                                   .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+            var secondContainer = reopenedParentContainer.ContainerFromItem(secondChild)
+                                                       .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>();
+            secondContainer!.SetCurrentValue(Desktop.Controls.TreeViewItem.IsCheckedProperty, true);
+            Dispatcher.UIThread.RunJobs();
+
+            treeView.CheckedItems.Cast<ITreeItemNode>().ShouldContain(secondChild);
+            treeSelect.SelectedItems.ShouldNotBeNull();
+            treeSelect.SelectedItems.ShouldContain(secondChild);
+            viewModel.SelectedItems.ShouldNotBeNull();
+            viewModel.SelectedItems.ShouldContain(secondChild);
+        });
+    }
+
+    [Fact]
+    public void BindableNode_Popup_Reopen_Continues_To_Sync_Node_State()
+    {
+        var node = new BindableTreeItemNode
+        {
+            Header    = "Node",
+            Value     = "node",
+            IsChecked = false
+        };
+        var treeSelect = new Desktop.Controls.TreeSelect
+        {
+            Width              = 240,
+            IsDefaultExpandAll = true,
+            IsMotionEnabled    = false,
+            IsTreeCheckable    = true,
+            ItemsSource        = [node],
+            PlaceholderText    = "Please select"
+        };
+
+        ShowInWindow(treeSelect, () =>
+        {
+            treeSelect.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var treeView = GetPopupTreeView(treeSelect);
+            var container = treeView.ContainerFromItem(node)
+                                     .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+
+            treeSelect.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            treeSelect.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var reopenedContainer = treeView.ContainerFromItem(node)
+                                              .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+            reopenedContainer.ShouldBeSameAs(container);
+            reopenedContainer.SetCurrentValue(Desktop.Controls.TreeViewItem.IsCheckedProperty, true);
+            Dispatcher.UIThread.RunJobs();
+
+            node.IsChecked.ShouldBe(true);
+        });
+    }
+
+    [Fact]
+    public void BindableNode_With_Children_Popup_Reopen_Preserves_Child_Containers_And_Binding()
+    {
+        var child = new BindableTreeItemNode
+        {
+            Header = "Child",
+            Value  = "child"
+        };
+        var parent = new BindableTreeItemNode
+        {
+            Header   = "Parent",
+            Value    = "parent",
+            Children = [child]
+        };
+        var treeSelect = new Desktop.Controls.TreeSelect
+        {
+            Width              = 240,
+            IsDefaultExpandAll = true,
+            IsMotionEnabled    = false,
+            IsTreeCheckable    = true,
+            ItemsSource        = [parent],
+            PlaceholderText    = "Please select"
+        };
+
+        ShowInWindow(treeSelect, () =>
+        {
+            treeSelect.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var treeView = GetPopupTreeView(treeSelect);
+            var parentContainer = treeView.ContainerFromItem(parent)
+                                         .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+            var childContainer = parentContainer.ContainerFromItem(child)
+                                             .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+
+            treeSelect.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            treeSelect.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var reopenedParentContainer = treeView.ContainerFromItem(parent)
+                                                   .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+            var reopenedChildContainer = reopenedParentContainer.ContainerFromItem(child)
+                                                       .ShouldBeAssignableTo<Desktop.Controls.TreeViewItem>()!;
+            reopenedChildContainer.SetCurrentValue(Desktop.Controls.TreeViewItem.IsCheckedProperty, true);
+            Dispatcher.UIThread.RunJobs();
+
+            child.IsChecked.ShouldBe(true);
+        });
+    }
+
     private static void ShowInWindow(Control content, Action assertion)
     {
         var overlayPanel = new ScopeAwareOverlayLayerPanel

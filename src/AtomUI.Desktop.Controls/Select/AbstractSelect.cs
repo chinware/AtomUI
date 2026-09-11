@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
@@ -472,8 +473,14 @@ public abstract class AbstractSelect : TemplatedControl,
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty =
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<AbstractSelect>();
 
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<AbstractSelect>();
+
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<AbstractSelect, FormValidateFeedback?>(nameof(FormFeedback));
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractSelect>();
 
     private double _itemHeight;
 
@@ -573,10 +580,22 @@ public abstract class AbstractSelect : TemplatedControl,
         set => SetValue(IsUsedInCompactSpaceProperty, value);
     }
 
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
+    }
+
     internal FormValidateFeedback? FormFeedback
     {
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
     #endregion
 
@@ -587,6 +606,7 @@ public abstract class AbstractSelect : TemplatedControl,
     private AddOnDecoratedBox? _addOnDecoratedBox;
 
     private IDisposable? _deactivationSubscription;
+    private IDisposable? _popupPinnedOpenBinding;
     private EventHandler? _formValueChanged;
 
     static AbstractSelect()
@@ -618,6 +638,10 @@ public abstract class AbstractSelect : TemplatedControl,
         base.OnAttachedToVisualTree(e);
         _deactivationSubscription =
             TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
+        if (IsPopupPinnedOpen && IsDropDownOpen)
+        {
+            OpenDropDown();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -634,6 +658,8 @@ public abstract class AbstractSelect : TemplatedControl,
         ConfigureMaxDropdownHeight();
         if (Popup != null)
         {
+            _popupPinnedOpenBinding?.Dispose();
+            _popupPinnedOpenBinding = null;
             Popup.Opened -= PopupOpened;
             Popup.Closed -= PopupClosed;
             Popup.OverlayInputPassThroughElement = null;
@@ -644,6 +670,11 @@ public abstract class AbstractSelect : TemplatedControl,
 
         if (Popup != null)
         {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                Popup,
+                Popup.IsPopupPinnedOpenProperty);
             Popup.Opened += PopupOpened;
             Popup.Closed += PopupClosed;
         }
@@ -670,6 +701,7 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         base.OnPropertyChanged(change);
         if (change.Property == StatusProperty ||
+            change.Property == FormStatusProperty ||
             change.Property == DataValidationErrors.HasErrorsProperty ||
             change.Property == DataValidationErrors.ErrorsProperty)
         {
@@ -683,6 +715,12 @@ public abstract class AbstractSelect : TemplatedControl,
                  change.Property == ItemHeightProperty)
         {
             ConfigureMaxDropdownHeight();
+        }
+        else if (change.Property == IsPopupPinnedOpenProperty &&
+                 change.GetNewValue<bool>() &&
+                 !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
         }
     }
 
@@ -705,9 +743,10 @@ public abstract class AbstractSelect : TemplatedControl,
 
     protected void UpdatePseudoClasses()
     {
+        var effectiveStatus = InputControlState.ResolveEffectiveStatus(this, Status, FormStatus);
         PseudoClasses.Set(SelectPseudoClass.DropdownOpen, IsDropDownOpen);
         PseudoClasses.Set(StdPseudoClass.Warning,
-            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
+            effectiveStatus == InputControlStatus.Warning);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);
@@ -902,17 +941,9 @@ public abstract class AbstractSelect : TemplatedControl,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetStatusIfChanged(InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetStatusIfChanged(InputControlStatus.Warning);
-        }
-        else
-        {
-            SetStatusIfChanged(InputControlStatus.Default);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
 
@@ -937,6 +968,13 @@ public abstract class AbstractSelect : TemplatedControl,
 
         bool oldValue = (bool)e.OldValue!;
         bool newValue = (bool)e.NewValue!;
+
+        if (!newValue && IsPopupPinnedOpen)
+        {
+            SetDropDownOpenWithoutPropertyHandling(oldValue);
+            UpdatePseudoClasses();
+            return;
+        }
 
         if (!newValue)
         {
@@ -983,11 +1021,4 @@ public abstract class AbstractSelect : TemplatedControl,
         }
     }
 
-    private void SetStatusIfChanged(InputControlStatus status)
-    {
-        if (Status != status)
-        {
-            SetCurrentValue(StatusProperty, status);
-        }
-    }
 }

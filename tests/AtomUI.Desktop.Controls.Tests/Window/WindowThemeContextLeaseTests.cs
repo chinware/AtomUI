@@ -26,6 +26,7 @@ public class WindowThemeContextLeaseTests
         var window = new AtomUIWindow();
         ThemeContext? contextAtOpening = null;
         ThemeVariant? variantAtOpening = null;
+        ThemeVariant? actualVariantAtOpening = null;
         var bridgeCountAtOpening = 0;
         window.AddHandler(
             AvaloniaWindow.WindowOpenedEvent,
@@ -33,6 +34,7 @@ public class WindowThemeContextLeaseTests
             {
                 contextAtOpening = window.GetValue(ThemeScope.ContextProperty);
                 variantAtOpening = window.RequestedThemeVariant;
+                actualVariantAtOpening = window.ActualThemeVariant;
                 bridgeCountAtOpening = window.Resources.MergedDictionaries
                                              .OfType<ThemeContextResourceBridge>()
                                              .Count();
@@ -47,6 +49,7 @@ public class WindowThemeContextLeaseTests
                 contextAtOpening.Appearance == ThemeAppearance.Dark
                     ? ThemeVariant.Dark
                     : ThemeVariant.Light);
+            actualVariantAtOpening.ShouldBe(variantAtOpening);
             bridgeCountAtOpening.ShouldBe(1);
         }
         finally

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind">
+    <unit id="AdvancedUsageDescription">
+      <segment>
+        <source>Example with a popover card.</source>
+        <target state="translated">帶氣泡卡片的例子。</target>
+      </segment>
+    </unit>
+    <unit id="AdvancedUsageTitle">
+      <segment>
+        <source>Advanced usage</source>
+        <target state="translated">高級用法</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventRefreshRequested">
+      <segment>
+        <source>Raised when the built-in refresh action is clicked.</source>
+        <target state="translated">點擊內置刷新操作時觸發。</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">基礎用法示例。</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">資料展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="CustomColorDescription">
+      <segment>
+        <source>Custom color.</source>
+        <target state="translated">自定義顏色。</target>
+      </segment>
+    </unit>
+    <unit id="CustomColorTitle">
+      <segment>
+        <source>Custom color</source>
+        <target state="translated">自定義顏色</target>
+      </segment>
+    </unit>
+    <unit id="CustomSizeDescription">
+      <segment>
+        <source>Custom size.</source>
+        <target state="translated">自定義尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="CustomSizeTitle">
+      <segment>
+        <source>Custom size</source>
+        <target state="translated">自定義尺寸</target>
+      </segment>
+    </unit>
+    <unit id="CustomStatusRendererDescription">
+      <segment>
+        <source>Use LoadingTemplate, ExpiredTemplate and ScannedTemplate to control rendering for different QR code states.</source>
+        <target state="translated">可以通過 LoadingTemplate、ExpiredTemplate、ScannedTemplate 的值控制二維碼不同狀態的渲染邏輯。</target>
+      </segment>
+    </unit>
+    <unit id="CustomStatusRendererTitle">
+      <segment>
+        <source>Custom status renderer</source>
+        <target state="translated">自定義狀態渲染器</target>
+      </segment>
+    </unit>
+    <unit id="DifferentStatusDescription">
+      <segment>
+        <source>The QR code status can be controlled by Status. Active, Expired, Loading and Scanned are supported.</source>
+        <target state="translated">可以通過 Status 的值控制二維碼的狀態，提供了 Active、Expired、Loading、Scanned 四個值。</target>
+      </segment>
+    </unit>
+    <unit id="DifferentStatusTitle">
+      <segment>
+        <source>Different status</source>
+        <target state="translated">不同的狀態</target>
+      </segment>
+    </unit>
+    <unit id="ErrorLevelDescription">
+      <segment>
+        <source>Set errorLevel to adjust different error correction levels.</source>
+        <target state="translated">通過設置 errorLevel 調整不同的容錯等級。</target>
+      </segment>
+    </unit>
+    <unit id="ErrorLevelTitle">
+      <segment>
+        <source>Error correction level</source>
+        <target state="translated">糾錯比例</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToRefresh">
+      <segment>
+        <source>Click to refresh</source>
+        <target state="translated">點擊刷新</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">Hover me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarger">
+      <segment>
+        <source>Larger</source>
+        <target state="translated">Larger</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmaller">
+      <segment>
+        <source>Smaller</source>
+        <target state="translated">Smaller</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLoading">
+      <segment>
+        <source>Loading...</source>
+        <target state="translated">Loading...</target>
+      </segment>
+    </unit>
+    <unit id="P2TextQRCodeExpired">
+      <segment>
+        <source>QR code expired</source>
+        <target state="translated">二維碼過期</target>
+      </segment>
+    </unit>
+    <unit id="P2TextScanned">
+      <segment>
+        <source>Scanned</source>
+        <target state="translated">已掃描</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>QRCode encodes text or URLs into a QR image, with configurable size, color, icon, error correction and status content.</source>
+        <target state="translated">QRCode 將文字或 URL 編碼成二維碼圖片，並支持配置尺寸、顏色、圖標、糾錯等級和狀態內容。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Render scannable QR codes with status overlays and optional branding.</source>
+        <target state="translated">渲染可掃描的二維碼，並支持狀態遮罩和品牌圖標。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>A QR code with an icon.</source>
+        <target state="translated">帶 Icon 的二維碼。</target>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With Icon</source>
+        <target state="translated">帶 Icon 的例子</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

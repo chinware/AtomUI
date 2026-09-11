@@ -2,6 +2,8 @@
 
 本文档描述 DropdownButton 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DropdownButton 桌面版架构设计](overview.md)，变化记录见 [DropdownButton Changelog](changelog.md)。DropdownButton 没有独立 Token 文档；涉及主题变量时应回到 overview 的视觉与主题模型。
 
+Popup 接入边界：`DropdownButton` 负责业务状态和内容准备，`DropdownFlyout` / `MenuFlyout` 仅作为 relay 适配层，Flyout Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 本文档覆盖 DropdownButton 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
@@ -10,10 +12,9 @@
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
+- `src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
 
 职责边界：
 
@@ -73,9 +74,9 @@ Public API / ItemsSource / Command / Event
 - 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
-- Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- Native 和 Browser 支持宿主下的主题加载顺序不得影响 public API 语义。
 
-图标尺寸不在模板生命周期中手工同步。桌面 `DropdownButtonBaseTheme`、具体 `DropdownButtonTheme` 和 Browser `DropdownButtonTheme` 中的 `PART_ButtonIcon`、`PART_LoadingIcon` 都通过 `TemplateBinding IconWidth/IconHeight` 读取 owner 属性；Theme selector 也只设置 owner 属性默认值。`PART_DropdownIndicator` 继续按 DropdownButton 的 OpenIndicator 主题规则独立设置尺寸。
+图标尺寸不在模板生命周期中手工同步。`DropdownButtonBaseTheme` 和具体 `DropdownButtonTheme` 中的 `PART_ButtonIcon`、`PART_LoadingIcon` 都通过 `TemplateBinding IconWidth/IconHeight` 读取 owner 属性；Theme selector 也只设置 owner 属性默认值。`PART_DropdownIndicator` 继续按 DropdownButton 的 OpenIndicator 主题规则独立设置尺寸。
 
 稳定 template part 接入点：
 

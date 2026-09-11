@@ -1,0 +1,49 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum TourShowCaseLangResourceKind
+{
+    PageSubtitle,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ScenarioExamples,
+    BasicTitle,
+    BasicDescription,
+    NonModalTitle,
+    NonModalDescription,
+    PlacementTitle,
+    PlacementDescription,
+    CustomIndicatorTitle,
+    CustomIndicatorDescription,
+    CustomMaskTitle,
+    CustomMaskDescription,
+    CustomActionTitle,
+    CustomActionDescription,
+    CustomHighlightedAreaStyleTitle,
+    CustomHighlightedAreaStyleDescription,
+    P2TitleUploadFile,
+    P2DescriptionPutYourFilesHere,
+    P2TitleSave,
+    P2DescriptionSaveYourChanges,
+    P2TitleOtherActions,
+    P2DescriptionClickToSeeOtherActions,
+    P2TitleCenter,
+    P2DescriptionDisplayedInTheCenterOfScreen,
+    P2TitleRight,
+    P2DescriptionOnTheRightOfTarget,
+    P2TitleTop,
+    P2DescriptionOnTheTopOfTarget,
+    P2TitleLeft,
+    P2DescriptionOnTheLeftOfTarget,
+    P2ContentBeginTour,
+    P2ContentUpload,
+    P2ContentSave,
+    P2ContentBeginNonModalTour,
+    P2ContentSkip,
+    P2TextRadius,
+    P2TextHorizontalOffset,
+    P2TextVerticalOffset
+}

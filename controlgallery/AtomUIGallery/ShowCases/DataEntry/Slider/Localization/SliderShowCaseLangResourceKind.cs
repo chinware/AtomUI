@@ -1,0 +1,36 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum SliderShowCaseLangResourceKind
+{
+    ScenarioExamples,
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    BasicTitle,
+    BasicDescription,
+    MultiHandleTitle,
+    MultiHandleDescription,
+    DisabledHandleTitle,
+    DisabledHandleDescription,
+    RangeValuesBindingTitle,
+    RangeValuesBindingDescription,
+    CustomizeTooltipTitle,
+    CustomizeTooltipDescription,
+    VerticalTitle,
+    VerticalDescription,
+    GraduatedSliderTitle,
+    GraduatedSliderDescription,
+    P2TextEnabled,
+    P2TextIncludedTrue,
+    P2TextIncludedFalse,
+    P2TextBoundRangeValues,
+    P2ContentSetRange,
+    P2ContentClear,
+    P2ContentDisabledHandle1,
+    P2ContentDisabledHandle2,
+    P2ContentDisabledHandle3
+}

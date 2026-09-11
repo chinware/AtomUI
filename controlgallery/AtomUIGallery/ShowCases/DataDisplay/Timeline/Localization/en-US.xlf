@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TimelineShowCaseLangResourceKind">
+    <unit id="AlternateDescription">
+      <segment>
+        <source>Alternate timeline.</source>
+      </segment>
+    </unit>
+    <unit id="AlternateTitle">
+      <segment>
+        <source>Alternate</source>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+      </segment>
+    </unit>
+    <unit id="ColorDescription">
+      <segment>
+        <source>Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status.</source>
+      </segment>
+    </unit>
+    <unit id="ColorTitle">
+      <segment>
+        <source>Color</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="DynamicModeDescription">
+      <segment>
+        <source>Switch between Start, End, and Alternate placement at runtime.</source>
+      </segment>
+    </unit>
+    <unit id="DynamicModeTitle">
+      <segment>
+        <source>Dynamic mode</source>
+      </segment>
+    </unit>
+    <unit id="HorizontalDescription">
+      <segment>
+        <source>Horizontal timelines support Start, End, and Alternate placement.</source>
+      </segment>
+    </unit>
+    <unit id="HorizontalTitle">
+      <segment>
+        <source>Horizontal</source>
+      </segment>
+    </unit>
+    <unit id="LastNodeAndReversingDescription">
+      <segment>
+        <source>When the timeline is incomplete and ongoing, put a pending node at the end. Set Pending to a truthy value to display the pending item. You can customize the pending content and pending icon. IsReverse is used for reversing nodes.</source>
+      </segment>
+    </unit>
+    <unit id="LastNodeAndReversingTitle">
+      <segment>
+        <source>Last node and Reversing</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAlternate">
+      <segment>
+        <source>Alternate</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAtomuiOfficiallyInitiated">
+      <segment>
+        <source>AtomUI Officially Initiated</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCreateAServicesSite">
+      <segment>
+        <source>Create a services site</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnd">
+      <segment>
+        <source>End</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiated">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN1">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated. 1</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN2">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated. 2</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN3">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated. 3</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N08N12AfterMoreThanN7Months">
+      <segment>
+        <source>2024-08-12 After more than 7 months of development, AtomUI is officially open-source. Welcome everyone to follow us.</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N10N01ReleaseOfTheN0N0">
+      <segment>
+        <source>2024-10-01 Release of the 0.0.1 Preview Version</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentNetworkProblemsBeingSolved">
+      <segment>
+        <source>Network problems being solved</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentQinwareWebsiteOnline">
+      <segment>
+        <source>Qinware website online</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRecording">
+      <segment>
+        <source>Recording...</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentStart">
+      <segment>
+        <source>Start</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleReverse">
+      <segment>
+        <source>Toggle Reverse</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Timeline is used to organize milestones, progress updates and historical events with optional labels, custom indicators and pending nodes.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display a sequence of events in chronological order.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

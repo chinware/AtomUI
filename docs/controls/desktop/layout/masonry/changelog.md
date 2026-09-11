@@ -3,6 +3,32 @@
 本文档记录 Masonry 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-26
+
+- API
+  - Add `LayoutStrategy` with `StableColumns` as the default and `Reflow` as the opt-in classic shortest-column strategy.
+  - Add the public `MasonryLayoutStrategy` enum.
+- Behavior
+  - Commit `StableColumns` assignments after Arrange and associate them with direct item-container references rather than indexes.
+  - Preserve existing item-container column assignments while resizing or changing child DesiredSize without changing the effective column count.
+  - Place new item containers in the current shortest column without moving existing containers; remove deleted or invisible containers from the next committed snapshot.
+  - Rebuild assignments when the strategy, effective column count, or explicit `Masonry.Column` / `Masonry.Span` rules change.
+  - Keep `Reflow` as the strategy that recomputes every automatic assignment from current measured heights.
+- Theme
+  - Forward `LayoutStrategy` from `Masonry` to the default internal `MasonryPanel` through `MasonryTheme.axaml`.
+- Docs
+  - Define the complete strategy matrix, first-Arrange commit boundary, async-content behavior, invalidation rules, Gallery wording, and generated LLMS ownership.
+- Verification
+  - Cover the default strategy, stable resize behavior, item-container identity, column-count invalidation, theme forwarding, and explicit `Reflow` behavior with Masonry layout tests.
+
+## 2026-08-25
+
+- Performance
+  - Reuse the complete layout produced by `MeasureOverride` during `ArrangeOverride` when the effective width is unchanged.
+  - Recalculate only for a changed effective width or after the measured-layout cache is invalidated, while preserving non-virtualized layout and outer scrolling semantics.
+- Verification
+  - Add regression coverage for same-width Arrange reuse and width-change recalculation.
+
 ## 2026-06-26
 
 - Docs

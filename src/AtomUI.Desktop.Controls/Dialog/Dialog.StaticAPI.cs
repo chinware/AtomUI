@@ -115,6 +115,7 @@ public partial class Dialog
             TitleIcon                 = options?.TitleIcon,
             IsResizable               = options?.IsResizable ?? false,
             IsClosable                = options?.IsClosable ?? true,
+            IsMaskClosable            = options?.IsMaskClosable ?? true,
             IsMaximizable             = options?.IsMaximizable ?? false,
             IsMinimizable             = options?.IsMinimizable ?? true,
             IsDragMovable             = options?.IsDragMovable ?? true,

@@ -372,7 +372,7 @@
                         <DataTemplate x:DataType="vm:TreeViewViewModel">
         <StackPanel Orientation="Vertical" Spacing="10">
             <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
-                             SearchButtonClick="HandleFilterItemsSourceTreeClicked" />
+                             SearchRequested="HandleFilterItemsSourceTreeSearchRequested" />
             <atom:TreeView Name="SearchTreeViewByItemsSource"
                            FilterStrategy="FullTree"
                            ItemsSource="{Binding FilterTreeNodes}">
@@ -395,7 +395,7 @@
                         <DataTemplate x:DataType="vm:TreeViewViewModel">
         <StackPanel Orientation="Vertical" Spacing="10">
             <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
-                             SearchButtonClick="HandleFilterTreeClicked" />
+                             SearchRequested="HandleFilterTreeSearchRequested" />
             <atom:TreeView Name="SearchTreeView"
                            FilterStrategy="FullTree">
                 <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0}">

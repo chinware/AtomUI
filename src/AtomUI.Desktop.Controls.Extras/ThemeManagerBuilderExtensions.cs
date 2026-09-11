@@ -1,15 +1,27 @@
-using AtomUI.Generated.AtomUI_Desktop_Controls_Extras;
-using AtomUI.Theme;
-
+using AtomUI.Generated.AtomUIDesktopControlsExtras;
+using AtomUI.Registration;
 namespace AtomUI.Desktop.Controls;
 
 public static class ExtrasThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopExtras(this IThemeManagerBuilder themeManagerBuilder)
+    internal const string PackageId = "AtomUI.Desktop.Controls.Extras";
+
+    [ControlPackageRegistrationEntry]
+    public static IAtomUIBuilder UseDesktopExtras(this IAtomUIBuilder builder)
     {
-        GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
-            new AtomUIExtrasThemesProvider());
-        return themeManagerBuilder;
+        ArgumentNullException.ThrowIfNull(builder);
+        var provider = new AtomUIExtrasThemesProvider();
+        if (AotTrimRegistration.IsEnabled)
+        {
+            AotTrimRegistrationPlanRegistry.ApplyPackage(
+                builder,
+                PackageId,
+                provider);
+        }
+        else
+        {
+            GeneratedControlPackageRegistration.Register(builder.Theme, provider);
+        }
+        return builder;
     }
 }

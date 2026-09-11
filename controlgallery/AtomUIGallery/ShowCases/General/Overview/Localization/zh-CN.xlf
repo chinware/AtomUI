@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.OverviewPageLangResourceKind">
+    <unit id="ApiDocsDescription">
+      <segment>
+        <source>Look up AtomUI OSS types, members, and versioned API details.</source>
+        <target state="translated">查询 AtomUI OSS 类型、成员和版本化接口说明。</target>
+      </segment>
+    </unit>
+    <unit id="ApiDocsTitle">
+      <segment>
+        <source>API Documentation</source>
+        <target state="translated">API 文档</target>
+      </segment>
+    </unit>
+    <unit id="Copy">
+      <segment>
+        <source>Copy</source>
+        <target state="translated">复制</target>
+      </segment>
+    </unit>
+    <unit id="DotNetCliTab">
+      <segment>
+        <source>.NET CLI</source>
+        <target state="translated">.NET CLI</target>
+      </segment>
+    </unit>
+    <unit id="InstallDescription">
+      <segment>
+        <source>Add the desktop controls package to an Avalonia application.</source>
+        <target state="translated">将桌面控件包添加到 Avalonia 应用。</target>
+      </segment>
+    </unit>
+    <unit id="InstallTitle">
+      <segment>
+        <source>Install AtomUI</source>
+        <target state="translated">安装 AtomUI</target>
+      </segment>
+    </unit>
+    <unit id="LearningLinksDescription">
+      <segment>
+        <source>After installing the package, continue with the manual or the API reference.</source>
+        <target state="translated">安装完成后，可以从用户手册和 API 参考继续深入。</target>
+      </segment>
+    </unit>
+    <unit id="LearningLinksTitle">
+      <segment>
+        <source>Keep learning</source>
+        <target state="translated">继续学习</target>
+      </segment>
+    </unit>
+    <unit id="OpenLearningLink">
+      <segment>
+        <source>Open</source>
+        <target state="translated">打开链接</target>
+      </segment>
+    </unit>
+    <unit id="PackageManagerTab">
+      <segment>
+        <source>Package Manager</source>
+        <target state="translated">包管理器</target>
+      </segment>
+    </unit>
+    <unit id="PackageReferenceTab">
+      <segment>
+        <source>PackageReference</source>
+        <target state="translated">PackageReference</target>
+      </segment>
+    </unit>
+    <unit id="UserManualDescription">
+      <segment>
+        <source>Learn the project concepts, getting started flow, and practical development guidance.</source>
+        <target state="translated">了解项目理念、快速入门和开发实践。</target>
+      </segment>
+    </unit>
+    <unit id="UserManualTitle">
+      <segment>
+        <source>User Manual</source>
+        <target state="translated">用户手册</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

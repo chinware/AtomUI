@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 
@@ -11,6 +12,30 @@ public enum SearchEditButtonStyle
 {
     Default,
     Primary
+}
+
+public enum SearchTriggerSource
+{
+    Button,
+    EnterKey
+}
+
+public sealed class SearchRequestedEventArgs : RoutedEventArgs
+{
+    public SearchRequestedEventArgs(
+        RoutedEvent routedEvent,
+        object? source,
+        string query,
+        SearchTriggerSource trigger)
+        : base(routedEvent, source)
+    {
+        Query   = query;
+        Trigger = trigger;
+    }
+
+    public string Query { get; }
+
+    public SearchTriggerSource Trigger { get; }
 }
 
 public class SearchEdit : LineEdit
@@ -28,6 +53,9 @@ public class SearchEdit : LineEdit
 
     public static readonly StyledProperty<ControlTheme?> SearchButtonThemeProperty =
         AvaloniaProperty.Register<SearchEdit, ControlTheme?>(nameof(SearchButtonTheme));
+    
+    public static readonly StyledProperty<bool> IsSearchOnEnterEnabledProperty =
+        AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsSearchOnEnterEnabled), true);
 
     public SearchEditButtonStyle SearchButtonStyle
     {
@@ -53,17 +81,25 @@ public class SearchEdit : LineEdit
         set => SetValue(SearchButtonThemeProperty, value);
     }
 
+    public bool IsSearchOnEnterEnabled
+    {
+        get => GetValue(IsSearchOnEnterEnabledProperty);
+        set => SetValue(IsSearchOnEnterEnabledProperty, value);
+    }
+
     #endregion
 
     #region 公共事件定义
 
-    public static readonly RoutedEvent<RoutedEventArgs> SearchButtonClickEvent =
-        RoutedEvent.Register<SearchEdit, RoutedEventArgs>(nameof(SearchButtonClick), RoutingStrategies.Bubble);
+    public static readonly RoutedEvent<SearchRequestedEventArgs> SearchRequestedEvent =
+        RoutedEvent.Register<SearchEdit, SearchRequestedEventArgs>(
+            nameof(SearchRequested),
+            RoutingStrategies.Bubble);
 
-    public event EventHandler<RoutedEventArgs>? SearchButtonClick
+    public event EventHandler<SearchRequestedEventArgs>? SearchRequested
     {
-        add => AddHandler(SearchButtonClickEvent, value);
-        remove => RemoveHandler(SearchButtonClickEvent, value);
+        add => AddHandler(SearchRequestedEvent, value);
+        remove => RemoveHandler(SearchRequestedEvent, value);
     }
 
     #endregion
@@ -87,13 +123,35 @@ public class SearchEdit : LineEdit
         }
     }
 
-    internal void NotifySearchButtonClicked()
+    internal void RaiseSearchRequested(SearchTriggerSource trigger)
     {
         if (IsOperating)
         {
             return;
         }
-        var eventArgs = new RoutedEventArgs(SearchButtonClickEvent, this);
-        RaiseEvent(eventArgs);
+
+        RaiseEvent(new SearchRequestedEventArgs(
+            SearchRequestedEvent,
+            this,
+            Text ?? string.Empty,
+            trigger));
+    }
+
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        base.OnKeyUp(e);
+
+        if (!IsSearchOnEnterEnabled)
+        {
+            return;
+        }
+        
+        if (e is not { Key: Key.Enter, Handled: false })
+        {
+            return;
+        }
+
+        e.Handled = true;
+        RaiseSearchRequested(SearchTriggerSource.EnterKey);
     }
 }

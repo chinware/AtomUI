@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind">
+    <unit id="ArrowDescription">
+      <segment>
+        <source>Support show, hide or keep arrow in the center.</source>
+        <target state="translated">Suporte mostrar, hide ou keep arrow em o center.</target>
+      </segment>
+    </unit>
+    <unit id="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+        <target state="translated">Arrow</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic example. The size of the floating layer depends on the contents region.</source>
+        <target state="translated">O most básico exemplo. O tamanho de o floating layer depends em o contents region.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBL">
+      <segment>
+        <source>BL</source>
+        <target state="translated">BL</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBR">
+      <segment>
+        <source>BR</source>
+        <target state="translated">BR</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">Inferior</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickMe">
+      <segment>
+        <source>Click me</source>
+        <target state="translated">Clique me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFocusMe">
+      <segment>
+        <source>Focus me</source>
+        <target state="translated">Focus me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+        <target state="translated">Hide</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">Sobreposição me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLB">
+      <segment>
+        <source>LB</source>
+        <target state="translated">LB</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLT">
+      <segment>
+        <source>LT</source>
+        <target state="translated">LT</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">Esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRB">
+      <segment>
+        <source>RB</source>
+        <target state="translated">RB</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRT">
+      <segment>
+        <source>RT</source>
+        <target state="translated">RT</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">Direita</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentShow">
+      <segment>
+        <source>Show</source>
+        <target state="translated">Mostrar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTL">
+      <segment>
+        <source>TL</source>
+        <target state="translated">TL</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTR">
+      <segment>
+        <source>TR</source>
+        <target state="translated">TR</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">Superior</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTheMostBasicExample">
+      <segment>
+        <source>The most basic example.</source>
+        <target state="translated">O most básico exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>InfoFlyout anchors a custom floating panel to a target control, with configurable trigger modes, placement and arrow behavior.</source>
+        <target state="translated">InfoFlyout anchors a personalizado floating painel para a target controle, com configurable gatilho modes, posicionamento e arrow behavior.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display rich contextual content in a floating layer.</source>
+        <target state="translated">Exibir rich contextual conteúdo em a floating layer.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+        <target state="translated">Há 12 opções de posicionamento disponíveis.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysDescription">
+      <segment>
+        <source>Mouse to click, focus and move in.</source>
+        <target state="translated">Mouse para clique, focus e move em.</target>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysTitle">
+      <segment>
+        <source>Three ways to trigger</source>
+        <target state="translated">Três ways para gatilho</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -6,6 +6,13 @@
     x:ClassModifier="internal">
     <converters:NavMenuIsSubMenuOpenConverter x:Key="IsSubMenuOpenConverter" />
     <ControlTheme x:Key="{x:Type atom:NavMenuItem}" TargetType="atom:NavMenuItem">
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical"
+                            Spacing="{TemplateBinding EntryItemSpacing}" />
+            </ItemsPanelTemplate>
+        </Setter>
+
         <Style Selector="^[Mode=Horizontal]">
             <Setter Property="Template">
                 <ControlTemplate>
@@ -23,6 +30,7 @@
                                                            IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                            IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                                                            IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                                                           IsPointerHold="{TemplateBinding IsPointerHold}"
                                                            IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}"
                                                            IsTopLevel="{TemplateBinding IsTopLevel}" />
                         <atom:Popup Name="PART_Popup"
@@ -62,6 +70,7 @@
                         <atom:VerticalNavMenuItemHeader Name="PART_Header"
                                                          Icon="{TemplateBinding Icon}"
                                                          Header="{TemplateBinding Header}"
+                                                         NodeHeader="{TemplateBinding NodeHeader}"
                                                          HeaderTemplate="{TemplateBinding HeaderTemplate}"
                                                          HasSubMenu="{TemplateBinding HasSubMenu}"
                                                          IsSubMenuOpen="{TemplateBinding IsSubMenuOpen}"
@@ -72,7 +81,12 @@
                                                          IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                          IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                                                          IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
-                                                         IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}" />
+                                                         IsPointerHold="{TemplateBinding IsPointerHold}"
+                                                         IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}"
+                                                         atom:ToolTip.Tip="{TemplateBinding EffectiveCollapsedTooltip}"
+                                                         atom:ToolTip.Placement="{TemplateBinding CollapsedTooltipPlacement}"
+                                                         atom:ToolTip.ShowDelay="{TemplateBinding CollapsedTooltipShowDelay}"
+                                                         atom:ToolTip.BetweenShowDelay="{TemplateBinding CollapsedTooltipBetweenShowDelay}" />
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
@@ -121,6 +135,7 @@
                             Focusable="{TemplateBinding Focusable}"
                             IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                             IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                            IsPointerHold="{TemplateBinding IsPointerHold}"
                             IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}" />
 
                         <atom:LayoutAwareMotionActor
@@ -185,21 +200,13 @@
 
         <Style Selector="^[Mode=Inline]">
             <Setter Property="OpenCloseMotionDuration"
-                    Value="{atom:SharedTokenResource MotionDurationSlow}" />
+                    Value="{atom:SharedTokenResource MotionDurationMid}" />
 
             <Setter Property="Focusable" Value="False" />
-            <Style Selector="^ /template/ ItemsPresenter#ChildItemsPresenter StackPanel">
-                <Setter Property="Spacing"
-                        Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
-            </Style>
-
             <Style Selector="^[IsItemBackgroundEnabled=True]">
-                <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
+                <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
                     <Setter Property="Margin"
                             Value="{atom:NavMenuTokenResource VerticalChildItemsMargin}" />
-                </Style>
-
-                <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
                     <Setter Property="Background"
                             Value="{atom:NavMenuTokenResource SubMenuItemBg}" />
                 </Style>

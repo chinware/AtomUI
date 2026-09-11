@@ -1,0 +1,49 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum WindowShowCaseLangResourceKind
+{
+    AddOnDescription,
+    AddOnHint,
+    AddOnOpenButtonText,
+    AddOnTitle,
+    BasicDescription,
+    BasicOpenButtonText,
+    BasicTitle,
+    BasicWindowHint,
+    CaptionButtonsDescription,
+    CaptionButtonsHint,
+    CaptionButtonsOpenButtonText,
+    CaptionButtonsTitle,
+    ComponentCategory,
+    ComponentStatusStable,
+    FrameLayerDescription,
+    FrameLayerHint,
+    FrameLayerOpenButtonText,
+    FrameLayerTitle,
+    IsTitleVisibleDescription,
+    IsTitleVisibleHint,
+    IsTitleVisibleOpenButtonText,
+    IsTitleVisibleTitle,
+    LogoVisibilityDescription,
+    LogoVisibilityHint,
+    LogoVisibilityOpenButtonText,
+    LogoVisibilityTitle,
+    PageDescription,
+    PageSubtitle,
+    PlaygroundCaptionButtonsHint,
+    PlaygroundDescription,
+    PlaygroundHint,
+    PlaygroundOpenButtonText,
+    PlaygroundTitle,
+    TitleAlignmentDescription,
+    TitleAlignmentHint,
+    TitleAlignmentOpenButtonText,
+    TitleAlignmentTitle,
+    TitleBarlessDescription,
+    TitleBarlessHint,
+    TitleBarlessOpenButtonText,
+    TitleBarlessTitle
+}

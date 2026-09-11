@@ -36,11 +36,6 @@ internal static class DataGridError
             return new ArgumentException("Provided column does not belong to this DataGrid.");
         }
 
-        public static ArgumentException ItemIsNotContainedInTheItemsSource(string paramName)
-        {
-            return new ArgumentException("The item is not contained in the ItemsSource.", paramName);
-        }
-
         public static InvalidOperationException NoCurrentRow()
         {
             return new InvalidOperationException("There is no current row.  Operation cannot be completed.");
@@ -173,27 +168,9 @@ internal static class DataGridError
             return new NotSupportedException("DataGridRowReorderColumn is used but the DataGrid CanUserReorderRows property is false.");
         }
         
-        public static NotSupportedException DataSourceTypeNotSupportRowReorderException()
-        {
-            return new NotSupportedException("The current data source does not implement the IList interface and does not support sorting.");
-        }
-        
         public static InvalidOperationException RowReorderColumnAlreadyExistException()
         {
             return new InvalidOperationException("Only one DataGridRowReorderColumn is allowed.");
-        }
-        
-        public static InvalidOperationException InvalidRowReorderPreConditionException()
-        {
-            return new InvalidOperationException("Cannot start sorting or filtering while sorting is in progress.");
-        }
-    }
-
-    public static class DataGridSelectedItemsCollection
-    {
-        public static InvalidOperationException CannotChangeSelectedItemsCollectionInSingleMode()
-        {
-            return new InvalidOperationException("Can only change SelectedItems collection in Extended selection mode.  Use SelectedItem property in Single selection mode.");
         }
     }
 

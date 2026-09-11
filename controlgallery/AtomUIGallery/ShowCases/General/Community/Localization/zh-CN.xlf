@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CommunityPageLangResourceKind">
+    <unit id="AboutAtomUI">
+      <segment>
+        <source>About AtomUI</source>
+        <target state="translated">关于 AtomUI</target>
+      </segment>
+    </unit>
+    <unit id="HomePage">
+      <segment>
+        <source>Home Page</source>
+        <target state="translated">官网</target>
+      </segment>
+    </unit>
+    <unit id="IncubationDescription">
+      <segment>
+        <source>Supported by TLAIC, AtomUI OSS continues to advance cross-platform desktop software, open-source community operations, and the developer ecosystem.</source>
+        <target state="translated">获得通明湖中心开源孵化体系支持，持续推进跨平台桌面软件、开源社区运营与开发者生态建设。</target>
+      </segment>
+    </unit>
+    <unit id="IncubationEyebrow">
+      <segment>
+        <source>INCUBATION SUPPORT</source>
+        <target state="translated">INCUBATION SUPPORT</target>
+      </segment>
+    </unit>
+    <unit id="IncubationPointEcosystem">
+      <segment>
+        <source>Ecosystem building</source>
+        <target state="translated">生态共建</target>
+      </segment>
+    </unit>
+    <unit id="IncubationPointLicense">
+      <segment>
+        <source>Open licensing</source>
+        <target state="translated">开放许可</target>
+      </segment>
+    </unit>
+    <unit id="IncubationPointOpenSource">
+      <segment>
+        <source>Open-source incubation</source>
+        <target state="translated">开源孵化</target>
+      </segment>
+    </unit>
+    <unit id="IncubationTitle">
+      <segment>
+        <source>AtomUI OSS joins the TLAIC open-source incubation program</source>
+        <target state="translated">AtomUI OSS 纳入通明湖中心开源孵化体系</target>
+      </segment>
+    </unit>
+    <unit id="MissionLabel">
+      <segment>
+        <source>Mission:</source>
+        <target state="translated">使命：</target>
+      </segment>
+    </unit>
+    <unit id="MissionText">
+      <segment>
+        <source>Make digital world builders more efficient</source>
+        <target state="translated">让数字世界建设者更高效</target>
+      </segment>
+    </unit>
+    <unit id="QQGroup">
+      <segment>
+        <source>QQ Group</source>
+        <target state="translated">QQ群</target>
+      </segment>
+    </unit>
+    <unit id="QQGroupDescription">
+      <segment>
+        <source>Join the QQ group</source>
+        <target state="translated">加入 QQ 交流群</target>
+      </segment>
+    </unit>
+    <unit id="TelegramGroup">
+      <segment>
+        <source>Telegram</source>
+        <target state="translated">Telegram</target>
+      </segment>
+    </unit>
+    <unit id="TelegramGroupDescription">
+      <segment>
+        <source>Join the Telegram group</source>
+        <target state="translated">加入 Telegram 交流群</target>
+      </segment>
+    </unit>
+    <unit id="VisionLabel">
+      <segment>
+        <source>Vision:</source>
+        <target state="translated">愿景：</target>
+      </segment>
+    </unit>
+    <unit id="VisionText">
+      <segment>
+        <source>To become a world-class provider of productivity software</source>
+        <target state="translated">致力于成为世界一流的生产力工具软件提供商</target>
+      </segment>
+    </unit>
+    <unit id="WeChatGroup">
+      <segment>
+        <source>WeChat Group</source>
+        <target state="translated">微信群</target>
+      </segment>
+    </unit>
+    <unit id="WeChatGroupDescription">
+      <segment>
+        <source>Join the WeChat group</source>
+        <target state="translated">加入微信交流群</target>
+      </segment>
+    </unit>
+    <unit id="WeChatOfficial">
+      <segment>
+        <source>WeChat Press</source>
+        <target state="translated">WeChat Press</target>
+      </segment>
+    </unit>
+    <unit id="WeChatOfficialDescription">
+      <segment>
+        <source>Follow release updates</source>
+        <target state="translated">关注发布动态</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

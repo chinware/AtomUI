@@ -2,6 +2,33 @@
 
 本文档记录 AutoComplete 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-05
+
+- Fix
+  - The shared `CandidateList` now maintains `IsDefaultEmptyIndicatorVisible`, so an AutoComplete dropdown with an empty or fully filtered option set shows the built-in default `Empty` indicator instead of a blank panel. Note: Ant Design's combobox-mode AutoComplete renders no default empty content; if combobox-parity is preferred, set `IsShowEmptyIndicator=False` on the candidate list theme.
+
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record AbstractAutoComplete as the semantic owner for AutoComplete.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
+## 2026-08-23
+
+- Architecture
+  - Align `AutoCompleteLineEditBox`, `AutoCompleteSearchEditBox` and `AutoCompleteTextAreaBox` with the shared `AbstractTextInput` and `InputControlFrame` layers.
+  - Keep candidate, filter, popup and async state in AutoComplete while delegating input-surface status to the shared frame.
+
+## 2026-08-19
+
+- Behavior
+  - Unify pointer and keyboard candidate navigation through the shared `CandidateList` active candidate owner.
+  - Keep pointer movement non-committing and non-scrolling while ensuring `Enter` commits the single visual active candidate.
+- Theme
+  - Stop inherited `:pointerover` styling from rendering a second candidate highlight; committed selection remains visually dominant.
+- Tests
+  - Add popup integration coverage for pointer migration followed by `Enter` commit.
+
 ## 2026-06-26
 
 - Docs

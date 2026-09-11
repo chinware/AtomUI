@@ -19,6 +19,8 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    FormStatus="{TemplateBinding FormStatus}"
+                    IsInputFocusWithin="{TemplateBinding IsKeyboardFocusWithin}"
                     DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"

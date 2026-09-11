@@ -6,6 +6,6 @@ internal class BrowserCommonControlThemesProvider : ControlThemesProvider
 {
     public BrowserCommonControlThemesProvider()
     {
-        Id = "AtomUI.Controls.Common";
+        Id = ThemeManagerBuilderExtensions.PackageId;
     }
 }

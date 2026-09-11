@@ -47,7 +47,7 @@ Violating any of these blocks merge. No exception, no tradeoff, no "it's only on
 
 Use the source matching the currently resolved Avalonia dependency to verify framework-behavior hypotheses. **Every framework-behavior claim in a review or commit description must cite current implementation evidence or reproducible measurement.** Revalidate source-derived claims after dependency upgrades, and never promote a particular external version, commit, local path, or line number into AtomUI's long-term architecture contract.
 
-The verified cost model and counter-intuitive points below are distilled from a deeper walkthrough kept at [`docs/performances/avalonia12-control-library-pitfalls.md`](../../../docs/performances/avalonia12-control-library-pitfalls.md). Use that document when you need the longer explanation behind an entry; use the Cost Model below when you need the operational rule.
+The verified cost model and counter-intuitive points are maintained in this skill. Use the Cost Model below for both the evidence summary and the operational rule.
 
 ### Required reading paths by subsystem
 
@@ -160,7 +160,7 @@ This is the implementation of Theme Static Rule exception 1.
 
 ## Framework Cost Model
 
-The following model records implementation evidence used to form and falsify performance hypotheses. Source coordinates are review aids for the currently resolved dependency and must be revalidated after upgrades; the AtomUI implication and its measurement gate are the durable parts. For the longer narrative behind each entry, follow the section pointer to the [pitfalls doc](../../../docs/performances/avalonia12-control-library-pitfalls.md).
+The following model records implementation evidence used to form and falsify performance hypotheses. Source coordinates are review aids for the currently resolved dependency and must be revalidated after upgrades; the AtomUI implication and its measurement gate are the durable parts. Use each entry's evidence, AtomUI implication, and measurement gate as the complete review record.
 
 ### Property System
 
@@ -428,7 +428,7 @@ If none of the above lights up, the bottleneck may be Gallery-level page setup o
 
 - `cost × frequency ≥ 1 ms / frame budget` OR `≥ 5 % of measured ShowCase time` → optimization candidate, proceed to Decision Tree Step 3.
 - Otherwise: decline, with the numbers in the report.
-- Either way, the conclusion + numbers go into `docs/performances/<Control>/` so the next investigation does not repeat the work.
+- Either way, the conclusion + numbers go into `docs/superpowers/progress/<date>-<control>-performance.md` so the next investigation does not repeat the work.
 
 ### Outputs of this playbook (mandatory before writing any optimization code)
 
@@ -458,7 +458,7 @@ Mandatory commit-time gates. A perf commit description without all of them fille
 [ ] 假设证伪点（如果实测低于此量级，优化应放弃）：______
 ```
 
-如果某条引用还在 `[VERIFY]` 阶段，说明该子系统认知不足以支持优化决策——先查 [pitfalls 文档](../../../docs/performances/avalonia12-control-library-pitfalls.md) §13 的待补全清单，把所需条目落实再回来做优化。
+如果某条引用还在 `[VERIFY]` 阶段，说明该子系统认知不足以支持优化决策。先在本 Skill 的 Cost Model 中补全实现证据、AtomUI 影响和测量门槛，再继续优化。
 
 ### Gate 1 — 正确性自证
 
@@ -576,7 +576,7 @@ When a single optimization pattern is being applied across multiple controls, th
   2. Did any one introduce ≥ 2 Gallery-visible bugs that took > 30 minutes to discover?
   3. Did any one expand complexity beyond the Gate 3 thresholds?
 - If 1 fails or 2/3 succeeds, do not roll out to the 5th control. Audit existing 4, decide which to keep / refine / revert.
-- Decisions must be recorded in `docs/performances/<pattern>/rollout-audit.md`.
+- Decisions must be recorded in `docs/superpowers/progress/<date>-<pattern>-rollout-audit.md`.
 
 ---
 

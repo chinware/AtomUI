@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <AtomUILanguageTemplateOutputRootDirectory>$(MSBuildProjectDirectory)</AtomUILanguageTemplateOutputRootDirectory>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,10 +22,6 @@
             <_Parameter2>$(AtomUIVersion)</_Parameter2>
         </AssemblyAttribute>
         <InternalsVisibleTo Include="AtomUIGallery.Tests" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -46,7 +43,6 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
-        <PackageReference Include="AsyncImageLoader.Avalonia" />
     </ItemGroup>
 
     <Target Name="PrepareGallerySourceCodeDisplayAdditionalFiles"

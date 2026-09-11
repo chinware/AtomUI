@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.PaletteShowCaseLangResourceKind">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">通用</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDark">
+      <segment>
+        <source>Dark</source>
+        <target state="translated">深色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+        <target state="translated">浅色</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Palette presents the preset primary color scales used by AtomUI theme algorithms. Use the tabs to compare the light and dark palettes generated from the same semantic color set.</source>
+        <target state="translated">Palette 展示 AtomUI 主题算法使用的预设主色阶。通过标签页可以对比同一组语义色在浅色和深色模式下生成的色板。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Preview AtomUI preset color palettes in light and dark algorithms.</source>
+        <target state="translated">预览 AtomUI 在浅色和深色算法下的预设色板。</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -157,12 +157,8 @@ $RECYCLE.BIN/
 #################
 ## Cake
 #################
-tools/*
-!tools/packages.config
-!tools/AtomUI.Docs.LLMsGenerator/
-!tools/AtomUI.Docs.LLMsGenerator/**
-!tools/performances/
-!tools/performances/**
+tools/**/[Bb]in/
+tools/**/[Oo]bj/
 .nuget
 artifacts/
 nuget
@@ -198,6 +194,7 @@ node_modules
 api/diff
 
 # Project generation intermediate results storage
+.artifacts/
 output/
 outputs/
 cmake-build-*/
@@ -216,4 +213,6 @@ cmake-build-*/
 .claude/settings.local.json
 .superpowers/
 .worktrees/
+.zcode/
+tmp/
 docs/superpowers/plans

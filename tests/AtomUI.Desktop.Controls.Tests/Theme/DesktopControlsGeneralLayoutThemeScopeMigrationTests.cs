@@ -12,7 +12,7 @@ public class DesktopControlsGeneralLayoutThemeScopeMigrationTests
             "src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs",
             "src/AtomUI.Desktop.Controls/Buttons/IconButton.cs",
             "src/AtomUI.Desktop.Controls/Buttons/HyperLinkButton.cs",
-            "src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs",
+            "src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs",
             "src/AtomUI.Desktop.Controls/Buttons/ToggleIconButton.cs");
 
         AssertNoLegacyScope(

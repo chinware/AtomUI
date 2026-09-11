@@ -75,6 +75,15 @@ public class DropdownButtonShowCasePageTests
         ComputeSha256(normalized).ShouldBe(ReadSnapshotHash(approved));
     }
 
+    [Fact]
+    public void DropdownButton_Button_Type_And_Size_Demos_Wrap_When_Content_Is_Wide()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/DropdownButton/Views/DropdownButtonShowCase.axaml");
+
+        CountOccurrences(source, "<WrapPanel Orientation=\"Horizontal\" ItemSpacing=\"10\" LineSpacing=\"10\">").ShouldBe(2);
+        CountOccurrences(source, "<StackPanel Orientation=\"Horizontal\" Spacing=\"10\">").ShouldBe(0);
+    }
+
     private static string ExtractDropdownButtonExampleItems(string source)
     {
         const string firstItemMarker  = "<gallery:ShowCaseItem";

@@ -2,6 +2,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -272,6 +273,9 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
             o => o.EffectiveHeaderPadding,
             (o, v) => o.EffectiveHeaderPadding = v);
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Flyout.IsPopupPinnedOpenProperty.AddOwner<BaseTabControl>();
+
     private Thickness _tabStripMargin;
 
     internal Thickness TabStripMargin
@@ -286,6 +290,12 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     {
         get => _effectiveHeaderPadding;
         set => SetAndRaise(EffectiveHeaderPaddingProperty, ref _effectiveHeaderPadding, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
 
     internal ItemsPresenter? ItemsPresenterPart { get; private set; }
@@ -303,6 +313,8 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     private IBrush? _tabStripBorderPenBrush;
     private double _tabStripBorderPenThickness;
     private BaseTabScrollViewer? _tabReorderScrollViewer;
+    private BaseTabScrollViewer? _popupPinnedOpenScrollViewer;
+    private IDisposable? _popupPinnedOpenRelay;
     private DispatcherTimer? _tabReorderAutoScrollTimer;
     private TabItem? _pendingTabActivationContainer;
     private IPointer? _pendingTabActivationPointer;
@@ -387,7 +399,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     {
         if (ItemsSource is IList list)
         {
-            return IsValidIndex(index, list.Count);
+            return TabReorderHelper.CanMoveItems(list) && IsValidIndex(index, list.Count);
         }
 
         if (ItemsSource is null)
@@ -436,11 +448,13 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     {
         ClearPendingTabActivation();
         CancelTabReorder();
+        ReleasePopupPinnedOpenScrollViewer();
         base.OnApplyTemplate(e);
         
         ItemsPresenterPart = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
         ItemsPresenterPart?.ApplyTemplate();
         _tabReorderScrollViewer = TabReorderHelper.FindTabScrollViewer(e.NameScope);
+        ReplacePopupPinnedOpenScrollViewer(_tabReorderScrollViewer);
 
         UpdateTabStripPlacement();
 
@@ -464,12 +478,59 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         ConfigureEffectiveHeaderPadding();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ResumePopupPinnedOpenRelay();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        SuspendPopupPinnedOpenRelay();
         ClearPendingTabActivation();
         CancelTabReorder();
         _tabReorderScrollViewer = null;
         base.OnDetachedFromVisualTree(e);
+    }
+
+    private void ReplacePopupPinnedOpenScrollViewer(BaseTabScrollViewer? scrollViewer)
+    {
+        _popupPinnedOpenScrollViewer = scrollViewer;
+        ResumePopupPinnedOpenRelay();
+    }
+
+    private void ResumePopupPinnedOpenRelay()
+    {
+        if (_popupPinnedOpenRelay is not null || _popupPinnedOpenScrollViewer is not { } scrollViewer)
+        {
+            return;
+        }
+
+        _popupPinnedOpenRelay = BindUtils.RelayBind(
+            this,
+            IsPopupPinnedOpenProperty,
+            scrollViewer,
+            BaseTabScrollViewer.IsPopupPinnedOpenProperty);
+    }
+
+    private void SuspendPopupPinnedOpenRelay()
+    {
+        if (_popupPinnedOpenScrollViewer is { } scrollViewer)
+        {
+            scrollViewer.CloseForLifecycle();
+        }
+
+        _popupPinnedOpenRelay?.Dispose();
+        _popupPinnedOpenRelay = null;
+        _popupPinnedOpenScrollViewer?.SetCurrentValue(
+            BaseTabScrollViewer.IsPopupPinnedOpenProperty,
+            false);
+    }
+
+    private void ReleasePopupPinnedOpenScrollViewer()
+    {
+        SuspendPopupPinnedOpenRelay();
+        _popupPinnedOpenScrollViewer = null;
     }
     
     protected override bool ShouldTriggerSelection(Visual selectable, PointerEventArgs eventArgs)

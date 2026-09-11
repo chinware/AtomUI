@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic Usage.</source>
+        <target state="translated">基礎用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ClearColorDescription">
+      <segment>
+        <source>Clear Color.</source>
+        <target state="translated">清除顏色。</target>
+      </segment>
+    </unit>
+    <unit id="ClearColorTitle">
+      <segment>
+        <source>Clear Color</source>
+        <target state="translated">清除顏色</target>
+      </segment>
+    </unit>
+    <unit id="ColorFormatDescription">
+      <segment>
+        <source>Encoding formats, support HEX, HSB, RGB.</source>
+        <target state="translated">編碼格式，支持 HEX、HSB、RGB。</target>
+      </segment>
+    </unit>
+    <unit id="ColorFormatTitle">
+      <segment>
+        <source>Color Format</source>
+        <target state="translated">顏色格式</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">資料錄入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="ControlledModeDescription">
+      <segment>
+        <source>Set the component to controlled mode. Will lock the display color if controlled by.</source>
+        <target state="translated">將組件設置為受控模式。受控時會鎖定顯示顏色。</target>
+      </segment>
+    </unit>
+    <unit id="ControlledModeTitle">
+      <segment>
+        <source>controlled mode</source>
+        <target state="translated">受控模式</target>
+      </segment>
+    </unit>
+    <unit id="CustomTriggerEventDescription">
+      <segment>
+        <source>Triggers event for customizing color panels, provide options click and hover.</source>
+        <target state="translated">自定義顏色面板的觸發事件，可選 click 和 hover。</target>
+      </segment>
+    </unit>
+    <unit id="CustomTriggerEventTitle">
+      <segment>
+        <source>Custom Trigger Event</source>
+        <target state="translated">自定義觸發事件</target>
+      </segment>
+    </unit>
+    <unit id="DisabledAlphaDescription">
+      <segment>
+        <source>Disabled color alpha.</source>
+        <target state="translated">禁用顏色透明度。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledAlphaTitle">
+      <segment>
+        <source>Disabled Alpha</source>
+        <target state="translated">禁用透明度</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Set to disabled state.</source>
+        <target state="translated">設置為禁用狀態。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="LineGradientDescription">
+      <segment>
+        <source>Set the color to a single or a gradient color via mode.</source>
+        <target state="translated">通過 mode 將顏色設置為單色或漸變色。</target>
+      </segment>
+    </unit>
+    <unit id="LineGradientTitle">
+      <segment>
+        <source>Line Gradient</source>
+        <target state="translated">線性漸變</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearColor">
+      <segment>
+        <source>Clear color</source>
+        <target state="translated">清空顏色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearGradient">
+      <segment>
+        <source>Clear gradient</source>
+        <target state="translated">清空漸變</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetColor">
+      <segment>
+        <source>Set color</source>
+        <target state="translated">設置顏色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetGradient">
+      <segment>
+        <source>Set gradient</source>
+        <target state="translated">設置漸變</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Custom</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大號</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中號</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小號</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColorValue">
+      <segment>
+        <source>Bound color:</source>
+        <target state="translated">綁定顏色：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGradientValue">
+      <segment>
+        <source>Bound gradient:</source>
+        <target state="translated">綁定漸變：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ColorPicker supports solid and gradient values, trigger sizing, alpha control, text rendering, value synchronization, hover or click triggers, and preset palettes.</source>
+        <target state="translated">ColorPicker 支援純色與漸變值、觸發器尺寸、透明度控制、文字渲染、值同步策略、點擊或懸浮觸發，以及預設調色板。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Pick solid colors or gradients from a compact trigger.</source>
+        <target state="translated">從緊湊觸發器中選擇純色或漸變色。</target>
+      </segment>
+    </unit>
+    <unit id="PresetColorsDescription">
+      <segment>
+        <source>Set the presets color of the color picker.</source>
+        <target state="translated">設置顏色選擇器的預設顏色。</target>
+      </segment>
+    </unit>
+    <unit id="PresetColorsTitle">
+      <segment>
+        <source>Preset Colors</source>
+        <target state="translated">預設顏色</target>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextDescription">
+      <segment>
+        <source>Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.</source>
+        <target state="translated">當 showText 為 true 時渲染觸發器默認文本。自定義文本時，可以將 showText 作為函數返回自定義文本。</target>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextTitle">
+      <segment>
+        <source>Rendering Trigger Text</source>
+        <target state="translated">渲染觸發器文本</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeDescription">
+      <segment>
+        <source>Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.</source>
+        <target state="translated">Ant Design 支持小號、默認和大號三種觸發器尺寸。需要大號或小號觸發器時分別設置 size 屬性；省略 size 屬性時使用默認尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeTitle">
+      <segment>
+        <source>Trigger size</source>
+        <target state="translated">觸發器尺寸</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding for both solid and gradient pickers, so edits update the ViewModel without an explicit binding mode.</source>
+        <target state="translated">純色和漸變選擇器的 Value 現在默認雙向綁定，編輯顏色會直接更新 ViewModel，無需顯式設置綁定模式。</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
+        <target state="translated">Value 綁定</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

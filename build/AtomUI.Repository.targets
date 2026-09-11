@@ -1,0 +1,128 @@
+<Project>
+    <PropertyGroup>
+        <EnableTrimAnalyzer
+            Condition="'$(EnableTrimAnalyzer)' == '' and
+                       ('$(PublishTrimmed)' == 'true' or
+                        '$(PublishAot)' == 'true' or
+                        '$(RunAOTCompilation)' == 'true')">true</EnableTrimAnalyzer>
+        <EnableTrimAnalyzer Condition="'$(EnableTrimAnalyzer)' == ''">false</EnableTrimAnalyzer>
+
+        <EnableAotAnalyzer
+            Condition="'$(EnableAotAnalyzer)' == '' and
+                       ('$(PublishAot)' == 'true' or
+                        '$(RunAOTCompilation)' == 'true')">true</EnableAotAnalyzer>
+        <EnableAotAnalyzer Condition="'$(EnableAotAnalyzer)' == ''">false</EnableAotAnalyzer>
+
+        <EnableSingleFileAnalyzer
+            Condition="'$(EnableSingleFileAnalyzer)' == '' and
+                       '$(PublishSingleFile)' == 'true'">true</EnableSingleFileAnalyzer>
+        <EnableSingleFileAnalyzer Condition="'$(EnableSingleFileAnalyzer)' == ''">false</EnableSingleFileAnalyzer>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(MSBuildProjectName.StartsWith('AtomUI.')) and
+                              '$(OutputType)' == 'Library' and
+                              '$(IsTestProject)' != 'true' and
+                              '$(IsRoslynComponent)' != 'true' and
+                              $([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+        <IsTrimmable Condition="'$(IsTrimmable)' == ''">true</IsTrimmable>
+        <IsAotCompatible Condition="'$(IsAotCompatible)' == ''">true</IsAotCompatible>
+    </PropertyGroup>
+
+    <!-- https://github.com/dotnet/sdk/issues/22515 -->
+    <ItemGroup>
+        <None Remove="*.csproj.DotSettings" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(CompilerGeneratedFilesOutputPath)' != ''">
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+    </ItemGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.targets" />
+
+    <Target Name="AtomUICleanTestResultsBeforeRun"
+            BeforeTargets="VSTest"
+            Condition="'$(IsTestProject)' == 'true'">
+        <ItemGroup>
+            <_AtomUITestResultsDirectoryToCleanBeforeRun Include="$(MSBuildProjectDirectory)/TestResults"
+                                                         Condition="Exists('$(MSBuildProjectDirectory)/TestResults')" />
+            <_AtomUITestResultsDirectoryToCleanBeforeRun Include="$(AtomUITestResultsDirectory)"
+                                                         Condition="'$(AtomUITestResultsDirectory)' != '' and Exists('$(AtomUITestResultsDirectory)')" />
+        </ItemGroup>
+        <RemoveDir Directories="@(_AtomUITestResultsDirectoryToCleanBeforeRun)" />
+    </Target>
+
+    <Target Name="AtomUIRejectPersistentVSTestDumps"
+            BeforeTargets="VSTest"
+            Condition="'$(IsTestProject)' == 'true'">
+        <Error Condition="'$(VSTestBlameHangDumpType)' == 'full' or '$(VSTestBlameHangDumpType)' == 'mini'"
+               Text="AtomUI test runs must not collect persistent VSTest hang dumps. Use --blame-hang-dump-type none or move dump collection outside the repository." />
+        <Error Condition="'$(VSTestBlameCrashDumpType)' == 'full' or '$(VSTestBlameCrashDumpType)' == 'mini'"
+               Text="AtomUI test runs must not collect persistent VSTest crash dumps. Use --blame-crash-dump-type none or move dump collection outside the repository." />
+    </Target>
+
+    <Target Name="AtomUICleanTestResultsAfterRun"
+            AfterTargets="VSTest"
+            Condition="'$(IsTestProject)' == 'true'">
+        <ItemGroup>
+            <_AtomUITestResultsDirectoryToCleanAfterRun Include="$(MSBuildProjectDirectory)/TestResults"
+                                                        Condition="Exists('$(MSBuildProjectDirectory)/TestResults')" />
+            <_AtomUITestResultsDirectoryToCleanAfterRun Include="$(AtomUITestResultsDirectory)"
+                                                        Condition="'$(AtomUITestResultsDirectory)' != '' and Exists('$(AtomUITestResultsDirectory)')" />
+        </ItemGroup>
+        <RemoveDir Directories="@(_AtomUITestResultsDirectoryToCleanAfterRun)" />
+    </Target>
+
+    <!-- Stage the AtomUI.Build.Tasks toolset next to the shadow assembly path used by the
+         UsingTask registrations (see AtomUIBuildTasksAssembly in AtomUI.Repository.props).
+         The destination directory embeds the source DLL's content key, so a rebuilt
+         toolset lands in a fresh directory and a build node locking a previous shadow copy
+         can never block the build. Anchored on BeforeBuild plus every target that invokes
+         these tasks, including GetAtomUILinkedRegistrationSidecar, which other projects
+         invoke directly through ProjectReference target calls where BeforeBuild never runs.
+         Missing source assemblies are tolerated here: projects without task inputs must
+         build without the toolset, and the feature targets keep their own Exists guards for
+         projects that do consume the tasks. Older shadow directories are intentionally
+         retained: another concurrently evaluated build may still be using an older key, so
+         deleting any non-current directory here would reintroduce the missing task assembly
+         race this staging target is meant to avoid. Cross-targeting pack builds also stage
+         the toolset because package asset preparation runs tasks before the inner target
+         frameworks are selected. -->
+    <Target Name="_AtomUIStageBuildTasksToolset"
+            BeforeTargets="BeforeBuild;GenerateAtomUIThemeAssetWrappers;AtomUIGetLanguageModuleSourceAssets;AtomUIResolveLanguageContractProjectReferences;AtomUIInferLanguagePackageContractPolicy;AtomUIGetLanguagePackProjectAssets;AtomUIResolveLanguagePackProjectReferences;AtomUIExportLanguageTemplates;AtomUIPrepareLanguagePackage;AtomUIPrepareLanguageModuleAssets;CollectAtomUIProjectReferenceSidecars;CollectAtomUIAxamlUsage;EmitAtomUILinkedRegistrationSidecar;GetAtomUILinkedRegistrationSidecar;AtomUIPrepareLinkedRegistrationSidecarForPack;ValidateAtomUIApplicationRegistrationPlan"
+            Condition="'$(MSBuildProjectName)' != 'AtomUI.Build.Tasks' and
+                       '$(AtomUIBuildTasksSourceAssembly)' != '' and
+                       '$(AtomUIBuildTasksAssembly)' == '$(AtomUIBuildTasksShadowDirectory)/AtomUI.Build.Tasks.dll' and
+                       Exists('$(AtomUIBuildTasksSourceAssembly)')">
+        <ItemGroup>
+            <_AtomUIBuildTasksToolsetFile Include="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll" />
+            <_AtomUIBuildTasksToolsetFile Include="$(OutputPathWithoutFramework)/netstandard2.0/System.*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(_AtomUIBuildTasksToolsetFile)"
+              DestinationFolder="$(AtomUIBuildTasksShadowDirectory)"
+              SkipUnchangedFiles="true" />
+    </Target>
+
+    <Target Name="AtomUIPrepareGeneratorConsumerPackageAssets"
+            BeforeTargets="_GetPackageFiles"
+            Condition="'$(IsPackable)' == 'true' and '$(AtomUIRegistrationPackageId)' != ''">
+        <ItemGroup>
+            <None Include="$(MSBuildThisFileDirectory)AtomUI.Generator.props"
+                  Pack="true"
+                  PackagePath="buildTransitive/$(PackageId).props"
+                  Visible="false"
+                  Condition="'@(AtomUILanguage)' == ''" />
+            <None Include="$(MSBuildThisFileDirectory)AtomUI.GeneratorConsumer.targets"
+                  Pack="true"
+                  PackagePath="buildTransitive/$(PackageId).targets" />
+            <None Include="@(AtomUINuGetBuildAsset)"
+                  Pack="true" />
+            <None Include="@(AtomUIGeneratorToolAsset)"
+                  Pack="true" />
+        </ItemGroup>
+
+        <Error Condition="!Exists('%(AtomUINuGetBuildAsset.Identity)')"
+               Text="AtomUI Generator build asset could not be found at '%(AtomUINuGetBuildAsset.Identity)'." />
+        <Error Condition="!Exists('%(AtomUIGeneratorToolAsset.Identity)')"
+               Text="AtomUI Generator tool asset could not be found at '%(AtomUIGeneratorToolAsset.Identity)'. Build AtomUI.Generator before packing registration product packages." />
+    </Target>
+</Project>

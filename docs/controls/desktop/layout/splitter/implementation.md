@@ -253,7 +253,7 @@ AOT 边界：
 
 - API 与 Token 契约不通过运行时反射生成。
 - Source generator 生成文件不手工编辑。
-- 文档、Gallery 和源码发生冲突时，应修复源文档或结构化数据，不直接改 `docs/AI/llms` 生成产物。
+- 文档、Gallery 和源码发生冲突时，应修复源文档或结构化数据，不直接改 `docs/AI/generated/llms` 生成产物。
 
 ## 9. 维护不变量
 

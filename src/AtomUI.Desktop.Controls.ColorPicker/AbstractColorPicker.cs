@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
@@ -266,7 +267,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<AbstractColorPicker>();
 
     internal static readonly StyledProperty<bool> IsPickerOpenProperty =
-        AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsPickerOpen));
+        AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsPickerOpen), coerce: CoerceIsPickerOpen);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractColorPicker>();
 
     internal static readonly StyledProperty<Control?> PickerPresenterProperty =
         AvaloniaProperty.Register<AbstractColorPicker, Control?>(nameof(PickerPresenter));
@@ -348,6 +352,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(IsPickerOpenProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     internal Control? PickerPresenter
     {
         get => GetValue(PickerPresenterProperty);
@@ -424,6 +434,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     private IDisposable? _popupPointerSubscription;
     private TopLevel? _registeredTopLevel;
     private bool _isPickerShowing;
+    private IDisposable? _popupPinnedOpenBinding;
+    private int _popupLifecycleCloseDepth;
 
     static AbstractColorPicker()
     {
@@ -896,6 +908,25 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         {
             ConfigureColorBlockSize();
         }
+
+        if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                SetCurrentValue(IsPickerOpenProperty, true);
+            }
+            else if (IsPickerOpen)
+            {
+                if (_popup is { IsOpen: true })
+                {
+                    SetCurrentValue(IsPickerOpenProperty, true);
+                }
+                else
+                {
+                    ClosePickerForLifecycle();
+                }
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -906,8 +937,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         if (_popup != null)
         {
             _popup.OverlayInputPassThroughElement = this;
-            _popup.Opened += HandlePopupOpened;
-            _popup.Closed += HandlePopupClosed;
+            AttachPopupHandlers();
 
             this[!IsPopupHorizontalFlippedProperty] = _popup[!Popup.IsHorizontalFlippedProperty];
             this[!IsPopupVerticalFlippedProperty] = _popup[!Popup.IsVerticalFlippedProperty];
@@ -938,11 +968,29 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     private void DetachPopupHandlers()
     {
+        _popupPinnedOpenBinding?.Dispose();
+        _popupPinnedOpenBinding = null;
         if (_popup != null)
         {
             _popup.Opened -= HandlePopupOpened;
             _popup.Closed -= HandlePopupClosed;
         }
+    }
+
+    private void AttachPopupHandlers()
+    {
+        if (_popup == null || _popupPinnedOpenBinding != null)
+        {
+            return;
+        }
+
+        _popupPinnedOpenBinding = BindUtils.RelayBind(
+            this,
+            IsPopupPinnedOpenProperty,
+            _popup,
+            Popup.IsPopupPinnedOpenProperty);
+        _popup.Opened += HandlePopupOpened;
+        _popup.Closed += HandlePopupClosed;
     }
 
     private void HandlePopupOpened(object? sender, EventArgs e)
@@ -962,6 +1010,11 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         base.OnAttachedToVisualTree(e);
         SetupTriggerHandler();
+        if (IsPopupPinnedOpen && !IsPickerOpen)
+        {
+            SetCurrentValue(IsPickerOpenProperty, true);
+        }
+        AttachPopupHandlers();
         if (IsPickerOpen)
         {
             RegisterWindowDeactivatedHandler();
@@ -970,6 +1023,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        ClosePickerForLifecycle();
         base.OnDetachedFromVisualTree(e);
         UnregisterWindowDeactivatedHandler();
 
@@ -980,6 +1034,20 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         DetachPopupHandlers();
         _triggerSubscriptions?.Dispose();
         _triggerSubscriptions = null;
+    }
+
+    private void ClosePickerForLifecycle()
+    {
+        try
+        {
+            ++_popupLifecycleCloseDepth;
+            _popup?.CloseForLifecycle();
+            SetCurrentValue(IsPickerOpenProperty, false);
+        }
+        finally
+        {
+            --_popupLifecycleCloseDepth;
+        }
     }
 
     private void HandleWindowDeactivated(object? sender, EventArgs e)
@@ -1088,6 +1156,14 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             NotifyPickerClosed();
         }
         UpdatePseudoClasses();
+    }
+
+    private static bool CoerceIsPickerOpen(AvaloniaObject sender, bool value)
+    {
+        return !value &&
+               sender is AbstractColorPicker { IsPopupPinnedOpen: true, _popupLifecycleCloseDepth: 0 }
+            ? true
+            : value;
     }
 
     protected virtual void UpdatePseudoClasses()

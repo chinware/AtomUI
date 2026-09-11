@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SliderShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.</source>
+        <target state="translated">Básico slider. Quando intervalo é true, exibir as dual thumb modo. Quando desativar é true, o slider irá não ser interactable.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTooltipDescription">
+      <segment>
+        <source>Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.</source>
+        <target state="translated">Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTooltipTitle">
+      <segment>
+        <source>Customize tooltip</source>
+        <target state="translated">Personalizar tooltip</target>
+      </segment>
+    </unit>
+    <unit id="DisabledHandleDescription">
+      <segment>
+        <source>Set disabled as an array to disable individual handles in range mode. A disabled handle becomes a movement boundary that other handles cannot cross.</source>
+        <target state="translated">Definir desativado as an array para desativar individual handles em intervalo modo. A desativado handle becomes a movement boundary que outro handles cannot cross.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledHandleTitle">
+      <segment>
+        <source>Disabled handles</source>
+        <target state="translated">Desativado handles</target>
+      </segment>
+    </unit>
+    <unit id="GraduatedSliderDescription">
+      <segment>
+        <source>Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb. When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.</source>
+        <target state="translated">Usando marks propriedade para mark a graduated slider, usar valor ou defaultValue para specify o posição de thumb. Quando incluído é false, means que diferente thumbs são coordinative. quando etapa é null, usuários pode somente slide o thumbs onto marks.</target>
+      </segment>
+    </unit>
+    <unit id="GraduatedSliderTitle">
+      <segment>
+        <source>Graduated slider</source>
+        <target state="translated">Graduated slider</target>
+      </segment>
+    </unit>
+    <unit id="MultiHandleDescription">
+      <segment>
+        <source>Combine multiple points in a range.</source>
+        <target state="translated">Combine múltiplos points em a intervalo.</target>
+      </segment>
+    </unit>
+    <unit id="MultiHandleTitle">
+      <segment>
+        <source>Multiple points</source>
+        <target state="translated">Múltiplos points</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisabledHandle1">
+      <segment>
+        <source>Disabled Handle 1</source>
+        <target state="translated">Desativado Handle 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisabledHandle2">
+      <segment>
+        <source>Disabled Handle 2</source>
+        <target state="translated">Desativado Handle 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisabledHandle3">
+      <segment>
+        <source>Disabled Handle 3</source>
+        <target state="translated">Desativado Handle 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetRange">
+      <segment>
+        <source>Set 35-85</source>
+        <target state="translated">Definir 35-85</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBoundRangeValues">
+      <segment>
+        <source>Bound range:</source>
+        <target state="translated">Bound intervalo:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextEnabled">
+      <segment>
+        <source>Enabled:</source>
+        <target state="translated">Ativado:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIncludedFalse">
+      <segment>
+        <source>included=false</source>
+        <target state="translated">incluído=false</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIncludedTrue">
+      <segment>
+        <source>included=true</source>
+        <target state="translated">incluído=true</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Slider supports single-value and range selection, horizontal or vertical orientation, snap-to-tick behavior, formatted tooltips, marks, included tracks, disabled states, and keyboard interaction.</source>
+        <target state="translated">Slider oferece suporte single-valor e intervalo seleção, horizontal ou vertical orientation, snap-para-tick behavior, formatted tooltips, marks, incluído tracks, desativado states, e keyboard interaction.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select a numeric value or range from a continuous or graduated track.</source>
+        <target state="translated">Selecionar a numeric valor ou intervalo de a continuous ou graduated track.</target>
+      </segment>
+    </unit>
+    <unit id="RangeValuesBindingDescription">
+      <segment>
+        <source>RangeValues defaults to TwoWay binding, so range changes update the ViewModel without an explicit binding mode.</source>
+        <target state="translated">RangeValues defaults para TwoWay vinculação, so intervalo changes update o ViewModel sem an explicit vinculação modo.</target>
+      </segment>
+    </unit>
+    <unit id="RangeValuesBindingTitle">
+      <segment>
+        <source>RangeValues binding</source>
+        <target state="translated">RangeValues vinculação</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>The vertical Slider.</source>
+        <target state="translated">O vertical Slider.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">Vertical</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

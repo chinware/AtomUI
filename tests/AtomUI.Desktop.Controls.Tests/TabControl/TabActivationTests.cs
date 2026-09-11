@@ -110,6 +110,7 @@ public class TabActivationTests
     {
         var tabControl = CreateTabControl();
         tabControl.IsTabReorderEnabled = true;
+        tabControl.IsMotionEnabled = false;
 
         ShowInWindow(tabControl, window =>
         {
@@ -124,7 +125,6 @@ public class TabActivationTests
             window.MouseMove(new Point(point.X + target.Bounds.Width + 24, point.Y));
             Dispatcher.UIThread.RunJobs();
 
-            WaitForForegroundChanged(() => target.Foreground, normalForeground);
             target.Foreground.ShouldNotBe(normalForeground);
         });
     }
@@ -241,6 +241,7 @@ public class TabActivationTests
     {
         var tabStrip = CreateTabStrip();
         tabStrip.IsTabReorderEnabled = true;
+        tabStrip.IsMotionEnabled = false;
 
         ShowInWindow(tabStrip, window =>
         {
@@ -255,7 +256,6 @@ public class TabActivationTests
             window.MouseMove(new Point(point.X + target.Bounds.Width + 24, point.Y));
             Dispatcher.UIThread.RunJobs();
 
-            WaitForForegroundChanged(() => target.Foreground, normalForeground);
             target.Foreground.ShouldNotBe(normalForeground);
         });
     }
@@ -356,19 +356,6 @@ public class TabActivationTests
             {
                 return;
             }
-        }
-    }
-
-    private static void WaitForForegroundChanged(Func<object?> foregroundAccessor, object? normalForeground)
-    {
-        for (var i = 0; i < 32; i++)
-        {
-            Dispatcher.UIThread.RunJobs();
-            if (!Equals(foregroundAccessor(), normalForeground))
-            {
-                return;
-            }
-            Thread.Sleep(10);
         }
     }
 

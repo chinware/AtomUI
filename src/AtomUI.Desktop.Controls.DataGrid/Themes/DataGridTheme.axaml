@@ -15,7 +15,7 @@
                 <Border Name="FrameContentClip"
                         CornerRadius="{TemplateBinding FrameCornerRadius}"
                         ClipToBounds="True">
-                    <atom:Spin IsSpinning="{TemplateBinding IsOperating}"
+                    <atom:Spin IsSpinning="{TemplateBinding EffectiveIsOperating}"
                                IsTipVisible="True"
                                Tip="{TemplateBinding OperatingMsg}"
                                CustomIndicator="{TemplateBinding CustomOperatingIndicator}"

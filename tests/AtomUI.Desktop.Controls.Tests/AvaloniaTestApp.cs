@@ -1,7 +1,12 @@
 using Avalonia;
 using Avalonia.Headless;
+using Avalonia.Headless.XUnit;
+using AtomUI.Controls;
+using AtomUI.Localization;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.TestAppBuilder))]
+[assembly: AvaloniaTestFramework]
+[assembly: AvaloniaTestIsolation(AvaloniaTestIsolationLevel.PerTest)]
 
 namespace AtomUI.Desktop.Controls.Tests;
 
@@ -11,6 +16,12 @@ internal static class AvaloniaTestApp
 
     public static void EnsureInitialized()
     {
+        if (Application.Current is not null)
+        {
+            Volatile.Write(ref _initialized, 1);
+            return;
+        }
+
         if (Interlocked.Exchange(ref _initialized, 1) == 1)
         {
             return;
@@ -33,6 +44,17 @@ internal sealed class TestApplication : Application
 {
     public override void Initialize()
     {
-        this.UseAtomUI(builder => builder.UseDesktopControls().UseDesktopExtras());
+        this.UseAtomUI(builder => builder.UseDesktopControls()
+                                         .UseImageLoading(options =>
+                                         {
+                                             options.MaxConcurrentDownloads = 1;
+                                             options.MaxConcurrentLocalReads = 1;
+                                             options.MaxConcurrentDecodes = 1;
+                                         })
+                                         .UseDesktopColorPicker()
+                                         .UseDesktopExtras()
+                                         .UseLanguages(
+                                             LanguageTags.EnUS,
+                                             [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]));
     }
 }

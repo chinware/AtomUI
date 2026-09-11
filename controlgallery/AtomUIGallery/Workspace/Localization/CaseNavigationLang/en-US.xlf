@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CaseNavigationLangResourceKind">
+    <unit id="CollapseNavigation">
+      <segment>
+        <source>Collapse navigation</source>
+      </segment>
+    </unit>
+    <unit id="Community">
+      <segment>
+        <source>Community</source>
+      </segment>
+    </unit>
+    <unit id="Components">
+      <segment>
+        <source>Components</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Avatar">
+      <segment>
+        <source>Avatar</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Badge">
+      <segment>
+        <source>Badge</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Calendar">
+      <segment>
+        <source>Calendar</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Card">
+      <segment>
+        <source>Card</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Carousel">
+      <segment>
+        <source>Carousel</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Collapse">
+      <segment>
+        <source>Collapse</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_DataGrid">
+      <segment>
+        <source>DataGrid</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Descriptions">
+      <segment>
+        <source>Descriptions</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Empty">
+      <segment>
+        <source>Empty</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Expander">
+      <segment>
+        <source>Expander</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_GroupBox">
+      <segment>
+        <source>GroupBox</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_ImagePreviewer">
+      <segment>
+        <source>ImagePreviewer</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_InfoFlyout">
+      <segment>
+        <source>InfoFlyout</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_List">
+      <segment>
+        <source>List</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_QRCode">
+      <segment>
+        <source>QRCode</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Segmented">
+      <segment>
+        <source>Segmented</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Statistic">
+      <segment>
+        <source>Statistic</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Tag">
+      <segment>
+        <source>Tag</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Timeline">
+      <segment>
+        <source>Timeline</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Tooltip">
+      <segment>
+        <source>Tooltip</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Tour">
+      <segment>
+        <source>Tour</source>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_TreeView">
+      <segment>
+        <source>TreeView</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_AutoComplete">
+      <segment>
+        <source>AutoComplete</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Cascader">
+      <segment>
+        <source>Cascader</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_CheckBox">
+      <segment>
+        <source>CheckBox</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_ColorPicker">
+      <segment>
+        <source>ColorPicker</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_DatePicker">
+      <segment>
+        <source>DatePicker</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Form">
+      <segment>
+        <source>Form</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_LineEdit">
+      <segment>
+        <source>LineEdit</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Mentions">
+      <segment>
+        <source>Mentions</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_NumberUpDown">
+      <segment>
+        <source>NumberUpDown</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_RadioButton">
+      <segment>
+        <source>RadioButton</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Rate">
+      <segment>
+        <source>Rate</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Select">
+      <segment>
+        <source>Select</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Slider">
+      <segment>
+        <source>Slider</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_TimePicker">
+      <segment>
+        <source>TimePicker</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_ToggleSwitch">
+      <segment>
+        <source>ToggleSwitch</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Transfer">
+      <segment>
+        <source>Transfer</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_TreeSelect">
+      <segment>
+        <source>TreeSelect</source>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Upload">
+      <segment>
+        <source>Upload</source>
+      </segment>
+    </unit>
+    <unit id="ExpandNavigation">
+      <segment>
+        <source>Expand navigation</source>
+      </segment>
+    </unit>
+    <unit id="Feedback">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Alert">
+      <segment>
+        <source>Alert</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Drawer">
+      <segment>
+        <source>Drawer</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Message">
+      <segment>
+        <source>Message</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Modal">
+      <segment>
+        <source>Modal</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Notification">
+      <segment>
+        <source>Notification</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_PopupConfirm">
+      <segment>
+        <source>PopupConfirm</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_ProgressBar">
+      <segment>
+        <source>ProgressBar</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Result">
+      <segment>
+        <source>Result</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Skeleton">
+      <segment>
+        <source>Skeleton</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Spin">
+      <segment>
+        <source>Spin</source>
+      </segment>
+    </unit>
+    <unit id="Feedback_Watermark">
+      <segment>
+        <source>Watermark</source>
+      </segment>
+    </unit>
+    <unit id="General">
+      <segment>
+        <source>General</source>
+      </segment>
+    </unit>
+    <unit id="General_AboutUs">
+      <segment>
+        <source>AboutUS</source>
+      </segment>
+    </unit>
+    <unit id="General_Button">
+      <segment>
+        <source>Button</source>
+      </segment>
+    </unit>
+    <unit id="General_CustomizeTheme">
+      <segment>
+        <source>CustomizeTheme</source>
+      </segment>
+    </unit>
+    <unit id="General_FloatButton">
+      <segment>
+        <source>FloatButton</source>
+      </segment>
+    </unit>
+    <unit id="General_Icons">
+      <segment>
+        <source>Icons</source>
+      </segment>
+    </unit>
+    <unit id="General_Palette">
+      <segment>
+        <source>Palette</source>
+      </segment>
+    </unit>
+    <unit id="General_Separator">
+      <segment>
+        <source>Separator</source>
+      </segment>
+    </unit>
+    <unit id="General_SplitButton">
+      <segment>
+        <source>SplitButton</source>
+      </segment>
+    </unit>
+    <unit id="General_Window">
+      <segment>
+        <source>Window</source>
+      </segment>
+    </unit>
+    <unit id="Layout">
+      <segment>
+        <source>Layout</source>
+      </segment>
+    </unit>
+    <unit id="Layout_FlexPanel">
+      <segment>
+        <source>FlexPanel</source>
+      </segment>
+    </unit>
+    <unit id="Layout_Grid">
+      <segment>
+        <source>Grid</source>
+      </segment>
+    </unit>
+    <unit id="Layout_Masonry">
+      <segment>
+        <source>Masonry</source>
+      </segment>
+    </unit>
+    <unit id="Layout_Space">
+      <segment>
+        <source>Space</source>
+      </segment>
+    </unit>
+    <unit id="Layout_Splitter">
+      <segment>
+        <source>Splitter</source>
+      </segment>
+    </unit>
+    <unit id="Navigation">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_Breadcrumb">
+      <segment>
+        <source>Breadcrumb</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_ButtonSpinner">
+      <segment>
+        <source>ButtonSpinner</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_ComboBox">
+      <segment>
+        <source>ComboBox</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_DropdownButton">
+      <segment>
+        <source>DropdownButton</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_Menu">
+      <segment>
+        <source>Menu</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_Pagination">
+      <segment>
+        <source>Pagination</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_Steps">
+      <segment>
+        <source>Steps</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_TabControl">
+      <segment>
+        <source>TabControl</source>
+      </segment>
+    </unit>
+    <unit id="Navigation_TabStrip">
+      <segment>
+        <source>TabStrip</source>
+      </segment>
+    </unit>
+    <unit id="Other">
+      <segment>
+        <source>Other</source>
+      </segment>
+    </unit>
+    <unit id="Other_BorderBeam">
+      <segment>
+        <source>BorderBeam</source>
+      </segment>
+    </unit>
+    <unit id="Other_Splash">
+      <segment>
+        <source>Splash</source>
+      </segment>
+    </unit>
+    <unit id="Overview">
+      <segment>
+        <source>Overview</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

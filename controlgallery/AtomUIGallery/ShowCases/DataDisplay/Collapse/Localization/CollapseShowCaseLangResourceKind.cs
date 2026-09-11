@@ -1,0 +1,52 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum CollapseShowCaseLangResourceKind
+{
+    ScenarioExamples,
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    ScenarioBasic,
+    ScenarioAppearance,
+    ScenarioBehavior,
+    CollapseTitle,
+    CollapseDescription,
+    SizeTitle,
+    SizeDescription,
+    AccordionTitle,
+    AccordionDescription,
+    NestedPanelTitle,
+    NestedPanelDescription,
+    BorderlessTitle,
+    BorderlessDescription,
+    NoArrowTitle,
+    NoArrowDescription,
+    ExpandIconLocationTitle,
+    ExpandIconLocationDescription,
+    GhostCollapseTitle,
+    GhostCollapseDescription,
+    CollapsibleTitle,
+    CollapsibleDescription,
+    CustomPaddingTitle,
+    CustomPaddingDescription,
+    P2HeaderThisIsPanelHeaderN1,
+    P2HeaderThisIsPanelHeaderN2,
+    P2HeaderThisIsPanelHeaderN3,
+    P2TitleDefaultSize,
+    P2HeaderThisIsDefaultSizePanelHeader,
+    P2TitleSmallSize,
+    P2HeaderThisIsSmallSizePanelHeader,
+    P2TitleLargeSize,
+    P2HeaderThisIsLargeSizePanelHeader,
+    P2HeaderThisPanelCanOnlyBeCollapsedByClicking,
+    P2HeaderThisPanelCanOnlyBeCollapsedByClicking2,
+    P2HeaderThisPanelCanTBeCollapsed,
+    P2TextADogIsATypeOfDomesticatedAnimal,
+    P2TextExpandIconPosition,
+    P2ContentStart,
+    P2ContentEnd
+}

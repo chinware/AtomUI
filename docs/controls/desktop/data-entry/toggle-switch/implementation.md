@@ -79,7 +79,7 @@ Form.ClearValue()    → IsChecked = null
 
 内容变化时，`SetupContent` 会释放旧 on/off 内容对应的 `CompositeDisposable`，再为新的 `PathIcon` / `Icon` 建立尺寸和前景色绑定。维护时必须保持内容替换和 disposable 释放成对出现。
 
-`SwitchKnob` 在 `OnAttachedToVisualTree` 中根据 `_isLoading` 启动加载动画，在 `OnDetachedFromVisualTree` 中取消并释放 `CancellationTokenSource`。
+`SwitchKnob` 在 `OnAttachedToVisualTree` 中根据 `_isLoading` 启动加载动画，在 `OnDetachedFromVisualTree` 中取消并释放 `CancellationTokenSource`。加载旋转使用共享无限动画 helper，并显式采用 `PlaybackBehavior.OnlyIfVisible`；ToggleSwitch 自身或 Visual 祖先不可见时 animation clock 暂停，重新可见后继续。
 
 ## 6. 交互与事件处理
 
@@ -137,6 +137,7 @@ ToggleSwitch 不通过反射访问模板结构。模板结构由稳定 part 和 
 - on/off 图标内容的 relay binding 必须在内容替换时释放。
 - `IsLoading` 设置的 cursor local value 必须在退出 loading 时 dispose。
 - `SwitchKnob` 的 loading `CancellationTokenSource` 必须在停止 loading 和 detach 时释放。
+- 隐藏祖先下的 loading animation 不得继续推进 animation clock。
 - Token 只表达尺寸、颜色、阴影、字体和加载动画周期，不承载 `IsChecked`、`IsLoading` 或内容实例状态。
 
 当前图标内容绑定使用 C# relay binding，因为目标对象来自用户提供的 runtime content，不是稳定模板 part。模板内部固定关系应继续优先使用 AXAML binding 和 selector。

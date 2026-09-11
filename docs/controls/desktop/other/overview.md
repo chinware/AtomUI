@@ -6,6 +6,10 @@
 
 ## 控件文档
 
+- [Popup 桌面版架构设计](popup/overview.md)
+- [Popup 桌面版实现原理](popup/implementation.md)
+- [Popup Token 设计](popup/token.md)
+- [Popup Changelog](popup/changelog.md)
 - [BorderBeam 桌面版架构设计](border-beam/overview.md)
 - [BorderBeam 桌面版实现原理](border-beam/implementation.md)
 - [BorderBeam Token 设计](border-beam/token.md)

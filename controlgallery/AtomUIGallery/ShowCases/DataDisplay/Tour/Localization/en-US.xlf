@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TourShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="CustomActionDescription">
+      <segment>
+        <source>Custom action.</source>
+      </segment>
+    </unit>
+    <unit id="CustomActionTitle">
+      <segment>
+        <source>Custom action</source>
+      </segment>
+    </unit>
+    <unit id="CustomHighlightedAreaStyleDescription">
+      <segment>
+        <source>Using gap to control the radius of highlight area and the offset between highlight area and the element.</source>
+      </segment>
+    </unit>
+    <unit id="CustomHighlightedAreaStyleTitle">
+      <segment>
+        <source>Custom highlighted area style</source>
+      </segment>
+    </unit>
+    <unit id="CustomIndicatorDescription">
+      <segment>
+        <source>Custom indicator.</source>
+      </segment>
+    </unit>
+    <unit id="CustomIndicatorTitle">
+      <segment>
+        <source>Custom indicator</source>
+      </segment>
+    </unit>
+    <unit id="CustomMaskDescription">
+      <segment>
+        <source>Custom mask color.</source>
+      </segment>
+    </unit>
+    <unit id="CustomMaskTitle">
+      <segment>
+        <source>Custom mask</source>
+      </segment>
+    </unit>
+    <unit id="NonModalDescription">
+      <segment>
+        <source>Use mask={false} to make Tour non-modal. At the meantime it is recommended to use with type=primary to emphasize the guide itself.</source>
+      </segment>
+    </unit>
+    <unit id="NonModalTitle">
+      <segment>
+        <source>Non-modal</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBeginNonModalTour">
+      <segment>
+        <source>Begin non-modal Tour</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBeginTour">
+      <segment>
+        <source>Begin Tour</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSave">
+      <segment>
+        <source>Save</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSkip">
+      <segment>
+        <source>Skip</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUpload">
+      <segment>
+        <source>Upload</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionClickToSeeOtherActions">
+      <segment>
+        <source>Click to see other actions.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionDisplayedInTheCenterOfScreen">
+      <segment>
+        <source>Displayed in the center of screen.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheLeftOfTarget">
+      <segment>
+        <source>On the left of target.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheRightOfTarget">
+      <segment>
+        <source>On the right of target.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheTopOfTarget">
+      <segment>
+        <source>On the top of target.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionPutYourFilesHere">
+      <segment>
+        <source>Put your files here.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionSaveYourChanges">
+      <segment>
+        <source>Save your changes.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextHorizontalOffset">
+      <segment>
+        <source>Horizontal offset:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRadius">
+      <segment>
+        <source>Radius:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextVerticalOffset">
+      <segment>
+        <source>Vertical offset:</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleCenter">
+      <segment>
+        <source>Center</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleOtherActions">
+      <segment>
+        <source>Other Actions</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleSave">
+      <segment>
+        <source>Save</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleUploadFile">
+      <segment>
+        <source>Upload File</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Tour combines step targets, masks, placement, indicators, and custom actions to build lightweight product guidance without leaving the current page.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Guide users through important workflows with contextual overlays.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Change the placement of the guide relative to the target, there are 12 placements available. When target={null} the guide will show in the center.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

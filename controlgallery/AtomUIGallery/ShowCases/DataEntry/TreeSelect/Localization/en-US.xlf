@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind">
+    <unit id="AsynchronousLoadingDescription">
+      <segment>
+        <source>Asynchronous loading tree node.</source>
+      </segment>
+    </unit>
+    <unit id="AsynchronousLoadingTitle">
+      <segment>
+        <source>Asynchronous loading</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="BindingClearButton">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>SelectedItem and SelectedItems are two-way bindable by default, including in-place collection changes.</source>
+      </segment>
+    </unit>
+    <unit id="BindingMultipleLabel">
+      <segment>
+        <source>Multiple selected items</source>
+      </segment>
+    </unit>
+    <unit id="BindingSetMultipleButton">
+      <segment>
+        <source>Select two nodes</source>
+      </segment>
+    </unit>
+    <unit id="BindingSetSingleButton">
+      <segment>
+        <source>Select your leaf</source>
+      </segment>
+    </unit>
+    <unit id="BindingSingleLabel">
+      <segment>
+        <source>Single selected item</source>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>Binding</source>
+      </segment>
+    </unit>
+    <unit id="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value:</source>
+      </segment>
+    </unit>
+    <unit id="CheckableDescription">
+      <segment>
+        <source>Multiple and checkable.</source>
+      </segment>
+    </unit>
+    <unit id="CheckableTitle">
+      <segment>
+        <source>Checkable</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="GenerateFromTreeDataDescription">
+      <segment>
+        <source>The tree structure can be populated using treeData property. This is a quick and easy way to provide the tree content.</source>
+      </segment>
+    </unit>
+    <unit id="GenerateFromTreeDataTitle">
+      <segment>
+        <source>Generate from tree data</source>
+      </segment>
+    </unit>
+    <unit id="MaxCountDescription">
+      <segment>
+        <source>You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.</source>
+      </segment>
+    </unit>
+    <unit id="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionDescription">
+      <segment>
+        <source>Multiple selection usage.</source>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionTitle">
+      <segment>
+        <source>Multiple Selection</source>
+      </segment>
+    </unit>
+    <unit id="P2AddOnPrefix">
+      <segment>
+        <source>Prefix</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomleft">
+      <segment>
+        <source>Bottom Left</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomright">
+      <segment>
+        <source>Bottom Right</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>Top Left</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>Top Right</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode">
+      <segment>
+        <source>Child Node</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode1">
+      <segment>
+        <source>Child Node 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode2">
+      <segment>
+        <source>Child Node 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode3">
+      <segment>
+        <source>Child Node 3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode4">
+      <segment>
+        <source>Child Node 4</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode5">
+      <segment>
+        <source>Child Node 5</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode6">
+      <segment>
+        <source>Child Node 6</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode7">
+      <segment>
+        <source>Child Node 7</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExpandToLoad">
+      <segment>
+        <source>Expand to load</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf1">
+      <segment>
+        <source>Leaf 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf11">
+      <segment>
+        <source>Leaf 11</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf2">
+      <segment>
+        <source>Leaf 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf3">
+      <segment>
+        <source>Leaf 3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf4">
+      <segment>
+        <source>Leaf 4</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf5">
+      <segment>
+        <source>Leaf 5</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf6">
+      <segment>
+        <source>Leaf 6</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMyLeaf">
+      <segment>
+        <source>My leaf</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNode1">
+      <segment>
+        <source>Node 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNode2">
+      <segment>
+        <source>Node 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent1">
+      <segment>
+        <source>Parent 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent10">
+      <segment>
+        <source>Parent 1-0</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent11">
+      <segment>
+        <source>Parent 1-1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSss">
+      <segment>
+        <source>Node SSS</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTreeNode">
+      <segment>
+        <source>Tree Node</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYourLeaf">
+      <segment>
+        <source>Your leaf</source>
+      </segment>
+    </unit>
+    <unit id="P2OffContentShowIcon">
+      <segment>
+        <source>Show icon</source>
+      </segment>
+    </unit>
+    <unit id="P2OffContentShowLeafIcon">
+      <segment>
+        <source>Show leaf icon</source>
+      </segment>
+    </unit>
+    <unit id="P2OffContentTreeLine">
+      <segment>
+        <source>Tree line</source>
+      </segment>
+    </unit>
+    <unit id="P2OnContentShowIcon">
+      <segment>
+        <source>Show icon</source>
+      </segment>
+    </unit>
+    <unit id="P2OnContentShowLeafIcon">
+      <segment>
+        <source>Show leaf icon</source>
+      </segment>
+    </unit>
+    <unit id="P2OnContentTreeLine">
+      <segment>
+        <source>Tree line</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TreeSelect combines an input selector with tree navigation, making it suitable for hierarchical categories, organization nodes, permissions, and other nested option sets.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select values from hierarchical data in a compact input.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Custom prefix and suffixIcon.</source>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBehavior">
+      <segment>
+        <source>Behavior</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ShowTreeLineDescription">
+      <segment>
+        <source>Use treeLine to show the line style.</source>
+      </segment>
+    </unit>
+    <unit id="ShowTreeLineTitle">
+      <segment>
+        <source>Show Tree Line</source>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>TreeSelect supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Sizes</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to TreeSelect with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of TreeSelect, there are four variants: outlined filled borderless and underlined.</source>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

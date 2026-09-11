@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -18,6 +19,13 @@ public class ShowCaseMasonryPanel : Panel
         AvaloniaProperty.Register<ShowCaseMasonryPanel, double>(nameof(RowGap), 16);
 
     private List<Rect> _arrangeRects = new();
+    private MasonryLayout? _measuredLayout;
+    private double _measuredEffectiveWidth;
+    private int _measuredChildCount;
+    private bool _hasMeasuredLayout;
+    private readonly Dictionary<Control, int> _stableColumns = new(ReferenceEqualityComparer.Instance);
+    private int _stableColumnCount;
+    private bool _hasStableAssignments;
 
     public double MinItemWidth
     {
@@ -55,13 +63,29 @@ public class ShowCaseMasonryPanel : Panel
     protected override Size MeasureOverride(Size availableSize)
     {
         var layout = CalculateLayout(availableSize.Width, true);
+        _measuredLayout = layout;
+        _measuredEffectiveWidth = layout.Width;
+        _measuredChildCount = Children.Count;
+        _hasMeasuredLayout = true;
         _arrangeRects = layout.Rects;
         return new Size(layout.Width, layout.Height);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var layout = CalculateLayout(finalSize.Width, false);
+        var effectiveWidth = ResolveAvailableWidth(finalSize.Width);
+        var canReuseMeasuredLayout = _hasMeasuredLayout &&
+                                      _measuredChildCount == Children.Count &&
+                                      AreClose(_measuredEffectiveWidth, effectiveWidth);
+        // A ScrollViewer (and similar hosts) can measure us with an unbounded width and then
+        // arrange us at the viewport width. The child DesiredSize then belongs to a different
+        // column width; remeasure before arranging so height-dependent Masonry positions do not
+        // lag one layout pass behind the actual viewport.
+        var layout = canReuseMeasuredLayout
+            ? _measuredLayout!.Value
+            : CalculateLayout(finalSize.Width, measureChildren: true);
+        _hasMeasuredLayout = false;
+        _measuredLayout = null;
         _arrangeRects = layout.Rects;
 
         for (var i = 0; i < Children.Count; i++)
@@ -69,7 +93,21 @@ public class ShowCaseMasonryPanel : Panel
             Children[i].Arrange(_arrangeRects[i]);
         }
 
+        CommitStableAssignments(layout);
         return finalSize;
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _hasMeasuredLayout = false;
+        _measuredLayout = null;
+        ClearStableAssignments();
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private static bool AreClose(double left, double right)
+    {
+        return Math.Abs(left - right) < 0.01;
     }
 
     private MasonryLayout CalculateLayout(double availableWidth, bool measureChildren)
@@ -83,12 +121,16 @@ public class ShowCaseMasonryPanel : Panel
             : Math.Max(0, (width - columnGap * (columnCount - 1)) / columnCount);
         var columnHeights = new double[columnCount];
         var rects         = new List<Rect>(Children.Count);
+        var columns       = new List<int>(Children.Count);
+        var fullSpans     = new List<bool>(Children.Count);
 
         foreach (var child in Children)
         {
             if (!child.IsVisible)
             {
                 rects.Add(default);
+                columns.Add(-1);
+                fullSpans.Add(false);
                 continue;
             }
 
@@ -105,19 +147,23 @@ public class ShowCaseMasonryPanel : Panel
                 var top = Max(columnHeights);
                 var y   = top > 0 ? top + rowGap : 0;
                 rects.Add(new Rect(0, y, width, childHeight));
+                columns.Add(0);
+                fullSpans.Add(true);
                 Fill(columnHeights, y + childHeight);
             }
             else
             {
-                var columnIndex = IndexOfShortestColumn(columnHeights);
+                var columnIndex = ResolveColumnIndex(child, columnHeights, columnCount);
                 var x           = columnIndex * (columnWidth + columnGap);
                 var y           = columnHeights[columnIndex] > 0 ? columnHeights[columnIndex] + rowGap : 0;
                 rects.Add(new Rect(x, y, columnWidth, childHeight));
+                columns.Add(columnIndex);
+                fullSpans.Add(false);
                 columnHeights[columnIndex] = y + childHeight;
             }
         }
 
-        return new MasonryLayout(width, Max(columnHeights), rects);
+        return new MasonryLayout(width, Max(columnHeights), columnCount, rects, columns, fullSpans);
     }
 
     private double ResolveAvailableWidth(double availableWidth)
@@ -162,6 +208,49 @@ public class ShowCaseMasonryPanel : Panel
         return columnIndex;
     }
 
+    private int ResolveColumnIndex(Control child, double[] columnHeights, int columnCount)
+    {
+        var shortestColumn = IndexOfShortestColumn(columnHeights);
+        if (!_hasStableAssignments ||
+            _stableColumnCount != columnCount ||
+            !_stableColumns.TryGetValue(child, out var previousColumn) ||
+            previousColumn < 0 ||
+            previousColumn >= columnCount)
+        {
+            return shortestColumn;
+        }
+
+        return previousColumn;
+    }
+
+    private void CommitStableAssignments(MasonryLayout layout)
+    {
+        _stableColumns.Clear();
+        for (var i = 0; i < Children.Count && i < layout.Columns.Count; i++)
+        {
+            if (!Children[i].IsVisible || layout.FullSpans[i])
+            {
+                continue;
+            }
+
+            var column = layout.Columns[i];
+            if (column >= 0 && column < layout.ColumnCount)
+            {
+                _stableColumns[Children[i]] = column;
+            }
+        }
+
+        _stableColumnCount    = layout.ColumnCount;
+        _hasStableAssignments = true;
+    }
+
+    private void ClearStableAssignments()
+    {
+        _stableColumns.Clear();
+        _stableColumnCount    = 0;
+        _hasStableAssignments = false;
+    }
+
     private static double Max(double[] values)
     {
         var max = 0d;
@@ -181,5 +270,11 @@ public class ShowCaseMasonryPanel : Panel
         }
     }
 
-    private readonly record struct MasonryLayout(double Width, double Height, List<Rect> Rects);
+    private readonly record struct MasonryLayout(
+        double Width,
+        double Height,
+        int ColumnCount,
+        List<Rect> Rects,
+        List<int> Columns,
+        List<bool> FullSpans);
 }

@@ -20,9 +20,13 @@ public partial class DataGrid
         get
         {
             double rowsWidth = double.PositiveInfinity;
-            if (RowsPresenterAvailableSize.HasValue)
+            if (!IsEmptyDataSource && RowsPresenterAvailableSize.HasValue)
             {
                 rowsWidth = Math.Max(0, RowsPresenterAvailableSize.Value.Width - ActualRowHeaderWidth);
+            }
+            else if (_columnViewportWidth.HasValue)
+            {
+                rowsWidth = _columnViewportWidth.Value;
             }
             return double.IsPositiveInfinity(rowsWidth) ? ColumnsInternal.VisibleEdgedColumnsWidth : rowsWidth;
         }

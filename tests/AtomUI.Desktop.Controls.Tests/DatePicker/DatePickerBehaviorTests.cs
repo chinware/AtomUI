@@ -2,9 +2,10 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
-using AvaloniaWindow = Avalonia.Controls.Window;
+using AvaloniaWindow = AtomUI.Desktop.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.DatePickers;
 
@@ -13,6 +14,154 @@ public class DatePickerBehaviorTests
     static DatePickerBehaviorTests()
     {
         AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Pinned_Open_Request_Opens_DatePicker_And_Its_Template_Popup()
+    {
+        var datePicker = new Desktop.Controls.DatePicker
+        {
+            Width           = 240,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(datePicker, () =>
+        {
+            datePicker.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var popup = datePicker.GetVisualDescendants()
+                                  .OfType<Popup>()
+                                  .Single(item => item.Name == "PART_Popup");
+            datePicker.IsPickerOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_DatePicker_Rejects_ClosePickerFlyout_Request()
+    {
+        var datePicker = new Desktop.Controls.DatePicker
+        {
+            Width           = 240,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(datePicker, () =>
+        {
+            datePicker.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = datePicker.GetVisualDescendants()
+                                  .OfType<Popup>()
+                                  .Single(item => item.Name == "PART_Popup");
+
+            datePicker.ClosePickerFlyout();
+            Dispatcher.UIThread.RunJobs();
+
+            datePicker.IsPickerOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_DatePicker_Close_Request_Does_Not_Publish_A_Transient_Closed_State()
+    {
+        var datePicker = new Desktop.Controls.DatePicker
+        {
+            Width           = 240,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(datePicker, () =>
+        {
+            datePicker.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var pickerOpenChangeCount = 0;
+            datePicker.PropertyChanged += (_, change) =>
+            {
+                if (change.Property.Name == "IsPickerOpen")
+                {
+                    ++pickerOpenChangeCount;
+                }
+            };
+
+            datePicker.ClosePickerFlyout();
+            Dispatcher.UIThread.RunJobs();
+
+            datePicker.IsPickerOpen.ShouldBeTrue();
+            pickerOpenChangeCount.ShouldBe(0);
+        });
+    }
+
+    [Fact]
+    public void Unpinning_A_Pending_DatePicker_Request_Clears_The_Business_Open_State()
+    {
+        var datePicker = new Desktop.Controls.DatePicker
+        {
+            Width           = 240,
+            IsMotionEnabled = false
+        };
+
+        datePicker.IsPopupPinnedOpen = true;
+        datePicker.IsPickerOpen.ShouldBeTrue();
+
+        datePicker.IsPopupPinnedOpen = false;
+
+        datePicker.IsPickerOpen.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Pinned_DatePicker_Detach_Cleans_Up_And_Reattach_Reopens()
+    {
+        var datePicker = new Desktop.Controls.DatePicker
+        {
+            Width           = 240,
+            IsMotionEnabled = false
+        };
+        var panel = new Avalonia.Controls.Grid();
+        panel.Children.Add(datePicker);
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 240,
+            Content = panel
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            datePicker.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = datePicker.GetVisualDescendants()
+                                  .OfType<Popup>()
+                                  .Single(item => item.Name == "PART_Popup");
+            popup.IsOpen.ShouldBeTrue();
+            datePicker.PickerPresenter.ShouldNotBeNull();
+
+            panel.Children.Remove(datePicker);
+            Dispatcher.UIThread.RunJobs();
+
+            datePicker.IsPopupPinnedOpen.ShouldBeTrue();
+            datePicker.IsPickerOpen.ShouldBeFalse();
+            datePicker.PickerPresenter.ShouldBeNull();
+            popup.IsOpen.ShouldBeFalse();
+
+            panel.Children.Add(datePicker);
+            Dispatcher.UIThread.RunJobs();
+
+            datePicker.IsPickerOpen.ShouldBeTrue();
+            datePicker.PickerPresenter.ShouldNotBeNull();
+            popup.IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            datePicker.IsPopupPinnedOpen = false;
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
     }
 
     [Fact]

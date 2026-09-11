@@ -2,6 +2,80 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-07
+
+- Design
+  - Define the formal ImagePreviewer loading architecture around `ImageSourceKey -> ImageSourceVersion -> ImageContentId -> ImageDecodeKey`, so source addresses no longer act as content identities.
+  - Separate source snapshots, validated encoded content and decoded content into application-owned stores while keeping Previewer collection and cache lifecycles independent.
+  - Define source-first validation, two-level single-flight, monotonic source commit generations, waiter-local cancellation, cache epochs and result leases as the shared loading invariants.
+  - Define the closed `ImageSource` hierarchy and `ImageFileValidationMode` as the public source contract without compatibility shims.
+  - Separate the public cache contract into `ImageCacheReadPolicy` and `ImageCacheStoragePolicy`; ordinary loads default to `ValidateSource`, while Reload uses a per-request `RefreshSource` override.
+  - Separate `ImageLoadOrigin` from `ImageSourceValidation` so cache location and source validation are not conflated.
+- Behavior
+  - Restore strict `Immediate` switching semantics for both the preview surface and the single cover: a target without a displayable image clears the previous frame and reports loading in the same UI update cycle, including the Idle interval before its request starts. Remove the retained-frame grace period and delayed callback from this mode.
+  - Keep `WaitForLoaded` as the only retained-frame mode and scope target markers to one tracker session, preventing late older requests, never-targeted preloads and stale markers from a closed host session from replacing the current visible frame.
+  - Recompute preview and cover display state immediately when `ImageSwitchMode` changes at runtime.
+  - Bind the Gallery rapid-switch cover and preview to the same rolling index so the demonstration compares the two display modes without targeting different items.
+- Breaking API
+  - Replace `ImageLoadSource` and its factories with the closed `ImageSource` hierarchy and concrete source constructors.
+  - Replace `ImageCacheMode` with orthogonal `ImageCacheReadPolicy` and `ImageCacheStoragePolicy` properties.
+  - Replace `ImageCacheSource` diagnostics with independent `ImageLoadOrigin`, `ImageSourceValidation` and `ContentId` result fields.
+- Implementation
+  - Make every ordinary load resolve or validate the source snapshot before constructing `ImageDecodeKey`; remove the SourceKey-based decoded fast path that could return stale images after same-path replacement.
+  - Store validated encoded bytes and decoded entries by SHA-256 `ImageContentId`, allowing different sources with identical content to share work without conflating source freshness.
+  - Add source commit generations, cache epochs and persistent-write serialization so late source/decode operations cannot roll back a newer snapshot or repopulate a cleared scope.
+  - Replace the persistent layout with stable `image-cache/` content and source stores; keep `formatRevision` internal and rebuild incompatible layouts without migration shims.
+  - Keep `CacheStorage=None` as a strict no-write policy even on persistent hits, and invalidate a source's prior memory/disk variant when HTTP changes to `no-store` without allowing late responses to erase newer generations.
+  - Keep ImagePreviewer Full and Thumbnail generations, cancellation sources, progress, states and result leases independent; collection and host lifecycle never clear the application cache.
+  - Propagate same-bucket Preload-to-Critical upgrades through a shared mutable waiter-priority state so queued source and decode work is reprioritized without canceling or restarting the request.
+  - Detach Full and Thumbnail results, publish a consistent image/state transition, and only then release old leases during unload, failed replacement and entry disposal, preventing a host from observing an already released image or a failed state paired with the previous frame.
+- Tests
+  - Add regressions for same-path file replacement, identical content across different sources, metadata versus content-hash file validation, cache read/storage policies and persistent content/source separation.
+  - Add an ImagePreviewer integration regression proving that clear-and-readd of the same file path renders the replacement without a manual cache clear.
+  - Add regressions for Immediate loading before request start, continuous rapid switching, runtime mode changes, monotonic WaitForLoaded fallback selection, atomic failed-state publication, display cleanup before lease release, queued priority promotion and synchronized Gallery cover/current bindings.
+- Docs
+  - Rewrite the formal ImagePreviewer architecture document with the content-addressed cache model, persistent `image-cache/` naming, source validation matrix, Previewer collection ownership and verification contract.
+  - Synchronize the switching design and implementation documents with strict Immediate loading semantics, WaitForLoaded-only retention and the no-timer resource boundary.
+
+## 2026-09-03
+
+- API
+  - Add `ImageSwitchMode` (`Immediate`, `WaitForLoaded`) and `AbstractImagePreviewer.ImageSwitchMode` (default `Immediate`) to select when the loading placeholder replaces the previous image while the target item switches.
+- Behavior
+  - Unify display continuity for both preview surface and cover: while the target has no image yet (including the Idle transient right after a switch) the previously loaded image stays visible; `Immediate` falls back to the loading placeholder only after a 300 ms grace period, `WaitForLoaded` keeps it indefinitely. High-frequency add-and-track-latest switching no longer produces blank-frame or spinner strobing in either mode.
+  - Feed the retained frame from two levels: the current item when it completes, and the latest completed full load across entries when the current item is superseded before finishing (switching faster than loading).
+  - Keep `ImageOpened` / `ImageFailed` timing bound to the target entry state machine; cancellations never produce failure events.
+- Loading pipeline
+  - Classify shared-operation internal cancellations (racing waiter teardown, `ClearCache(CancelInFlight)`) as cancellations instead of `InvalidSource` source failures in `ImageLoader`.
+  - Resolve cancellations benignly in `ImagePreviewEntry`: keep a previously committed image or return to Idle, without a Failed commit; the non-fatal fallback no longer swallows `OperationCanceledException`.
+  - Broadcast cached Full/Thumbnail reset notifications from `ImagePreviewEntry.Dispose()` before clearing subscribers so display holders drop references to released bitmaps.
+  - Adopt in-flight requests on same-bucket priority upgrades (Preload→Critical) instead of restarting them, so requests can complete when switching outpaces loading.
+- Hosts and theme
+  - Introduce the internal `ImagePreviewDisplayTracker` as the single display state machine shared by `ImagePreviewerDialog` and `ImagePreviewerOverlayHost`, replacing their duplicated current-entry tracking.
+  - Make both hosts observe effective-collection incremental changes so the display target follows entry replacement even when `CurrentIndex` keeps the same value (capped-list trimming no longer leaves a stale, eventually disposed entry displayed as a blank preview).
+  - Gate the viewer loading presenter with the `:loading:not(:has-image)` selector and make the cover hover mask depend only on `IsShowCoverMask`, decoupling both from raw load-state flicker.
+- Docs
+  - Add the switching display design document covering the display matrix, retained-frame lifecycle with grace and seeding, host collection following, subscription pairing, pipeline cancellation delivery and resource bounds; link it from the overview and implementation docs.
+
+## 2026-08-24
+
+- Breaking API
+  - Replace the single/multiple source properties and preview-specific source interfaces with `ItemsSource: IEnumerable<ImagePreviewItem>?`.
+  - Make `ImagePreviewItem` an immutable configuration record using `ImageLoadSource`, optional `ThumbnailSource`, per-item `FallbackSource`, `RequestOptions`, `Title` and `Tag`.
+  - Remove the control-private loader, loaded result types, scheduler and `MaxConcurrentLoads`; do not provide compatibility shims.
+  - Add current and cover load state projections, `ImageOpened`/`ImageFailed`, `ReloadCurrent()`, `ReloadItem(index)` and `ReloadCover()`.
+- Loading
+  - Route current, cover and neighbor requests through the application-scoped `IImageLoader` with Critical, High and Preload priorities.
+  - Keep Full and Thumbnail generations, cancellation and result leases isolated in internal `ImagePreviewEntry` instances.
+  - Apply fallback per item and per channel; one failed item never replaces the collection.
+  - Make Full and Thumbnail requests size-aware: re-decode when the 16 px physical bucket grows after real layout, resize or DPI change, keep
+    the previous lease during replacement, and deduplicate repeated requests for the same bucket.
+- Collections and lifecycle
+  - Support enumerable replacement and observable Add, Remove, Move, Replace and Reset while reusing unchanged entries.
+  - Re-materialize on reattach, release Full leases when the preview host closes, and release Full/Thumbnail leases on detach.
+- Titles
+  - Resolve titles in the order explicit preview/window title, item title, resolver and empty state.
+
 ## 2026-07-23
 
 - Behavior

@@ -1,6 +1,8 @@
 # DropdownButton 桌面版架构设计
 
-本文档定义 `DropdownButton` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [DropdownButton 桌面版实现原理](implementation.md)。DropdownButton 没有独立 Token 文档；主题主要复用 SharedToken 或关联控件 Token。设计和契约变化记录见 [DropdownButton Changelog](changelog.md)。
+本文档定义 `DropdownButton` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [DropdownButton 桌面版实现原理](implementation.md)。DropdownButton 没有独立 Token 文档；主题主要复用 SharedToken 或关联控件 Token。设计和契约变化记录见 [DropdownButton Changelog](changelog.md)。
+
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `DropdownButton`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 dropdown Flyout open state，并 relay 到 `DropdownFlyout` 及其 MenuFlyout Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
 ## 1. 控件定位
 
@@ -93,9 +95,8 @@ DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `DropdownButtonBaseTheme.axaml` | 定义桌面 DropdownButton 与 Button 共享的模板、图标尺寸和基础状态视觉。 |
+| `DropdownButtonBaseTheme.axaml` | 定义 DropdownButton 与 Button 共享的模板、图标尺寸和基础状态视觉。 |
 | `DropdownButtonTheme.axaml` | 定义 DropdownButton 的下拉指示器和具体视觉入口。 |
-| `Browser/DropdownButtonTheme.axaml` | Browser 平台的 DropdownButton 主题叶子，保持相同 public 状态与图标尺寸语义。 |
 
 DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
 
@@ -104,7 +105,7 @@ DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关�
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+- Native 和 Browser 支持宿主必须使用同一套 DropdownButton 主题资产；平台差异不能通过 Browser 专用主题分叉复制视觉。
 - 用户 icon 与 loading icon 的尺寸只能从 DropdownButton 自身的 `IconWidth`、`IconHeight` 投影；应用和 Gallery 不得通过 `/template/` 或 `PART_ButtonIcon`、`PART_LoadingIcon` selector 修改内部尺寸。
 - `OpenIndicator` 尺寸由 DropdownButton 主题单独管理，不复用用户 icon 的宽高属性。
 
@@ -193,6 +194,6 @@ LLMS 导出来源：
 | 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |
 | Public API | 覆盖属性默认值、事件触发、命令，以及从 Button 继承的 `IconWidth`、`IconHeight` 语义。 |
 | 状态模型 | 覆盖 open/close、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
-| AXAML/Theme | 检查两个图标 part 的 `TemplateBinding`、`OpenIndicator` 独立尺寸、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
+| AXAML/Theme | 检查两个图标 part 的 `TemplateBinding`、`OpenIndicator` 独立尺寸、伪类、资源 key、Light/Dark 主题和 Browser 共享主题注册。 |
 | Token | 确认没有新增专属 Token，主题仍复用 SharedToken 或关联控件 Token。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

@@ -279,12 +279,12 @@ public class DataGridFrameCornerRadiusTests
             BorderThickness      = new Thickness(1),
             CornerRadius         = new CornerRadius(6),
             IsFrameBorderVisible = isFrameBorderVisible,
-            ItemsSource = new[]
+            ItemsSource = new TestDataGridSource<GridRow>(new[]
             {
                 new GridRow("John"),
                 new GridRow("Jim"),
                 new GridRow("Joe")
-            },
+            }),
             Width = 360
         };
 

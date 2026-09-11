@@ -1,6 +1,7 @@
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 using Shouldly;
 
 using AtomUIWindow = AtomUI.Desktop.Controls.Window;
@@ -9,6 +10,47 @@ namespace AtomUI.Desktop.Controls.Tests.Window;
 
 internal static class DrawnDecorationsTestHost
 {
+    internal static Action InstallOnAttachedDecorations(
+        AtomUIWindow window,
+        Control overlayContent,
+        bool wrapOverlayContent = true)
+    {
+        var topLevelHost = GetTopLevelHost(window);
+        var decorationsField = GetDecorationsField(window);
+        var originalDecorations = decorationsField.GetValue(topLevelHost);
+        var decorations = new Avalonia.Controls.Chrome.WindowDrawnDecorations();
+        var contentProperty = typeof(Avalonia.Controls.Chrome.WindowDrawnDecorations)
+                              .GetProperty(
+                                  nameof(Avalonia.Controls.Chrome.WindowDrawnDecorations.Content),
+                                  BindingFlags.Instance | BindingFlags.Public)
+                              .ShouldNotBeNull();
+        var contentSetter = contentProperty.GetSetMethod(nonPublic: true).ShouldNotBeNull();
+        var effectiveOverlay = wrapOverlayContent
+            ? new Panel { Children = { overlayContent } }
+            : overlayContent;
+        var content = new Avalonia.Controls.Chrome.WindowDrawnDecorationsContent
+        {
+            Overlay = effectiveOverlay
+        };
+
+        contentSetter.Invoke(decorations, new object?[] { content });
+        decorationsField.SetValue(topLevelHost, decorations);
+
+        var visualChildren = typeof(Visual)
+                             .GetProperty("VisualChildren", BindingFlags.Instance | BindingFlags.NonPublic)
+                             .ShouldNotBeNull()
+                             .GetValue(topLevelHost)
+                             .ShouldBeAssignableTo<IList<Visual>>()!;
+        visualChildren.Add(effectiveOverlay);
+        overlayContent.IsAttachedToVisualTree().ShouldBeTrue();
+
+        return () =>
+        {
+            visualChildren.Remove(effectiveOverlay);
+            decorationsField.SetValue(topLevelHost, originalDecorations);
+        };
+    }
+
     internal static Action Install(
         AtomUIWindow window,
         Control overlayContent,

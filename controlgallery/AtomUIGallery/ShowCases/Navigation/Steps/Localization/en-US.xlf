@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.StepsShowCaseLangResourceKind">
+    <unit id="ApiEventCurrentChangeRequested">
+      <segment>
+        <source>Raised when an enabled non-current item is activated; the caller decides whether to update Current.</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic step bar.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ClickableDescription">
+      <segment>
+        <source>Setting IsItemClickable=true makes Steps clickable.</source>
+      </segment>
+    </unit>
+    <unit id="ClickableTitle">
+      <segment>
+        <source>Clickable</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="DotStyleDescription">
+      <segment>
+        <source>Steps with progress dot style.</source>
+      </segment>
+    </unit>
+    <unit id="DotStyleTitle">
+      <segment>
+        <source>Dot Style</source>
+      </segment>
+    </unit>
+    <unit id="DotStyleVerticalDescription">
+      <segment>
+        <source>Steps with progress dot style vertical.</source>
+      </segment>
+    </unit>
+    <unit id="DotStyleVerticalTitle">
+      <segment>
+        <source>Dot Style Vertical</source>
+      </segment>
+    </unit>
+    <unit id="ErrorStatusDescription">
+      <segment>
+        <source>By using status of Steps, you can specify the state for current step.</source>
+      </segment>
+    </unit>
+    <unit id="ErrorStatusTitle">
+      <segment>
+        <source>Error status</source>
+      </segment>
+    </unit>
+    <unit id="InlineStepsDescription">
+      <segment>
+        <source>Inline type steps, suitable for displaying the process and current state of the object in the list content scene.</source>
+      </segment>
+    </unit>
+    <unit id="InlineStepsTitle">
+      <segment>
+        <source>Inline Steps</source>
+      </segment>
+    </unit>
+    <unit id="InlineStyleCombinationDescription">
+      <segment>
+        <source>Inline step bar modifies the style and aligns through offset.</source>
+      </segment>
+    </unit>
+    <unit id="InlineStyleCombinationTitle">
+      <segment>
+        <source>Inline Style Combination</source>
+      </segment>
+    </unit>
+    <unit id="MiniVersionDescription">
+      <segment>
+        <source>By setting like this: SizeType to Small, you can get a mini version.</source>
+      </segment>
+    </unit>
+    <unit id="MiniVersionTitle">
+      <segment>
+        <source>Mini version</source>
+      </segment>
+    </unit>
+    <unit id="NavigationStepsDescription">
+      <segment>
+        <source>Navigation steps.</source>
+      </segment>
+    </unit>
+    <unit id="NavigationStepsTitle">
+      <segment>
+        <source>Navigation Steps</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDone">
+      <segment>
+        <source>Done</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentFirstContent">
+      <segment>
+        <source>First-content</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLastContent">
+      <segment>
+        <source>Last-content</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentNext">
+      <segment>
+        <source>Next</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrevious">
+      <segment>
+        <source>Previous</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSecondContent">
+      <segment>
+        <source>Second-content</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN1">
+      <segment>
+        <source>This is Step 1</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN2">
+      <segment>
+        <source>This is Step 2</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN3">
+      <segment>
+        <source>This is Step 3</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN4">
+      <segment>
+        <source>This is Step 4</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN5">
+      <segment>
+        <source>This is Step 5</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsADescription">
+      <segment>
+        <source>This is a description.</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCurrentProcess">
+      <segment>
+        <source>current process</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDone">
+      <segment>
+        <source>Done</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFinishN1">
+      <segment>
+        <source>finish 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFinishN2">
+      <segment>
+        <source>finish 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFinished">
+      <segment>
+        <source>Finished</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFirst">
+      <segment>
+        <source>First</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderInProgress">
+      <segment>
+        <source>In Progress</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLogin">
+      <segment>
+        <source>Login</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPay">
+      <segment>
+        <source>Pay</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSecond">
+      <segment>
+        <source>Second</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN1">
+      <segment>
+        <source>Step 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN2">
+      <segment>
+        <source>Step 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN3">
+      <segment>
+        <source>Step 3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN4">
+      <segment>
+        <source>Step 4</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN5">
+      <segment>
+        <source>Step 5</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThird">
+      <segment>
+        <source>Third</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderVerification">
+      <segment>
+        <source>Verification</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWait">
+      <segment>
+        <source>wait</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWaiting">
+      <segment>
+        <source>Waiting</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderLeftTime">
+      <segment>
+        <source>Left 00:00:08</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderSubTitle">
+      <segment>
+        <source>Sub Title</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderWaitingForLongTime">
+      <segment>
+        <source>waiting for longlong time</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignADesignLanguageForBackgroundApplications">
+      <segment>
+        <source>Ant Design, a design language for background applications, is refined by Ant UED Team</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN1">
+      <segment>
+        <source>Ant Design Title 1</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN2">
+      <segment>
+        <source>Ant Design Title 2</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN3">
+      <segment>
+        <source>Ant Design Title 3</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN4">
+      <segment>
+        <source>Ant Design Title 4</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCurrent">
+      <segment>
+        <source>Current:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Steps display a sequence of tasks, progress, navigation states, and optional step content for workflows that need clear stage awareness.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Guide users through ordered tasks and process states.</source>
+      </segment>
+    </unit>
+    <unit id="PanelStepsDescription">
+      <segment>
+        <source>Panel steps with filled and outlined variants.</source>
+      </segment>
+    </unit>
+    <unit id="PanelStepsTitle">
+      <segment>
+        <source>Panel Steps</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioDotClickable">
+      <segment>
+        <source>Dot &amp; Clickable</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioInline">
+      <segment>
+        <source>Inline</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioInteractive">
+      <segment>
+        <source>Interactive</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioNavigation">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioProgress">
+      <segment>
+        <source>Progress</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioVertical">
+      <segment>
+        <source>Vertical</source>
+      </segment>
+    </unit>
+    <unit id="StepsWithProgressDescription">
+      <segment>
+        <source>Steps with progress.</source>
+      </segment>
+    </unit>
+    <unit id="StepsWithProgressTitle">
+      <segment>
+        <source>Steps with progress</source>
+      </segment>
+    </unit>
+    <unit id="SwitchStepDescription">
+      <segment>
+        <source>Use controlled Current binding, change requests, external content, and buttons to represent process progress.</source>
+      </segment>
+    </unit>
+    <unit id="SwitchStepTitle">
+      <segment>
+        <source>Switch Step</source>
+      </segment>
+    </unit>
+    <unit id="TitlePlacementDescription">
+      <segment>
+        <source>Set TitlePlacement to Vertical for supported step types.</source>
+      </segment>
+    </unit>
+    <unit id="TitlePlacementTitle">
+      <segment>
+        <source>Title Placement</source>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>A simple step bar in the vertical direction.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalMiniVersionDescription">
+      <segment>
+        <source>A simple mini version step bar in the vertical direction.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalMiniVersionTitle">
+      <segment>
+        <source>Vertical mini version</source>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>You can use your own custom icons by setting the property icon for items.</source>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With icon</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

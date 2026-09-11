@@ -1,0 +1,37 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum SkeletonShowCaseLangResourceKind
+{
+    BasicTitle,
+    BasicDescription,
+    ComplexCombinationTitle,
+    ComplexCombinationDescription,
+    ActiveAnimationTitle,
+    ActiveAnimationDescription,
+    ButtonAvatarInputImageNodeTitle,
+    ButtonAvatarInputImageNodeDescription,
+    ContainsSubComponentTitle,
+    ContainsSubComponentDescription,
+    PageSubtitle,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ScenarioExamples,
+    P2TextActive,
+    P2TextButtonAndInputBlock,
+    P2TextSize,
+    P2ContentDefault,
+    P2ContentLarge,
+    P2ContentSmall,
+    P2TextButtonShape,
+    P2ContentSquare,
+    P2ContentRound,
+    P2ContentCircle,
+    P2TextAvatarShape,
+    P2TextAntDesignADesignLanguage,
+    P2TextWeSupplyASeriesOfDesignPrinciplesPractical,
+    P2ContentShowSkeleton
+}

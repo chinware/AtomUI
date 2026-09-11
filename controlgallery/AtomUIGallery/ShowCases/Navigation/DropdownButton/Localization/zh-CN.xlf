@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind">
+    <unit id="ArrowDescription">
+      <segment>
+        <source>You could display an arrow.</source>
+        <target state="translated">可以显示箭头。</target>
+      </segment>
+    </unit>
+    <unit id="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+        <target state="translated">箭头</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic dropdown menu.</source>
+        <target state="translated">最基础的下拉菜单。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="ButtonTypesDescription">
+      <segment>
+        <source>Support centralized button type.</source>
+        <target state="translated">支持统一的按钮类型。</target>
+      </segment>
+    </unit>
+    <unit id="ButtonTypesTitle">
+      <segment>
+        <source>Button Types</source>
+        <target state="translated">按钮类型</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">导航</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">下方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomLeft">
+      <segment>
+        <source>BottomLeft</source>
+        <target state="translated">左下方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomRight">
+      <segment>
+        <source>BottomRight</source>
+        <target state="translated">右下方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEditFile">
+      <segment>
+        <source>Edit File</source>
+        <target state="translated">编辑文件</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">悬停</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">上方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopLeft">
+      <segment>
+        <source>TopLeft</source>
+        <target state="translated">左上方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopRight">
+      <segment>
+        <source>TopRight</source>
+        <target state="translated">右上方</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCopy">
+      <segment>
+        <source>Copy</source>
+        <target state="translated">复制</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCut">
+      <segment>
+        <source>Cut</source>
+        <target state="translated">剪切</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">删除</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPaste">
+      <segment>
+        <source>Paste</source>
+        <target state="translated">粘贴</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPasteFromHistory">
+      <segment>
+        <source>Paste from History</source>
+        <target state="translated">从历史记录粘贴</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>DropdownButton combines a button trigger with a MenuFlyout, supporting hover or click triggers, arrow indicators, placement options, button variants, and forwarded menu item click events.</source>
+        <target state="translated">DropdownButton 将按钮触发器与 MenuFlyout 结合，支持悬停或点击触发、箭头指示、弹出位置、按钮形态和菜单项点击事件转发。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A button that opens contextual menu actions.</source>
+        <target state="translated">用于打开上下文菜单操作的按钮。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Support 6 placements.</source>
+        <target state="translated">支持 6 种弹出位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>DropdownButton supports large, middle, small, and Custom sizes with local size properties.</source>
+        <target state="translated">DropdownButton 支持大号、中号、小号，也支持通过 Custom 配合本地尺寸属性自定义。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Size type</source>
+        <target state="translated">尺寸类型</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

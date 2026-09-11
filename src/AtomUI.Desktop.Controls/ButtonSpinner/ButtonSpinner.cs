@@ -192,6 +192,9 @@ public class ButtonSpinner : Spinner,
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty =
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<ButtonSpinner>();
 
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<ButtonSpinner>();
+
     public double SpinnerHandleWidth
     {
         get => GetValue(SpinnerHandleWidthProperty);
@@ -214,6 +217,12 @@ public class ButtonSpinner : Spinner,
     {
         get => GetValue(IsUsedInCompactSpaceProperty);
         set => SetValue(IsUsedInCompactSpaceProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        set => SetValue(FormStatusProperty, value);
     }
 
     #endregion

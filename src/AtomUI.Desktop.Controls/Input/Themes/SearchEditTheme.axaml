@@ -17,6 +17,8 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    FormStatus="{TemplateBinding FormStatus}"
+                    IsInputFocusWithin="{TemplateBinding IsKeyboardFocusWithin}"
                     DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                     SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
@@ -33,15 +35,24 @@
                     <atom:SearchEditDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                            <atom:InputClearIconButton Name="PART_ClearButton" />
-                            <!-- 新增显示密码按钮 -->
-                            <atom:RevealButton Name="PART_RevealButton" />
+                            <atom:InputClearIconButton
+                                Name="PART_ClearButton"
+                                Icon="{Binding $parent[atom:SearchEdit].ClearIcon}"
+                                IsVisible="{Binding $parent[atom:SearchEdit].IsEffectiveShowClearButton}"
+                                IsMotionEnabled="{Binding $parent[atom:SearchEdit].IsMotionEnabled}" />
+                            <atom:RevealButton
+                                Name="PART_RevealButton"
+                                IsChecked="{Binding $parent[atom:SearchEdit].RevealPassword, Mode=TwoWay}"
+                                IsVisible="{Binding $parent[atom:SearchEdit].IsEnableRevealButton}"
+                                IsMotionEnabled="{Binding $parent[atom:SearchEdit].IsMotionEnabled}" />
                             <atom:AddOnContentPresenter
                                 Name="InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Right"
-                                Focusable="False" />
+                                Focusable="False"
+                                Content="{Binding $parent[atom:SearchEdit].InnerRightContent}"
+                                ContentTemplate="{Binding $parent[atom:SearchEdit].InnerRightContentTemplate}" />
                         </StackPanel>
                     </atom:SearchEditDecoratedBox.ContentRightAddOn>
 
@@ -166,35 +177,6 @@
             <Setter Property="BoxShadow"
                     Value="{atom:SearchEditTokenResource InputActiveShadow}" />
         </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:SearchEditTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="Background"
-                    Value="{atom:SearchEditTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:SearchEditTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:SearchEditTokenResource InputWarningActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="Background"
-                    Value="{atom:SearchEditTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:SearchEditTokenResource InputWarningActiveShadow}" />
-        </Style>
+
     </ControlTheme>
 </ResourceDictionary>

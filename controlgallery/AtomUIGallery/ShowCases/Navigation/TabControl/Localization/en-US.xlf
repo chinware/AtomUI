@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TabControlShowCaseLangResourceKind">
+    <unit id="ApiEventTabReordered">
+      <segment>
+        <source>Raised after a drag sort commits to the logical item collection.</source>
+      </segment>
+    </unit>
+    <unit id="ApiEventTabReordering">
+      <segment>
+        <source>Raised before a drag sort is committed. Set Cancel to true to keep the original order.</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN1">
+      <segment>
+        <source>Content of Tab Pane 1</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN10">
+      <segment>
+        <source>Content of Tab Pane 10</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN11">
+      <segment>
+        <source>Content of Tab Pane 11</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN12">
+      <segment>
+        <source>Content of Tab Pane 12</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN13">
+      <segment>
+        <source>Content of Tab Pane 13</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN14">
+      <segment>
+        <source>Content of Tab Pane 14</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN15">
+      <segment>
+        <source>Content of Tab Pane 15</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN16">
+      <segment>
+        <source>Content of Tab Pane 16</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN17">
+      <segment>
+        <source>Content of Tab Pane 17</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN18">
+      <segment>
+        <source>Content of Tab Pane 18</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN19">
+      <segment>
+        <source>Content of Tab Pane 19</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN2">
+      <segment>
+        <source>Content of Tab Pane 2</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN20">
+      <segment>
+        <source>Content of Tab Pane 20</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN3">
+      <segment>
+        <source>Content of Tab Pane 3</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN4">
+      <segment>
+        <source>Content of Tab Pane 4</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN5">
+      <segment>
+        <source>Content of Tab Pane 5</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN6">
+      <segment>
+        <source>Content of Tab Pane 6</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN7">
+      <segment>
+        <source>Content of Tab Pane 7</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN8">
+      <segment>
+        <source>Content of Tab Pane 8</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentContentOfTabPaneN9">
+      <segment>
+        <source>Content of Tab Pane 9</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDynamicTabContentN1">
+      <segment>
+        <source>Tab Content 1</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDynamicTabContentN2">
+      <segment>
+        <source>Tab Content 2</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentEndExtraAction">
+      <segment>
+        <source>End extra action</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentNewTabContentFormat">
+      <segment>
+        <source>new tab content {0}</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentStartExtraAction">
+      <segment>
+        <source>Start extra action</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewTabFormat">
+      <segment>
+        <source>new tab {0}</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN1">
+      <segment>
+        <source>Tab 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN10">
+      <segment>
+        <source>Tab 10</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN11">
+      <segment>
+        <source>Tab 11</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN12">
+      <segment>
+        <source>Tab 12</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN13">
+      <segment>
+        <source>Tab 13</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN14">
+      <segment>
+        <source>Tab 14</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN15">
+      <segment>
+        <source>Tab 15</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN16">
+      <segment>
+        <source>Tab 16</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN17">
+      <segment>
+        <source>Tab 17</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN18">
+      <segment>
+        <source>Tab 18</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN19">
+      <segment>
+        <source>Tab 19</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN2">
+      <segment>
+        <source>Tab 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN20">
+      <segment>
+        <source>Tab 20</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN3">
+      <segment>
+        <source>Tab 3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN4">
+      <segment>
+        <source>Tab 4</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN5">
+      <segment>
+        <source>Tab 5</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN6">
+      <segment>
+        <source>Tab 6</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN7">
+      <segment>
+        <source>Tab 7</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN8">
+      <segment>
+        <source>Tab 8</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTabN9">
+      <segment>
+        <source>Tab 9</source>
+      </segment>
+    </unit>
+    <unit id="P2TextTabPosition">
+      <segment>
+        <source>Tab position:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TabControl and CardTabControl provide document-style navigation, item-template tabs, closable tabs, flexible placement, and optional tab bar actions.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Organize related content into switchable tab panes.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TabControlAddCloseDescription">
+      <segment>
+        <source>Hide default plus icon, and bind event for customized trigger.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlAddCloseTitle">
+      <segment>
+        <source>Add and close tab</source>
+      </segment>
+    </unit>
+    <unit id="TabControlBasicDescription">
+      <segment>
+        <source>Default activate first tab.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlBasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="TabControlCardShapePositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlCardShapePositionTitle">
+      <segment>
+        <source>Card Shape Position</source>
+      </segment>
+    </unit>
+    <unit id="TabControlCardTypeDescription">
+      <segment>
+        <source>Another type of Tabs, which doesn't support vertical mode.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlCardTypeTitle">
+      <segment>
+        <source>Card type tab</source>
+      </segment>
+    </unit>
+    <unit id="TabControlCenteredDescription">
+      <segment>
+        <source>Centered tabs.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlCenteredTitle">
+      <segment>
+        <source>Centered</source>
+      </segment>
+    </unit>
+    <unit id="TabControlClosableDescription">
+      <segment>
+        <source>We support closable tab settings.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlClosableTitle">
+      <segment>
+        <source>Closable Tab</source>
+      </segment>
+    </unit>
+    <unit id="TabControlDisabledDescription">
+      <segment>
+        <source>Disabled a tab.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlDisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="TabControlExtraContentDescription">
+      <segment>
+        <source>You can add extra actions to the right or left or even both side of Tabs.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlExtraContentTitle">
+      <segment>
+        <source>Extra content</source>
+      </segment>
+    </unit>
+    <unit id="TabControlIconDescription">
+      <segment>
+        <source>The Tab with Icon.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlIconTitle">
+      <segment>
+        <source>Icon</source>
+      </segment>
+    </unit>
+    <unit id="TabControlItemsSourceDescription">
+      <segment>
+        <source>Add TabItem based on data source and item template.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlItemsSourceTitle">
+      <segment>
+        <source>Items from ItemSource datasource</source>
+      </segment>
+    </unit>
+    <unit id="TabControlPositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlPositionTitle">
+      <segment>
+        <source>Position</source>
+      </segment>
+    </unit>
+    <unit id="TabControlReorderDescription">
+      <segment>
+        <source>Enable drag sorting with IsTabReorderEnabled. The selected item follows the same logical tab after sorting.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlReorderPlacementDescription">
+      <segment>
+        <source>Switch TabStripPlacement to verify drag sorting on horizontal and vertical tab tracks.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlReorderPlacementTitle">
+      <segment>
+        <source>Draggable tabs with placement</source>
+      </segment>
+    </unit>
+    <unit id="TabControlReorderTitle">
+      <segment>
+        <source>Draggable tabs</source>
+      </segment>
+    </unit>
+    <unit id="TabControlSizeDescription">
+      <segment>
+        <source>Large size tabs are usually used in page header, and small size could be used in Modal.</source>
+      </segment>
+    </unit>
+    <unit id="TabControlSizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="TabControlSlideDescription">
+      <segment>
+        <source>In order to fit in more tabs, they can slide left and right (or up and down).</source>
+      </segment>
+    </unit>
+    <unit id="TabControlSlideTitle">
+      <segment>
+        <source>Slide</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

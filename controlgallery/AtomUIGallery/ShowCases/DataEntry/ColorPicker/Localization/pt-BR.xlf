@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic Usage.</source>
+        <target state="translated">Básico Uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ClearColorDescription">
+      <segment>
+        <source>Clear Color.</source>
+        <target state="translated">Limpar Cor.</target>
+      </segment>
+    </unit>
+    <unit id="ClearColorTitle">
+      <segment>
+        <source>Clear Color</source>
+        <target state="translated">Limpar Cor</target>
+      </segment>
+    </unit>
+    <unit id="ColorFormatDescription">
+      <segment>
+        <source>Encoding formats, support HEX, HSB, RGB.</source>
+        <target state="translated">Encoding formats, suporte HEX, HSB, RGB.</target>
+      </segment>
+    </unit>
+    <unit id="ColorFormatTitle">
+      <segment>
+        <source>Color Format</source>
+        <target state="translated">Cor Format</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="ControlledModeDescription">
+      <segment>
+        <source>Set the component to controlled mode. Will lock the display color if controlled by.</source>
+        <target state="translated">Definir o component para controlled modo. Irá lock o exibir cor se controlled por.</target>
+      </segment>
+    </unit>
+    <unit id="ControlledModeTitle">
+      <segment>
+        <source>controlled mode</source>
+        <target state="translated">controlled modo</target>
+      </segment>
+    </unit>
+    <unit id="CustomTriggerEventDescription">
+      <segment>
+        <source>Triggers event for customizing color panels, provide options click and hover.</source>
+        <target state="translated">Triggers event para customizing cor painéis, fornecer opções clique e sobreposição.</target>
+      </segment>
+    </unit>
+    <unit id="CustomTriggerEventTitle">
+      <segment>
+        <source>Custom Trigger Event</source>
+        <target state="translated">Personalizado Gatilho Event</target>
+      </segment>
+    </unit>
+    <unit id="DisabledAlphaDescription">
+      <segment>
+        <source>Disabled color alpha.</source>
+        <target state="translated">Desativado cor alpha.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledAlphaTitle">
+      <segment>
+        <source>Disabled Alpha</source>
+        <target state="translated">Desativado Alpha</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Set to disabled state.</source>
+        <target state="translated">Definir para desativado estado.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="LineGradientDescription">
+      <segment>
+        <source>Set the color to a single or a gradient color via mode.</source>
+        <target state="translated">Definir o cor para a single ou a gradient cor via modo.</target>
+      </segment>
+    </unit>
+    <unit id="LineGradientTitle">
+      <segment>
+        <source>Line Gradient</source>
+        <target state="translated">Linha Gradient</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearColor">
+      <segment>
+        <source>Clear color</source>
+        <target state="translated">Limpar cor</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearGradient">
+      <segment>
+        <source>Clear gradient</source>
+        <target state="translated">Limpar gradient</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetColor">
+      <segment>
+        <source>Set color</source>
+        <target state="translated">Definir cor</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetGradient">
+      <segment>
+        <source>Set gradient</source>
+        <target state="translated">Definir gradient</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColorValue">
+      <segment>
+        <source>Bound color:</source>
+        <target state="translated">Bound cor:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGradientValue">
+      <segment>
+        <source>Bound gradient:</source>
+        <target state="translated">Bound gradient:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ColorPicker supports solid and gradient values, trigger sizing, alpha control, text rendering, value synchronization, hover or click triggers, and preset palettes.</source>
+        <target state="translated">ColorPicker oferece suporte solid e gradient values, gatilho sizing, alpha controle, texto rendering, valor synchronization, sobreposição ou clique triggers, e predefinido palettes.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Pick solid colors or gradients from a compact trigger.</source>
+        <target state="translated">Pick solid cores ou gradients de a compacto gatilho.</target>
+      </segment>
+    </unit>
+    <unit id="PresetColorsDescription">
+      <segment>
+        <source>Set the presets color of the color picker.</source>
+        <target state="translated">Definir o presets cor de o cor picker.</target>
+      </segment>
+    </unit>
+    <unit id="PresetColorsTitle">
+      <segment>
+        <source>Preset Colors</source>
+        <target state="translated">Predefinido Cores</target>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextDescription">
+      <segment>
+        <source>Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.</source>
+        <target state="translated">Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.</target>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextTitle">
+      <segment>
+        <source>Rendering Trigger Text</source>
+        <target state="translated">Rendering Gatilho Texto</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeDescription">
+      <segment>
+        <source>Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.</source>
+        <target state="translated">Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.</target>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeTitle">
+      <segment>
+        <source>Trigger size</source>
+        <target state="translated">Gatilho tamanho</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding for both solid and gradient pickers, so edits update the ViewModel without an explicit binding mode.</source>
+        <target state="translated">Valor now defaults para TwoWay vinculação para both solid e gradient pickers, so edits update o ViewModel sem an explicit vinculação modo.</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
+        <target state="translated">Valor vinculação</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

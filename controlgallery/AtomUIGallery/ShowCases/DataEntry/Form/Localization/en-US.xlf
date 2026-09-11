@@ -1,0 +1,1300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.FormShowCaseLangResourceKind">
+    <unit id="ApiEventSubmitted">
+      <segment>
+        <source>Raised when the form submit action is invoked.</source>
+      </segment>
+    </unit>
+    <unit id="ApiEventValidated">
+      <segment>
+        <source>Raised after form validation completes.</source>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic Form data control. Includes layout, initial values, validation and submit.</source>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedFormControlsDescription">
+      <segment>
+        <source>Customized or third-party form controls can be used in Form, too. Controls must implement IFormItemAware:</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedFormControlsTitle">
+      <segment>
+        <source>Customized Form Controls</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedValidationDescription">
+      <segment>
+        <source>We provide properties like validateStatus help hasFeedback to customize your own validate status and message, without using Form.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedValidationTitle">
+      <segment>
+        <source>Customized Validation</source>
+      </segment>
+    </unit>
+    <unit id="DynamicFormItemDescription">
+      <segment>
+        <source>Add or remove form items dynamically. add function support config initial value.</source>
+      </segment>
+    </unit>
+    <unit id="DynamicFormItemTitle">
+      <segment>
+        <source>Dynamic Form Item</source>
+      </segment>
+    </unit>
+    <unit id="FormLayoutDescription">
+      <segment>
+        <source>There are three layout for form: horizontal, vertical, inline.</source>
+      </segment>
+    </unit>
+    <unit id="FormLayoutTitle">
+      <segment>
+        <source>Form Layout</source>
+      </segment>
+    </unit>
+    <unit id="FormMethodsDescription">
+      <segment>
+        <source>Call form method with Form.</source>
+      </segment>
+    </unit>
+    <unit id="FormMethodsTitle">
+      <segment>
+        <source>Form methods</source>
+      </segment>
+    </unit>
+    <unit id="FormVariantsDescription">
+      <segment>
+        <source>Change the variant of all components in the form, options include: outlined filled borderless and underlined.</source>
+      </segment>
+    </unit>
+    <unit id="FormVariantsTitle">
+      <segment>
+        <source>Form variants</source>
+      </segment>
+    </unit>
+    <unit id="InlineLoginFormDescription">
+      <segment>
+        <source>Inline login form is often used in navigation bar.</source>
+      </segment>
+    </unit>
+    <unit id="InlineLoginFormTitle">
+      <segment>
+        <source>Inline Login Form</source>
+      </segment>
+    </unit>
+    <unit id="LabelCanWrapDescription">
+      <segment>
+        <source>Turn on labelWrap to wrap label if text is long.</source>
+      </segment>
+    </unit>
+    <unit id="LabelCanWrapTitle">
+      <segment>
+        <source>label can wrap</source>
+      </segment>
+    </unit>
+    <unit id="LoginFormDescription">
+      <segment>
+        <source>Normal login form which can contain more elements.</source>
+      </segment>
+    </unit>
+    <unit id="LoginFormTitle">
+      <segment>
+        <source>Login Form</source>
+      </segment>
+    </unit>
+    <unit id="NoBlockRuleDescription">
+      <segment>
+        <source>rule with warningOnly will not block form submit.</source>
+      </segment>
+    </unit>
+    <unit id="NoBlockRuleTitle">
+      <segment>
+        <source>No block rule</source>
+      </segment>
+    </unit>
+    <unit id="OtherFormControlsDescription">
+      <segment>
+        <source>Demonstration of validation configuration for form controls which are not shown in the demos above.</source>
+      </segment>
+    </unit>
+    <unit id="OtherFormControlsTitle">
+      <segment>
+        <source>Other Form Controls</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentA">
+      <segment>
+        <source>A</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddField">
+      <segment>
+        <source>Add field</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddFieldAtHead">
+      <segment>
+        <source>Add field at head</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAgreement">
+      <segment>
+        <source>agreement</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentApple">
+      <segment>
+        <source>Apple</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentB">
+      <segment>
+        <source>B</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBorderless">
+      <segment>
+        <source>borderless</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentButton">
+      <segment>
+        <source>Button</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentC">
+      <segment>
+        <source>C</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCheckbox">
+      <segment>
+        <source>Checkbox</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToUpload">
+      <segment>
+        <source>Click to Upload</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustomize">
+      <segment>
+        <source>Customize</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentD">
+      <segment>
+        <source>D</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentE">
+      <segment>
+        <source>E</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentF">
+      <segment>
+        <source>F</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentFill">
+      <segment>
+        <source>Fill</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentFilled">
+      <segment>
+        <source>filled</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentForgotPassword">
+      <segment>
+        <source>Forgot password</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentFormDisabled">
+      <segment>
+        <source>Form disabled</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHidden">
+      <segment>
+        <source>Hidden</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHorizontal">
+      <segment>
+        <source>Horizontal</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentInline">
+      <segment>
+        <source>Inline</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentItemN1">
+      <segment>
+        <source>item 1</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentItemN2">
+      <segment>
+        <source>item 2</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentItemN3">
+      <segment>
+        <source>item 3</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLogIn">
+      <segment>
+        <source>Log in</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptional">
+      <segment>
+        <source>Optional</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptional2">
+      <segment>
+        <source>optional</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOutlined">
+      <segment>
+        <source>outlined</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPear">
+      <segment>
+        <source>Pear</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRegister">
+      <segment>
+        <source>Register</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRegisterNow">
+      <segment>
+        <source>Register now!</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRememberMe">
+      <segment>
+        <source>Remember me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRequired">
+      <segment>
+        <source>required</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUnderlined">
+      <segment>
+        <source>underlined</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentVertical">
+      <segment>
+        <source>Vertical</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAaa">
+      <segment>
+        <source>AAA</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBamboo">
+      <segment>
+        <source>Bamboo</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBbb">
+      <segment>
+        <source>BBB</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBlue">
+      <segment>
+        <source>Blue</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN1N1">
+      <segment>
+        <source>Child 1-1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN1N2">
+      <segment>
+        <source>Child 1-2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN2N1">
+      <segment>
+        <source>Child 2-1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChina">
+      <segment>
+        <source>China</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDemo">
+      <segment>
+        <source>Demo</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFemale">
+      <segment>
+        <source>female</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFemale2">
+      <segment>
+        <source>Female</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGrandchildN1N1N1">
+      <segment>
+        <source>Grandchild 1-1-1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreen">
+      <segment>
+        <source>Green</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMale">
+      <segment>
+        <source>male</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMale2">
+      <segment>
+        <source>Male</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN1">
+      <segment>
+        <source>Option 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN2">
+      <segment>
+        <source>Option 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN3">
+      <segment>
+        <source>Option 3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther">
+      <segment>
+        <source>other</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther2">
+      <segment>
+        <source>Other</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>Parent 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN2">
+      <segment>
+        <source>Parent 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRed">
+      <segment>
+        <source>Red</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUSA">
+      <segment>
+        <source>U.S.A</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXx">
+      <segment>
+        <source>xx</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+      </segment>
+    </unit>
+    <unit id="P2HelpLongUpload">
+      <segment>
+        <source>Long upload help text</source>
+      </segment>
+    </unit>
+    <unit id="P2HelpNeedToBeChecked">
+      <segment>
+        <source>Need to be checked.</source>
+      </segment>
+    </unit>
+    <unit id="P2HelpShouldBeCombinationOfNumbersAndAlphabets">
+      <segment>
+        <source>Should be combination of numbers and alphabets</source>
+      </segment>
+    </unit>
+    <unit id="P2HelpShouldHaveSomething">
+      <segment>
+        <source>Should have something</source>
+      </segment>
+    </unit>
+    <unit id="P2HelpSomethingBreaksTheRule">
+      <segment>
+        <source>Something breaks the rule.</source>
+      </segment>
+    </unit>
+    <unit id="P2HelpTheInformationIsBeingValidated">
+      <segment>
+        <source>The information is being validated</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextASuperLongLabelText">
+      <segment>
+        <source>A super long label text</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextAge">
+      <segment>
+        <source>Age</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextButton">
+      <segment>
+        <source>Button</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCaptcha">
+      <segment>
+        <source>Captcha</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCascader">
+      <segment>
+        <source>Cascader</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCheckbox">
+      <segment>
+        <source>Checkbox</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCheckboxGroup">
+      <segment>
+        <source>Checkbox.Group</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextColorPicker">
+      <segment>
+        <source>ColorPicker</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextConfirmPassword">
+      <segment>
+        <source>Confirm Password</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCustomizeGender">
+      <segment>
+        <source>Customize Gender</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDatePicker">
+      <segment>
+        <source>DatePicker</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDatePickerShowTime">
+      <segment>
+        <source>DatePicker[showTime]</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDonation">
+      <segment>
+        <source>Donation</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDragger">
+      <segment>
+        <source>Dragger</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextEmail">
+      <segment>
+        <source>Email</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextError">
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFail">
+      <segment>
+        <source>Fail</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldA">
+      <segment>
+        <source>Field A</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldB">
+      <segment>
+        <source>FieldB</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldC">
+      <segment>
+        <source>FieldC</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextGender">
+      <segment>
+        <source>Gender</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextHabitualResidence">
+      <segment>
+        <source>Habitual Residence</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextHorizontal">
+      <segment>
+        <source>horizontal</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextInput">
+      <segment>
+        <source>Input</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextInputNumber">
+      <segment>
+        <source>InputNumber</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextIntro">
+      <segment>
+        <source>Intro</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextMentions">
+      <segment>
+        <source>Mentions</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextName">
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNickname">
+      <segment>
+        <source>Nickname</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNormalLabel">
+      <segment>
+        <source>Normal label</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNote">
+      <segment>
+        <source>Note</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextOptionButtonGroup">
+      <segment>
+        <source>option-button-group</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassengers">
+      <segment>
+        <source>Passengers</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassengers1">
+      <segment>
+        <source>Passengers1</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassword">
+      <segment>
+        <source>Password</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPhoneNumber">
+      <segment>
+        <source>Phone Number</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPlainText">
+      <segment>
+        <source>Plain Text</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPrice">
+      <segment>
+        <source>Price</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRadio">
+      <segment>
+        <source>Radio</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRadioGroup">
+      <segment>
+        <source>radio-group</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRangePicker">
+      <segment>
+        <source>RangePicker</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRangePickerShowTime">
+      <segment>
+        <source>RangePicker[showTime]</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRate">
+      <segment>
+        <source>Rate</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSelect">
+      <segment>
+        <source>Select</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSelectMultiple">
+      <segment>
+        <source>Select[multiple]</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSlider">
+      <segment>
+        <source>Slider</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSuccess">
+      <segment>
+        <source>Success</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSwitch">
+      <segment>
+        <source>Switch</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTextArea">
+      <segment>
+        <source>TextArea</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTimePicker">
+      <segment>
+        <source>TimePicker</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTree">
+      <segment>
+        <source>Tree</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTreeSelect">
+      <segment>
+        <source>TreeSelect</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUpload">
+      <segment>
+        <source>Upload</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUrl">
+      <segment>
+        <source>Url</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUsername">
+      <segment>
+        <source>Username</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextValidating">
+      <segment>
+        <source>Validating</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextVertical">
+      <segment>
+        <source>vertical</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextVertical2">
+      <segment>
+        <source>vertical2</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextWarning">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextWebsite">
+      <segment>
+        <source>Website</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageColorIsRequired">
+      <segment>
+        <source>color is required!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageContinueInputToExceedN6Chars">
+      <segment>
+        <source>Continue input to exceed 6 chars!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageFieldAMustBeUpToN3Characters">
+      <segment>
+        <source>Field A must be up to 3 characters!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageFieldAMustBeUpToN6Characters">
+      <segment>
+        <source>Field A must be up to 6 characters!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseConfirmYourPassword">
+      <segment>
+        <source>Please confirm your password!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterAge">
+      <segment>
+        <source>Please enter Age!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterCustomizeGender">
+      <segment>
+        <source>Please enter Customize Gender</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterGender">
+      <segment>
+        <source>Please enter Gender</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterName">
+      <segment>
+        <source>Please enter Name!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterNote">
+      <segment>
+        <source>Please enter Note</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterURL">
+      <segment>
+        <source>Please enter URL!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInput">
+      <segment>
+        <source>Please input!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputDonationAmount">
+      <segment>
+        <source>Please input donation amount!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputIntro">
+      <segment>
+        <source>Please input Intro!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputPassengerSNameOrDeleteThisField">
+      <segment>
+        <source>Please input passenger's name or delete this field!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputTheCaptchaYouGot">
+      <segment>
+        <source>Please input the captcha you got!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputWebsite">
+      <segment>
+        <source>Please input website!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourEMail">
+      <segment>
+        <source>Please input your E-mail!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourNickname">
+      <segment>
+        <source>Please input your nickname!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourPassword">
+      <segment>
+        <source>Please input your password!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourPhoneNumber">
+      <segment>
+        <source>Please input your phone number!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourUsername">
+      <segment>
+        <source>Please input your username!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectGender">
+      <segment>
+        <source>Please select gender!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectTime">
+      <segment>
+        <source>Please select time!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourCountry">
+      <segment>
+        <source>Please select your country!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourFavouriteColors">
+      <segment>
+        <source>Please select your favourite colors!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourHabitualResidence">
+      <segment>
+        <source>Please select your habitual residence!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePriceMustBeGreaterThanZero">
+      <segment>
+        <source>Price must be greater than zero!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageURLIsNotAValidUrl">
+      <segment>
+        <source>URL is not a valid url!</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageURLMustBeAtLeastN6Characters">
+      <segment>
+        <source>URL must be at least 6 characters!</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMSelect">
+      <segment>
+        <source>I'm Select</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTheContent">
+      <segment>
+        <source>I'm the content</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTheContentIsBeingValidated">
+      <segment>
+        <source>I'm the content is being validated</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTreeselect">
+      <segment>
+        <source>I'm TreeSelect</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputPlaceholder">
+      <segment>
+        <source>input placeholder</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPassword">
+      <segment>
+        <source>Password</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelectACountry">
+      <segment>
+        <source>Please select a country</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelectFavouriteColors">
+      <segment>
+        <source>Please select favourite colors</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectAOptionAndChangeInputTextAbove">
+      <segment>
+        <source>Select a option and change input text above</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectDate">
+      <segment>
+        <source>Select date</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectDate2">
+      <segment>
+        <source>Select date!</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select time</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartDate">
+      <segment>
+        <source>Start date</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnavailableChoice">
+      <segment>
+        <source>unavailable choice</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUsername">
+      <segment>
+        <source>Username</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateOneByOne">
+      <segment>
+        <source>Validate one by one</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateRequiredDebounceAfterN1s">
+      <segment>
+        <source>Validate required debounce after 1s</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateRequiredOnblur">
+      <segment>
+        <source>Validate required onBlur</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>warning</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWebsite">
+      <segment>
+        <source>website</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithAllowclear">
+      <segment>
+        <source>with allowClear</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithInputPassword">
+      <segment>
+        <source>with input password</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithInputPasswordAndAllowclear">
+      <segment>
+        <source>with input password and allowClear</source>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndDate">
+      <segment>
+        <source>End date</source>
+      </segment>
+    </unit>
+    <unit id="P2TextChina">
+      <segment>
+        <source>China</source>
+      </segment>
+    </unit>
+    <unit id="P2TextFormLayout">
+      <segment>
+        <source>Form Layout :</source>
+      </segment>
+    </unit>
+    <unit id="P2TextFormVariant">
+      <segment>
+        <source>Form variant:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextIHaveReadThe">
+      <segment>
+        <source>I have read the</source>
+      </segment>
+    </unit>
+    <unit id="P2TextOr">
+      <segment>
+        <source>Or</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRequiredMark">
+      <segment>
+        <source>Required Mark :</source>
+      </segment>
+    </unit>
+    <unit id="P2TextUpload">
+      <segment>
+        <source>Upload</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipThisIsARequiredField">
+      <segment>
+        <source>This is a required field</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipTooltipWithCustomizeIcon">
+      <segment>
+        <source>Tooltip with customize icon</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipWhatDoYouWantOthersToCallYou">
+      <segment>
+        <source>What do you want others to call you?</source>
+      </segment>
+    </unit>
+    <unit id="P3CurrencyDollarHeader">
+      <segment>
+        <source>Dollar</source>
+      </segment>
+    </unit>
+    <unit id="P3CurrencyRmbHeader">
+      <segment>
+        <source>RMB</source>
+      </segment>
+    </unit>
+    <unit id="P3DynamicPassengerLabelFormat">
+      <segment>
+        <source>passengers_{0}</source>
+      </segment>
+    </unit>
+    <unit id="P3GenderNoteFormat">
+      <segment>
+        <source>Hi, {0}!</source>
+      </segment>
+    </unit>
+    <unit id="P3GetCaptchaButtonText">
+      <segment>
+        <source>Get captcha</source>
+      </segment>
+    </unit>
+    <unit id="P3SubmitFailedMessage">
+      <segment>
+        <source>Submit failed!</source>
+      </segment>
+    </unit>
+    <unit id="P3SubmitSuccessMessage">
+      <segment>
+        <source>Submit success!</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Form coordinates fields, validation rules, submit/reset actions, and reusable form item controls for structured data entry workflows.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>High-performance data entry with validation, layout, and form item coordination.</source>
+      </segment>
+    </unit>
+    <unit id="RegistrationDescription">
+      <segment>
+        <source>Fill in this form to create a new account for you.</source>
+      </segment>
+    </unit>
+    <unit id="RegistrationTitle">
+      <segment>
+        <source>Registration</source>
+      </segment>
+    </unit>
+    <unit id="RequiredStyleDescription">
+      <segment>
+        <source>Switch required or optional style with requiredMark.</source>
+      </segment>
+    </unit>
+    <unit id="RequiredStyleTitle">
+      <segment>
+        <source>Required style</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioControls">
+      <segment>
+        <source>Controls</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioDynamic">
+      <segment>
+        <source>Dynamic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioPresets">
+      <segment>
+        <source>Presets</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioStates">
+      <segment>
+        <source>States</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioValidation">
+      <segment>
+        <source>Validation</source>
+      </segment>
+    </unit>
+    <unit id="TimeRelatedControlsDescription">
+      <segment>
+        <source>The value of time-related components is a dayjs object, which we need to pre-process it before we submit to server.</source>
+      </segment>
+    </unit>
+    <unit id="TimeRelatedControlsTitle">
+      <segment>
+        <source>Time-related Controls</source>
+      </segment>
+    </unit>
+    <unit id="ValidateOnlyDescription">
+      <segment>
+        <source>Dynamic adjust submit button's disabled status by validateOnly of validateFields.</source>
+      </segment>
+    </unit>
+    <unit id="ValidateOnlyTitle">
+      <segment>
+        <source>Validate Only</source>
+      </segment>
+    </unit>
+    <unit id="ValidateTriggerDescription">
+      <segment>
+        <source>For the async validation scenario, high frequency of verification will cause backend pressure. You can change the verification timing through validateTrigger, or change the verification frequency through validateDebounce, or set the verification short circuit through validateFirst.</source>
+      </segment>
+    </unit>
+    <unit id="ValidateTriggerTitle">
+      <segment>
+        <source>Validate Trigger</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

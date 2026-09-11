@@ -3,6 +3,48 @@
 本文档记录 Select 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-05
+
+- Fix
+  - Restore the built-in empty indicator for the dropdown: `SelectCandidateList.ConfigureEmptyIndicator()` now maintains `IsDefaultEmptyIndicatorVisible` like the `ListView` base, so an empty or fully filtered candidate list shows the default `Empty` (`PresetImage=Simple`, localized No data) instead of a blank panel, matching Ant Design's default `notFoundContent`.
+  - Wire `AbstractSelect.IsShowEmptyIndicator`, `EmptyIndicator` and `EmptyIndicatorTemplate` to the candidate list in `EnsurePopupContent()`; a custom empty indicator is honored and hides the default one. `EmptyIndicatorPadding` stays unwired (same as TreeSelect) so the theme per-size padding remains effective.
+- Theme
+  - Add `MultiModePrefixIndent` / `MultiModePrefixIndentSM` / `MultiModePrefixIndentLG` tokens and apply them as the extra left `Margin` of `PART_ContentLeftAddOn` in `SelectAddOnDecoratedBoxTheme` for Multiple / Tags mode with a non-empty selection.
+  - The content frame keeps the small multi-mode left padding for the tag area while the prefix (ContentLeftAddOn) aligns with the single-mode horizontal padding, matching Ant Design's selector-padding + prefix-margin model.
+- Tests
+  - Add headless tests for the empty dropdown indicator (default shown, custom honored, `IsShowEmptyIndicator=false` respected).
+  - Add headless layout tests asserting Multiple / Tags prefix left inset equals the Single mode inset, and a SelectToken unit test asserting `MultiModePadding*.Left + MultiModePrefixIndent*.Left == SingleModePadding*.Left` per size.
+
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record AbstractSelect as the semantic owner for Select.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
+## 2026-08-23
+
+- Architecture
+  - Align Select input surfaces with the shared `InputControlFrame` / `AddOnDecoratedBox` composition.
+  - Keep selection, candidate, popup and result state in Select while using the shared EffectiveStatus and Form/native validation pipeline.
+  - Pair `SelectHandle` Form feedback observation with logical attach/detach so reused Select input surfaces reconnect deterministically.
+
+## 2026-08-19
+
+- Design
+  - Generalize `candidate-interaction-design.md` from the Select-specific implementation into the shared contract for Select, AutoComplete, Mentions, ComboBox, and Cascader candidate lists.
+  - Record the explicit boundary for TreeSelect, DatePicker/Calendar, and TimePicker state models so their tree selection, range preview, focus, and current-value semantics are not replaced by list hover suppression.
+- Tests
+  - Align family-level verification with pointer-to-keyboard, keyboard-to-pointer, `Enter`, disabled candidate, lifecycle, and projection invariants.
+
+## 2026-08-18
+
+- Design
+  - Define a single active candidate shared by pointer movement and keyboard navigation across `Single`, `Multiple` and `Tags` modes.
+  - Separate active candidate, committed selection and Avalonia pointer hit state so the visual target and `Enter` commit target remain identical.
+  - Define pointer hot-path, keyboard scrolling, virtualization projection, lifecycle invalidation and selected-visual precedence invariants.
+- Docs
+  - Add `candidate-interaction-design.md` and synchronize the Select overview and implementation maintenance boundaries.
+
 ## 2026-07-05
 
 - API

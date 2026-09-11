@@ -1,4 +1,5 @@
-using AtomUI.Data;
+using AtomUI.Localization;
+using Avalonia;
 
 namespace AtomUI.Toolkits.GalleryBase.Localization;
 
@@ -8,7 +9,7 @@ public interface IGalleryLocalizedText
 }
 
 public sealed class GalleryLocalizedText<TResourceKind> : IGalleryLocalizedText
-    where TResourceKind : Enum
+    where TResourceKind : struct, Enum
 {
     public TResourceKind ResourceKind { get; }
 
@@ -22,14 +23,13 @@ public sealed class GalleryLocalizedText<TResourceKind> : IGalleryLocalizedText
 
     public object Resolve()
     {
-        try
+        if (Application.Current is { } application &&
+            global::AtomUI.ApplicationExtensions.GetLocalizer(application) is { } localizer)
         {
-            return LanguageResourceBinder.GetLangResource(ResourceKind) ?? Fallback;
+            return localizer.Get(ResourceKind);
         }
-        catch (ApplicationException)
-        {
-            return Fallback;
-        }
+
+        return Fallback;
     }
 
     public override string ToString()

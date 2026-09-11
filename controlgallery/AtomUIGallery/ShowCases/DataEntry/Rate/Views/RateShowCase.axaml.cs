@@ -3,7 +3,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 
 namespace AtomUIGallery.ShowCases.Rate;
@@ -21,12 +21,12 @@ public partial class RateShowCase : GalleryReactiveUserControl<RateViewModel>
             {
                 ConfigureLocalizedTooltips(viewModel);
 
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = GalleryLocalization.GetLanguageManager();
                 if (languageManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => ConfigureLocalizedTooltips(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => ConfigureLocalizedTooltips(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    Disposable.Create(() => languageManager.LanguageChanged -= handler)
                         .DisposeWith(disposables);
                 }
 
@@ -83,6 +83,14 @@ internal static class RateShowCaseLanguage
             return fallback;
         }
 
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
+    }
+
+    public static string Format(
+        RateShowCaseLangResourceKind resourceKind,
+        string fallback,
+        params object?[] args)
+    {
+        return GalleryLocalization.Format(resourceKind, fallback, args);
     }
 }

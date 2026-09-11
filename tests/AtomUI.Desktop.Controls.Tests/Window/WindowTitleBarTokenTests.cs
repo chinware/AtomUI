@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
+using AtomUI.Icons.AntDesign;
 using Shouldly;
 using Xunit;
 
@@ -38,6 +39,52 @@ public class WindowTitleBarTokenTests
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
 
         source.ShouldContain("TitleBarPadding             = new Thickness(LogoAndTitleSpacing * 1.8, 0)");
+    }
+
+    [Fact]
+    public void Windows_And_Linux_Leading_Use_The_Dedicated_Logo_Left_AddOn_Spacing()
+    {
+        var tokenSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml"));
+
+        tokenSource.ShouldContain("public double LogoAndLeftAddOnSpacing { get; set; }");
+        tokenSource.ShouldContain(
+            "LogoAndLeftAddOnSpacing     = EffectiveGlobalToken.SpacingXXS;");
+
+        foreach (var selector in new[] { "^[OsType=Windows]", "^[OsType=Linux]" })
+        {
+            var platformStyle = document.Descendants()
+                                        .Single(element =>
+                                            element.Name.LocalName == "Style" &&
+                                            (string?)element.Attribute("Selector") == selector);
+            var layoutPanel = platformStyle.Descendants()
+                                           .Single(element =>
+                                               element.Name.LocalName == "WindowTitleBarLayoutPanel");
+            var leading = layoutPanel.Elements()
+                                     .Single(element =>
+                                         element.Attributes().Any(attribute =>
+                                             attribute.Name.LocalName == "WindowTitleBarLayoutPanel.Role" &&
+                                             attribute.Value == "Leading"));
+
+            leading.Name.LocalName.ShouldBe("DockPanel");
+            leading.Attribute("HorizontalSpacing")?.Value.ShouldBe(
+                "{atom:WindowTitleBarTokenResource LogoAndLeftAddOnSpacing}");
+        }
+
+        var macOsStyle = document.Descendants()
+                                 .Single(element =>
+                                     element.Name.LocalName == "Style" &&
+                                     (string?)element.Attribute("Selector") == "^[OsType=macOS]");
+        var macOsLeading = macOsStyle.Descendants()
+                                       .Single(element =>
+                                           element.Attributes().Any(attribute =>
+                                               attribute.Name.LocalName == "WindowTitleBarLayoutPanel.Role" &&
+                                               attribute.Value == "Leading"));
+
+        macOsLeading.Name.LocalName.ShouldBe("ContentPresenter");
+        macOsLeading.Attribute("HorizontalSpacing").ShouldBeNull();
     }
 
     [Fact]
@@ -254,20 +301,97 @@ public class WindowTitleBarTokenTests
     }
 
     [Fact]
+    public void Built_In_Window_Themes_Use_Concrete_Icons_For_NativeAot_Trimming()
+    {
+        var themePaths = new[]
+        {
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Window/Themes/FullscreenPopoverLayerTheme.axaml",
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"
+        };
+        var themes = themePaths.Select(path => XDocument.Load(GetRepoFile(path))).ToList();
+        var iconTypes = themes.SelectMany(theme => theme.Descendants())
+                              .Select(element => element.Name.LocalName)
+                              .ToHashSet(StringComparer.Ordinal);
+
+        foreach (var theme in themes)
+        {
+            theme.ToString().ShouldNotContain("AntDesignIconProvider");
+        }
+
+        var expectedIconTypes = new[]
+        {
+            "FullscreenOutlined",
+            "FullscreenExitOutlined",
+            "MinusOutlined",
+            "WindowCloseOutlined",
+            "WindowMaximizedOutlined",
+            "WindowPinOutlined",
+            "WindowRestoreOutlined",
+            "WindowUnpinOutlined"
+        };
+
+        foreach (var iconType in expectedIconTypes)
+        {
+            iconTypes.ShouldContain(iconType);
+        }
+    }
+
+    [Fact]
+    public void Linux_Caption_Buttons_Instantiate_Concrete_AntDesign_Icons()
+    {
+        var group = new CaptionButtonGroup();
+        group.SetValue(CaptionButtonGroup.OsTypeProperty, OsType.Linux);
+        Application.Current!.TryFindResource(typeof(CaptionButtonGroup), out var resource).ShouldBeTrue();
+        group.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
+
+        var host = new Avalonia.Controls.Window
+        {
+            Width   = 400,
+            Height  = 100,
+            Content = group
+        };
+
+        try
+        {
+            host.Show();
+            group.ApplyTemplate();
+            host.UpdateLayout();
+
+            var buttons = group.GetVisualDescendants()
+                               .OfType<CaptionButton>()
+                               .ToDictionary(button => button.Name!, StringComparer.Ordinal);
+
+            buttons["PART_FullScreenButton"].NormalIcon.ShouldBeOfType<FullscreenOutlined>();
+            buttons["PART_FullScreenButton"].CheckedIcon.ShouldBeOfType<FullscreenExitOutlined>();
+            buttons["PART_PinButton"].NormalIcon.ShouldBeOfType<WindowPinOutlined>();
+            buttons["PART_PinButton"].CheckedIcon.ShouldBeOfType<WindowUnpinOutlined>();
+            buttons["PART_MinimizeButton"].NormalIcon.ShouldBeOfType<MinusOutlined>();
+            buttons["PART_MaximizeButton"].NormalIcon.ShouldBeOfType<WindowMaximizedOutlined>();
+            buttons["PART_MaximizeButton"].CheckedIcon.ShouldBeOfType<WindowRestoreOutlined>();
+            buttons["PART_CloseButton"].NormalIcon.ShouldBeOfType<WindowCloseOutlined>();
+        }
+        finally
+        {
+            host.Close();
+        }
+    }
+
+    [Fact]
     public void Window_State_Changes_Invalidate_Stale_Maximize_Hover()
     {
-        var groupSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
         var buttonSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowsCaptionButton.cs"));
+        var groupThemeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
         var themeSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml"));
 
-        groupSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualStates();");
-        groupSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_maximizeButton);");
-        groupSource.ShouldContain("windowsCaptionButton.InvalidatePointerOverVisualState();");
+        buttonSource.ShouldContain("HostWindowStateProperty.Changed.AddClassHandler<WindowsCaptionButton>");
+        buttonSource.ShouldContain("button.InvalidatePointerOverVisualState()");
         buttonSource.ShouldContain("IsPointerOverSuppressed = IsPointerOver;");
         buttonSource.ShouldContain("protected override void OnPointerMoved(PointerEventArgs e)");
+        groupThemeSource.ShouldContain("HostWindowState=\"{TemplateBinding HostWindowState}\"");
         themeSource.ShouldContain("^[IsPointerOverSuppressed=False]:pointerover");
     }
 

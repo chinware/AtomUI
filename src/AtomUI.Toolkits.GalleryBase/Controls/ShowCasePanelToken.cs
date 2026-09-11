@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 [ControlDesignToken]
-internal class ShowCasePanelToken : AbstractControlDesignToken
+internal sealed class ShowCasePanelToken : AbstractControlDesignToken
 {
 
     public Thickness ContentMargin { get; set; }

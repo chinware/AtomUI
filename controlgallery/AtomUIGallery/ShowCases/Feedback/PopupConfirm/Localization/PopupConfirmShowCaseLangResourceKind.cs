@@ -1,0 +1,41 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum PopupConfirmShowCaseLangResourceKind
+{
+    BasicUsageTitle,
+    BasicUsageDescription,
+    LocaleTextTitle,
+    LocaleTextDescription,
+    PlacementTitle,
+    PlacementDescription,
+    CustomizeIconTitle,
+    CustomizeIconDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    ScenarioExamples,
+    ApiEventPopupConfirmCancelled,
+    ApiEventPopupConfirmConfirmed,
+    ApiEventPopupConfirmPopupClick,
+    P2ConfirmContentAreYouSureToDeleteThisTask,
+    P2OkTextOk,
+    P2CancelTextCancel,
+    P2TitleDeleteTheTask,
+    P2ContentDelete,
+    P2ContentLt,
+    P2ContentLeft,
+    P2ContentLb,
+    P2ContentTl,
+    P2ContentTop,
+    P2ContentTr,
+    P2ContentRt,
+    P2ContentRight,
+    P2ContentRb,
+    P2ContentBl,
+    P2ContentBottom,
+    P2ContentBr
+}

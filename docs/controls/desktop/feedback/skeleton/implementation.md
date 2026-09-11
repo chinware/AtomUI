@@ -137,6 +137,8 @@ Skeleton 的交互事件应从输入源收敛到控件级语义事件：
 - 内容、命令和视觉状态在模板节点之间的同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
+Active shimmer 使用单个无限 Avalonia `Animation` 驱动。该动画必须显式采用 `PlaybackBehavior.OnlyIfVisible`，使 Skeleton 自身或任一 Visual 祖先不可见时暂停时钟；重新可见后由 Avalonia 恢复当前动画，不为每次可见性变化重建动画对象。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -153,6 +155,7 @@ Skeleton 的交互事件应从输入源收敛到控件级语义事件：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏页面中保留的 active Skeleton 不得继续推进 shimmer 或产生 UI 线程 animation tick。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 9. 维护不变量

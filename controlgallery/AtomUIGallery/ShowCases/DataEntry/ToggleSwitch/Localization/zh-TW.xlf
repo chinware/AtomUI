@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">最基礎的用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled state of Switch.</source>
+        <target state="translated">Switch 的禁用狀態。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="LoadingDescription">
+      <segment>
+        <source>Mark a pending state of switch.</source>
+        <target state="translated">標記開關的等待狀態。</target>
+      </segment>
+    </unit>
+    <unit id="LoadingTitle">
+      <segment>
+        <source>Loading</source>
+        <target state="translated">加載中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定義</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleDisabled">
+      <segment>
+        <source>toggle disabled</source>
+        <target state="translated">切換禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleLoading">
+      <segment>
+        <source>toggle loading</source>
+        <target state="translated">切換加載</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentOff">
+      <segment>
+        <source>Off</source>
+        <target state="translated">關</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentText">
+      <segment>
+        <source>Close</source>
+        <target state="translated">關</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentOn">
+      <segment>
+        <source>On</source>
+        <target state="translated">開</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentText">
+      <segment>
+        <source>Open</source>
+        <target state="translated">開</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ToggleSwitch is used for immediate on/off decisions. It supports disabled state, loading state, custom on/off content, icon content, size variants, motion, and wave feedback.</source>
+        <target state="translated">ToggleSwitch 用於即時的開關選擇，支持禁用、加載、自定義開關內容、圖標內容、尺寸變體、動效和波紋反饋。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Switch between two mutually exclusive states with optional text, icons, loading, and size variants.</source>
+        <target state="translated">在兩個互斥狀態之間切換，並支持文本、圖標、加載和尺寸變體。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="TextAndIconDescription">
+      <segment>
+        <source>With text and icon.</source>
+        <target state="translated">帶文本和圖標。</target>
+      </segment>
+    </unit>
+    <unit id="TextAndIconTitle">
+      <segment>
+        <source>Text and icon</source>
+        <target state="translated">文本和圖標</target>
+      </segment>
+    </unit>
+    <unit id="TwoSizesDescription">
+      <segment>
+        <source>SizeType controls preset and Custom switch size modes.</source>
+        <target state="translated">SizeType 控制預設和 Custom 開關尺寸模式。</target>
+      </segment>
+    </unit>
+    <unit id="TwoSizesTitle">
+      <segment>
+        <source>Sizes</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

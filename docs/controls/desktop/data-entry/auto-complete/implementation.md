@@ -1,6 +1,8 @@
 # AutoComplete 桌面版实现原理
 
-本文档描述 AutoComplete 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [AutoComplete 桌面版架构设计](overview.md)，变化记录见 [AutoComplete Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [AutoComplete Token 设计](token.md)。
+本文档描述 AutoComplete 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [AutoComplete 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，变化记录见 [AutoComplete Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [AutoComplete Token 设计](token.md)。
+
+Popup 接入边界：`AbstractAutoComplete` 负责业务状态和内容准备，candidate Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
 
 ## 1. 实现定位
 
@@ -61,6 +63,7 @@
 - 控件实例是 public API 和运行时状态 owner。
 - Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
 - 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
+- 输入 box 复用 `AbstractTextInput` 和 `InputControlFrame`；AutoComplete 只拥有候选、过滤、popup 和异步状态，不复制输入表面状态 selector。
 - 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
 
 ## 4. 状态与数据流
@@ -79,7 +82,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`ClearIcon`、`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`DefaultValue`、`FilterValue`、`FilterValueSelector`、`OptionTemplate`、`OptionsAsyncLoader` 等 14 项。
 - 选择与集合：`CaretIndex`、`ClearSelectionOnLostFocus`、`DisplayCandidateCount`、`Filter`、`IsShowCount`。
-- 交互与状态：`IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsOperating`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 13 项。
+- 交互与状态：`IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsOperating`、`IsSearchOnEnterEnabled`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 14 项。
 - 视觉与布局：`MaxDropDownHeight`、`PlaceholderForeground`、`Placement`、`SearchButtonStyle`、`SizeType`、`StyleVariant`。
 - 动效与异步：`AsyncLoadDebounce`、`AsyncLoadTimeout`。
 - 其他稳定入口：`Lines`、`MaxLength`、`MinimumPrefixLength`。
@@ -125,6 +128,8 @@ AutoComplete 的交互事件应从输入源收敛到控件级语义事件：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
+
+候选交互必须遵循统一 active candidate 流：`CandidateList` 保存唯一候选 owner，鼠标命中可用项时迁移该状态但不滚动，键盘导航复用同一写入路径并可滚动到可见位置；容器回收、过滤或 source 重建时只恢复 owner 状态，不把 `:pointerover` 当作独立候选来源。`Enter` 从 active candidate 读取提交目标，不能从旧的 `SelectedItem` 或指针命中状态重新推导。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 

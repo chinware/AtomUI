@@ -115,6 +115,8 @@ Carousel 的交互事件应从输入源收敛到控件级语义事件：
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
+AutoPlay 由 Carousel 持有的单个 `DispatcherTimer` 驱动，选中页的进度由 `CarouselPageIndicator` 的 Avalonia animation 驱动。Carousel attach 后跟踪自身及 Visual 祖先链；有效不可见时停止 autoplay timer。PageIndicator 同时取消并把 progress 归零；重新可见后 timer 与 progress 从同一周期重新启动，避免页面恢复时进度条与实际切页时机错位。detach 时释放 timer 可见性订阅、progress cancellation 和 animation 状态。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -131,6 +133,7 @@ Carousel 的交互事件应从输入源收敛到控件级语义事件：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏祖先下的 Carousel 不推进 autoplay timer 或选中页 progress animation。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 9. 维护不变量

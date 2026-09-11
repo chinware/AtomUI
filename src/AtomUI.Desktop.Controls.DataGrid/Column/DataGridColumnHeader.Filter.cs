@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.Diagnostics;
+using AtomUI.Data;
 using Avalonia;
 
 namespace AtomUI.Desktop.Controls;
@@ -38,23 +39,23 @@ internal partial class DataGridColumnHeader
 
         if (OwningGrid.CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
         {
-            Dispatcher.Post(() => ProcessFilter(filterValues));
+            ProcessFilter(filterValues);
         }
     }
 
     internal void ProcessFilter(List<object> filterValues)
     {
-        if (OwningColumn != null &&
-            OwningGrid != null &&
-            OwningGrid.EditingRow == null &&
-            OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
-            (OwningColumn.CanUserFilter || OwningGrid.CanUserFilterColumns))
+        if (OwningGrid is not null)
         {
-            var ea = new DataGridColumnEventArgs(OwningColumn);
-            OwningGrid.NotifyColumnFiltering(ea);
-            if (!ea.Handled && OwningGrid.DataConnection.AllowFilter)
+            if (OwningColumn is null || !OwningColumn.EffectiveCanUserFilter)
             {
-                OwningColumn.SetSelectedFilterValuesFromFilterRequest(filterValues);
+                return;
+            }
+            var eventArgs = new DataGridColumnEventArgs(OwningColumn);
+            OwningGrid.NotifyColumnFiltering(eventArgs);
+            if (!eventArgs.Handled)
+            {
+                OwningGrid.ApplyFilterGesture(OwningColumn, filterValues);
             }
         }
     }
@@ -64,7 +65,29 @@ internal partial class DataGridColumnHeader
         if (_filterIndicator != null)
         {
             _filterIndicator.FilterRequest += HandleFilterRequest;
+            _popupPinnedOpenRelay = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _filterIndicator,
+                DataGridFilterIndicator.IsPopupPinnedOpenProperty);
         }
+    }
+
+    internal void CloseFilterPopupForLifecycle()
+    {
+        _filterIndicator?.ClosePopupForLifecycle();
+    }
+
+    internal void NotifyFilterConfigurationChanged()
+    {
+        if (_filterIndicator is null || OwningColumn is null)
+        {
+            return;
+        }
+
+        _filterIndicator.FilterPresenterMode = OwningColumn.FilterPresenterMode;
+        _filterIndicator.IsMultipleSelectionEnabled =
+            OwningColumn.FilterSelectionMode == DataGridFilterSelectionMode.Multiple;
     }
 
     private void HandleFilterRequest(object? sender, DataGridColumnFilterEventArgs args)
@@ -112,23 +135,23 @@ internal partial class DataGridColumnHeader
 
         if (OwningGrid.CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
         {
-            Dispatcher.Post(ProcessClearFilter);
+            ProcessClearFilter();
         }
     }
 
     internal void ProcessClearFilter()
     {
-        if (OwningColumn != null &&
-            OwningGrid != null &&
-            OwningGrid.EditingRow == null &&
-            OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
-            (OwningColumn.CanUserFilter || OwningGrid.CanUserFilterColumns))
+        if (OwningGrid is not null)
         {
-            var ea = new DataGridColumnEventArgs(OwningColumn);
-            OwningGrid.NotifyColumnFiltering(ea);
-            if (!ea.Handled && OwningGrid.DataConnection.AllowFilter)
+            if (OwningColumn is null || !OwningColumn.EffectiveCanUserFilter)
             {
-                OwningColumn.SetSelectedFilterValuesFromFilterRequest(EmptyFilterValues);
+                return;
+            }
+            var eventArgs = new DataGridColumnEventArgs(OwningColumn);
+            OwningGrid.NotifyColumnFiltering(eventArgs);
+            if (!eventArgs.Handled)
+            {
+                OwningGrid.ApplyFilterGesture(OwningColumn, EmptyFilterValues);
             }
         }
     }

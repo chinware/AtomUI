@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Shouldly;
 using Xunit;
 
@@ -19,6 +20,8 @@ public class StepsItemLayoutPanelTests
     [InlineData(Desktop.Controls.StepsType.OutlineDot, Orientation.Horizontal, Orientation.Horizontal, Orientation.Vertical)]
     [InlineData(Desktop.Controls.StepsType.Navigation, Orientation.Horizontal, Orientation.Vertical, Orientation.Horizontal)]
     [InlineData(Desktop.Controls.StepsType.Inline, Orientation.Horizontal, Orientation.Horizontal, Orientation.Vertical)]
+    [InlineData(Desktop.Controls.StepsType.Panel, Orientation.Horizontal, Orientation.Vertical, Orientation.Horizontal)]
+    [InlineData(Desktop.Controls.StepsType.Panel, Orientation.Vertical, Orientation.Vertical, Orientation.Horizontal)]
     [InlineData(Desktop.Controls.StepsType.Default, Orientation.Vertical, Orientation.Vertical, Orientation.Horizontal)]
     public void Effective_Title_Placement_Follows_Type_Rules(
         Desktop.Controls.StepsType type,
@@ -111,6 +114,46 @@ public class StepsItemLayoutPanelTests
         wrapper.Bounds.Contains(indicator.Bounds.TopLeft).ShouldBeTrue();
         wrapper.Bounds.Contains(header.Bounds.Center).ShouldBeTrue();
         wrapper.Bounds.Contains(subHeader.Bounds.Center).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Panel_Item_Wrapper_Fills_Cell_And_Arrow_Overflows_To_The_Right()
+    {
+        var panel = CreatePanel(Desktop.Controls.StepsType.Panel, Orientation.Vertical, Orientation.Vertical);
+        var wrapper = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.ItemWrapper, 0, 0);
+        AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Header, 60, 20);
+        var arrow = new Desktop.Controls.StepsPanelArrow
+        {
+            Width = 20,
+            StrokeThickness = 2
+        };
+        Desktop.Controls.StepsItemLayoutPanel.SetRole(arrow, Desktop.Controls.StepsItemLayoutRole.PanelArrow);
+        panel.Children.Add(arrow);
+
+        Layout(panel, 200, 80);
+
+        wrapper.Bounds.ShouldBe(new Rect(0, 0, 200, 80));
+        arrow.Bounds.Left.ShouldBe(200);
+        arrow.Bounds.Right.ShouldBe(220);
+        arrow.Bounds.Top.ShouldBe(0);
+        arrow.Bounds.Bottom.ShouldBe(80);
+    }
+
+    [Fact]
+    public void Panel_Arrow_Overflows_To_The_Left_In_Rtl()
+    {
+        var panel = CreatePanel(Desktop.Controls.StepsType.Panel, Orientation.Horizontal, Orientation.Horizontal);
+        panel.FlowDirection = FlowDirection.RightToLeft;
+        AddChild(panel, Desktop.Controls.StepsItemLayoutRole.ItemWrapper, 0, 0);
+        AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Header, 60, 20);
+        var arrow = new Desktop.Controls.StepsPanelArrow { Width = 20, StrokeThickness = 2 };
+        Desktop.Controls.StepsItemLayoutPanel.SetRole(arrow, Desktop.Controls.StepsItemLayoutRole.PanelArrow);
+        panel.Children.Add(arrow);
+
+        Layout(panel, 200, 80);
+
+        arrow.Bounds.Right.ShouldBe(0);
+        arrow.Bounds.Left.ShouldBe(-20);
     }
 
     [Fact]

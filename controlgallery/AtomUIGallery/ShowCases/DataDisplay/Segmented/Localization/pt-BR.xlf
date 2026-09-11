@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind">
+    <unit id="ApiEventSelectionChanged">
+      <segment>
+        <source>Raised when the selected item changes.</source>
+        <target state="translated">Emitido quando o selecionado item changes.</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">O most básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="BlockSegmentedDescription">
+      <segment>
+        <source>block property will make the Segmented fit to its parent width.</source>
+        <target state="translated">block propriedade irá make o Segmented fit para its pai largura.</target>
+      </segment>
+    </unit>
+    <unit id="BlockSegmentedTitle">
+      <segment>
+        <source>Block Segmented</source>
+        <target state="translated">Block Segmented</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled Segmented.</source>
+        <target state="translated">Desativado Segmented.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>Load options dynamically.</source>
+        <target state="translated">Load opções dynamically.</target>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">Dinâmico</target>
+      </segment>
+    </unit>
+    <unit id="IconOnlyDescription">
+      <segment>
+        <source>Set icon without label for Segmented Item.</source>
+        <target state="translated">Definir ícone sem rótulo para Segmented Item.</target>
+      </segment>
+    </unit>
+    <unit id="IconOnlyTitle">
+      <segment>
+        <source>With Icon only</source>
+        <target state="translated">Com Ícone somente</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAtomUI">
+      <segment>
+        <source>AtomUI</source>
+        <target state="translated">AtomUI</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAva">
+      <segment>
+        <source>Ava</source>
+        <target state="translated">Ava</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDaily">
+      <segment>
+        <source>Daily</source>
+        <target state="translated">Daily</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentKanban">
+      <segment>
+        <source>Kanban</source>
+        <target state="translated">Kanban</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentList">
+      <segment>
+        <source>List</source>
+        <target state="translated">Lista</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLongtextLongtextLongtextLongtext">
+      <segment>
+        <source>longtext-longtext-longtext-longtext</source>
+        <target state="translated">longtext-longtext-longtext-longtext</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMap">
+      <segment>
+        <source>Map</source>
+        <target state="translated">Map</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMonthly">
+      <segment>
+        <source>Monthly</source>
+        <target state="translated">Monthly</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentQuarterly">
+      <segment>
+        <source>Quarterly</source>
+        <target state="translated">Quarterly</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSatellite">
+      <segment>
+        <source>Satellite</source>
+        <target state="translated">Satellite</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTransit">
+      <segment>
+        <source>Transit</source>
+        <target state="translated">Transit</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWeekly">
+      <segment>
+        <source>Weekly</source>
+        <target state="translated">Weekly</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentYearly">
+      <segment>
+        <source>Yearly</source>
+        <target state="translated">Yearly</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Segmented presents a small set of related options with single selection, horizontal or vertical orientation, optional icons, shape variants, responsive expansion and token-based sizing.</source>
+        <target state="translated">Segmented presents a pequeno definir de related opções com single seleção, horizontal ou vertical orientation, opcional ícones, forma variantes, responsivo expansion e token-based sizing.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Group mutually exclusive options into a compact segmented selector.</source>
+        <target state="translated">Grupo mutually exclusive opções into a compacto segmented selector.</target>
+      </segment>
+    </unit>
+    <unit id="RoundShapeDescription">
+      <segment>
+        <source>Round shape of Segmented.</source>
+        <target state="translated">Arredondado forma de Segmented.</target>
+      </segment>
+    </unit>
+    <unit id="RoundShapeTitle">
+      <segment>
+        <source>Round Shape</source>
+        <target state="translated">Arredondado Forma</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>Segmented supports large (40px), default (32px), small (24px), and custom size.</source>
+        <target state="translated">Segmented oferece suporte grande (40px), padrão (32px), pequeno (24px), e personalizado tamanho.</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Sizes of Segmented</source>
+        <target state="translated">Tamanhos de Segmented</target>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>Make it vertical.</source>
+        <target state="translated">Make isso vertical.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical Direction</source>
+        <target state="translated">Vertical Direção</target>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>Set icon for Segmented Item.</source>
+        <target state="translated">Definir ícone para Segmented Item.</target>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With Icon</source>
+        <target state="translated">Com Ícone</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

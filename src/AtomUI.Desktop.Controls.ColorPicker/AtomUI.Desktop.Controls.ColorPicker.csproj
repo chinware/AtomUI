@@ -7,13 +7,10 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
+        <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
         <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Avalonia.Controls.ColorPicker" />

@@ -25,13 +25,13 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
         CreateWindowSplashLogoBrush(),
         Brushes.White);
 
-    private static readonly (SplashShowCaseLangResourceKind ResourceKind, string Fallback)[] WindowSplashProgressMessages =
+    private static readonly SplashShowCaseLangResourceKind[] WindowSplashProgressMessages =
     [
-        (SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingTheme, en_US.P2WindowSplashMessageLoadingTheme),
-        (SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingControls, en_US.P2WindowSplashMessageLoadingControls),
-        (SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingRoutes, en_US.P2WindowSplashMessageLoadingRoutes),
-        (SplashShowCaseLangResourceKind.P2WindowSplashMessageWarmingCache, en_US.P2WindowSplashMessageWarmingCache),
-        (SplashShowCaseLangResourceKind.P2WindowSplashMessageFinalizing, en_US.P2WindowSplashMessageFinalizing)
+        SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingTheme,
+        SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingControls,
+        SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingRoutes,
+        SplashShowCaseLangResourceKind.P2WindowSplashMessageWarmingCache,
+        SplashShowCaseLangResourceKind.P2WindowSplashMessageFinalizing
     ];
 
     private bool _isWindowSplashRunning;
@@ -64,10 +64,10 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
                 Logo                = WindowSplashLogo,
                 LogoTemplate        = CreateWindowSplashLogoTemplate(),
                 Title               = "AtomUI Gallery",
-                Subtitle            = Lang(SplashShowCaseLangResourceKind.P2WindowSplashSubtitle, en_US.P2WindowSplashSubtitle),
-                Message             = Lang(SplashShowCaseLangResourceKind.P2WindowSplashMessageStarting, en_US.P2WindowSplashMessageStarting),
-                Detail              = Lang(SplashShowCaseLangResourceKind.P2WindowSplashDetailStarting, en_US.P2WindowSplashDetailStarting),
-                Footer              = Lang(SplashShowCaseLangResourceKind.P2WindowSplashFooter, en_US.P2WindowSplashFooter),
+                Subtitle            = Lang(SplashShowCaseLangResourceKind.P2WindowSplashSubtitle),
+                Message             = Lang(SplashShowCaseLangResourceKind.P2WindowSplashMessageStarting),
+                Detail              = Lang(SplashShowCaseLangResourceKind.P2WindowSplashDetailStarting),
+                Footer              = Lang(SplashShowCaseLangResourceKind.P2WindowSplashFooter),
                 FooterTemplate      = CreateWindowSplashFooterTemplate(),
                 Progress            = 0d,
                 IsIndeterminate     = false,
@@ -86,13 +86,13 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
                 var message  = WindowSplashProgressMessages[step - 1];
                 await splashService.SetProgressAsync(
                     progress,
-                    Lang(message.ResourceKind, message.Fallback),
-                    Lang(SplashShowCaseLangResourceKind.P2WindowSplashDetailProgress, en_US.P2WindowSplashDetailProgress));
+                    Lang(message),
+                    Lang(SplashShowCaseLangResourceKind.P2WindowSplashDetailProgress));
             }
 
             await splashService.SetStatusAsync(SplashStatus.Success,
-                Lang(SplashShowCaseLangResourceKind.P2WindowSplashMessageComplete, en_US.P2WindowSplashMessageComplete),
-                Lang(SplashShowCaseLangResourceKind.P2WindowSplashDetailComplete, en_US.P2WindowSplashDetailComplete));
+                Lang(SplashShowCaseLangResourceKind.P2WindowSplashMessageComplete),
+                Lang(SplashShowCaseLangResourceKind.P2WindowSplashDetailComplete));
         }
         finally
         {
@@ -111,11 +111,11 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
         }
     }
 
-    private static string Lang(SplashShowCaseLangResourceKind resourceKind, string fallback)
+    private static string Lang(SplashShowCaseLangResourceKind resourceKind)
     {
-        return Application.Current is null
-            ? fallback
-            : LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)?.Get(resourceKind) ?? resourceKind.ToString()
+            : resourceKind.ToString();
     }
 
     private static IDataTemplate CreateWindowSplashLogoTemplate()

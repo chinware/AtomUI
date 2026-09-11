@@ -1,6 +1,6 @@
 # Watermark 桌面版架构设计
 
-本文档定义 `Watermark` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Watermark 桌面版实现原理](implementation.md)。Watermark 没有独立 Token 文档；主题主要复用 SharedToken 或关联控件 Token。设计和契约变化记录见 [Watermark Changelog](changelog.md)。
+本文档定义 `Watermark` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Watermark 桌面版实现原理](implementation.md)。Watermark 没有独立 Token 文档；主题主要复用 SharedToken 或关联控件 Token。设计和契约变化记录见 [Watermark Changelog](changelog.md)。
 
 ## 1. 控件定位
 

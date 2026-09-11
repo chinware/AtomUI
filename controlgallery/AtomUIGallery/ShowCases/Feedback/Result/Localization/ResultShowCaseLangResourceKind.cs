@@ -1,0 +1,48 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum ResultShowCaseLangResourceKind
+{
+    SuccessTitle,
+    SuccessDescription,
+    InfoTitle,
+    InfoDescription,
+    WarningTitle,
+    WarningDescription,
+    ForbiddenTitle,
+    ForbiddenDescription,
+    NotFoundTitle,
+    NotFoundDescription,
+    ServerErrorTitle,
+    ServerErrorDescription,
+    ErrorTitle,
+    ErrorDescription,
+    CustomIconTitle,
+    CustomIconDescription,
+    PageSubtitle,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ScenarioExamples,
+    P2HeaderSuccessfullyPurchasedCloudServerEcs,
+    P2HeaderYourOperationHasBeenExecuted,
+    P2HeaderThereAreSomeProblemsWithYourOperation,
+    P2HeaderSubmissionFailed,
+    P2HeaderGreatWeHaveDoneAllTheOperations,
+    P2SubHeaderOrderNumberCloudServerConfiguration,
+    P2SubHeaderForbidden,
+    P2SubHeaderNotFound,
+    P2SubHeaderServerError,
+    P2SubHeaderSubmissionFailed,
+    P2ContentGoConsole,
+    P2ContentBuyAgain,
+    P2ContentBackHome,
+    P2TextTheContentYouSubmittedHasTheFollowingError,
+    P2TextYourAccountHasBeenFrozen,
+    P2TextThawImmediately,
+    P2TextYourAccountIsNotYetEligibleToApply,
+    P2TextApplyUnlock,
+    P2ContentNext
+}

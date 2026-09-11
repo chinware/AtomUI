@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.PaginationShowCaseLangResourceKind">
+    <unit id="AlignDescription">
+      <segment>
+        <source>Support three alignment modes: left alignment, center alignment, right alignment.</source>
+        <target state="translated">Suporte três alignment modes: esquerda alignment, center alignment, direita alignment.</target>
+      </segment>
+    </unit>
+    <unit id="AlignTitle">
+      <segment>
+        <source>Align</source>
+        <target state="translated">Alinhar</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic pagination.</source>
+        <target state="translated">Básico paginação.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>CurrentPage and PageSize can be bound without an explicit Mode=TwoWay; page clicks and size changes write back to the view model.</source>
+        <target state="translated">CurrentPage and PageSize can be bound without an explicit Mode=TwoWay; page clicks and size changes write back to the view model.</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>Controlled binding</source>
+        <target state="translated">Controlled vinculação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeDescription">
+      <segment>
+        <source>Mini size pagination.</source>
+        <target state="translated">Mini tamanho paginação.</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeTitle">
+      <segment>
+        <source>Mini size</source>
+        <target state="translated">Mini tamanho</target>
+      </segment>
+    </unit>
+    <unit id="MoreDescription">
+      <segment>
+        <source>More pages.</source>
+        <target state="translated">Mais pages.</target>
+      </segment>
+    </unit>
+    <unit id="MoreTitle">
+      <segment>
+        <source>More</source>
+        <target state="translated">Mais</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentReset">
+      <segment>
+        <source>Reset</source>
+        <target state="translated">Redefinir</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetPage">
+      <segment>
+        <source>Set page 5 / 20</source>
+        <target state="translated">Definir página 5 / 20</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCurrentPage">
+      <segment>
+        <source>CurrentPage:</source>
+        <target state="translated">CurrentPage:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPageSize">
+      <segment>
+        <source>PageSize:</source>
+        <target state="translated">PageSize:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Pagination divides large data sets into predictable pages. It supports alignment, page size selection, quick jump input, total information, mini size, and simple read-only or editable modes.</source>
+        <target state="translated">Paginação divides grande dados define into predictable pages. Isso oferece suporte alignment, página tamanho seleção, quick jump entrada, total informação, mini tamanho, e simples read-somente ou editable modes.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Navigate long lists with page numbers, sizes, totals, and quick jumps.</source>
+        <target state="translated">Navigate longo listas com página numbers, tamanhos, totals, e quick jumps.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SimpleModeDescription">
+      <segment>
+        <source>Simple mode.</source>
+        <target state="translated">Simples modo.</target>
+      </segment>
+    </unit>
+    <unit id="SimpleModeTitle">
+      <segment>
+        <source>Simple mode</source>
+        <target state="translated">Simples modo</target>
+      </segment>
+    </unit>
+    <unit id="TotalNumberDescription">
+      <segment>
+        <source>You can show the total number of data by setting showTotal.</source>
+        <target state="translated">Você pode mostrar o total number de dados por configuração showTotal.</target>
+      </segment>
+    </unit>
+    <unit id="TotalNumberTitle">
+      <segment>
+        <source>Total number</source>
+        <target state="translated">Total number</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

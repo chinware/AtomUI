@@ -3,7 +3,6 @@ using System.Globalization;
 using AtomUI.Controls;
 using AtomUI.Data;
 using Avalonia;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Steps;
@@ -32,7 +31,7 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public string CurrentText => Current.ToString(CultureInfo.CurrentCulture);
+    public string CurrentText => Current.ToString(GalleryLocalization.GetFormattingCulture());
 
     public string InteractivePageContent => Current switch
     {
@@ -94,25 +93,8 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
 
     private static string Lang(StepsShowCaseLangResourceKind kind)
     {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(StepsShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            StepsShowCaseLangResourceKind.P2ContentDone                         => en_US.P2ContentDone,
-            StepsShowCaseLangResourceKind.P2ContentNext                         => en_US.P2ContentNext,
-            StepsShowCaseLangResourceKind.P2ContentFirstContent                 => en_US.P2ContentFirstContent,
-            StepsShowCaseLangResourceKind.P2ContentSecondContent                => en_US.P2ContentSecondContent,
-            StepsShowCaseLangResourceKind.P2ContentLastContent                  => en_US.P2ContentLastContent,
-            StepsShowCaseLangResourceKind.P2TextCurrent                         => en_US.P2TextCurrent,
-            _                                                                  => kind.ToString()
-        };
+        return Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)?.Get(kind) ?? kind.ToString()
+            : kind.ToString();
     }
 }

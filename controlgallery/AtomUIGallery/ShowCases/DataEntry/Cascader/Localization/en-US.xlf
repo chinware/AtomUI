@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CascaderShowCaseLangResourceKind">
+    <unit id="BasicCascaderViewDescription">
+      <segment>
+        <source>The most basic usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicCascaderViewTitle">
+      <segment>
+        <source>Basic CascaderView</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Cascade selection box for selecting province/city/district.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ChangeOnSelectDescription">
+      <segment>
+        <source>Allows the selection of only parent options.</source>
+      </segment>
+    </unit>
+    <unit id="ChangeOnSelectTitle">
+      <segment>
+        <source>Change on select</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="DefaultExpandedDescription">
+      <segment>
+        <source>You can set the default expansion path..</source>
+      </segment>
+    </unit>
+    <unit id="DefaultExpandedTitle">
+      <segment>
+        <source>Default expanded</source>
+      </segment>
+    </unit>
+    <unit id="DefaultValueDescription">
+      <segment>
+        <source>Specifies default value by an array.</source>
+      </segment>
+    </unit>
+    <unit id="DefaultValueTitle">
+      <segment>
+        <source>Default value</source>
+      </segment>
+    </unit>
+    <unit id="DisabledOptionDescription">
+      <segment>
+        <source>Disable option by specifying the disabled property in options.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledOptionTitle">
+      <segment>
+        <source>Disabled option</source>
+      </segment>
+    </unit>
+    <unit id="EmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default CascaderView empty content.</source>
+      </segment>
+    </unit>
+    <unit id="EmptyIndicatorTitle">
+      <segment>
+        <source>Custom empty indicator</source>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateDescription">
+      <segment>
+        <source>You can use the Template mechanism to generate tree nodes</source>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateTitle">
+      <segment>
+        <source>Generate by template</source>
+      </segment>
+    </unit>
+    <unit id="HoverDescription">
+      <segment>
+        <source>Hover to expand sub menu, click to select option.</source>
+      </segment>
+    </unit>
+    <unit id="HoverTitle">
+      <segment>
+        <source>Hover</source>
+      </segment>
+    </unit>
+    <unit id="LoadOptionsLazilyDescription">
+      <segment>
+        <source>Load options lazily with loadData.</source>
+      </segment>
+    </unit>
+    <unit id="LoadOptionsLazilyTitle">
+      <segment>
+        <source>Load Options Lazily</source>
+      </segment>
+    </unit>
+    <unit id="MultipleDescription">
+      <segment>
+        <source>Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.</source>
+      </segment>
+    </unit>
+    <unit id="MultipleTitle">
+      <segment>
+        <source>Multiple</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomleft">
+      <segment>
+        <source>BottomLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomright">
+      <segment>
+        <source>BottomRight</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>TopLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>TopRight</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBamboo">
+      <segment>
+        <source>Bamboo</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBambooBoy">
+      <segment>
+        <source>Bamboo Boy</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBanban">
+      <segment>
+        <source>Banban</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBig">
+      <segment>
+        <source>Big</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDynamicOptionFormat">
+      <segment>
+        <source>{0} Dynamic {1}</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFeifei">
+      <segment>
+        <source>Feifei</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGrayWolf">
+      <segment>
+        <source>Gray Wolf</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreen">
+      <segment>
+        <source>Green</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHefangJie">
+      <segment>
+        <source>Hefang jie</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHumbleAdministratorsGarden">
+      <segment>
+        <source>Humble Administrator's Garden</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiaoTailang">
+      <segment>
+        <source>Jiao Tailang</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingeringGarden">
+      <segment>
+        <source>Lingering Garden</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingyinShi">
+      <segment>
+        <source>Lingyin shi</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLittle">
+      <segment>
+        <source>Little</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLittleTadpole">
+      <segment>
+        <source>Little Tadpole</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMoonLake">
+      <segment>
+        <source>Moon Lake</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNingbo">
+      <segment>
+        <source>Ningbo</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSunYatSenMausoleum">
+      <segment>
+        <source>Sun Yat-sen Mausoleum</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSuzhou">
+      <segment>
+        <source>Suzhou</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTadpole">
+      <segment>
+        <source>Tadpole</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTianyiPavilion">
+      <segment>
+        <source>Tianyi Pavilion</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWildWolf">
+      <segment>
+        <source>Wild Wolf</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXiaoHuihui">
+      <segment>
+        <source>Xiao Huihui</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXiaoXingxing">
+      <segment>
+        <source>Xiao Xingxing</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXisha">
+      <segment>
+        <source>Xisha</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYellow">
+      <segment>
+        <source>Yellow</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhangSan">
+      <segment>
+        <source>Zhang San</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No options to display</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedOptionBinding">
+      <segment>
+        <source>SelectedOption</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedOptionsBinding">
+      <segment>
+        <source>SelectedOptions</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleByTemplate">
+      <segment>
+        <source>By template</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleShowcheckedstrategyAll">
+      <segment>
+        <source>ShowCheckedStrategy=All</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleShowcheckedstrategyShowparent">
+      <segment>
+        <source>ShowCheckedStrategy=ShowParent</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Cascader combines an input selector with linked option columns, while CascaderView exposes the column browser directly for embedded selection workflows.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Hierarchical selection and cascaded option browsing.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Use prefix to customize the prefix content, use suffixIcon to customize the selection box suffix icon, and use expandIcon to customize the current item expand icon.</source>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioCascaderView">
+      <segment>
+        <source>CascaderView</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioMultiple">
+      <segment>
+        <source>Multiple</source>
+      </segment>
+    </unit>
+    <unit id="SearchDescription">
+      <segment>
+        <source>Search and select options directly.</source>
+      </segment>
+    </unit>
+    <unit id="SearchTitle">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable CascaderView.</source>
+      </segment>
+    </unit>
+    <unit id="SearchableItemsSourceDescription">
+      <segment>
+        <source>Searchable CascaderView with ItemsSource.</source>
+      </segment>
+    </unit>
+    <unit id="SearchableItemsSourceTitle">
+      <segment>
+        <source>Searchable</source>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingDescription">
+      <segment>
+        <source>Bind SelectedOption and SelectedOptions to view-model values, then click options or action buttons to watch both sides stay synchronized.</source>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectBoth">
+      <segment>
+        <source>Select both</source>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectFirst">
+      <segment>
+        <source>Select West Lake</source>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectSecond">
+      <segment>
+        <source>Select Lingyin shi</source>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingTitle">
+      <segment>
+        <source>SelectedOption / SelectedOptions binding</source>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingValueTitle">
+      <segment>
+        <source>Bound value</source>
+      </segment>
+    </unit>
+    <unit id="ShowCheckedStrategyDescription">
+      <segment>
+        <source>Shows a selected item in a box using showCheckedStrategy.</source>
+      </segment>
+    </unit>
+    <unit id="ShowCheckedStrategyTitle">
+      <segment>
+        <source>ShowCheckedStrategy</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Cascader supports large, middle, small, and Custom sizes with local height overrides.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Cascader with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Cascader, there are four variants: outlined filled borderless and underlined.</source>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

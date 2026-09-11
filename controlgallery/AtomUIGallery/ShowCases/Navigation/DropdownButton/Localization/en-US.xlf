@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind">
+    <unit id="ArrowDescription">
+      <segment>
+        <source>You could display an arrow.</source>
+      </segment>
+    </unit>
+    <unit id="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic dropdown menu.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ButtonTypesDescription">
+      <segment>
+        <source>Support centralized button type.</source>
+      </segment>
+    </unit>
+    <unit id="ButtonTypesTitle">
+      <segment>
+        <source>Button Types</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomLeft">
+      <segment>
+        <source>BottomLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomRight">
+      <segment>
+        <source>BottomRight</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentEditFile">
+      <segment>
+        <source>Edit File</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopLeft">
+      <segment>
+        <source>TopLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopRight">
+      <segment>
+        <source>TopRight</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCopy">
+      <segment>
+        <source>Copy</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCut">
+      <segment>
+        <source>Cut</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPaste">
+      <segment>
+        <source>Paste</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPasteFromHistory">
+      <segment>
+        <source>Paste from History</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>DropdownButton combines a button trigger with a MenuFlyout, supporting hover or click triggers, arrow indicators, placement options, button variants, and forwarded menu item click events.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A button that opens contextual menu actions.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Support 6 placements.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>DropdownButton supports large, middle, small, and Custom sizes with local size properties.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Size type</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

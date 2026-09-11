@@ -1,0 +1,55 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:NavMenuGroupItem}"
+                  TargetType="atom:NavMenuGroupItem">
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical"
+                            Spacing="{TemplateBinding EntryItemSpacing}" />
+            </ItemsPanelTemplate>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel>
+                    <ContentPresenter Name="PART_HeaderPresenter"
+                                      Height="{atom:NavMenuTokenResource GroupTitleLineHeight}"
+                                      Margin="{atom:NavMenuTokenResource ItemContentMargin}"
+                                      Padding="{atom:NavMenuTokenResource ItemContentPadding}"
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Center"
+                                      Content="{TemplateBinding Header}"
+                                      ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                      TextElement.FontSize="{atom:NavMenuTokenResource GroupTitleFontSize}"
+                                      TextElement.Foreground="{atom:NavMenuTokenResource GroupTitleColor}" />
+                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsDarkStyle=True] /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="TextElement.Foreground"
+                    Value="{atom:NavMenuTokenResource DarkGroupTitleColor}" />
+        </Style>
+
+        <Style Selector="^[Mode=Horizontal][IsTopLevel=True]">
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="{TemplateBinding EntryItemSpacing}" />
+                </ItemsPanelTemplate>
+            </Setter>
+            <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsInlineCollapsed=True][IsTopLevel=True] /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

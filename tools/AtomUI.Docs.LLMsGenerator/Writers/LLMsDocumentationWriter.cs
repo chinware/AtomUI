@@ -13,10 +13,10 @@ public static class LLMsDocumentationWriter
             files.Add(new GeneratedLLMsFile(model.OutputSemanticPath, LLMsSemanticWriter.Write(model)));
         }
 
-        files.Add(new GeneratedLLMsFile("docs/AI/llms/llms.txt", LLMsIndexWriter.Write(models)));
-        files.Add(new GeneratedLLMsFile("docs/AI/llms/llms-full-cn.txt",
+        files.Add(new GeneratedLLMsFile("docs/AI/generated/llms/llms.txt", LLMsIndexWriter.Write(models)));
+        files.Add(new GeneratedLLMsFile("docs/AI/generated/llms/llms-full-cn.txt",
             LLMsAggregateWriter.Write("AtomUI Desktop Controls Full CN", files, "index-cn.md")));
-        files.Add(new GeneratedLLMsFile("docs/AI/llms/llms-semantic-cn.md",
+        files.Add(new GeneratedLLMsFile("docs/AI/generated/llms/llms-semantic-cn.md",
             LLMsAggregateWriter.Write("AtomUI Desktop Controls Semantic CN", files, "semantic-cn.md")));
         return files;
     }
@@ -36,7 +36,7 @@ public static class LLMsDocumentationWriter
     private static void PruneStaleGeneratedFiles(string repositoryRoot, IReadOnlyList<GeneratedLLMsFile> files)
     {
         var expectedPaths = files.Select(file => file.Path).ToHashSet(StringComparer.Ordinal);
-        var outputRoot = Path.Combine(repositoryRoot, "docs/AI/llms");
+        var outputRoot = Path.Combine(repositoryRoot, "docs/AI/generated/llms");
         if (!Directory.Exists(outputRoot))
         {
             return;
@@ -69,7 +69,7 @@ public static class LLMsDocumentationWriter
 
     private static bool IsGeneratedLLMsPath(string path)
     {
-        return path is "docs/AI/llms/llms.txt" or "docs/AI/llms/llms-full-cn.txt" or "docs/AI/llms/llms-semantic-cn.md" ||
-               path.StartsWith("docs/AI/llms/controls/", StringComparison.Ordinal);
+        return path is "docs/AI/generated/llms/llms.txt" or "docs/AI/generated/llms/llms-full-cn.txt" or "docs/AI/generated/llms/llms-semantic-cn.md" ||
+               path.StartsWith("docs/AI/generated/llms/controls/", StringComparison.Ordinal);
     }
 }

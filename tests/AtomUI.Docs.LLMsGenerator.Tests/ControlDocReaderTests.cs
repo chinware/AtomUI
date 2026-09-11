@@ -12,7 +12,7 @@ public class ControlDocReaderTests
     [Fact]
     public void ReaderUsesCurrentImplementationSectionNumbers()
     {
-        var model = ReadStepsModel();
+        var model = ReadModel("steps");
 
         model.ImplementationLifecycleSection.ShouldContain("容器准备");
         model.ImplementationAotSection.ShouldContain("AOT 边界");
@@ -23,7 +23,7 @@ public class ControlDocReaderTests
     [Fact]
     public void StepsGeneratedDocumentsMatchCurrentSources()
     {
-        var model = ReadStepsModel();
+        var model = ReadModel("steps");
         var index = LLMsControlWriter.Write(model);
         var semantic = LLMsSemanticWriter.Write(model);
 
@@ -32,24 +32,35 @@ public class ControlDocReaderTests
         File.ReadAllText(Path.Combine(TestRepository.RootPath, model.OutputSemanticPath))
             .ShouldBe(semantic);
 
-        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/AI/llms/llms-full-cn.txt"))
+        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/AI/generated/llms/llms-full-cn.txt"))
             .ShouldContain($"Source: ./controls/steps/index-cn.md\n\n{index.TrimEnd()}");
-        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/AI/llms/llms-semantic-cn.md"))
+        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/AI/generated/llms/llms-semantic-cn.md"))
             .ShouldContain($"Source: ./controls/steps/semantic-cn.md\n\n{semantic.TrimEnd()}");
     }
 
-    private static ControlDocModel ReadStepsModel()
+    [Fact]
+    public void UploadGeneratedDocumentsMatchCurrentSources()
+    {
+        var model = ReadModel("upload");
+
+        File.ReadAllText(Path.Combine(TestRepository.RootPath, model.OutputIndexPath))
+            .ShouldBe(LLMsControlWriter.Write(model));
+        File.ReadAllText(Path.Combine(TestRepository.RootPath, model.OutputSemanticPath))
+            .ShouldBe(LLMsSemanticWriter.Write(model));
+    }
+
+    private static ControlDocModel ReadModel(string controlName)
     {
         var config = LLMsGeneratorConfigReader.Read(
-            Path.Combine(TestRepository.RootPath, "docs/AI/llms.config.json"));
-        var steps = config.ControlSets
-                          .SelectMany(controlSet => ControlInventory.Discover(
-                              TestRepository.RootPath,
-                              controlSet,
-                              config.OutputRoot,
-                              config.DefaultLanguage))
-                          .Single(control => control.Name == "steps");
+            Path.Combine(TestRepository.RootPath, "docs/AI/generated/llms.config.json"));
+        var control = config.ControlSets
+                            .SelectMany(controlSet => ControlInventory.Discover(
+                                TestRepository.RootPath,
+                                controlSet,
+                                config.OutputRoot,
+                                config.DefaultLanguage))
+                            .Single(candidate => candidate.Name == controlName);
 
-        return ControlDocReader.Read(TestRepository.RootPath, steps);
+        return ControlDocReader.Read(TestRepository.RootPath, control);
     }
 }

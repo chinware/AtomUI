@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind">
+    <unit id="ApiEventPopupConfirmCancelled">
+      <segment>
+        <source>Raised when the cancel action is chosen.</source>
+        <target state="translated">選擇取消操作時觸發。</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventPopupConfirmConfirmed">
+      <segment>
+        <source>Raised when the confirm action is chosen.</source>
+        <target state="translated">選擇確認操作時觸發。</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventPopupConfirmPopupClick">
+      <segment>
+        <source>Raised after either confirmation flyout button is clicked.</source>
+        <target state="translated">點擊確認浮層任一按鈕後觸發。</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>The basic example supports the title and description props of confirmation.</source>
+        <target state="translated">基礎示例支持確認框的標題和描述屬性。</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反饋</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeIconDescription">
+      <segment>
+        <source>Set icon props to customize the icon.</source>
+        <target state="translated">設置 icon 屬性來自定義圖標。</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeIconTitle">
+      <segment>
+        <source>Customize icon</source>
+        <target state="translated">自定義圖標</target>
+      </segment>
+    </unit>
+    <unit id="LocaleTextDescription">
+      <segment>
+        <source>Set okText and cancelText props to customize the button's labels.</source>
+        <target state="translated">設置 okText 和 cancelText 屬性來自定義按鈕標籤。</target>
+      </segment>
+    </unit>
+    <unit id="LocaleTextTitle">
+      <segment>
+        <source>Locale text</source>
+        <target state="translated">本地化文本</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelTextCancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="translated">取消</target>
+      </segment>
+    </unit>
+    <unit id="P2ConfirmContentAreYouSureToDeleteThisTask">
+      <segment>
+        <source>Are you sure to delete this task?</source>
+        <target state="translated">確定要刪除這個任務嗎？</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBl">
+      <segment>
+        <source>BL</source>
+        <target state="translated">下左側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">底部</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBr">
+      <segment>
+        <source>BR</source>
+        <target state="translated">下右側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">刪除</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLb">
+      <segment>
+        <source>LB</source>
+        <target state="translated">左下側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLt">
+      <segment>
+        <source>LT</source>
+        <target state="translated">左上側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRb">
+      <segment>
+        <source>RB</source>
+        <target state="translated">右下側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRt">
+      <segment>
+        <source>RT</source>
+        <target state="translated">右上側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTl">
+      <segment>
+        <source>TL</source>
+        <target state="translated">上左側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">頂部</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTr">
+      <segment>
+        <source>TR</source>
+        <target state="translated">上右側</target>
+      </segment>
+    </unit>
+    <unit id="P2OkTextOk">
+      <segment>
+        <source>Ok</source>
+        <target state="translated">確定</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDeleteTheTask">
+      <segment>
+        <source>Delete the task</source>
+        <target state="translated">刪除任務</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>PopupConfirm combines a trigger control with a confirmation flyout. It is useful when an operation needs a quick second step but does not justify a blocking modal dialog.</source>
+        <target state="translated">PopupConfirm 將觸發控件與確認浮層組合在一起，適用於需要快速二次確認、但不需要阻塞式模態框的操作。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Inline confirmation before a lightweight destructive or risky action.</source>
+        <target state="translated">在輕量級危險操作或風險操作前進行就地確認。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+        <target state="translated">提供 12 種彈出位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">彈出位置</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

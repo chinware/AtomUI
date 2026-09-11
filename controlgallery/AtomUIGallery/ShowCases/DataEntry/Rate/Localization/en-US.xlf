@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.RateShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ClearStarDescription">
+      <segment>
+        <source>Support set allow to clear star when click again.</source>
+      </segment>
+    </unit>
+    <unit id="ClearStarTitle">
+      <segment>
+        <source>Clear star</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="HalfStarDescription">
+      <segment>
+        <source>Support select half star.</source>
+      </segment>
+    </unit>
+    <unit id="HalfStarTitle">
+      <segment>
+        <source>Half star</source>
+      </segment>
+    </unit>
+    <unit id="OtherCharacterDescription">
+      <segment>
+        <source>Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.</source>
+      </segment>
+    </unit>
+    <unit id="OtherCharacterTitle">
+      <segment>
+        <source>Other Character</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetFourStars">
+      <segment>
+        <source>Set 4 stars</source>
+      </segment>
+    </unit>
+    <unit id="P2TextIsallowclearFalse">
+      <segment>
+        <source>IsAllowClear: false</source>
+      </segment>
+    </unit>
+    <unit id="P2TextIsallowclearTrue">
+      <segment>
+        <source>IsAllowClear: true</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipBad">
+      <segment>
+        <source>bad</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipGood">
+      <segment>
+        <source>good</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipNormal">
+      <segment>
+        <source>normal</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipTerrible">
+      <segment>
+        <source>terrible</source>
+      </segment>
+    </unit>
+    <unit id="P2TooltipWonderful">
+      <segment>
+        <source>wonderful</source>
+      </segment>
+    </unit>
+    <unit id="P2TwoWayValueSummaryFormat">
+      <segment>
+        <source>Selected value: {0:0.#}</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Rate lets users express preference or quality on an ordered scale. It supports clearable values, half selection, read-only display, keyboard interaction, custom glyphs, and localized copywriting.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Collect lightweight ratings with star, half-star, custom character, and tooltip support.</source>
+      </segment>
+    </unit>
+    <unit id="ReadOnlyDescription">
+      <segment>
+        <source>Read only, can't use mouse to interact.</source>
+      </segment>
+    </unit>
+    <unit id="ReadOnlyTitle">
+      <segment>
+        <source>Read only</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ShowCopywritingDescription">
+      <segment>
+        <source>Add copywriting in rate components.</source>
+      </segment>
+    </unit>
+    <unit id="ShowCopywritingTitle">
+      <segment>
+        <source>Show copywriting</source>
+      </segment>
+    </unit>
+    <unit id="TwoWayBindingDescription">
+      <segment>
+        <source>Value uses TwoWay binding by default, so user selection and ViewModel updates stay synchronized.</source>
+      </segment>
+    </unit>
+    <unit id="TwoWayBindingTitle">
+      <segment>
+        <source>Two-way binding</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

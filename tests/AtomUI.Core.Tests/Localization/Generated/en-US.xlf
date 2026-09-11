@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Core.Tests.Localization.GeneratedStartupLangResourceKind">
+    <unit id="ItemCount">
+      <segment>
+        <source>{0} items</source>
+      </segment>
+    </unit>
+    <unit id="Value">
+      <segment>
+        <source>English</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

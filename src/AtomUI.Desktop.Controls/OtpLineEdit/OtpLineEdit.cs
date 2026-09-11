@@ -212,6 +212,9 @@ public class OtpLineEdit : TemplatedControl,
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<OtpLineEdit, FormValidateFeedback?>(nameof(FormFeedback));
 
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<OtpLineEdit>();
+
     internal static readonly DirectProperty<OtpLineEdit, bool> IsFormFeedbackVisibleProperty =
         AvaloniaProperty.RegisterDirect<OtpLineEdit, bool>(
             nameof(IsFormFeedbackVisible),
@@ -244,6 +247,12 @@ public class OtpLineEdit : TemplatedControl,
     {
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
     }
 
     private bool _isFormFeedbackVisible;
@@ -317,6 +326,7 @@ public class OtpLineEdit : TemplatedControl,
         }
 
         if (change.Property == StatusProperty ||
+            change.Property == FormStatusProperty ||
             change.Property == DataValidationErrors.HasErrorsProperty ||
             change.Property == DataValidationErrors.ErrorsProperty)
         {
@@ -387,16 +397,15 @@ public class OtpLineEdit : TemplatedControl,
         UpdateCellItems();
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureFormFeedbackSubscription();
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-
-        if (_clearButton is not null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-            _clearButton = null;
-        }
-
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
     }
@@ -671,9 +680,7 @@ public class OtpLineEdit : TemplatedControl,
 
     private void UpdateEffectiveStatus()
     {
-        EffectiveStatus = DataValidationErrors.GetHasErrors(this)
-            ? InputControlStatus.Error
-            : Status;
+        EffectiveStatus = InputControlState.ResolveEffectiveStatus(this, Status, FormStatus);
 
         PseudoClasses.Set(StdPseudoClass.Warning, EffectiveStatus == InputControlStatus.Warning);
         UpdateValuePseudoClasses();
@@ -759,6 +766,11 @@ public class OtpLineEdit : TemplatedControl,
     {
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            IsFormFeedbackVisible = false;
+            return;
+        }
 
         if (FormFeedback is { } feedback)
         {
@@ -796,12 +808,7 @@ public class OtpLineEdit : TemplatedControl,
 
     void IFormItemAware.NotifyValidateStatus(FormValidateStatus status)
     {
-        SetCurrentValue(StatusProperty, status switch
-        {
-            FormValidateStatus.Error   => InputControlStatus.Error,
-            FormValidateStatus.Warning => InputControlStatus.Warning,
-            _                          => InputControlStatus.Default
-        });
+        SetCurrentValue(FormStatusProperty, status);
     }
 
     void IFormItemFeedbackAware.SetFeedbackControl(FormValidateFeedback? value)

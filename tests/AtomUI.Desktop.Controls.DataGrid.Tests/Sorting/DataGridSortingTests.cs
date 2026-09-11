@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,401 +13,226 @@ namespace AtomUI.Desktop.Controls.Tests.DataGrid.Sorting;
 
 public class DataGridSortingTests
 {
-    static DataGridSortingTests()
-    {
-        AvaloniaTestApp.EnsureInitialized();
-    }
+    private static readonly DataGridFieldId NameField = new("name");
+    private static readonly DataGridFieldId AgeField = new("age");
+
+    static DataGridSortingTests() => AvaloniaTestApp.EnsureInitialized();
 
     [Fact]
-    public void Sort_Reorders_Rows_When_ItemsSource_Is_Plain_ObservableCollection()
+    public void Sort_Reorders_Range_Rows_From_Typed_Local_Source()
     {
-        var rows = new ObservableCollection<SortRow>
-        {
-            new("John Brown", 32),
-            new("Jim Green", 42),
-            new("Joe Black", 30)
-        };
-        var grid = new global::AtomUI.Desktop.Controls.DataGrid
-        {
-            AutoGenerateColumns = false,
-            CanUserSortColumns = true,
-            ItemsSource = rows,
-            Width = 480,
-            Height = 240
-        };
-
-        grid.Columns.Add(new DataGridTextColumn
-        {
-            Header = "Age",
-            Binding = new Binding(nameof(SortRow.Age))
-        });
-
-        var window = new Window
-        {
-            Width = 520,
-            Height = 280,
-            Content = grid
-        };
-
+        var context = CreateGrid(DefaultRows());
         try
         {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
+            context.Grid.Sort(1, ListSortDirection.Ascending);
+            PumpUntil(() => DisplayedAges(context.Grid).SequenceEqual([30, 32, 42]));
 
-            grid.Sort(0, ListSortDirection.Ascending);
-            Dispatcher.UIThread.RunJobs();
-
-            grid.CollectionView.ShouldNotBeNull();
-            grid.CollectionView.Cast<SortRow>().Select(row => row.Age).ShouldBe([30, 32, 42]);
-            GetDisplayedAges(grid).ShouldBe([30, 32, 42]);
+            context.Grid.Query.Sorts.ShouldBe([
+                new DataGridSort(AgeField, DataGridSortDirection.Ascending)]);
         }
         finally
         {
-            window.Close();
+            context.Close();
         }
     }
 
     [Fact]
-    public void Clicking_Sort_Indicator_Reorders_Rows()
+    public void Clicking_Sort_Indicator_Reorders_Range_Rows()
     {
-        var rows = new ObservableCollection<SortRow>
-        {
-            new("John Brown", 32),
-            new("Jim Green", 42),
-            new("Joe Black", 30)
-        };
-        var grid = new global::AtomUI.Desktop.Controls.DataGrid
-        {
-            AutoGenerateColumns = false,
-            CanUserSortColumns = true,
-            ItemsSource = rows,
-            Width = 480,
-            Height = 240
-        };
-
-        grid.Columns.Add(new DataGridTextColumn
-        {
-            Header = "Age",
-            Binding = new Binding(nameof(SortRow.Age))
-        });
-
-        var window = new Window
-        {
-            Width = 520,
-            Height = 280,
-            Content = grid
-        };
-
+        var context = CreateGrid(DefaultRows());
         try
         {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
-
-            var sortIndicator = grid.GetVisualDescendants()
-                                    .OfType<DataGridSortIndicator>()
-                                    .Single(indicator => indicator.IsVisible &&
-                                                         indicator.Bounds.Width > 0 &&
-                                                         indicator.Bounds.Height > 0);
-            Click(sortIndicator, window);
-            Dispatcher.UIThread.RunJobs();
-
-            grid.CollectionView.ShouldNotBeNull();
-            grid.CollectionView.Cast<SortRow>().Select(row => row.Age).ShouldBe([30, 32, 42]);
-            GetDisplayedAges(grid).ShouldBe([30, 32, 42]);
+            Click(FindSortIndicator(context.Grid), context.Window);
+            PumpUntil(() => DisplayedAges(context.Grid).SequenceEqual([30, 32, 42]));
         }
         finally
         {
-            window.Close();
+            context.Close();
         }
     }
 
     [Fact]
-    public void Clicking_Column_Level_Sort_Indicator_Reorders_Rows_When_Grid_Level_Sorting_Is_Disabled()
+    public void Column_Level_Sort_Works_When_Grid_Level_Sorting_Is_Disabled()
     {
-        var rows = new ObservableCollection<SortRow>
-        {
-            new("John Brown", 32),
-            new("Jim Green", 42),
-            new("Joe Black", 30)
-        };
-        var grid = new global::AtomUI.Desktop.Controls.DataGrid
-        {
-            AutoGenerateColumns = false,
-            ItemsSource = rows,
-            Width = 480,
-            Height = 240
-        };
-
-        grid.Columns.Add(new DataGridTextColumn
-        {
-            Header = "Age",
-            Binding = new Binding(nameof(SortRow.Age)),
-            CanUserSort = true
-        });
-
-        var window = new Window
-        {
-            Width = 520,
-            Height = 280,
-            Content = grid
-        };
-
+        var context = CreateGrid(DefaultRows(), gridCanSort: false, columnCanSort: true);
         try
         {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
-
-            var sortIndicator = grid.GetVisualDescendants()
-                                    .OfType<DataGridSortIndicator>()
-                                    .Single(indicator => indicator.IsVisible &&
-                                                         indicator.Bounds.Width > 0 &&
-                                                         indicator.Bounds.Height > 0);
-            Click(sortIndicator, window);
-            Dispatcher.UIThread.RunJobs();
-
-            grid.CollectionView.ShouldNotBeNull();
-            grid.CollectionView.Cast<SortRow>().Select(row => row.Age).ShouldBe([30, 32, 42]);
-            GetDisplayedAges(grid).ShouldBe([30, 32, 42]);
+            Click(FindSortIndicator(context.Grid), context.Window);
+            PumpUntil(() => DisplayedAges(context.Grid).SequenceEqual([30, 32, 42]));
         }
         finally
         {
-            window.Close();
+            context.Close();
         }
     }
 
     [Fact]
-    public void Clicking_Right_Edge_Of_Sort_Indicator_Reorders_Rows_When_Column_Can_Resize()
+    public void Clicking_Right_Edge_Of_Sort_Indicator_Works_When_Column_Can_Resize()
     {
-        var rows = new ObservableCollection<SortRow>
-        {
-            new("John Brown", 32),
-            new("Jim Green", 42),
-            new("Joe Black", 30)
-        };
-        var grid = new global::AtomUI.Desktop.Controls.DataGrid
-        {
-            AutoGenerateColumns = false,
-            CanUserResizeColumns = true,
-            ItemsSource = rows,
-            Width = 360,
-            Height = 240
-        };
-
-        grid.Columns.Add(new DataGridTextColumn
-        {
-            Header = "Age",
-            Binding = new Binding(nameof(SortRow.Age)),
-            CanUserResize = true,
-            CanUserSort = true,
-            Width = new DataGridLength(72)
-        });
-
-        var window = new Window
-        {
-            Width = 400,
-            Height = 280,
-            Content = grid
-        };
-
+        var context = CreateGrid(DefaultRows(), columnCanResize: true, width: 360);
         try
         {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
-
-            var sortIndicator = grid.GetVisualDescendants()
-                                    .OfType<DataGridSortIndicator>()
-                                    .Single(indicator => indicator.IsVisible &&
-                                                         indicator.Bounds.Width > 0 &&
-                                                         indicator.Bounds.Height > 0);
-            Click(sortIndicator, window, new Point(sortIndicator.Bounds.Width - 1, sortIndicator.Bounds.Height / 2));
-            Dispatcher.UIThread.RunJobs();
-
-            grid.CollectionView.ShouldNotBeNull();
-            grid.CollectionView.Cast<SortRow>().Select(row => row.Age).ShouldBe([30, 32, 42]);
-            GetDisplayedAges(grid).ShouldBe([30, 32, 42]);
+            var indicator = FindSortIndicator(context.Grid);
+            Click(
+                indicator,
+                context.Window,
+                new Point(indicator.Bounds.Width - 1, indicator.Bounds.Height / 2));
+            PumpUntil(() => DisplayedAges(context.Grid).SequenceEqual([30, 32, 42]));
         }
         finally
         {
-            window.Close();
+            context.Close();
         }
     }
 
     [Fact]
-    public void Clicking_Sort_Indicator_Reorders_Gallery_Data_With_Duplicate_Ages()
+    public void Sort_Keeps_Source_Ordinal_As_Tie_Break_For_Duplicate_Ages()
     {
-        var rows = new ObservableCollection<SortRow>
+        var context = CreateGrid([
+            new SortRow(1, "John Brown", 32),
+            new SortRow(2, "Jim Green", 42),
+            new SortRow(3, "Joe Black", 32)]);
+        try
         {
-            new("John Brown", 32),
-            new("Jim Green", 42),
-            new("Joe Black", 32)
-        };
+            Click(FindSortIndicator(context.Grid), context.Window);
+            PumpUntil(() => DisplayedNames(context.Grid).SequenceEqual([
+                "John Brown", "Joe Black", "Jim Green"]));
+        }
+        finally
+        {
+            context.Close();
+        }
+    }
+
+    [Fact]
+    public void Sort_Reorders_Rows_When_Cell_Bindings_Are_Compiled()
+    {
+        var context = CreateGrid([
+            new SortRow(1, "John Brown", 32),
+            new SortRow(2, "Jim Green", 42),
+            new SortRow(3, "Joe Black", 32)], compiledBindings: true);
+        try
+        {
+            Click(FindSortIndicator(context.Grid), context.Window);
+            PumpUntil(() => DisplayedNames(context.Grid).SequenceEqual([
+                "John Brown", "Joe Black", "Jim Green"]));
+        }
+        finally
+        {
+            context.Close();
+        }
+    }
+
+    private static GridContext CreateGrid(
+        IReadOnlyList<SortRow> rows,
+        bool gridCanSort = true,
+        bool? columnCanSort = null,
+        bool columnCanResize = false,
+        bool compiledBindings = false,
+        double width = 480)
+    {
+        var descriptor = DataGridLocalSourceDescriptor.For<SortRow>(
+                static row => DataGridRowKey.FromInt64(row.Id))
+            .Field(NameField, static row => row.Name, StringComparer.Ordinal)
+            .Field(AgeField, static row => row.Age);
+        var source = DataGridLocalSource.Create(rows, descriptor);
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
             AutoGenerateColumns = false,
-            CanUserResizeColumns = true,
-            ItemsSource = rows,
-            Width = 720,
+            CanUserSortColumns = gridCanSort,
+            CanUserResizeColumns = columnCanResize,
+            ItemsSource = source,
+            Width = width,
             Height = 240
         };
-
         grid.Columns.Add(new DataGridTextColumn
         {
             Header = "Name",
-            Binding = new Binding(nameof(SortRow.Name)),
+            FieldId = NameField,
+            Binding = compiledBindings
+                ? CompiledBinding.Create<SortRow, string>(row => row.Name)
+                : new Binding(nameof(SortRow.Name)),
             Width = new DataGridLength(160)
         });
         grid.Columns.Add(new DataGridTextColumn
         {
             Header = "Age",
-            Binding = new Binding(nameof(SortRow.Age)),
-            CanUserResize = true,
-            CanUserSort = true,
+            FieldId = AgeField,
+            Binding = compiledBindings
+                ? CompiledBinding.Create<SortRow, int>(row => row.Age)
+                : new Binding(nameof(SortRow.Age)),
+            CanUserSort = columnCanSort,
+            CanUserResize = columnCanResize,
             Width = new DataGridLength(120)
         });
-
-        var window = new Window
-        {
-            Width = 760,
-            Height = 280,
-            Content = grid
-        };
-
-        try
-        {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
-
-            var sortIndicator = grid.GetVisualDescendants()
-                                    .OfType<DataGridSortIndicator>()
-                                    .Single(indicator => indicator.IsVisible &&
-                                                         indicator.Bounds.Width > 0 &&
-                                                         indicator.Bounds.Height > 0);
-            Click(sortIndicator, window);
-            Dispatcher.UIThread.RunJobs();
-
-            grid.CollectionView.ShouldNotBeNull();
-            grid.CollectionView.Cast<SortRow>().Select(row => row.Name).ShouldBe(["John Brown", "Joe Black", "Jim Green"]);
-            GetDisplayedNames(grid).ShouldBe(["John Brown", "Joe Black", "Jim Green"]);
-        }
-        finally
-        {
-            window.Close();
-        }
+        var window = new Window { Width = width + 40, Height = 280, Content = grid };
+        window.Show();
+        PumpUntil(() => grid.LoadState == DataGridLoadState.Ready && DisplayedAges(grid).Length == rows.Count);
+        return new GridContext(grid, window, source);
     }
 
-    [Fact]
-    public void Clicking_Sort_Indicator_Reorders_Rows_When_Binding_Is_Compiled()
-    {
-        var rows = new ObservableCollection<SortRow>
-        {
-            new("John Brown", 32),
-            new("Jim Green", 42),
-            new("Joe Black", 32)
-        };
-        var grid = new global::AtomUI.Desktop.Controls.DataGrid
-        {
-            AutoGenerateColumns = false,
-            CanUserResizeColumns = true,
-            ItemsSource = rows,
-            Width = 720,
-            Height = 240
-        };
+    private static IReadOnlyList<SortRow> DefaultRows() =>
+    [
+        new(1, "John Brown", 32),
+        new(2, "Jim Green", 42),
+        new(3, "Joe Black", 30)
+    ];
 
-        grid.Columns.Add(new DataGridTextColumn
-        {
-            Header = "Name",
-            Binding = CompiledBinding.Create<SortRow, string>(row => row.Name),
-            Width = new DataGridLength(160)
-        });
-        grid.Columns.Add(new DataGridTextColumn
-        {
-            Header = "Age",
-            Binding = CompiledBinding.Create<SortRow, int>(row => row.Age),
-            CanUserResize = true,
-            CanUserSort = true,
-            Width = new DataGridLength(120)
-        });
+    private static DataGridSortIndicator FindSortIndicator(
+        global::AtomUI.Desktop.Controls.DataGrid grid) =>
+        grid.GetVisualDescendants()
+            .OfType<DataGridSortIndicator>()
+            .Last(indicator => indicator.IsVisible && indicator.Bounds.Width > 0 && indicator.Bounds.Height > 0);
 
-        var window = new Window
-        {
-            Width = 760,
-            Height = 280,
-            Content = grid
-        };
-
-        try
-        {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
-
-            var sortIndicator = grid.GetVisualDescendants()
-                                    .OfType<DataGridSortIndicator>()
-                                    .Single(indicator => indicator.IsVisible &&
-                                                         indicator.Bounds.Width > 0 &&
-                                                         indicator.Bounds.Height > 0);
-            Click(sortIndicator, window);
-            Dispatcher.UIThread.RunJobs();
-
-            grid.CollectionView.ShouldNotBeNull();
-            grid.CollectionView.Cast<SortRow>().Select(row => row.Name).ShouldBe(["John Brown", "Joe Black", "Jim Green"]);
-            GetDisplayedNames(grid).ShouldBe(["John Brown", "Joe Black", "Jim Green"]);
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
-    private static void Click(Control control, Window window)
-    {
-        Click(control, window, new Point(control.Bounds.Width / 2, control.Bounds.Height / 2));
-    }
-
-    private static void Click(Control control, Window window, Point localPoint)
+    private static void Click(Control control, Window window, Point? localPoint = null)
     {
         var point = control.TranslatePoint(
-            localPoint,
-            window);
-
-        point.ShouldNotBeNull();
-        window.MouseMove(point.Value);
-        window.MouseDown(point.Value, MouseButton.Left);
-        window.MouseUp(point.Value, MouseButton.Left);
+            localPoint ?? new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
+            window).ShouldNotBeNull();
+        window.MouseMove(point);
+        window.MouseDown(point, MouseButton.Left);
+        window.MouseUp(point, MouseButton.Left);
     }
 
-    private static int[] GetDisplayedAges(global::AtomUI.Desktop.Controls.DataGrid grid)
+    private static int[] DisplayedAges(global::AtomUI.Desktop.Controls.DataGrid grid) =>
+        DisplayedRows(grid).Select(row => row.Age).ToArray();
+
+    private static string[] DisplayedNames(global::AtomUI.Desktop.Controls.DataGrid grid) =>
+        DisplayedRows(grid).Select(row => row.Name).ToArray();
+
+    private static SortRow[] DisplayedRows(global::AtomUI.Desktop.Controls.DataGrid grid) =>
+        grid.GetVisualDescendants()
+            .OfType<DataGridRow>()
+            .Select(row => new { Row = row, Position = row.TranslatePoint(default, grid) })
+            .Where(item => item.Position is not null && item.Row.DataContext is SortRow)
+            .OrderBy(item => item.Position!.Value.Y)
+            .Select(item => (SortRow)item.Row.DataContext!)
+            .ToArray();
+
+    private static void PumpUntil(Func<bool> condition)
     {
-        return grid.GetVisualDescendants()
-                   .OfType<DataGridRow>()
-                   .Select(row => new
-                   {
-                       Row = row,
-                       Position = row.TranslatePoint(new Point(0, 0), grid)
-                   })
-                   .Where(entry => entry.Position is not null)
-                   .OrderBy(entry => entry.Position!.Value.Y)
-                   .Select(entry => entry.Row.DataContext)
-                   .OfType<SortRow>()
-                   .Select(row => row.Age)
-                   .ToArray();
+        if (!SpinWait.SpinUntil(() =>
+            {
+                Dispatcher.UIThread.RunJobs();
+                return condition();
+            }, TimeSpan.FromSeconds(5)))
+        {
+            throw new TimeoutException("The expected sorted presentation was not reached.");
+        }
     }
 
-    private static string[] GetDisplayedNames(global::AtomUI.Desktop.Controls.DataGrid grid)
+    private sealed record SortRow(long Id, string Name, int Age);
+
+    private sealed record GridContext(
+        global::AtomUI.Desktop.Controls.DataGrid Grid,
+        Window Window,
+        DataGridLocalSource<SortRow> Source)
     {
-        return grid.GetVisualDescendants()
-                   .OfType<DataGridRow>()
-                   .Select(row => new
-                   {
-                       Row = row,
-                       Position = row.TranslatePoint(new Point(0, 0), grid)
-                   })
-                   .Where(entry => entry.Position is not null)
-                   .OrderBy(entry => entry.Position!.Value.Y)
-                   .Select(entry => entry.Row.DataContext)
-                   .OfType<SortRow>()
-                   .Select(row => row.Name)
-                   .ToArray();
+        public void Close()
+        {
+            Window.Close();
+            Dispatcher.UIThread.RunJobs();
+            Source.Dispose();
+        }
     }
-
-    private sealed record SortRow(string Name, int Age);
 }

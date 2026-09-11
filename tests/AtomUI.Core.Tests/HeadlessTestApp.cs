@@ -46,6 +46,4 @@ public static class TestAppBuilder
     }
 }
 
-internal sealed class TestApplication : Application
-{
-}
+internal sealed partial class TestApplication : Application;

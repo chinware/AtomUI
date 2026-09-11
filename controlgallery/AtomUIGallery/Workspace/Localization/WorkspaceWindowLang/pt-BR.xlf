@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WorkspaceWindowLangResourceKind">
+    <unit id="MenuItemAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">Appearance</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemCompactMode">
+      <segment>
+        <source>Compact Mode</source>
+        <target state="translated">Compacto Modo</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemDarkMode">
+      <segment>
+        <source>Dark Mode</source>
+        <target state="translated">Dark Modo</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableFullScreen">
+      <segment>
+        <source>Enable FullScreen</source>
+        <target state="translated">Ativar FullScreen</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMaximize">
+      <segment>
+        <source>Enable Maximize</source>
+        <target state="translated">Ativar Maximize</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMinimize">
+      <segment>
+        <source>Enable Minimize</source>
+        <target state="translated">Ativar Minimize</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMotion">
+      <segment>
+        <source>Enable Motion</source>
+        <target state="translated">Ativar Motion</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableMove">
+      <segment>
+        <source>Enable Move</source>
+        <target state="translated">Ativar Move</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnablePin">
+      <segment>
+        <source>Enable Pin</source>
+        <target state="translated">Ativar Pin</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableResize">
+      <segment>
+        <source>Enable Resize</source>
+        <target state="translated">Ativar Resize</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemEnableWaveSpirit">
+      <segment>
+        <source>Enable WaveSpirit</source>
+        <target state="translated">Ativar WaveSpirit</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemFollowSystem">
+      <segment>
+        <source>Follow System</source>
+        <target state="translated">Follow System</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemLanguage">
+      <segment>
+        <source>Language</source>
+        <target state="translated">Language</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemLightMode">
+      <segment>
+        <source>Light Mode</source>
+        <target state="translated">Light Modo</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemSettings">
+      <segment>
+        <source>Settings</source>
+        <target state="translated">Configurações</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemTheme">
+      <segment>
+        <source>Theme</source>
+        <target state="translated">Tema</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemThemeSettings">
+      <segment>
+        <source>Theme Settings</source>
+        <target state="translated">Tema Settings</target>
+      </segment>
+    </unit>
+    <unit id="MenuItemWindowOptions">
+      <segment>
+        <source>Window Options</source>
+        <target state="translated">Janela Opções</target>
+      </segment>
+    </unit>
+    <unit id="WindowTitle">
+      <segment>
+        <source>AtomUI Desktop Gallery</source>
+        <target state="translated">AtomUI Desktop Gallery</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

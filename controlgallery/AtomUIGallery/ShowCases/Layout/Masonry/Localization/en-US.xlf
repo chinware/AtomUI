@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MasonryShowCaseLangResourceKind">
+    <unit id="ApiEventLayoutChanged">
+      <segment>
+        <source>Raised when the effective column assignment of children changes, dispatched after the layout pass.</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic usage. Set the number of columns with ColumnCount and the spacing with ColumnGap and RowGap.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="DynamicAddItemLabel">
+      <segment>
+        <source>Add Item</source>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>Demonstrate dynamic item updates and explicit Masonry.Column assignments.</source>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+      </segment>
+    </unit>
+    <unit id="ImageDescription">
+      <segment>
+        <source>With StableColumns, images update size and vertical positions as they load without moving existing items between columns.</source>
+      </segment>
+    </unit>
+    <unit id="ImageTitle">
+      <segment>
+        <source>Image</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Masonry uses stable column assignments by default and can opt into classic shortest-column reflow, with fixed or adaptive column counts and row/column gaps.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Lay out children of unequal heights into stable or reflowing columns.</source>
+      </segment>
+    </unit>
+    <unit id="ResponsiveDescription">
+      <segment>
+        <source>Use responsive values to adapt to different screen widths. ColumnInfo controls the column count at each breakpoint, and Gutter controls the spacing.</source>
+      </segment>
+    </unit>
+    <unit id="ResponsiveTitle">
+      <segment>
+        <source>Responsive</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

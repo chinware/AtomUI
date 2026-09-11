@@ -1,0 +1,39 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum SeparatorShowCaseLangResourceKind
+{
+    ScenarioExamples,
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    HorizontalTitle,
+    HorizontalDescription,
+    DividerWithTitleTitle,
+    DividerWithTitleDescription,
+    PlainTextTitle,
+    PlainTextDescription,
+    SpacingSizeTitle,
+    SpacingSizeDescription,
+    VerticalTitle,
+    VerticalDescription,
+    VariantTitle,
+    VariantDescription,
+    P2TitleText,
+    P2TitleLeftText,
+    P2TitleRightText,
+    P2TitleLeftTextWithN0Orientationmargin,
+    P2TitleRightTextWithN50pxOrientationmargin,
+    P2TitleLeftText2,
+    P2TitleRightText2,
+    P2TitleSolid,
+    P2TitleDotted,
+    P2TitleDashed,
+    P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit,
+    P2TextItem1,
+    P2TextItem2,
+    P2TextItem3
+}

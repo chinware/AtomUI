@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class DatePickerToken : AbstractControlDesignToken
+internal sealed class DatePickerToken : AbstractControlDesignToken
 {
     
     public DatePickerToken()

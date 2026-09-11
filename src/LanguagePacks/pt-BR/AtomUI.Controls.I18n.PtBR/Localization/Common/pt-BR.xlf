@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Controls.Localization.CommonLangResourceKind">
+    <unit id="Cancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="final">Cancelar</target>
+      </segment>
+    </unit>
+    <unit id="Delete">
+      <segment>
+        <source>Delete</source>
+        <target state="final">Excluir</target>
+      </segment>
+    </unit>
+    <unit id="Edit">
+      <segment>
+        <source>Edit</source>
+        <target state="final">Editar</target>
+      </segment>
+    </unit>
+    <unit id="Loading">
+      <segment>
+        <source>Loading</source>
+        <target state="final">Carregando</target>
+      </segment>
+    </unit>
+    <unit id="NoData">
+      <segment>
+        <source>No data</source>
+        <target state="final">Sem dados</target>
+      </segment>
+    </unit>
+    <unit id="Ok">
+      <segment>
+        <source>Ok</source>
+        <target state="final">OK</target>
+      </segment>
+    </unit>
+    <unit id="Optional">
+      <segment>
+        <source>(optional)</source>
+        <target state="final">(opcional)</target>
+      </segment>
+    </unit>
+    <unit id="Reset">
+      <segment>
+        <source>Reset</source>
+        <target state="final">Redefinir</target>
+      </segment>
+    </unit>
+    <unit id="Save">
+      <segment>
+        <source>Save</source>
+        <target state="final">Salvar</target>
+      </segment>
+    </unit>
+    <unit id="Submit">
+      <segment>
+        <source>Submit</source>
+        <target state="final">Enviar</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

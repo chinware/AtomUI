@@ -366,6 +366,72 @@ public class WindowTitleBarLayoutPanelTests
                    .ShouldBe(Desktop.Controls.WindowTitleBarLayoutRole.Leading);
             logoPresenter.Bounds.X.ShouldBeLessThan(leftAddOnPresenter.Bounds.X);
             logoPresenter.Bounds.X.ShouldBe(0, 0.5);
+            (leftAddOnPresenter.Bounds.X - logoPresenter.Bounds.Right).ShouldBe(4, 0.5);
+        }
+        finally
+        {
+            host.Close();
+        }
+    }
+
+    [Theory]
+    [InlineData(OsType.Windows)]
+    [InlineData(OsType.Linux)]
+    public void Windows_And_Linux_Logo_Left_AddOn_Spacing_Tracks_Presenter_Visibility(
+        OsType osType)
+    {
+        var titleBar = new Desktop.Controls.WindowTitleBar
+        {
+            Width          = 400,
+            Height         = 40,
+            Logo           = new Border { Width = 16, Height = 16 },
+            LeftAddOn      = new Border { Width = 120, Height = 24 },
+            TitleAlignment = Desktop.Controls.WindowTitleBarTitleAlignment.Left,
+            LogoVisibility = Desktop.Controls.WindowTitleBarLogoVisibility.Always
+        };
+        titleBar.SetValue(Desktop.Controls.WindowTitleBar.OsTypeProperty, osType);
+        Application.Current!.TryFindResource(typeof(Desktop.Controls.WindowTitleBar), out var resource)
+                   .ShouldBeTrue();
+        titleBar.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
+
+        var host = new Avalonia.Controls.Window
+        {
+            Width   = 400,
+            Height  = 100,
+            Content = titleBar
+        };
+
+        try
+        {
+            host.Show();
+            titleBar.ApplyTemplate();
+            host.UpdateLayout();
+
+            var logoPresenter = titleBar.GetVisualDescendants()
+                                        .OfType<ContentPresenter>()
+                                        .Single(presenter => presenter.Name == "PART_Logo");
+            var leftAddOnPresenter = titleBar.GetVisualDescendants()
+                                             .OfType<ContentPresenter>()
+                                             .Single(presenter => presenter.Name == "PART_LeftAddOn");
+            var leadingHost = logoPresenter.GetVisualParent().ShouldBeAssignableTo<Control>()!;
+
+            (leftAddOnPresenter.Bounds.X - logoPresenter.Bounds.Right).ShouldBe(4, 0.5);
+
+            titleBar.LogoVisibility = Desktop.Controls.WindowTitleBarLogoVisibility.Never;
+            Dispatcher.UIThread.RunJobs();
+            host.UpdateLayout();
+
+            logoPresenter.IsVisible.ShouldBeFalse();
+            leftAddOnPresenter.Bounds.X.ShouldBe(0, 0.5);
+
+            titleBar.LogoVisibility = Desktop.Controls.WindowTitleBarLogoVisibility.Always;
+            titleBar.LeftAddOn = null;
+            Dispatcher.UIThread.RunJobs();
+            host.UpdateLayout();
+
+            logoPresenter.IsVisible.ShouldBeTrue();
+            leftAddOnPresenter.IsVisible.ShouldBeFalse();
+            leadingHost.Bounds.Width.ShouldBe(logoPresenter.Bounds.Width, 0.5);
         }
         finally
         {

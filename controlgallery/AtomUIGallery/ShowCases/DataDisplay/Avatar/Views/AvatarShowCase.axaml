@@ -68,10 +68,32 @@
                 <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 <atom:Avatar Text="{gallery:AvatarShowCaseLangResource P2ContentU}" />
                 <atom:Avatar Size="40" Text="{gallery:AvatarShowCaseLangResource P2ContentUser}" />
-                <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
+                <atom:Avatar Source="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
                 <atom:Avatar Background="#fde3cf" Foreground="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentU}" />
                 <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
             </StackPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem Title="{gallery:AvatarShowCaseLangResource NetworkImageTitle}"
+                                  Description="{gallery:AvatarShowCaseLangResource NetworkImageDescription}"
+                                  IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:AvatarViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <atom:Avatar Size="64"
+                         Source="https://api.dicebear.com/7.x/miniavs/png?seed=1&amp;size=128"
+                         FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
+            <atom:Avatar SizeType="Large"
+                         Source="https://api.dicebear.com/7.x/miniavs/png?seed=2&amp;size=128"
+                         FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
+            <atom:Avatar Source="https://api.dicebear.com/7.x/miniavs/png?seed=3&amp;size=128"
+                         FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
+            <atom:Avatar Shape="Square"
+                         Source="https://api.dicebear.com/7.x/miniavs/png?seed=4&amp;size=128"
+                         FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
         </StackPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
@@ -109,7 +131,7 @@
             <DataTemplate x:DataType="vm:AvatarViewModel">
         <StackPanel Orientation="Vertical" Spacing="20">
             <atom:AvatarGroup>
-                <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg"/>
+                <atom:Avatar Source="https://api.dicebear.com/10.x/lorelei/svg?seed=1"/>
                 <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                 <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
@@ -118,7 +140,7 @@
             <atom:AvatarGroup MaxDisplayCount="2"
                               FoldInfoAvatarForeground="#f56a00"
                               FoldInfoAvatarBackground="#fde3cf">
-                <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar2.svg"/>
+                <atom:Avatar Source="https://api.dicebear.com/10.x/lorelei/svg?seed=2"/>
                 <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                 <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
@@ -128,7 +150,7 @@
                               FoldInfoAvatarForeground="#f56a00"
                               FoldInfoAvatarBackground="#fde3cf"
                               SizeType="Large">
-                <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar3.svg"/>
+                <atom:Avatar Source="https://api.dicebear.com/10.x/lorelei/svg?seed=3"/>
                 <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                 <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
@@ -139,7 +161,7 @@
                               FoldInfoAvatarBackground="#fde3cf"
                               SizeType="Large"
                               FoldAvatarFlyoutTriggerType="Click">
-                <atom:Avatar BitmapSrc="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar4.png"/>
+                <atom:Avatar Source="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
                 <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                 <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>

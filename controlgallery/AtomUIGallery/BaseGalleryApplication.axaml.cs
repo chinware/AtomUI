@@ -3,8 +3,12 @@ using Avalonia;
 
 namespace AtomUIGallery;
 
-public partial class BaseGalleryApplication : Application
+public abstract partial class BaseGalleryApplication : Application
 {
+    public BaseGalleryApplication()
+    {
+    }
+
     protected WorkspaceWindow CreateWorkspaceWindow()
     {
         return new WorkspaceWindow();

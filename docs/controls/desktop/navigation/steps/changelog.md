@@ -3,6 +3,19 @@
 本文档记录 Steps 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-22
+
+- API
+  - 新增 `StepsType.Panel`，并新增 `StepsPanelVariant.Filled` / `StepsPanelVariant.Outlined` 与 `Steps.PanelVariant`。
+- Layout
+  - Panel 强制水平等宽布局，忽略垂直 Orientation 请求。
+  - 隐藏 Indicator 和普通 Connector，使用 internal `PanelArrow` 在相邻 item 之间绘制可拉伸楔形箭头，并支持 RTL。
+- Theme / Token
+  - 新增 Panel 状态背景、active 背景、边框厚度、圆角和箭头尺寸 Token。
+  - Filled 使用状态面板色，Outlined 使用容器背景、状态边框和浅色 active 背景；Small 使用独立箭头宽度和圆角。
+- Tests
+  - 增加 Panel 等宽、布局方向、Arrow 外溢、RTL、Filled/Outlined 和模板可见性回归覆盖。
+
 ## 2026-08-03
 
 - API

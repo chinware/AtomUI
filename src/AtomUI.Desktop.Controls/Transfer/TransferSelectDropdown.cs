@@ -3,8 +3,12 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
+
+using FlyoutControl = Flyout;
 
 internal class TransferSelectDropdown : IconButton
 {
@@ -85,6 +89,9 @@ internal class TransferSelectDropdown : IconButton
             o => o.ViewType,
             (o, v) => o.ViewType = v);
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        FlyoutControl.IsPopupPinnedOpenProperty.AddOwner<TransferSelectDropdown>();
+
     private string? _selectAllText;
     internal string? SelectAllText
     {
@@ -139,9 +146,16 @@ internal class TransferSelectDropdown : IconButton
         get => _viewType;
         set => SetAndRaise(ViewTypeProperty, ref _viewType, value);
     }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
     #endregion
 
     private CompositeDisposable? _disposables;
+    private int _pinnedOpenGeneration;
 
     protected override void OnClick()
     {
@@ -156,13 +170,46 @@ internal class TransferSelectDropdown : IconButton
             change.Property == ViewTypeProperty)
         {
             ResetFlyout();
+            if (IsPopupPinnedOpen && this.IsAttachedToVisualTree())
+            {
+                NotifyCreateFlyout();
+                QueuePinnedOpen();
+            }
+        }
+        else if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>() && this.IsAttachedToVisualTree())
+            {
+                NotifyCreateFlyout();
+                QueuePinnedOpen();
+            }
+            else
+            {
+                ++_pinnedOpenGeneration;
+            }
+        }
+        else if ((change.Property == IsEnabledProperty || change.Property == IsVisibleProperty) &&
+                 IsPopupPinnedOpen &&
+                 this.IsAttachedToVisualTree())
+        {
+            QueuePinnedOpen();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (IsPopupPinnedOpen)
+        {
+            NotifyCreateFlyout();
+            QueuePinnedOpen();
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
         ResetFlyout();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void NotifyCreateFlyout()
@@ -177,6 +224,7 @@ internal class TransferSelectDropdown : IconButton
             };
             
             _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuFlyout, MenuFlyout.IsMotionEnabledProperty));
+            _disposables.Add(BindUtils.RelayBind(this, IsPopupPinnedOpenProperty, menuFlyout, FlyoutControl.IsPopupPinnedOpenProperty));
 
             if (ViewType == TransferViewType.Source || !IsOneWay)
             {
@@ -232,18 +280,48 @@ internal class TransferSelectDropdown : IconButton
             
             menuFlyout.MenuItemClicked += HandleMenuItemClicked;
             Flyout = menuFlyout;
+            if (IsPopupPinnedOpen && this.IsAttachedToVisualTree())
+            {
+                QueuePinnedOpen();
+            }
         }
     }
 
     private void ResetFlyout()
     {
+        ++_pinnedOpenGeneration;
         if (Flyout is MenuFlyout menuFlyout)
         {
             menuFlyout.MenuItemClicked -= HandleMenuItemClicked;
+            menuFlyout.CloseForLifecycle();
         }
         _disposables?.Dispose();
         _disposables = null;
         Flyout       = null;
+    }
+
+    internal void CloseForLifecycle()
+    {
+        ResetFlyout();
+    }
+
+    private void QueuePinnedOpen()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        var flyout     = Flyout as MenuFlyout;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (generation == _pinnedOpenGeneration &&
+                IsPopupPinnedOpen &&
+                this.IsAttachedToVisualTree() &&
+                IsEffectivelyEnabled &&
+                IsVisible &&
+                ReferenceEquals(flyout, Flyout) &&
+                flyout is { IsOpen: false })
+            {
+                flyout.ShowAt(this);
+            }
+        }, DispatcherPriority.Loaded);
     }
 
     private void HandleMenuItemClicked(object? sender, FlyoutMenuItemClickedEventArgs args)

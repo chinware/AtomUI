@@ -35,8 +35,8 @@
                                                   VerticalAlignment="Center"
                                                   HorizontalContentAlignment="Center"
                                                   VerticalContentAlignment="Center"
-                                                  Content="{Binding $parent[atom:Window].Logo}"
-                                                  ContentTemplate="{Binding $parent[atom:Window].LogoTemplate}"
+                                                  Content="{Binding $parent[atom:Window].EffectiveLogo}"
+                                                  ContentTemplate="{Binding $parent[atom:Window].EffectiveLogoTemplate}"
                                                   IsVisible="{Binding $parent[atom:Window].IsEffectiveFullscreenLogoVisible}"/>
                                 <TextBlock Name="FullscreenTitleText"
                                            HorizontalAlignment="Left"
@@ -45,7 +45,7 @@
                                            TextWrapping="NoWrap"
                                            TextTrimming="CharacterEllipsis"
                                            Text="{Binding $parent[atom:Window].Title}"
-                                           IsVisible="{Binding $parent[atom:Window].Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                           IsVisible="{Binding $parent[atom:Window].IsEffectiveFullscreenTitleVisible}" />
                             </DockPanel>
 
                             <StackPanel Name="FullscreenCaptionButtonGroup"
@@ -54,12 +54,26 @@
                                         Orientation="Horizontal">
                                 <atom:CaptionButton
                                     Name="PART_PopoverFullScreenButton"
-                                    NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
-                                    CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
-                                    IsChecked="True" />
+                                    Command="{Binding $parent[atom:Window].CaptionButtonCommand}"
+                                    CommandParameter="{x:Static atom:CaptionButtonAction.ToggleFullScreen}"
+                                    IsVisible="{Binding $parent[atom:Window].IsFullScreenCaptionButtonVisible}"
+                                    IsChecked="True">
+                                    <atom:CaptionButton.NormalIcon>
+                                        <antdicons:FullscreenOutlined />
+                                    </atom:CaptionButton.NormalIcon>
+                                    <atom:CaptionButton.CheckedIcon>
+                                        <antdicons:FullscreenExitOutlined />
+                                    </atom:CaptionButton.CheckedIcon>
+                                </atom:CaptionButton>
                                 <atom:CaptionButton
                                     Name="PART_PopoverCloseButton"
-                                    NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}" />
+                                    Command="{Binding $parent[atom:Window].CaptionButtonCommand}"
+                                    CommandParameter="{x:Static atom:CaptionButtonAction.Close}"
+                                    IsVisible="{Binding $parent[atom:Window].IsCloseCaptionButtonVisible}">
+                                    <atom:CaptionButton.NormalIcon>
+                                        <antdicons:WindowCloseOutlined />
+                                    </atom:CaptionButton.NormalIcon>
+                                </atom:CaptionButton>
                             </StackPanel>
                         </atom:WindowTitleBarLayoutPanel>
                     </Border>

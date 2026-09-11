@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DataGridShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simple table with actions.</source>
+        <target state="translated">Simples tabela com ações.</target>
+      </segment>
+    </unit>
+    <unit id="BasicPagingDescription">
+      <segment>
+        <source>Basic pagination table.</source>
+        <target state="translated">Básico paginação tabela.</target>
+      </segment>
+    </unit>
+    <unit id="BasicPagingTitle">
+      <segment>
+        <source>Basic Paging</source>
+        <target state="translated">Básico Paging</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomEmptyAndLoadingDescription">
+      <segment>
+        <source>Custom empty status and loading.</source>
+        <target state="translated">Personalizado vazio status e carregando.</target>
+      </segment>
+    </unit>
+    <unit id="CustomEmptyAndLoadingTitle">
+      <segment>
+        <source>Custom empty and loading</source>
+        <target state="translated">Personalizado vazio e carregando</target>
+      </segment>
+    </unit>
+    <unit id="DragColumnSortingDescription">
+      <segment>
+        <source>Drag the Header to sort the columns.</source>
+        <target state="translated">Arrastar o Cabeçalho para sort o colunas.</target>
+      </segment>
+    </unit>
+    <unit id="DragColumnSortingTitle">
+      <segment>
+        <source>Drag Column sorting</source>
+        <target state="translated">Arrastar Coluna sorting</target>
+      </segment>
+    </unit>
+    <unit id="DragResizeColumnDescription">
+      <segment>
+        <source>You can drag to change the size of the column.</source>
+        <target state="translated">Você pode arrastar para alterar o tamanho de o coluna.</target>
+      </segment>
+    </unit>
+    <unit id="DragResizeColumnTitle">
+      <segment>
+        <source>Drag resize column</source>
+        <target state="translated">Arrastar resize coluna</target>
+      </segment>
+    </unit>
+    <unit id="DragSortingWithHandlerDescription">
+      <segment>
+        <source>You can drag the row indicator column to sort the rows.</source>
+        <target state="translated">Você pode arrastar o linha indicator coluna para sort o linhas.</target>
+      </segment>
+    </unit>
+    <unit id="DragSortingWithHandlerTitle">
+      <segment>
+        <source>Drag sorting with handler</source>
+        <target state="translated">Arrastar sorting com handler</target>
+      </segment>
+    </unit>
+    <unit id="EditableCellsDescription">
+      <segment>
+        <source>Table with editable cells.</source>
+        <target state="translated">Tabela com editable cells.</target>
+      </segment>
+    </unit>
+    <unit id="EditableCellsTitle">
+      <segment>
+        <source>Editable Cells</source>
+        <target state="translated">Editable Cells</target>
+      </segment>
+    </unit>
+    <unit id="ExpandableRowDescription">
+      <segment>
+        <source>When there's too much information to show and the table can't display all at once.</source>
+        <target state="translated">Quando há's too much informação para mostrar e o tabela pode't exibir all at once.</target>
+      </segment>
+    </unit>
+    <unit id="ExpandableRowTitle">
+      <segment>
+        <source>Expandable Row</source>
+        <target state="translated">Expandable Linha</target>
+      </segment>
+    </unit>
+    <unit id="FilterAndSorterDescription">
+      <segment>
+        <source>Use filters to generate filter menu in columns, onFilter to determine filtered result, and filterMultiple to indicate whether it's multiple or single selection, filterOnClose to specify whether to trigger filter when the filter menu closes. Use defaultFilteredValue to make a column filtered by default.</source>
+        <target state="translated">Usar filters para generate filter menu em colunas, onFilter para determine filtered resultado, e filterMultiple para indicate whether isso's múltiplos ou single seleção, filterOnClose para specify whether para gatilho filter quando o filter menu closes. Usar defaultFilteredValue para make a coluna filtered por padrão.</target>
+      </segment>
+    </unit>
+    <unit id="FilterAndSorterTitle">
+      <segment>
+        <source>Filter and sorter</source>
+        <target state="translated">Filter e sorter</target>
+      </segment>
+    </unit>
+    <unit id="FilterInTreeDescription">
+      <segment>
+        <source>You can use filterMode to change default filter interface, options: menu(default) and tree.</source>
+        <target state="translated">Você pode usar filterMode para alterar padrão filter interface, opções: menu(padrão) e árvore.</target>
+      </segment>
+    </unit>
+    <unit id="FilterInTreeTitle">
+      <segment>
+        <source>Filter in Tree</source>
+        <target state="translated">Filter em Árvore</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsAndHeadersDescription">
+      <segment>
+        <source>When there are too many columns, we can make some columns fixed.</source>
+        <target state="translated">Quando há são too many colunas, nós pode make some colunas fixed.</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsAndHeadersTitle">
+      <segment>
+        <source>Fixed Columns And Headers</source>
+        <target state="translated">Fixed Colunas E Headers</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsDescription">
+      <segment>
+        <source>When there are too many columns, we can make some columns fixed.</source>
+        <target state="translated">Quando há são too many colunas, nós pode make some colunas fixed.</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsTitle">
+      <segment>
+        <source>Fixed Columns</source>
+        <target state="translated">Fixed Colunas</target>
+      </segment>
+    </unit>
+    <unit id="FixedHeaderDescription">
+      <segment>
+        <source>Display large amounts of data in scrollable view.</source>
+        <target state="translated">Exibir grande amounts de dados em scrollable visualização.</target>
+      </segment>
+    </unit>
+    <unit id="FixedHeaderTitle">
+      <segment>
+        <source>Fixed Header</source>
+        <target state="translated">Fixed Cabeçalho</target>
+      </segment>
+    </unit>
+    <unit id="GroupingTableHeadDescription">
+      <segment>
+        <source>Group table head with columns[n].children.</source>
+        <target state="translated">Grupo tabela head com colunas[n].children.</target>
+      </segment>
+    </unit>
+    <unit id="GroupingTableHeadTitle">
+      <segment>
+        <source>Grouping table head</source>
+        <target state="translated">Grouping tabela head</target>
+      </segment>
+    </unit>
+    <unit id="HiddenColumnsDescription">
+      <segment>
+        <source>Hide columns with hidden.</source>
+        <target state="translated">Hide colunas com oculto.</target>
+      </segment>
+    </unit>
+    <unit id="HiddenColumnsTitle">
+      <segment>
+        <source>Hidden Columns</source>
+        <target state="translated">Oculto Colunas</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSorterDescription">
+      <segment>
+        <source>column.sorter support multiple to config the priority of sort columns. Though sorter.compare to customize compare function. You can also leave it empty to use the interactive only.</source>
+        <target state="translated">column.sorter support multiple to config the priority of sort columns. Though sorter.compare to customize compare function. You can also leave it empty to use the interactive only.</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSorterTitle">
+      <segment>
+        <source>Multiple sorter</source>
+        <target state="translated">Múltiplos sorter</target>
+      </segment>
+    </unit>
+    <unit id="OrderSpecificColumnDescription">
+      <segment>
+        <source>You can control the order of the expand and select columns.</source>
+        <target state="translated">Você pode controle o ordem de o expand e selecionar colunas.</target>
+      </segment>
+    </unit>
+    <unit id="OrderSpecificColumnTitle">
+      <segment>
+        <source>Order Specific Column</source>
+        <target state="translated">Ordem Specific Coluna</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddARow">
+      <segment>
+        <source>Add a row</source>
+        <target state="translated">Adicionar uma linha</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomPagination">
+      <segment>
+        <source>Bottom Pagination</source>
+        <target state="translated">Inferior Paginação</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearFilters">
+      <segment>
+        <source>Clear filters</source>
+        <target state="translated">Limpar filters</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearFiltersAndSorters">
+      <segment>
+        <source>Clear filters and sorters</source>
+        <target state="translated">Limpar filters e sorters</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN1">
+      <segment>
+        <source>Column 1</source>
+        <target state="translated">Coluna 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN2">
+      <segment>
+        <source>Column 2</source>
+        <target state="translated">Coluna 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN3">
+      <segment>
+        <source>Column 3</source>
+        <target state="translated">Coluna 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN4">
+      <segment>
+        <source>Column 4</source>
+        <target state="translated">Coluna 4</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN5">
+      <segment>
+        <source>Column 5</source>
+        <target state="translated">Coluna 5</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN6">
+      <segment>
+        <source>Column 6</source>
+        <target state="translated">Coluna 6</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnd">
+      <segment>
+        <source>End</source>
+        <target state="translated">Fim</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentExtended">
+      <segment>
+        <source>Extended</source>
+        <target state="translated">Extended</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSingle">
+      <segment>
+        <source>Single</source>
+        <target state="translated">Single</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSortAge">
+      <segment>
+        <source>Sort age</source>
+        <target state="translated">Sort age</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">Início</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleData">
+      <segment>
+        <source>Toggle Data</source>
+        <target state="translated">Toggle Dados</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleLoading">
+      <segment>
+        <source>Toggle Loading</source>
+        <target state="translated">Toggle Carregando</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopPagination">
+      <segment>
+        <source>Top Pagination</source>
+        <target state="translated">Superior Paginação</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAction">
+      <segment>
+        <source>Action</source>
+        <target state="translated">Ação</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAddress">
+      <segment>
+        <source>Address</source>
+        <target state="translated">Address</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAge">
+      <segment>
+        <source>Age</source>
+        <target state="translated">Age</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBlock">
+      <segment>
+        <source>Block</source>
+        <target state="translated">Block</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBuilding">
+      <segment>
+        <source>Building</source>
+        <target state="translated">Building</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCashAssets">
+      <segment>
+        <source>Cash Assets</source>
+        <target state="translated">Cash Assets</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChineseScore">
+      <segment>
+        <source>Chinese Score</source>
+        <target state="translated">Chinese Score</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn1">
+      <segment>
+        <source>Column1</source>
+        <target state="translated">Column1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn2">
+      <segment>
+        <source>Column2</source>
+        <target state="translated">Column2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn3">
+      <segment>
+        <source>Column3</source>
+        <target state="translated">Column3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn4">
+      <segment>
+        <source>Column4</source>
+        <target state="translated">Column4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn5">
+      <segment>
+        <source>Column5</source>
+        <target state="translated">Column5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn6">
+      <segment>
+        <source>Column6</source>
+        <target state="translated">Column6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn7">
+      <segment>
+        <source>Column7</source>
+        <target state="translated">Column7</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn8">
+      <segment>
+        <source>Column8</source>
+        <target state="translated">Column8</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn9">
+      <segment>
+        <source>Column9</source>
+        <target state="translated">Column9</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN1">
+      <segment>
+        <source>Column 1</source>
+        <target state="translated">Coluna 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN10">
+      <segment>
+        <source>Column 10</source>
+        <target state="translated">Coluna 10</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN11">
+      <segment>
+        <source>Column 11</source>
+        <target state="translated">Coluna 11</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN12">
+      <segment>
+        <source>Column 12</source>
+        <target state="translated">Coluna 12</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN13">
+      <segment>
+        <source>Column 13</source>
+        <target state="translated">Coluna 13</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN14">
+      <segment>
+        <source>Column 14</source>
+        <target state="translated">Coluna 14</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN15">
+      <segment>
+        <source>Column 15</source>
+        <target state="translated">Coluna 15</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN16">
+      <segment>
+        <source>Column 16</source>
+        <target state="translated">Coluna 16</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN17">
+      <segment>
+        <source>Column 17</source>
+        <target state="translated">Coluna 17</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN18">
+      <segment>
+        <source>Column 18</source>
+        <target state="translated">Coluna 18</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN19">
+      <segment>
+        <source>Column 19</source>
+        <target state="translated">Coluna 19</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN2">
+      <segment>
+        <source>Column 2</source>
+        <target state="translated">Coluna 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN20">
+      <segment>
+        <source>Column 20</source>
+        <target state="translated">Coluna 20</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN3">
+      <segment>
+        <source>Column 3</source>
+        <target state="translated">Coluna 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN4">
+      <segment>
+        <source>Column 4</source>
+        <target state="translated">Coluna 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN5">
+      <segment>
+        <source>Column 5</source>
+        <target state="translated">Coluna 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN6">
+      <segment>
+        <source>Column 6</source>
+        <target state="translated">Coluna 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN7">
+      <segment>
+        <source>Column 7</source>
+        <target state="translated">Coluna 7</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN8">
+      <segment>
+        <source>Column 8</source>
+        <target state="translated">Coluna 8</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN9">
+      <segment>
+        <source>Column 9</source>
+        <target state="translated">Coluna 9</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCompany">
+      <segment>
+        <source>Company</source>
+        <target state="translated">Company</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCompanyAddress">
+      <segment>
+        <source>Company Address</source>
+        <target state="translated">Company Address</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCompanyName">
+      <segment>
+        <source>Company Name</source>
+        <target state="translated">Company Name</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDoorNo">
+      <segment>
+        <source>Door No.</source>
+        <target state="translated">Door Não.</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEmail">
+      <segment>
+        <source>Email</source>
+        <target state="translated">Email</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEnglishScore">
+      <segment>
+        <source>English Score</source>
+        <target state="translated">English Score</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGender">
+      <segment>
+        <source>Gender</source>
+        <target state="translated">Gender</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMathScore">
+      <segment>
+        <source>Math Score</source>
+        <target state="translated">Math Score</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderName">
+      <segment>
+        <source>Name</source>
+        <target state="translated">Name</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther">
+      <segment>
+        <source>Other</source>
+        <target state="translated">Outro</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStreet">
+      <segment>
+        <source>Street</source>
+        <target state="translated">Street</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTags">
+      <segment>
+        <source>Tags</source>
+        <target state="translated">Tags</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBlack">
+      <segment>
+        <source>Black</source>
+        <target state="translated">Black</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBottomPaginationAlign">
+      <segment>
+        <source>Bottom Pagination Align:</source>
+        <target state="translated">Inferior Paginação Alinhar:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">Excluir</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">Green</target>
+      </segment>
+    </unit>
+    <unit id="P2TextInvite">
+      <segment>
+        <source>Invite</source>
+        <target state="translated">Invite</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJim">
+      <segment>
+        <source>Jim</source>
+        <target state="translated">Jim</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJoe">
+      <segment>
+        <source>Joe</source>
+        <target state="translated">Joe</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLondon">
+      <segment>
+        <source>London</source>
+        <target state="translated">London</target>
+      </segment>
+    </unit>
+    <unit id="P2TextModify">
+      <segment>
+        <source>Modify</source>
+        <target state="translated">Modify</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNewYork">
+      <segment>
+        <source>New York</source>
+        <target state="translated">New York</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPaginationvisibility">
+      <segment>
+        <source>PaginationVisibility:</source>
+        <target state="translated">PaginationVisibility:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubmenu">
+      <segment>
+        <source>Submenu</source>
+        <target state="translated">Submenu</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTopPaginationAlign">
+      <segment>
+        <source>Top Pagination Align:</source>
+        <target state="translated">Superior Paginação Alinhar:</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDragReorderWithFrozenColumns">
+      <segment>
+        <source>Drag reorder with frozen columns</source>
+        <target state="translated">Arrastar reorder com frozen colunas</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleFooter">
+      <segment>
+        <source>Footer</source>
+        <target state="translated">Rodapé</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleHeader">
+      <segment>
+        <source>Header</source>
+        <target state="translated">Cabeçalho</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleManyColumns">
+      <segment>
+        <source>Many columns</source>
+        <target state="translated">Many colunas</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">Normal</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSureToDelete">
+      <segment>
+        <source>Sure to delete?</source>
+        <target state="translated">Tem certeza de que deseja excluir?</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>DataGrid presents large tabular datasets with selection, sorting, filtering, frozen columns, row details, editing, drag sorting, and pagination.</source>
+        <target state="translated">DataGrid presents grande tabular datasets com seleção, sorting, filtering, frozen colunas, linha details, editing, arrastar sorting, e paginação.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display, inspect, and edit structured data.</source>
+        <target state="translated">Exibir, inspect, e editar structured dados.</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeDescription">
+      <segment>
+        <source>Virtualizes one million remote rows by fetching only visible ranges. Reload, request failure, and snapshot expiry remain deterministic.</source>
+        <target state="translated">Virtualiza um milhão de linhas remotas buscando apenas os intervalos visíveis. Recarga, falha de requisição e expiração de snapshot permanecem determinísticas.</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeExpireSnapshot">
+      <segment>
+        <source>Expire snapshot</source>
+        <target state="translated">Expirar snapshot</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeFailNext">
+      <segment>
+        <source>Fail next reload</source>
+        <target state="translated">Falhar próxima recarga</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeReload">
+      <segment>
+        <source>Reload</source>
+        <target state="translated">Recarregar</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeTitle">
+      <segment>
+        <source>Remote range virtualization</source>
+        <target state="translated">Virtualização remota por intervalo</target>
+      </segment>
+    </unit>
+    <unit id="ResetFiltersAndSortersDescription">
+      <segment>
+        <source>Control filters and sorters by API.</source>
+        <target state="translated">Controle filters e sorters por API.</target>
+      </segment>
+    </unit>
+    <unit id="ResetFiltersAndSortersTitle">
+      <segment>
+        <source>Reset filters and sorters</source>
+        <target state="translated">Redefinir filters e sorters</target>
+      </segment>
+    </unit>
+    <unit id="RowHeaderDescription">
+      <segment>
+        <source>You can control whether to display the Column header and RowHeader.</source>
+        <target state="translated">Você pode controle whether para exibir o Coluna cabeçalho e RowHeader.</target>
+      </segment>
+    </unit>
+    <unit id="RowHeaderTitle">
+      <segment>
+        <source>Row Header</source>
+        <target state="translated">Linha Cabeçalho</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioDrag">
+      <segment>
+        <source>Drag</source>
+        <target state="translated">Arrastar</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioEditing">
+      <segment>
+        <source>Editing</source>
+        <target state="translated">Editing</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioFiltering">
+      <segment>
+        <source>Filtering</source>
+        <target state="translated">Filtering</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioFixed">
+      <segment>
+        <source>Fixed</source>
+        <target state="translated">Fixed</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioInteraction">
+      <segment>
+        <source>Interaction</source>
+        <target state="translated">Interaction</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPaging">
+      <segment>
+        <source>Paging</source>
+        <target state="translated">Paging</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioStructure">
+      <segment>
+        <source>Structure</source>
+        <target state="translated">Structure</target>
+      </segment>
+    </unit>
+    <unit id="SelectionDescription">
+      <segment>
+        <source>Rows can be selectable by making first column as a selectable column. You can use rowSelection.type to set selection type. Default is checkbox.</source>
+        <target state="translated">Rows can be selectable by making first column as a selectable column. You can use rowSelection.type to set selection type. Default is checkbox.</target>
+      </segment>
+    </unit>
+    <unit id="SelectionTitle">
+      <segment>
+        <source>Selection</source>
+        <target state="translated">Seleção</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>There are two compacted table sizes: middle and small. The small size is used in Modals only.</source>
+        <target state="translated">Há são dois compacted tabela tamanhos: centro e pequeno. O pequeno tamanho é usado em Modals somente.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="TableBorderTitleAndFooterDescription">
+      <segment>
+        <source>Add border, title and footer for table.</source>
+        <target state="translated">Adicionar borda, título e rodapé à tabela.</target>
+      </segment>
+    </unit>
+    <unit id="TableBorderTitleAndFooterTitle">
+      <segment>
+        <source>border, title and footer</source>
+        <target state="translated">borda, título e rodapé</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

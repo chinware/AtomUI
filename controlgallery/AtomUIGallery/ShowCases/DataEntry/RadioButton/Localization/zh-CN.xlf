@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest use.</source>
+        <target state="translated">最简单的用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="CheckedItemBindingDescription">
+      <segment>
+        <source>CheckedItem uses TwoWay binding by default and can be updated by either user selection or ViewModel state.</source>
+        <target state="translated">CheckedItem 默认使用 TwoWay 绑定，可由用户选择或 ViewModel 状态双向更新。</target>
+      </segment>
+    </unit>
+    <unit id="CheckedItemBindingTitle">
+      <segment>
+        <source>CheckedItem binding</source>
+        <target state="translated">CheckedItem 绑定</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled state of RadioButton.</source>
+        <target state="translated">RadioButton 的禁用状态。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="ItemsSourceRadioGroupDescription">
+      <segment>
+        <source>Radio Group.</source>
+        <target state="translated">单选框组。</target>
+      </segment>
+    </unit>
+    <unit id="ItemsSourceRadioGroupTitle">
+      <segment>
+        <source>Radio Group by Items source</source>
+        <target state="translated">通过 ItemsSource 生成单选框组</target>
+      </segment>
+    </unit>
+    <unit id="OptionButtonDescription">
+      <segment>
+        <source>OptionButton Group.</source>
+        <target state="translated">选项按钮组。</target>
+      </segment>
+    </unit>
+    <unit id="OptionButtonTitle">
+      <segment>
+        <source>Option Button</source>
+        <target state="translated">选项按钮</target>
+      </segment>
+    </unit>
+    <unit id="OptionButtonWithIconDescription">
+      <segment>
+        <source>OptionButton Group with icon.</source>
+        <target state="translated">带图标的选项按钮组。</target>
+      </segment>
+    </unit>
+    <unit id="OptionButtonWithIconTitle">
+      <segment>
+        <source>Option Button with icon</source>
+        <target state="translated">带图标的选项按钮</target>
+      </segment>
+    </unit>
+    <unit id="OptionStyleDescription">
+      <segment>
+        <source>The combination of option button style.</source>
+        <target state="translated">选项按钮样式组合。</target>
+      </segment>
+    </unit>
+    <unit id="OptionStyleTitle">
+      <segment>
+        <source>option style</source>
+        <target state="translated">选项样式</target>
+      </segment>
+    </unit>
+    <unit id="P2CheckedItemSummaryFormat">
+      <segment>
+        <source>Selected: {0}</source>
+        <target state="translated">已选择：{0}</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentApple">
+      <segment>
+        <source>Apple</source>
+        <target state="translated">苹果</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBeijing">
+      <segment>
+        <source>Beijing</source>
+        <target state="translated">北京</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentChengdu">
+      <segment>
+        <source>Chengdu</source>
+        <target state="translated">成都</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+        <target state="translated">杭州</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLinux">
+      <segment>
+        <source>Linux</source>
+        <target state="translated">Linux</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMacos">
+      <segment>
+        <source>macOS</source>
+        <target state="translated">macOS</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNone">
+      <segment>
+        <source>None</source>
+        <target state="translated">无</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptionA">
+      <segment>
+        <source>Option A</source>
+        <target state="translated">选项 A</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptionB">
+      <segment>
+        <source>Option B</source>
+        <target state="translated">选项 B</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptionC">
+      <segment>
+        <source>Option C</source>
+        <target state="translated">选项 C</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOptionD">
+      <segment>
+        <source>Option D</source>
+        <target state="translated">选项 D</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOrange">
+      <segment>
+        <source>Orange</source>
+        <target state="translated">橙子</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPear">
+      <segment>
+        <source>Pear</source>
+        <target state="translated">梨</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRadio">
+      <segment>
+        <source>Radio</source>
+        <target state="translated">单选框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRadio1">
+      <segment>
+        <source>Radio1</source>
+        <target state="translated">单选框 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRadio2">
+      <segment>
+        <source>Radio2</source>
+        <target state="translated">单选框 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSelectChengdu">
+      <segment>
+        <source>Select Chengdu</source>
+        <target state="translated">选择成都</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentShanghai">
+      <segment>
+        <source>Shanghai</source>
+        <target state="translated">上海</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleDisabled">
+      <segment>
+        <source>toggle disabled</source>
+        <target state="translated">切换禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWindows">
+      <segment>
+        <source>Windows</source>
+        <target state="translated">Windows</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBarchart">
+      <segment>
+        <source>BarChart</source>
+        <target state="translated">柱状图</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDotchart">
+      <segment>
+        <source>DotChart</source>
+        <target state="translated">点图</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLinechart">
+      <segment>
+        <source>LineChart</source>
+        <target state="translated">折线图</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPiechart">
+      <segment>
+        <source>PieChart</source>
+        <target state="translated">饼图</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSizetype">
+      <segment>
+        <source>SizeType</source>
+        <target state="translated">尺寸类型</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>RadioButton covers individual selections, grouped choices, data-driven options, option-button styles, icons, disabled states and size variants.</source>
+        <target state="translated">RadioButton 覆盖单个选择、分组选项、数据驱动选项、选项按钮样式、图标、禁用状态和尺寸变体。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Choose one option from a set of mutually exclusive choices.</source>
+        <target state="translated">在一组互斥选项中选择一个值。</target>
+      </segment>
+    </unit>
+    <unit id="RadioGroupDescription">
+      <segment>
+        <source>A group of radio components.</source>
+        <target state="translated">一组单选组件。</target>
+      </segment>
+    </unit>
+    <unit id="RadioGroupTitle">
+      <segment>
+        <source>Radio Group</source>
+        <target state="translated">单选框组</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioGroups">
+      <segment>
+        <source>Groups</source>
+        <target state="translated">分组</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioOptions">
+      <segment>
+        <source>Options</source>
+        <target state="translated">选项</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioStyles">
+      <segment>
+        <source>Styles</source>
+        <target state="translated">样式</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>There are three sizes available: large, medium, and small. It can coordinate with input box.</source>
+        <target state="translated">提供大号、中号和小号三种尺寸，可与输入框配合使用。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Size type</source>
+        <target state="translated">尺寸类型</target>
+      </segment>
+    </unit>
+    <unit id="SolidOptionButtonDescription">
+      <segment>
+        <source>Solid option button style.</source>
+        <target state="translated">实色选项按钮样式。</target>
+      </segment>
+    </unit>
+    <unit id="SolidOptionButtonTitle">
+      <segment>
+        <source>Solid option button</source>
+        <target state="translated">实色选项按钮</target>
+      </segment>
+    </unit>
+    <unit id="VerticalOptionButtonDescription">
+      <segment>
+        <source>OptionButton groups support vertical natural-width and stretched layouts.</source>
+        <target state="translated">选项按钮组支持垂直排列，并可使用自然宽度或拉伸宽度。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalOptionButtonTitle">
+      <segment>
+        <source>Vertical Option Button</source>
+        <target state="translated">垂直选项按钮</target>
+      </segment>
+    </unit>
+    <unit id="VerticalRadioGroupDescription">
+      <segment>
+        <source>Vertical Radio Group.</source>
+        <target state="translated">垂直排列的单选框组。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalRadioGroupTitle">
+      <segment>
+        <source>Vertical Radio Group</source>
+        <target state="translated">垂直单选框组</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

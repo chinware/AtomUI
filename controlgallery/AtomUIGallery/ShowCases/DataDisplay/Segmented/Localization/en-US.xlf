@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind">
+    <unit id="ApiEventSelectionChanged">
+      <segment>
+        <source>Raised when the selected item changes.</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="BlockSegmentedDescription">
+      <segment>
+        <source>block property will make the Segmented fit to its parent width.</source>
+      </segment>
+    </unit>
+    <unit id="BlockSegmentedTitle">
+      <segment>
+        <source>Block Segmented</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled Segmented.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>Load options dynamically.</source>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+      </segment>
+    </unit>
+    <unit id="IconOnlyDescription">
+      <segment>
+        <source>Set icon without label for Segmented Item.</source>
+      </segment>
+    </unit>
+    <unit id="IconOnlyTitle">
+      <segment>
+        <source>With Icon only</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAtomUI">
+      <segment>
+        <source>AtomUI</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentAva">
+      <segment>
+        <source>Ava</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDaily">
+      <segment>
+        <source>Daily</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentKanban">
+      <segment>
+        <source>Kanban</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentList">
+      <segment>
+        <source>List</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLongtextLongtextLongtextLongtext">
+      <segment>
+        <source>longtext-longtext-longtext-longtext</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMap">
+      <segment>
+        <source>Map</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMonthly">
+      <segment>
+        <source>Monthly</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentQuarterly">
+      <segment>
+        <source>Quarterly</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSatellite">
+      <segment>
+        <source>Satellite</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTransit">
+      <segment>
+        <source>Transit</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentWeekly">
+      <segment>
+        <source>Weekly</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentYearly">
+      <segment>
+        <source>Yearly</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Segmented presents a small set of related options with single selection, horizontal or vertical orientation, optional icons, shape variants, responsive expansion and token-based sizing.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Group mutually exclusive options into a compact segmented selector.</source>
+      </segment>
+    </unit>
+    <unit id="RoundShapeDescription">
+      <segment>
+        <source>Round shape of Segmented.</source>
+      </segment>
+    </unit>
+    <unit id="RoundShapeTitle">
+      <segment>
+        <source>Round Shape</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>Segmented supports large (40px), default (32px), small (24px), and custom size.</source>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Sizes of Segmented</source>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>Make it vertical.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical Direction</source>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>Set icon for Segmented Item.</source>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With Icon</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.QRCodeLangResourceKind">
+    <unit id="Expired">
+      <segment>
+        <source>QR code expired</source>
+        <target state="translated">二维码过期</target>
+      </segment>
+    </unit>
+    <unit id="Refresh">
+      <segment>
+        <source>Refresh</source>
+        <target state="translated">点击刷新</target>
+      </segment>
+    </unit>
+    <unit id="Scanned">
+      <segment>
+        <source>Scanned</source>
+        <target state="translated">已扫描</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

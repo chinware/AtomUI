@@ -1,5 +1,4 @@
 using System.Globalization;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
 using Avalonia;
 using Avalonia.Automation;
@@ -871,7 +870,10 @@ internal sealed class CalendarView : TemplatedControl
         var index = 0;
         if (ShowWeek)
         {
-            var weekLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Week)
+            var localizer = Application.Current is { } application
+                ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)
+                : null;
+            var weekLabel = localizer?.Get(CalendarControlLangResourceKind.Week)
                             ?? CalendarControlLangResourceKind.Week.ToString();
             UpdateWeekHeaderText(index++, string.Empty, 0, weekLabel);
         }

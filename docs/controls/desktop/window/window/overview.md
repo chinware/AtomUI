@@ -1,6 +1,6 @@
 # Window 桌面版架构设计
 
-本文档定义 `Window` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Window 桌面版实现原理](implementation.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，Window Token 的专项设计见 [Window Token 设计](token.md)，设计和契约变化记录见 [Window Changelog](changelog.md)。
+本文档定义 `Window` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Window 桌面版实现原理](implementation.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)，Window Token 的专项设计见 [Window Token 设计](token.md)，设计和契约变化记录见 [Window Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -9,7 +9,7 @@
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | 未独立 Gallery 页面；以 `docs/controls/desktop/window/window` 源文档为准 |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/General/Window` |
 | 控件状态 | Stable |
 
 Window 是 AtomUI 桌面控件体系中的桌面窗口控件，用于提供 AtomUI 自绘窗口、平台窗口能力和主题集成入口。
@@ -41,9 +41,9 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | --- | --- | --- |
 | 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn`、`RightAddOnTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 | 定义控件展示内容、输入数据、模板或业务对象入口；`LeftAddOn` 和 `RightAddOn` 用于默认标题栏中的交互内容，`TitleBarFrameLayer` 仍只表示标题栏背景或装饰层。 |
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled` | 表达 managed caption button 呈现、窗口移动和用户可观察状态；visibility 不替代窗口 capability。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。`IsTitleVisible` 只控制默认标题栏内的标题文字呈现（`WindowTitleBar` AddOwner facade），不影响系统级窗口标题；与 `IsTitleBarVisible`（隐藏整条标题栏）作用域不同。`Logo`/`LogoTemplate` 只承载显式值：未设置时标题栏渲染层回退到 `Icon`（再回退主窗口 Logo/Icon），运行时设为 `null` 回到默认，彻底隐藏用 `LogoVisibility=Never`。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -98,6 +98,10 @@ Public API / inherited command / item source / user input
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 - 默认标题栏的交互内容通过 `LeftAddOn`、`RightAddOn` 及其模板属性承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
 
+Caption button 的 requested visibility 与窗口 capability 分离：Minimize、Maximize 和 Close 默认请求显示，FullScreen 和 Pin 默认隐藏。设置 visibility 为 `false` 只隐藏 AtomUI managed button，不修改 `CanMinimize`、`CanMaximize`、`WindowState`、`Topmost` 或其他窗口操作入口；capability 为 `false` 时对应 managed button 保持隐藏。完整模型见 [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)。
+
+Window 为逻辑树内每个 `WindowTitleBar` 定义相同的宿主上下文投影，包括 caption 配置、窗口能力、WindowState、active state、Topmost、平台/CSD 输入和窗口操作命令。投影由 Window 创建为可释放 lease，由各标题栏实例分别持有；Window 不以单例 binding 容器限制一个窗口只能接入一个标题栏。
+
 ## 5. 视觉与主题模型
 
 Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
@@ -105,7 +109,7 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | 主题文件 | 职责 |
 | --- | --- |
 | `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、caption buttons、shadow 和 visible frame 裁剪结构；该 overlay 不承载 Dialog、Drawer 或其他业务 presentation。 |
 | `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
 | `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
 
@@ -127,11 +131,13 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 | 标题栏背景/装饰层 | `TitleBarFrameBackground` / `TitleBarFrameLayer` / `TitleBarFrameLayerTemplate` | 提供标题栏背景、遮罩、纹理、圆角、裁剪或装饰视觉。 | 不作为用户交互入口；CSD 下可处于标题栏拖拽 role 中。 |
 | 默认标题栏层 | `WindowTitleBar` | 展示标题、Logo、`LeftAddOn`、`RightAddOn` 与 caption buttons，并在空白区域提供窗口拖拽语义。 | add-on 与 caption buttons 按普通 Avalonia client input 语义命中；空白区域保留标题栏交互。 |
 | 自定义标题栏层 | `NotifyCreateTitleBar` / `NotifyConfigureTitleBar` 扩展点 | 承载需要替换默认标题栏组成或行为的派生窗口实现。 | 派生窗口负责其自定义标题栏的 client input 与空白区域拖拽策略。 |
+| 内容区标题栏 | Window 内容逻辑树中的 public `WindowTitleBar` | 自动消费最近 Window 的 caption 状态和操作命令，并在空白区域提供窗口拖动和双击最大化/还原语义。 | 不提供标题栏高度提示，也不取得唯一 CSD chrome role。 |
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要向默认标题栏加入按钮、菜单或搜索框时，使用 `LeftAddOn` 或 `RightAddOn`；只有需要替换整个标题栏组成或行为时，才在派生 `Window` 中重写标题栏创建与配置扩展点。`Window.TitleBar` 是模板生命周期拥有的 internal 状态，不作为应用 API 公开。
 
-`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
-`WindowTitleBar`。`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。Window 只提供内容、平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+Window 的 title-bar host projection 服务默认、派生和内容区标题栏，并由每个标题栏的 logical attach/detach 生命周期持有。该 lease 同时包含 caption 状态/命令投影和窗口拖动、双击请求的交互订阅。默认标题栏另行消费 Window facade：`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。`NotifyConfigureTitleBar` 只扩展这组默认内容配置，不负责通用宿主发现或 caption command 接入。Window 提供内容、平台、CSD、WindowState 和原生 chrome 安全区，但不实现标题排列公式。
+
+CSD 模式下，`IsTitleBarVisible=false` 只隐藏 AtomUI drawn title-bar frame、shadow 和 presenter，不把 `WindowDecorations` 从 `Full` 降级为 `BorderOnly`。内容区同时移除 Avalonia drawn title-bar 对顶部 decoration margin 的占位，但继续保留 frame 和 shadow margin，因此用户内容可以到达窗口顶部且不破坏可调整大小边框。窗口最小化、最大化和恢复继续通过 Avalonia `WindowState` 表达，由 Windows DWM、macOS AppKit 或 Linux 窗口管理器/合成器在平台支持范围内执行原生状态转换和动画；AtomUI 不伪造窗口缩放动画，也不为 caption button 建立平台专用状态旁路。macOS 非 CSD 且隐藏原生标题栏时仍可使用 `BorderOnly`，该分支不改变 CSD 契约。
 
 默认标题栏的 add-on 可直接使用 AXAML 属性元素配置：
 
@@ -196,6 +202,9 @@ Window 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；默认标题栏按钮、菜单、搜索框等交互内容必须通过 `LeftAddOn` 或 `RightAddOn` 承载。
+- 逻辑树内每个 `WindowTitleBar` 都获得独立、可释放的 Window host projection；detach、宿主切换和 Window close 后不得保留旧 Window。
+- 所有已连接标题栏共享拖动、双击最大化和 caption 操作语义；只有 Window 模板正式接入的默认标题栏提供标题栏高度提示和 CSD chrome 几何协作。
+- CSD 隐藏 AtomUI 默认标题栏时保持 `WindowDecorations.Full`，只隐藏 managed title-bar visual，并从内容区顶部边距移除实际 drawn title-bar 高度；不能以 `BorderOnly`、清零平台 title-bar hint 或硬编码 Token 高度破坏平台装饰几何与原生窗口状态转换能力。
 - Windows、macOS 和 Linux 共用同一套首次显示主题表面流程；平台可见前必须同步准备 ThemeContext、variant 和 Window Token 背景，正式显示后由 `WindowTheme` 单独持有长期主题状态。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
@@ -218,13 +227,19 @@ Window 对上层 overlay 发布三种不可混用的几何语义：
 - visible frame bounds：完整 layer 只排除 `FrameShadowThickness`，仍包含 managed/drawn 标题栏，供 Dialog Surface、Drawer 和需要贴合可见窗口边缘的 overlay 使用。
 - content bounds：在 visible frame 基础上排除标题栏和内容装饰，供普通 Window 内容或明确要求正文安全区的反馈使用。
 
-`WindowVisualLayerClip` 是 visible frame 外轮廓计算真源。Window 的平台 manager 只负责把 X11、Wayland、Win32 和 macOS 原生能力投影为 `FrameShadowThickness`、CSD 状态和 drawn host，不允许上层控件再次按 OS 复制几何算法。
+`WindowVisualLayerClip` 是 visible frame 外轮廓计算真源。Window 的平台 manager 只负责把 X11、Wayland、Win32 和 macOS 原生能力投影为 `FrameShadowThickness`、CSD 状态和 chrome 几何，不允许上层控件再次按 OS 复制几何算法。
+
+`WindowDrawnDecorations` overlay 只拥有 drawn chrome。Modal Dialog 与 Window Drawer 的业务视觉始终留在 owning Window
+`TopLevel` 内；它们活跃时各自从 Window 获取引用计数的 chrome suppression lease，最后一个 lease 释放后才恢复 drawn
+chrome。这样 Dialog/Drawer 内容中的 Popup、Flyout、ToolTip 与 ContextMenu 仍由 owning Window 的 Avalonia popup 服务管理，
+完整不变量与家族矩阵见 [Modal 内容弹层叠放设计](../../feedback/modal/popup-layering-design.md)。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Window 桌面版实现原理](implementation.md)
+- [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)
 - [Window Token 设计](token.md)
 - [Window Changelog](changelog.md)
 
@@ -257,5 +272,15 @@ LLMS 导出来源：
 | 状态模型 | 覆盖 open/close、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | 首次显示主题表面 | 覆盖根窗口和 owner 局部主题、Light/Dark、用户显式背景优先级、显示失败回滚，并在 Windows、macOS 和 Linux 实机检查首帧。 |
+| Dialog/Drawer 与 Popup 分层 | 运行 Desktop Controls Dialog/Drawer/Window 回归、Popup 原语与控件家族矩阵、DataGrid Popup 专项测试，并按平台独立记录真实桌面交互证据。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |
+
+当前 Dialog/Drawer 与 Popup 分层实机证据：
+
+| 平台 | 状态 | 已验证范围 |
+| --- | --- | --- |
+| Windows | 已测试 | CSD Window 下 drawn chrome suppression、owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
+| macOS | 已测试 | 原生 chrome Window 下 owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
+| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下完成 Dialog 内容 Popup 真实窗口人工回归；不包含 Drawer。 |
+| Linux X11 | 未测试 | 尚无本专项实机证据，不能标记为通过。 |

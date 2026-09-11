@@ -2,6 +2,8 @@
 
 本文档描述 Transfer 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Transfer 桌面版架构设计](overview.md)，变化记录见 [Transfer Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Transfer Token 设计](token.md)。
 
+Popup 接入边界：`AbstractTransfer` 负责业务状态和内容准备，内部 `TransferSelectDropdown` 及其 MenuFlyout 仅作为 relay 适配层，transfer dropdown Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 本文档覆盖 Transfer 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
@@ -11,7 +13,7 @@
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Transfer`：21 个文件，代表文件 `AbstractTransfer.cs`、`ITransferTreeView.cs`、`ITransferView.cs`、`ListTransfer.cs`、`TransferDirection.cs` 等。
-- `src/AtomUI.Desktop.Controls/Transfer/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls/Transfer/Localization`：`TransferLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/Transfer/Themes`：12 个文件，代表文件 `AbstractTransferTheme.axaml`、`AbstractTransferTheme.cs`、`ListTransferTheme.axaml`、`TransferItemDecoratorTheme.axaml`、`TransferListItemTheme.axaml` 等。
 
 职责边界：
@@ -36,9 +38,7 @@
 - `TransferTreeViewItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TransferTreeViewItemHeader`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TreeTransfer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TransferLangResourceKind`：稳定的本地化 Catalog enum；生成器从三个 XLIFF 文件编译资源表和 XAML 扩展。
 
 核心协作规则：
 

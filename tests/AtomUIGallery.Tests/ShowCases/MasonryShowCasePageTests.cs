@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.Masonry;
 using Avalonia.Controls;
@@ -10,14 +11,18 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class MasonryShowCasePageTests
 {
     [Fact]
-    public void Masonry_ShowCase_Image_State_Binding_Is_Aot_Safe()
+    public void Masonry_ShowCase_Uses_AtomUI_AsyncImage_Without_Runtime_Binding()
     {
         var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml");
+        var codeBehind = ReadRepoFile(
             "controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml.cs");
 
-        source.ShouldContain("BindUtils.RelayBind");
-        source.ShouldNotContain("new Binding");
-        source.ShouldNotContain("Path      = nameof(Image.Source)");
+        source.ShouldContain("<atom:AsyncImage");
+        source.ShouldContain("<atom:AsyncImage.LoadingContent>");
+        source.ShouldNotContain("asyncImageLoader:");
+        codeBehind.ShouldNotContain("BindUtils.RelayBind");
+        codeBehind.ShouldNotContain("new Binding");
     }
 
     [Fact]
@@ -44,7 +49,7 @@ public class MasonryShowCasePageTests
         basicDemoMarkup.ShouldContain("ParagraphRows=\"3\"");
         basicDemoMarkup.ShouldContain("IsRound=\"True\"");
         basicDemoMarkup.ShouldContain("Name=\"SpecialCoverSkeleton\"");
-        basicDemoMarkup.ShouldContain("Loaded=\"HandleImageSkeletonLoaded\"");
+        basicDemoMarkup.ShouldContain("<atom:AsyncImage.LoadingContent>");
         basicDemoMarkup.ShouldNotContain("{Binding #");
         basicDemoMarkup.ShouldNotContain("IsVisible=\"{Binding #SpecialCoverImage.(asyncImageLoader:ImageLoader.IsLoading)}\"");
         basicDemoMarkup.ShouldNotContain("<atom:SkeletonLine");
@@ -70,7 +75,10 @@ public class MasonryShowCasePageTests
         viewModel.BasicItems.Select(item => item.Index).ShouldBe(Enumerable.Range(1, 15));
         viewModel.BasicItems.Count(item => item.IsSpecial).ShouldBe(1);
         viewModel.BasicItems[4].IsSpecial.ShouldBeTrue();
-        viewModel.BasicItems[4].CoverSource.ShouldBe("https://images.unsplash.com/photo-1491961865842-98f7befd1a60?w=523&auto=format");
+        viewModel.BasicItems[4].CoverSource.ShouldNotBeNull();
+        viewModel.BasicItems[4].CoverSource!.ToString().ShouldBe(
+            ImageSource.Parse(
+                "https://images.unsplash.com/photo-1491961865842-98f7befd1a60?w=523&auto=format").ToString());
         viewModel.BasicItems[4].Title.ShouldBe("I'm Special");
         viewModel.BasicItems[4].Description.ShouldBe("Let's have a meal");
     }
@@ -114,14 +122,15 @@ public class MasonryShowCasePageTests
         imageDemoMarkup.ShouldContain("ColumnCount=\"4\"");
         imageDemoMarkup.ShouldContain("ColumnGap=\"16\"");
         imageDemoMarkup.ShouldContain("RowGap=\"16\"");
-        imageDemoMarkup.ShouldContain("asyncImageLoader:ImageLoader.Source=\"{Binding ImageSource}\"");
+        imageDemoMarkup.ShouldContain("Source=\"{Binding ImageSource}\"");
+        imageDemoMarkup.ShouldNotContain("asyncImageLoader:ImageLoader.Source");
         imageDemoMarkup.ShouldContain("Name=\"MasonryImage\"");
         imageDemoMarkup.ShouldContain("Stretch=\"Uniform\"");
         imageDemoMarkup.ShouldContain("HorizontalAlignment=\"Stretch\"");
         imageDemoMarkup.ShouldContain("ClipToBounds=\"True\"");
         imageDemoMarkup.ShouldContain("MinHeight=\"210\"");
         imageDemoMarkup.ShouldContain("Name=\"MasonryImageSkeleton\"");
-        imageDemoMarkup.ShouldContain("Loaded=\"HandleImageSkeletonLoaded\"");
+        imageDemoMarkup.ShouldContain("<atom:AsyncImage.LoadingContent>");
         imageDemoMarkup.ShouldNotContain("{Binding #");
         imageDemoMarkup.ShouldContain("<atom:Skeleton IsLoading=\"True\"");
         imageDemoMarkup.ShouldContain("Padding=\"16,16\"");
@@ -143,7 +152,7 @@ public class MasonryShowCasePageTests
 
         viewModel.ImageItems.ShouldNotBeNull();
         viewModel.ImageItems!.Select(item => item.Index).ShouldBe(Enumerable.Range(1, 16));
-        viewModel.ImageItems.Select(item => item.ImageSource).ShouldBe(new[]
+        viewModel.ImageItems.Select(item => item.ImageSource.ToString()).ShouldBe(new[]
         {
             "https://images.unsplash.com/photo-1510001618818-4b4e3d86bf0f?w=523&auto=format",
             "https://images.unsplash.com/photo-1507513319174-e556268bb244?w=523&auto=format",
@@ -161,7 +170,7 @@ public class MasonryShowCasePageTests
             "https://images.unsplash.com/photo-1731901245099-20ac7f85dbaa?w=523&auto=format",
             "https://images.unsplash.com/photo-1617694455303-59af55af7e58?w=523&auto=format",
             "https://images.unsplash.com/photo-1709198165282-1dab551df890?w=523&auto=format"
-        });
+        }.Select(source => ImageSource.Parse(source).ToString()));
     }
 
     [Fact]

@@ -17,8 +17,8 @@ GalleryBase 的主入口是 `UseGalleryBase`：
 ```csharp
 public static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseGalleryBase(
-        this IThemeManagerBuilder builder,
+    public static IAtomUIBuilder UseGalleryBase(
+        this IAtomUIBuilder builder,
         Action<GalleryBaseOptions>? configure = null);
 }
 ```
@@ -30,7 +30,7 @@ public static class ThemeManagerBuilderExtensions
 - 校验配置完整性。
 - 注册 GalleryBase Control Token。
 - 注册 GalleryBase ControlThemesProvider。
-- 注册 GalleryBase Shell 语言 Provider。
+- 通过生成式模块注册把 GalleryBase Shell Catalog 和内置翻译加入 `builder.Localization`。
 - 将不可变配置快照保存到 GalleryBase runtime registry，供 Shell 构造时读取。
 
 ## 配置对象
@@ -136,14 +136,16 @@ public sealed class GalleryPlatformOptions
 ```csharp
 public static class AtomUIGalleryModule
 {
-    public static void UseAtomUIGallery(this IThemeManagerBuilder builder)
+    public static IAtomUIBuilder UseGalleryControls(this IAtomUIBuilder builder)
     {
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
         builder.UseGalleryBase(options =>
         {
             ConfigureBranding(options.Branding);
             ConfigureNavigation(options.Navigation);
             ConfigureRoutes(options.Routes);
         });
+        return builder;
     }
 }
 ```
@@ -202,9 +204,11 @@ GalleryBase 必须在启动阶段校验：
 
 异常信息必须包含产品可定位的信息，例如 route key、导航路径、配置属性名。
 
-## 与 ThemeManager 的关系
+## 与 AtomUI Builder 的关系
 
-GalleryBase 使用 `IThemeManagerBuilder` 作为入口，是因为它需要注册 Token、ControlTheme 和语言 Provider。配置本身不应该依赖 `Application.Current`。
+GalleryBase 使用同时暴露 `Theme` 与 `Localization` 的 `IAtomUIBuilder` 作为入口：Control descriptor、主题资产和
+Theme Provider 注册到 `builder.Theme`，Catalog 与内置 Translation Bundle 注册到 `builder.Localization`。
+两条注册路径互相独立，配置本身不依赖 `Application.Current`。
 
 禁止在配置阶段做这些事：
 

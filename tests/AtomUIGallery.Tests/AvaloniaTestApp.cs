@@ -2,6 +2,8 @@ using Avalonia;
 using Avalonia.Headless;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
+using AtomUI.Toolkits.GalleryBase;
 using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUIGallery.Tests.TestAppBuilder))]
@@ -33,7 +35,7 @@ public static class TestAppBuilder
     }
 }
 
-internal sealed class TestApplication : Application
+internal sealed partial class TestApplication : Application
 {
     public override void Initialize()
     {
@@ -43,7 +45,11 @@ internal sealed class TestApplication : Application
             builder.UseDesktopExtras();
             builder.UseDesktopColorPicker();
             builder.UseDesktopDataGrid();
+            builder.UseGalleryBase(global::AtomUIGallery.AtomUIGalleryModule.Configure);
             builder.UseGalleryControls();
+            builder.UseLanguages(
+                LanguageTags.EnUS,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW, LanguageTags.PtBR]);
         });
     }
 }

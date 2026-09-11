@@ -1,6 +1,7 @@
 using AtomUI.Controls;
-using AtomUI.Generated.AtomUI_Desktop_Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.MotionScene;
+using AtomUI.Registration;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
@@ -11,35 +12,89 @@ namespace AtomUI.Desktop.Controls;
 
 public static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopControls(this IThemeManagerBuilder themeManagerBuilder)
+    internal const string PackageId = "AtomUI.Desktop.Controls";
+
+    [ControlPackageRegistrationEntry]
+    public static IAtomUIBuilder UseDesktopControls(this IAtomUIBuilder builder)
     {
-        themeManagerBuilder.UseCommonControls();
+        ArgumentNullException.ThrowIfNull(builder);
+        PrepareDesktopPackageCore(builder);
+        if (AotTrimRegistration.IsEnabled)
+        {
+            RegisterGeneratedDesktopPackage(builder);
+        }
+        else
+        {
+            RegisterFullDesktopPackage(builder);
+        }
+        CompleteDesktopPackageCore(builder);
+        return builder;
+    }
+
+    [ControlPackageRegistrationEntry]
+    public static IAtomUIBuilder UseAllDesktopControls(this IAtomUIBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        PrepareDesktopPackageCore(builder);
+        RegisterFullDesktopPackage(builder);
+        CompleteDesktopPackageCore(builder);
+        return builder;
+    }
+
+    private static void PrepareDesktopPackageCore(IAtomUIBuilder builder)
+    {
+        builder.UseCommonControls();
         DialogInputCaptureTracker.Initialize();
+    }
+
+    private static void CompleteDesktopPackageCore(IAtomUIBuilder builder)
+    {
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
+        builder.Theme.AddInitializer(InitializeDesktopRuntime);
+    }
+
+    private static void RegisterGeneratedDesktopPackage(IAtomUIBuilder builder)
+    {
+        if (RuntimePlatform.Features.SupportsNativeWindow)
+        {
+            var provider = new DesktopControlThemesProvider();
+            AotTrimRegistrationPlanRegistry.ApplyPackage(
+                builder,
+                PackageId,
+                provider);
+        }
+        else
+        {
+            var provider = new BrowserDesktopControlThemesProvider();
+            AotTrimRegistrationPlanRegistry.ApplyPackage(
+                builder,
+                PackageId,
+                provider,
+                DesktopControlRegistrationSelector.IsBrowserControlSupported);
+        }
+    }
+
+    private static void RegisterFullDesktopPackage(IAtomUIBuilder builder)
+    {
         if (RuntimePlatform.Features.SupportsNativeWindow)
         {
             GeneratedControlPackageRegistration.Register(
-                themeManagerBuilder,
-                new DesktopControlThemesProvider(),
-                selectAssets: DesktopControlThemeAssetSelector.SelectNative);
+                builder.Theme,
+                new DesktopControlThemesProvider());
         }
         else
         {
             GeneratedControlPackageRegistration.Register(
-                themeManagerBuilder,
+                builder.Theme,
                 new BrowserDesktopControlThemesProvider(),
-                DesktopControlThemeAssetSelector.IsBrowserControlSupported,
-                DesktopControlThemeAssetSelector.SelectBrowser);
+                DesktopControlRegistrationSelector.IsBrowserControlSupported);
         }
-
-        themeManagerBuilder.AddInitializer(InitializeDesktopRuntime);
-
-        return themeManagerBuilder;
     }
 
     private static void InitializeDesktopRuntime(IThemeManager manager)
     {
         Animation.RegisterCustomAnimator<TransformOperations, MotionTransformOptionsAnimator>();
-        var inputManager = AvaloniaLocator.CurrentMutable.GetService<IInputManager>();
+        var inputManager = AvaloniaLocator.CurrentMutable.GetService(typeof(IInputManager)) as IInputManager;
         if (inputManager is not null)
         {
             AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService(inputManager));

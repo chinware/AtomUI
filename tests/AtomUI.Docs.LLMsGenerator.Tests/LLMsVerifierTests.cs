@@ -31,7 +31,7 @@ public class LLMsVerifierTests
         {ForbiddenExternalName()}
         """;
 
-        var diagnostics = LLMsVerifier.ValidateGeneratedContent("docs/AI/llms/controls/button/index-cn.md", content);
+        var diagnostics = LLMsVerifier.ValidateGeneratedContent("docs/AI/generated/llms/controls/button/index-cn.md", content);
 
         diagnostics.ShouldContain(diagnostic => diagnostic.Contains("generated marker", StringComparison.OrdinalIgnoreCase));
         diagnostics.ShouldContain(diagnostic => diagnostic.Contains("stale component path", StringComparison.OrdinalIgnoreCase));
@@ -43,8 +43,8 @@ public class LLMsVerifierTests
     public void GeneratedOutputVerifierRejectsStaleFilesOnDisk()
     {
         var directory = Directory.CreateTempSubdirectory("atomui-llms-verify-");
-        var expected = new GeneratedLLMsFile("docs/AI/llms/llms.txt", "# Index\n\n" + LLMsWriterConstants.GeneratedMarker + "\n");
-        var stalePath = Path.Combine(directory.FullName, "docs/AI/llms/controls/stale/index-cn.md");
+        var expected = new GeneratedLLMsFile("docs/AI/generated/llms/llms.txt", "# Index\n\n" + LLMsWriterConstants.GeneratedMarker + "\n");
+        var stalePath = Path.Combine(directory.FullName, "docs/AI/generated/llms/controls/stale/index-cn.md");
         Directory.CreateDirectory(Path.GetDirectoryName(stalePath)!);
         File.WriteAllText(stalePath, "stale");
 
@@ -55,7 +55,7 @@ public class LLMsVerifierTests
 
     private static ControlDocModel ReadButtonModel()
     {
-        var config = LLMsGeneratorConfigReader.Read(Path.Combine(TestRepository.RootPath, "docs/AI/llms.config.json"));
+        var config = LLMsGeneratorConfigReader.Read(Path.Combine(TestRepository.RootPath, "docs/AI/generated/llms.config.json"));
         var controls = config.ControlSets
                              .SelectMany(controlSet => ControlInventory.Discover(
                                  TestRepository.RootPath,

@@ -122,8 +122,11 @@ public class ShowCasePanel : TemplatedControl
 布局规则：
 
 - 根据可用宽度、`MinItemWidth`、`MaxColumns` 计算列数。
-- 普通 item 放入当前最短列。
-- `ShowCaseItemSpan.Full` 或 `IsOccupyEntireRow=true` 占满整行。
+- 第一次有效排列时，普通 item 放入当前最短列；排列完成后按 item control 实例提交列归属。
+- 有效列数不变时，已经提交的普通 item 保持原列；宽度、高度和纵向位置仍按当前约束重新计算。
+- 新挂载、恢复可见或不再占满整行的 item 在首次重新进入普通布局时放入当前最短列。
+- 有效列数变化时清除旧列假设，并按当前最短列重新建立全部归属。
+- `ShowCaseItemSpan.Full` 或 `IsOccupyEntireRow=true` 占满整行，不进入普通列归属。
 - 不做虚拟化，只负责已挂载 children 的测量和排列。
 
 该面板保持简单，不引入 ItemsControl、ItemsSource 或数据模板。ShowCase 页面是文档式页面，不是无限列表。
@@ -177,8 +180,8 @@ public class GalleryShowCaseHeader : TemplatedControl
 | `CategoryTagColor` | `blue` | 分类 Tag 默认使用蓝色 |
 | `StatusTagColor` | `success` | 稳定状态默认使用成功色；Preview 页面显式覆盖为 `processing` |
 | `IntroducedVersionTagColor` | `blue` | 引入版本 Tag 使用蓝色，与分类区分靠位置和文本 |
-| `MetadataLabelWidth` | token 默认值 | label 宽度由主题控制，页面只在确有长文案时覆盖 |
-| `MetadataValueWidth` | token 默认值 | value 宽度由主题控制，页面只在包名较长时覆盖 |
+| `MetadataLabelWidth` | token 默认值 | label 的最小宽度由主题控制，长翻译可在行内自然扩展 |
+| `MetadataValueWidth` | token 默认值 | value 的历史宽度提示；当前行布局中 value 优先使用剩余空间，窄宽度下不得用它撑开列 |
 
 渲染规则：
 
@@ -189,6 +192,8 @@ public class GalleryShowCaseHeader : TemplatedControl
 - `Namespace`、`Package`、`BaseClass` 为空或空白时，对应 metadata 项不渲染。
 - 三个 metadata 值全部为空时，metadata 卡片不渲染。
 - metadata 顺序固定为 namespace、package、base class。
+- metadata 每一项占一行，label/value 使用行内两列布局；长 label 不得覆盖 value，长 value 只有在占满当前行剩余空间后才允许省略。
+- metadata label/value 使用同一套 metadata 字体度量，默认跟随全局 UI 字体，避免 label 和内容因默认字体不同产生视觉垂直错位；等宽字体只用于代码展示类控件。
 
 标准用法：
 

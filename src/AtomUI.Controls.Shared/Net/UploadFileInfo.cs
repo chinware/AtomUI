@@ -1,19 +1,33 @@
 namespace AtomUI.Controls;
 
-public record UploadFileInfo
+public sealed class UploadFileInfo
 {
-    public long Size { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public Uri FilePath { get; init; }
-    public DateTimeOffset? DateCreated { get; init; }
-    public DateTimeOffset? DateModified { get; init; }
+    public string Name { get; }
+    public Uri? Path { get; }
+    public long? Size { get; }
+    public string? ContentType { get; }
+    public DateTimeOffset? DateCreated { get; }
+    public DateTimeOffset? DateModified { get; }
+    public IUploadFileSource Source { get; }
 
-    public UploadFileInfo(string name, Uri filePath, long size, DateTimeOffset? dateCreated = null, DateTimeOffset? dateModified = null)
+    public UploadFileInfo(
+        string name,
+        IUploadFileSource source,
+        Uri? path = null,
+        long? size = null,
+        string? contentType = null,
+        DateTimeOffset? dateCreated = null,
+        DateTimeOffset? dateModified = null)
     {
-        Name = name;
-        FilePath = filePath;
-        Size = size;
-        DateCreated = dateCreated;
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentNullException.ThrowIfNull(source);
+
+        Name         = name;
+        Source       = source;
+        Path         = path;
+        Size         = size;
+        ContentType  = contentType;
+        DateCreated  = dateCreated;
         DateModified = dateModified;
     }
 }

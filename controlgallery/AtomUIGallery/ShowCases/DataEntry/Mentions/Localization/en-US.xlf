@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MentionsShowCaseLangResourceKind">
+    <unit id="AsynchronousLoadingDescription">
+      <segment>
+        <source>async.</source>
+      </segment>
+    </unit>
+    <unit id="AsynchronousLoadingTitle">
+      <segment>
+        <source>Asynchronous loading</source>
+      </segment>
+    </unit>
+    <unit id="AutoSizeDescription">
+      <segment>
+        <source>Height autoSize.</source>
+      </segment>
+    </unit>
+    <unit id="AutoSizeTitle">
+      <segment>
+        <source>autoSize</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest use.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeTriggerTokenDescription">
+      <segment>
+        <source>Customize Trigger Token by prefix props. Default to @, array also supported.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeTriggerTokenTitle">
+      <segment>
+        <source>Customize Trigger Token</source>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyDescription">
+      <segment>
+        <source>Configure disabled and readOnly.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyTitle">
+      <segment>
+        <source>disabled or readOnly</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetMention">
+      <segment>
+        <source>Set mention</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputToMentionPeopleToMentionTag">
+      <segment>
+        <source>input @ to mention people, # to mention tag</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsDisabledMentions">
+      <segment>
+        <source>this is disabled Mentions</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsReadonlyMentions">
+      <segment>
+        <source>this is readOnly Mentions</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+      </segment>
+    </unit>
+    <unit id="P2TextBoundValue">
+      <segment>
+        <source>Bound value:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Mentions provides trigger-based candidate popups, async option loading, custom trigger tokens, input variants, placement, status and auto-size scenarios.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Mention people, tags or custom entities while typing.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Change the suggestions placement.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>Mentions supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Mentions size</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Mentions with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding, so typing or clearing the input updates the ViewModel without an explicit binding mode.</source>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Mentions, there are four variants: outlined filled borderless and underlined.</source>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Customize clear button.</source>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

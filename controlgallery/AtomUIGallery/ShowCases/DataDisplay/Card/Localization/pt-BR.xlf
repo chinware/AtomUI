@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CardShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>A basic card containing a title, content and an extra corner content. Supports two sizes: default and small.</source>
+        <target state="translated">A básico cartão contendo a título, conteúdo e an extra corner conteúdo. Oferece suporte dois tamanhos: padrão e pequeno.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="CardInColumnDescription">
+      <segment>
+        <source>Cards usually cooperate with grid column layout in overview page.</source>
+        <target state="translated">Cartões usually cooperate com grid coluna layout em visão geral página.</target>
+      </segment>
+    </unit>
+    <unit id="CardInColumnTitle">
+      <segment>
+        <source>Card in column</source>
+        <target state="translated">Cartão em coluna</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedContentDescription">
+      <segment>
+        <source>You can use Card.Meta to support more flexible content.</source>
+        <target state="translated">You can use Card.Meta to support more flexible content.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedContentTitle">
+      <segment>
+        <source>Customized content</source>
+        <target state="translated">Customized conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="GridCardDescription">
+      <segment>
+        <source>Grid style card content..</source>
+        <target state="translated">Grid estilo cartão conteúdo..</target>
+      </segment>
+    </unit>
+    <unit id="GridCardTitle">
+      <segment>
+        <source>Grid card</source>
+        <target state="translated">Grid cartão</target>
+      </segment>
+    </unit>
+    <unit id="InnerCardDescription">
+      <segment>
+        <source>It can be placed inside the ordinary card to display the information of the multilevel structure.</source>
+        <target state="translated">Isso pode ser placed inside o ordinary cartão para exibir o informação de o multilevel structure.</target>
+      </segment>
+    </unit>
+    <unit id="InnerCardTitle">
+      <segment>
+        <source>Inner card</source>
+        <target state="translated">Inner cartão</target>
+      </segment>
+    </unit>
+    <unit id="LoadingCardDescription">
+      <segment>
+        <source>Shows a loading indicator while the contents of the card is being fetched.</source>
+        <target state="translated">Shows a carregando indicator while o contents de o cartão é being fetched.</target>
+      </segment>
+    </unit>
+    <unit id="LoadingCardTitle">
+      <segment>
+        <source>Loading card</source>
+        <target state="translated">Carregando cartão</target>
+      </segment>
+    </unit>
+    <unit id="MoreContentConfigurationDescription">
+      <segment>
+        <source>A Card that supports cover, avatar, title and description.</source>
+        <target state="translated">A Cartão que oferece suporte cover, avatar, título e descrição.</target>
+      </segment>
+    </unit>
+    <unit id="MoreContentConfigurationTitle">
+      <segment>
+        <source>Support more content configuration</source>
+        <target state="translated">Suporte mais conteúdo configuration</target>
+      </segment>
+    </unit>
+    <unit id="NoBorderDescription">
+      <segment>
+        <source>A borderless card on a gray background.</source>
+        <target state="translated">A sem borda cartão em a gray background.</target>
+      </segment>
+    </unit>
+    <unit id="NoBorderTitle">
+      <segment>
+        <source>No border</source>
+        <target state="translated">Não borda</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAppContent">
+      <segment>
+        <source>app content</source>
+        <target state="translated">app conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentArticleContent">
+      <segment>
+        <source>article content</source>
+        <target state="translated">article conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentContent">
+      <segment>
+        <source>Content</source>
+        <target state="translated">Conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentContent1">
+      <segment>
+        <source>content1</source>
+        <target state="translated">content1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentContent2">
+      <segment>
+        <source>content2</source>
+        <target state="translated">content2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMore">
+      <segment>
+        <source>More</source>
+        <target state="translated">Mais</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentProjectContent">
+      <segment>
+        <source>project content</source>
+        <target state="translated">project conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsTheDescription">
+      <segment>
+        <source>This is the description</source>
+        <target state="translated">Este é o descrição</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderApp">
+      <segment>
+        <source>app</source>
+        <target state="translated">app</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderArticle">
+      <segment>
+        <source>article</source>
+        <target state="translated">article</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCardTitle">
+      <segment>
+        <source>Card title</source>
+        <target state="translated">Cartão título</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCardTitle2">
+      <segment>
+        <source>Card Title</source>
+        <target state="translated">Cartão Título</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDefaultSizeCard">
+      <segment>
+        <source>Default size card</source>
+        <target state="translated">Padrão tamanho cartão</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEuropeStreetBeat">
+      <segment>
+        <source>Europe Street beat</source>
+        <target state="translated">Europe Street beat</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLargeSizeCard">
+      <segment>
+        <source>Large size card</source>
+        <target state="translated">Grande tamanho cartão</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderProject">
+      <segment>
+        <source>project</source>
+        <target state="translated">project</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSmallSizeCard">
+      <segment>
+        <source>Small size card</source>
+        <target state="translated">Pequeno tamanho cartão</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTab1">
+      <segment>
+        <source>Tab1</source>
+        <target state="translated">Tab1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTab2">
+      <segment>
+        <source>Tab2</source>
+        <target state="translated">Tab2</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCardContent">
+      <segment>
+        <source>Card content</source>
+        <target state="translated">Cartão conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextThisIsTheDescription">
+      <segment>
+        <source>This is the description</source>
+        <target state="translated">Este é o descrição</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Card presents information in a contained surface. It supports headers, extra actions, cover media, metadata, grid sections, tabs, loading placeholders, hover feedback, and borderless presentation.</source>
+        <target state="translated">Cartão presents informação em a contained surface. Isso oferece suporte headers, extra ações, cover media, metadata, grid sections, guias, carregando placeholders, sobreposição feedback, e sem borda presentation.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Group related content and actions in a compact container.</source>
+        <target state="translated">Grupo related conteúdo e ações em a compacto container.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">Avançado</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="SimpleCardDescription">
+      <segment>
+        <source>A simple card only containing a content area.</source>
+        <target state="translated">A simples cartão somente contendo a conteúdo area.</target>
+      </segment>
+    </unit>
+    <unit id="SimpleCardTitle">
+      <segment>
+        <source>Simple card</source>
+        <target state="translated">Simples cartão</target>
+      </segment>
+    </unit>
+    <unit id="WithTabsDescription">
+      <segment>
+        <source>More content can be hosted..</source>
+        <target state="translated">Mais conteúdo pode ser hosted..</target>
+      </segment>
+    </unit>
+    <unit id="WithTabsTitle">
+      <segment>
+        <source>With tabs</source>
+        <target state="translated">Com guias</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

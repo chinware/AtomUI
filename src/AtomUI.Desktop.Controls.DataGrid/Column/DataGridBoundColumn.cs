@@ -8,7 +8,6 @@ using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -21,7 +20,6 @@ public abstract class DataGridBoundColumn : DataGridColumn
     /// </summary>
     //TODO Binding
     [AssignBinding]
-    [InheritDataTypeFromItems(nameof(DataGrid.ItemsSource), AncestorType = typeof(DataGrid))]
     public virtual BindingBase? Binding
     {
         get => _binding;
@@ -102,13 +100,13 @@ public abstract class DataGridBoundColumn : DataGridColumn
 
     internal void SetHeaderFromBinding()
     {
-        if (OwningGrid != null && OwningGrid.DataConnection.DataType != null
+        if (OwningGrid != null && OwningGrid.RangeDataAccess.DataType != null
                                && Header == null && Binding is { } binding)
         {
             var path = GetBindingPath(binding);
             if (!string.IsNullOrWhiteSpace(path))
             {
-                var header = OwningGrid.DataConnection.GetDisplayName(path);
+                var header = OwningGrid.RangeDataAccess.GetDisplayName(path);
                 if (header != null)
                 {
                     Header = header;

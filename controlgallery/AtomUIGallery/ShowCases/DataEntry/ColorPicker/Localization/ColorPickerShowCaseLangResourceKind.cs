@@ -1,0 +1,47 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum ColorPickerShowCaseLangResourceKind
+{
+    BasicTitle,
+    BasicDescription,
+    ValueBindingTitle,
+    ValueBindingDescription,
+    TriggerSizeTitle,
+    TriggerSizeDescription,
+    P2LabelSizeTypeSmall,
+    P2LabelSizeTypeMiddle,
+    P2LabelSizeTypeLarge,
+    P2LabelSizeTypeCustom,
+    LineGradientTitle,
+    LineGradientDescription,
+    RenderingTriggerTextTitle,
+    RenderingTriggerTextDescription,
+    DisabledTitle,
+    DisabledDescription,
+    DisabledAlphaTitle,
+    DisabledAlphaDescription,
+    ClearColorTitle,
+    ClearColorDescription,
+    ControlledModeTitle,
+    ControlledModeDescription,
+    CustomTriggerEventTitle,
+    CustomTriggerEventDescription,
+    ColorFormatTitle,
+    ColorFormatDescription,
+    PresetColorsTitle,
+    PresetColorsDescription,
+    PageSubtitle,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ScenarioExamples,
+    P2TextColorValue,
+    P2TextGradientValue,
+    P2ContentSetColor,
+    P2ContentSetGradient,
+    P2ContentClearColor,
+    P2ContentClearGradient
+}

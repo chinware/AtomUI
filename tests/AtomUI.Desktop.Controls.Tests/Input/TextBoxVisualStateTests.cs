@@ -56,7 +56,7 @@ public class TextBoxVisualStateTests
     }
 
     [Fact]
-    public void TextBox_InnerBoxDecorator_Uses_TextBox_Border_Tokens_For_Default_Hover_And_Focus()
+    public void TextBox_InnerBoxDecorator_Uses_Shared_Input_Frame_Tokens_For_Default_Hover_And_Focus()
     {
         var textBox = new AtomUITextBox
         {
@@ -66,19 +66,19 @@ public class TextBoxVisualStateTests
 
         ShowInWindow(textBox, () =>
         {
+            var frame = FindTemplatePart<InputControlFrame>(textBox, "PART_InputControlFrame");
             var border = FindTemplatePart<PixelAlignedBorder>(textBox, "InnerBoxDecorator");
-            var expectedThickness = GetThemeResource<Thickness>(
-                ControlTokenResourceKey.Global(TextBoxTokens.Identity, SharedTokenKind.BorderThickness));
-            var defaultBorder     = GetTextBoxTokenResource<IBrush>("BorderColor");
-            var hoverBorder       = GetTextBoxTokenResource<IBrush>("HoverBorderColor");
-            var activeBorder      = GetTextBoxTokenResource<IBrush>("ActiveBorderColor");
-            var activeShadow      = GetTextBoxTokenResource<BoxShadows>("ActiveShadow");
+            var expectedThickness = GetThemeResource<Thickness>(SharedTokenKind.BorderThickness);
+            var defaultBorder     = GetThemeResource<IBrush>(SharedTokenKind.ColorBorder);
+            var hoverBorder       = GetThemeResource<IBrush>(SharedTokenKind.ColorPrimaryHover);
+            var activeBorder      = GetThemeResource<IBrush>(SharedTokenKind.ColorPrimary);
+            var activeShadow      = GetThemeResource<BoxShadows>(SharedTokenKind.InputActiveShadow);
 
             textBox.BorderThickness.ShouldBe(expectedThickness);
             border.BorderThickness.ShouldBe(expectedThickness);
             BrushShouldHaveSameColor(border.BorderBrush, defaultBorder);
 
-            SetPseudoClass(textBox, StdPseudoClass.PointerOver, true);
+            frame.IsInnerBoxHover = true;
             Dispatcher.UIThread.RunJobs();
 
             border.BorderThickness.ShouldBe(expectedThickness);
@@ -88,10 +88,37 @@ public class TextBoxVisualStateTests
             Dispatcher.UIThread.RunJobs();
 
             textBox.IsFocused.ShouldBeTrue();
+            frame.IsInputFocusWithin.ShouldBeTrue();
             border.BorderThickness.ShouldBe(expectedThickness);
             BrushShouldHaveSameColor(border.BorderBrush, activeBorder);
             border.BoxShadow.ShouldBe(activeShadow);
         });
+    }
+
+    [Fact]
+    public void TextBox_Input_Frame_Width_Remains_Stable_When_Text_Changes()
+    {
+        var textBox = new AtomUITextBox
+        {
+            Width           = 360,
+            PlaceholderText = "AtomUI TextBox",
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(textBox, () =>
+        {
+            var frame = FindTemplatePart<InputControlFrame>(textBox, "PART_InputControlFrame");
+
+            frame.Bounds.Width.ShouldBe(textBox.Bounds.Width);
+
+            textBox.Text = "2";
+            Dispatcher.UIThread.RunJobs();
+            frame.Bounds.Width.ShouldBe(textBox.Bounds.Width);
+
+            textBox.Text = "2wewwerwewerwerwe";
+            Dispatcher.UIThread.RunJobs();
+            frame.Bounds.Width.ShouldBe(textBox.Bounds.Width);
+        }, window => window.Width = 480);
     }
 
     [Theory]
@@ -101,7 +128,7 @@ public class TextBoxVisualStateTests
         ControlAlgorithmMode algorithm,
         bool expectDerivedHover)
     {
-        AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+        AssertCompositeInputHoverUsesSharedColorPrimaryHover(
             new AtomUILineEdit
             {
                 Width           = 180,
@@ -134,7 +161,7 @@ public class TextBoxVisualStateTests
         ControlAlgorithmMode algorithm,
         bool expectDerivedHover)
     {
-        AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+        AssertCompositeInputHoverUsesSharedColorPrimaryHover(
             new AtomUISearchEdit
             {
                 Width           = 180,
@@ -167,7 +194,7 @@ public class TextBoxVisualStateTests
         ControlAlgorithmMode algorithm,
         bool expectDerivedHover)
     {
-        AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+        AssertCompositeInputHoverUsesSharedColorPrimaryHover(
             new AtomUITextArea
             {
                 Width           = 180,
@@ -302,18 +329,15 @@ public class TextBoxVisualStateTests
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/Themes/TextBoxTheme.axaml");
 
-        source.ShouldContain("TextBoxTokenResource BorderColor");
-        source.ShouldContain("TextBoxTokenResource BorderThickness");
-        source.ShouldContain("TextBoxTokenResource BorderRadiusLG");
-        source.ShouldContain("TextBoxTokenResource BorderRadius");
-        source.ShouldContain("TextBoxTokenResource BorderRadiusSM");
-        source.ShouldContain("TextBoxTokenResource HoverBorderColor");
-        source.ShouldContain("TextBoxTokenResource ActiveBorderColor");
-        source.ShouldContain("TextBoxTokenResource ActiveShadow");
+        source.ShouldContain("SharedTokenResource ColorBorder");
+        source.ShouldContain("SharedTokenResource BorderThickness");
+        source.ShouldContain("SharedTokenResource BorderRadiusLG");
+        source.ShouldContain("SharedTokenResource BorderRadius");
+        source.ShouldContain("SharedTokenResource BorderRadiusSM");
         source.ShouldContain("TextBoxTokenResource ContentPaddingLG");
         source.ShouldContain("TextBoxTokenResource ContentPadding");
         source.ShouldContain("TextBoxTokenResource ContentPaddingSM");
-        source.ShouldContain("TextBoxTokenResource EnableMotion");
+        source.ShouldContain("SharedTokenResource EnableMotion");
         source.ShouldNotContain("IsCustomPadding");
         source.ShouldContain("SharedTokenResource UniformlyPaddingXXS");
         source.ShouldContain("SharedTokenResource FontHeightLG");
@@ -323,7 +347,9 @@ public class TextBoxVisualStateTests
         source.ShouldContain("SharedTokenResource FontSize");
         source.ShouldContain("SharedTokenResource FontSizeSM");
         source.ShouldContain("SharedTokenResource ColorTextPlaceholder");
-        source.ShouldContain("SharedTokenResource ColorTextDisabled");
+        var frameTheme = ReadRepoFile(
+            "src/AtomUI.Desktop.Controls/Primitives/AddOnDecoratedBox/Themes/InputControlFrameTheme.axaml");
+        frameTheme.ShouldContain("SharedTokenResource ColorTextDisabled");
         source.ShouldNotContain("ControlTokenScope.Identity");
         source.ShouldNotContain("LineEditTokenResource");
         source.ShouldNotContain("AddOnDecoratedBoxTokenResource");
@@ -355,13 +381,9 @@ public class TextBoxVisualStateTests
             .OrderBy(name => name)
             .ShouldBe(new[]
             {
-                "ActiveBorderColor",
-                "ActiveShadow",
-                "BorderColor",
                 "ContentPadding",
                 "ContentPaddingLG",
                 "ContentPaddingSM",
-                "HoverBorderColor",
             });
     }
 
@@ -382,6 +404,43 @@ public class TextBoxVisualStateTests
         {
             textBox.Padding.ShouldBe(GetTextBoxTokenResource<Thickness>(tokenKind));
         });
+    }
+
+    [Theory]
+    [InlineData(CustomizableSizeType.Large, nameof(SharedTokenKind.ControlHeightLG), double.NaN, null)]
+    [InlineData(CustomizableSizeType.Middle, nameof(SharedTokenKind.ControlHeight), double.NaN, null)]
+    [InlineData(CustomizableSizeType.Small, nameof(SharedTokenKind.ControlHeightSM), double.NaN, null)]
+    [InlineData(CustomizableSizeType.Custom, null, 42.0, "12,0")]
+    public void TextBox_Frame_Fills_SizeType_And_Custom_Control_Height(
+        CustomizableSizeType sizeType,
+        string? tokenKindName,
+        double height,
+        string? paddingText)
+    {
+        var textBox = new AtomUITextBox
+        {
+            Width           = 360,
+            SizeType        = sizeType,
+            Height          = height,
+            Text            = sizeType.ToString(),
+            IsMotionEnabled = false
+        };
+        if (paddingText is not null)
+        {
+            textBox.Padding = Thickness.Parse(paddingText);
+        }
+
+        var expectedHeight = tokenKindName is null
+            ? height
+            : GetThemeResource<double>((SharedTokenKind)Enum.Parse(typeof(SharedTokenKind), tokenKindName));
+
+        ShowInWindow(textBox, () =>
+        {
+            var frame = FindTemplatePart<InputControlFrame>(textBox, "PART_InputControlFrame");
+
+            textBox.Bounds.Height.ShouldBe(expectedHeight, 0.5);
+            frame.Bounds.Height.ShouldBe(textBox.Bounds.Height, 0.5);
+        }, window => window.Height = 180);
     }
 
     [Fact]
@@ -410,12 +469,7 @@ public class TextBoxVisualStateTests
         var provider = new ThemeConfigProvider
         {
             Config = new ThemeConfigBuilder()
-                     .WithControl(
-                         TextBoxTokens.Identity,
-                         new ControlThemeConfigBuilder()
-                             .WithAlgorithm(ControlAlgorithmMode.Disabled)
                              .WithToken(nameof(SharedTokenKind.EnableMotion), "false")
-                             .Build())
                      .Build(),
             Child = textBox
         };
@@ -503,9 +557,11 @@ public class TextBoxVisualStateTests
     }
 
     [Theory]
-    [MemberData(nameof(TextInputControlsWithPlaceholder))]
-    public void Placeholder_Hides_While_Ime_Preedit_Text_Is_Rendered(Control textInput)
+    [MemberData(nameof(TextInputControlTypesWithPlaceholder))]
+    public void Placeholder_Hides_While_Ime_Preedit_Text_Is_Rendered(Type textInputType)
     {
+        var textInput = CreateTextInputWithPlaceholder(textInputType);
+
         ShowInWindow(textInput, () =>
         {
             var placeholder = FindTemplatePart<TextBlock>(textInput, "Placeholder");
@@ -596,32 +652,80 @@ public class TextBoxVisualStateTests
         });
     }
 
-    public static TheoryData<Control> TextInputControlsWithPlaceholder()
+    [Fact]
+    public void LineEdit_Form_Status_Preserves_Explicit_Status_And_Native_Error_Priority()
     {
-        return new TheoryData<Control>
+        var lineEdit = new AtomUILineEdit
         {
-            new AtomUITextBox
-            {
-                Width           = 180,
-                PlaceholderText = "请输入"
-            },
-            new AtomUILineEdit
-            {
-                Width           = 180,
-                PlaceholderText = "请输入"
-            },
-            new AtomUISearchEdit
-            {
-                Width           = 180,
-                PlaceholderText = "搜索"
-            },
-            new AtomUITextArea
-            {
-                Width           = 180,
-                Height          = 80,
-                PlaceholderText = "请输入"
-            }
+            Width  = 180,
+            Status = InputControlStatus.Error
         };
+        var validationError = new InvalidOperationException("native");
+
+        ShowInWindow(lineEdit, () =>
+        {
+            var frame = lineEdit.GetVisualDescendants()
+                                .OfType<InputControlFrame>()
+                                .Single();
+
+            ((IFormItemAware)lineEdit).NotifyValidateStatus(FormValidateStatus.Warning);
+            Dispatcher.UIThread.RunJobs();
+
+            lineEdit.Status.ShouldBe(InputControlStatus.Error);
+            lineEdit.FormStatus.ShouldBe(FormValidateStatus.Warning);
+            frame.EffectiveStatus.ShouldBe(InputControlStatus.Warning);
+
+            DataValidationErrors.SetError(lineEdit, validationError);
+            Dispatcher.UIThread.RunJobs();
+            frame.EffectiveStatus.ShouldBe(InputControlStatus.Error);
+
+            ((IFormItemAware)lineEdit).NotifyValidateStatus(FormValidateStatus.Default);
+            Dispatcher.UIThread.RunJobs();
+
+            lineEdit.FormStatus.ShouldBe(FormValidateStatus.Default);
+            DataValidationErrors.GetHasErrors(lineEdit).ShouldBeTrue();
+            frame.EffectiveStatus.ShouldBe(InputControlStatus.Error);
+
+            DataValidationErrors.ClearErrors(lineEdit);
+            Dispatcher.UIThread.RunJobs();
+            frame.EffectiveStatus.ShouldBe(InputControlStatus.Error);
+        });
+    }
+
+    public static TheoryData<Type> TextInputControlTypesWithPlaceholder()
+    {
+        return new TheoryData<Type>
+        {
+            typeof(AtomUITextBox),
+            typeof(AtomUILineEdit),
+            typeof(AtomUISearchEdit),
+            typeof(AtomUITextArea)
+        };
+    }
+
+    private static Control CreateTextInputWithPlaceholder(Type textInputType)
+    {
+        if (textInputType == typeof(AtomUITextBox))
+        {
+            return new AtomUITextBox { Width = 180, PlaceholderText = "请输入" };
+        }
+
+        if (textInputType == typeof(AtomUILineEdit))
+        {
+            return new AtomUILineEdit { Width = 180, PlaceholderText = "请输入" };
+        }
+
+        if (textInputType == typeof(AtomUISearchEdit))
+        {
+            return new AtomUISearchEdit { Width = 180, PlaceholderText = "搜索" };
+        }
+
+        if (textInputType == typeof(AtomUITextArea))
+        {
+            return new AtomUITextArea { Width = 180, Height = 80, PlaceholderText = "请输入" };
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(textInputType), textInputType, null);
     }
 
     private static T GetThemeResource<T>(object key)
@@ -639,7 +743,7 @@ public class TextBoxVisualStateTests
         return GetThemeResource<T>(tokenKind);
     }
 
-    private static void AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+    private static void AssertCompositeInputHoverUsesSharedColorPrimaryHover(
         Control control,
         ControlTokenIdentity identity,
         ControlAlgorithmMode algorithm,
@@ -657,21 +761,7 @@ public class TextBoxVisualStateTests
                     SharedTokenKind.ColorPrimaryHover,
                     out var globalHoverResource)
                 .ShouldBeTrue();
-            control.TryFindResource(
-                    ControlTokenResourceKey.Global(identity, SharedTokenKind.ColorPrimaryHover),
-                    out var controlHoverResource)
-                .ShouldBeTrue();
-
-            var globalHover  = GetSolidBrushColor((IBrush)globalHoverResource!);
-            var controlHover = GetSolidBrushColor((IBrush)controlHoverResource!);
-            if (expectDerivedHover)
-            {
-                controlHover.ShouldNotBe(globalHover);
-            }
-            else
-            {
-                controlHover.ShouldBe(globalHover);
-            }
+            var globalHover = GetSolidBrushColor((IBrush)globalHoverResource!);
 
             var decoratedBox = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBox>(
                 control,
@@ -681,7 +771,7 @@ public class TextBoxVisualStateTests
             decoratedBox.IsInnerBoxHover = true;
             Dispatcher.UIThread.RunJobs();
 
-            GetSolidBrushColor(contentFrame.BorderBrush).ShouldBe(controlHover);
+            GetSolidBrushColor(contentFrame.BorderBrush).ShouldBe(globalHover);
         });
     }
 
@@ -698,9 +788,7 @@ public class TextBoxVisualStateTests
 
         ShowInWindow(provider, () =>
         {
-            control.TryFindResource(
-                    ControlTokenResourceKey.Global(identity, SharedTokenKind.ColorPrimary),
-                    out var controlPrimaryResource)
+            control.TryFindResource(SharedTokenKind.ColorPrimary, out var controlPrimaryResource)
                 .ShouldBeTrue();
             var controlPrimary = GetSolidBrushColor((IBrush)controlPrimaryResource!);
             var decoratedBox = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBox>(
@@ -724,12 +812,8 @@ public class TextBoxVisualStateTests
         ControlAlgorithmMode algorithm)
     {
         return new ThemeConfigBuilder()
-               .WithControl(
-                   identity,
-                   new ControlThemeConfigBuilder()
-                       .WithAlgorithm(algorithm)
-                       .WithToken(nameof(SharedTokenKind.ColorPrimary), "#eb2f96")
-                       .Build())
+               .WithToken(nameof(SharedTokenKind.ColorPrimary), "#eb2f96")
+               .WithToken(nameof(SharedTokenKind.ColorPrimaryHover), "#f759ab")
                .Build();
     }
 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.DataGridLangResourceKind">
+    <unit id="AscendTooltip">
+      <segment>
+        <source>Click to sort ascending</source>
+        <target state="final">Clique para ordenar em ordem crescente</target>
+      </segment>
+    </unit>
+    <unit id="CancelConfirmText">
+      <segment>
+        <source>Sure to cancel?</source>
+        <target state="final">Tem certeza de que deseja cancelar?</target>
+      </segment>
+    </unit>
+    <unit id="CancelTooltip">
+      <segment>
+        <source>Click to cancel sorting</source>
+        <target state="final">Clique para cancelar a ordenação</target>
+      </segment>
+    </unit>
+    <unit id="DeleteConfirmText">
+      <segment>
+        <source>Sure to delete?</source>
+        <target state="final">Tem certeza de que deseja excluir?</target>
+      </segment>
+    </unit>
+    <unit id="DescendTooltip">
+      <segment>
+        <source>Click to sort descending</source>
+        <target state="final">Clique para ordenar em ordem decrescente</target>
+      </segment>
+    </unit>
+    <unit id="Operating">
+      <segment>
+        <source>Operation in progress, please wait.</source>
+        <target state="final">Operação em andamento, aguarde.</target>
+      </segment>
+    </unit>
+    <unit id="SelectAllFilterItems">
+      <segment>
+        <source>Select all items</source>
+        <target state="final">Selecionar todos os itens</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

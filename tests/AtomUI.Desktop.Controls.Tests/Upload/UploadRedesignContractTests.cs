@@ -2,6 +2,7 @@ using System.Reflection;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Platform.Storage;
 using Shouldly;
 using Xunit;
 
@@ -43,6 +44,74 @@ public class UploadRedesignContractTests
         var fileValueModeProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "FileValueModeProperty");
         fileValueModeProperty.PropertyType.ShouldBe(fileValueModeType);
         GetPropertyValue(upload, "FileValueMode").ShouldBe(Enum.Parse(fileValueModeType, "SuccessfulFiles"));
+    }
+
+    [Fact]
+    public void File_Input_Properties_Use_The_Typed_Admission_Contract()
+    {
+        var upload = new Desktop.Controls.Upload();
+
+        var allowedFileTypesProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "AllowedFileTypesProperty");
+        allowedFileTypesProperty.PropertyType.ShouldBe(typeof(IReadOnlyList<FilePickerFileType>));
+        GetPropertyValue(upload, "AllowedFileTypes").ShouldBeNull();
+
+        var overflowType = GetUploadType("UploadCountOverflowBehavior");
+        var overflowProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "CountOverflowBehaviorProperty");
+        overflowProperty.PropertyType.ShouldBe(overflowType);
+        GetPropertyValue(upload, "CountOverflowBehavior").ShouldBe(Enum.Parse(overflowType, "RejectExcess"));
+
+        var admissionPolicyType = GetUploadType("IUploadAdmissionPolicy");
+        var admissionPolicyProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "AdmissionPolicyProperty");
+        admissionPolicyProperty.PropertyType.ShouldBe(admissionPolicyType);
+        GetPropertyValue(upload, "AdmissionPolicy").ShouldBeNull();
+
+        var isMultipleEnabledProperty = GetAvaloniaProperty(
+            typeof(Desktop.Controls.Upload),
+            "IsMultipleEnabledProperty");
+        isMultipleEnabledProperty.PropertyType.ShouldBe(typeof(bool));
+        GetPropertyValue(upload, "IsMultipleEnabled").ShouldBe(false);
+
+        typeof(Desktop.Controls.Upload).GetEvent("InputBatchCompleted").ShouldNotBeNull();
+        typeof(Desktop.Controls.Upload).GetField("AcceptsProperty", BindingFlags.Public | BindingFlags.Static).ShouldBeNull();
+        typeof(Desktop.Controls.Upload).GetField("IsOpenFileDialogOnClickProperty", BindingFlags.Public | BindingFlags.Static)
+            .ShouldBeNull();
+    }
+
+    [Fact]
+    public void Input_Result_Uses_Stable_Status_And_Exception_Free_Rejections()
+    {
+        Enum.GetNames<UploadInputBatchStatus>().ShouldBe(["Completed", "Cancelled", "Failed"]);
+        Enum.GetNames<UploadInputFailureReason>().ShouldBe(["DataSnapshotFailed", "ProcessingFailed"]);
+        Enum.GetNames<UploadRejectionReason>().ShouldBe([
+            "UnsupportedStorageItem",
+            "DirectoryNotAllowed",
+            "DirectoryDepthExceeded",
+            "DirectoryCycleDetected",
+            "EnumerationLimitExceeded",
+            "AccessDenied",
+            "StorageReadFailed",
+            "FileTypeNotAllowed",
+            "AdmissionRejected",
+            "AdmissionPolicyFailed",
+            "CountLimitExceeded",
+            "MultipleSelectionNotAllowed"
+        ]);
+
+        typeof(UploadRejectedItem).GetProperty("Exception").ShouldBeNull();
+        typeof(UploadInputBatchCompletedEventArgs).GetProperty("IsCancelled").ShouldBeNull();
+        typeof(UploadInputBatchCompletedEventArgs)
+            .GetProperty(nameof(UploadInputBatchCompletedEventArgs.Status))
+            .ShouldNotBeNull();
+        typeof(UploadInputBatchCompletedEventArgs)
+            .GetProperty(nameof(UploadInputBatchCompletedEventArgs.FailureReason))
+            .ShouldNotBeNull();
+
+        typeof(UploadAdmissionDecision).GetConstructors().ShouldBeEmpty();
+        UploadAdmissionDecision.Accept().IsAccepted.ShouldBeTrue();
+        var rejection = UploadAdmissionDecision.Reject("blocked", "Policy blocked the file.");
+        rejection.IsAccepted.ShouldBeFalse();
+        rejection.RejectionCode.ShouldBe("blocked");
+        rejection.Message.ShouldBe("Policy blocked the file.");
     }
 
     [Fact]

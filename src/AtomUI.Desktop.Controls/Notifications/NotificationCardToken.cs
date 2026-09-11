@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class NotificationCardToken : AbstractControlDesignToken
+internal sealed class NotificationCardToken : AbstractControlDesignToken
 {
 
     public NotificationCardToken()

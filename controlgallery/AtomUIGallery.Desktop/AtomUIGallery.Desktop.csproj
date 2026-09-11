@@ -12,11 +12,10 @@
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <IsAotCompatible>true</IsAotCompatible>
         <IsTrimmable>true</IsTrimmable>
-        <PublishTrimmed>true</PublishTrimmed>
-        <PublishAot Condition="'$(GalleryPublishAot)' == ''">true</PublishAot>
+        <PublishTrimmed Condition="'$(GalleryPublishTrimmed)' != ''">$(GalleryPublishTrimmed)</PublishTrimmed>
         <PublishAot Condition="'$(GalleryPublishAot)' != ''">$(GalleryPublishAot)</PublishAot>
-        <SelfContained>true</SelfContained>
-        <UseAppHost>true</UseAppHost>
+        <SelfContained Condition="'$(GalleryPublishTrimmed)' == 'true' or '$(GalleryPublishAot)' == 'true'">true</SelfContained>
+        <UseAppHost Condition="'$(GalleryPublishTrimmed)' == 'true' or '$(GalleryPublishAot)' == 'true'">true</UseAppHost>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -34,9 +33,33 @@
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport"
                           GeneratePathProperty="true"
                           ExcludeAssets="all"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+                          GeneratePathProperty="true"
+                          ExcludeAssets="all"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"
+                          GeneratePathProperty="true"
+                          ExcludeAssets="all"/>
+        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream"
+                          GeneratePathProperty="true"
+                          ExcludeAssets="all"/>
         <Reference Condition="'$(Configuration)' == 'Debug'"
                    Include="AvaloniaUI.DiagnosticsSupport.Avalonia">
             <HintPath>$(PkgAvaloniaUI_DiagnosticsSupport)/lib/net10.0/AvaloniaUI.DiagnosticsSupport.Avalonia.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+        <Reference Condition="'$(Configuration)' == 'Debug'"
+                   Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+            <HintPath>$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)/lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+        <Reference Condition="'$(Configuration)' == 'Debug'"
+                   Include="Microsoft.Extensions.Logging.Abstractions">
+            <HintPath>$(PkgMicrosoft_Extensions_Logging_Abstractions)/lib/net8.0/Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+        <Reference Condition="'$(Configuration)' == 'Debug'"
+                   Include="Microsoft.IO.RecyclableMemoryStream">
+            <HintPath>$(PkgMicrosoft_IO_RecyclableMemoryStream)/lib/net6.0/Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
             <Private>true</Private>
         </Reference>
         <RuntimeHostConfigurationOption Condition="'$(Configuration)' == 'Debug'"
@@ -44,16 +67,20 @@
                                         Value="True"/>
     </ItemGroup>
 
-    <ItemGroup Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('OSX'))">
-        <LinkerArg Include="-L/opt/homebrew/lib" Condition="Exists('/opt/homebrew/lib/libssl.dylib')"/>
-        <LinkerArg Include="-L/opt/homebrew/opt/openssl@3/lib" Condition="Exists('/opt/homebrew/opt/openssl@3/lib/libssl.dylib')"/>
-        <LinkerArg Include="-L/usr/local/lib" Condition="Exists('/usr/local/lib/libssl.dylib')"/>
-        <LinkerArg Include="-L/usr/local/opt/openssl@3/lib" Condition="Exists('/usr/local/opt/openssl@3/lib/libssl.dylib')"/>
-    </ItemGroup>
+    <Import Project="../../build/MacOSHomebrewNativeAot.targets"
+            Condition="'$(PublishAot)' == 'true'" />
 
     <ItemGroup>
         <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj"/>
+        <ProjectReference Include="../../src/AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj" />
     </ItemGroup>
 
     <ItemGroup>

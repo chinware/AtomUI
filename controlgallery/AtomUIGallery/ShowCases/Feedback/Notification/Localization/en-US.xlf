@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.NotificationShowCaseLangResourceKind">
+    <unit id="ApiMethodManagerShow">
+      <segment>
+        <source>Shows an INotification instance and applies optional style classes.</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage for Notification.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedIconDescription">
+      <segment>
+        <source>The icon can be customized to any icon node.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedIconTitle">
+      <segment>
+        <source>Customized Icon</source>
+      </segment>
+    </unit>
+    <unit id="DurationDescription">
+      <segment>
+        <source>Duration can be used to specify how long the notification stays open. After the duration time elapses, the notification closes automatically. If not specified, default value is 4.5 seconds. If you set the value to TimeSpan.Zero, the notification box will never close automatically.</source>
+      </segment>
+    </unit>
+    <unit id="DurationTitle">
+      <segment>
+        <source>Duration after which the notification box is closed</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomleft">
+      <segment>
+        <source>BottomLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomright">
+      <segment>
+        <source>BottomRight</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDonTPauseOnHover">
+      <segment>
+        <source>Don't pause on hover</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentError">
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentInfo">
+      <segment>
+        <source>Info</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOpenTheNotificationBox">
+      <segment>
+        <source>Open the notification box</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPauseOnHover">
+      <segment>
+        <source>Pause on hover</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentShowNotification">
+      <segment>
+        <source>Show Notification</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccess">
+      <segment>
+        <source>Success</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>TopLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>TopRight</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarning">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationBottomLeftTitle">
+      <segment>
+        <source>Notification BottomLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationBottomRightTitle">
+      <segment>
+        <source>Notification BottomRight</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationBottomTitle">
+      <segment>
+        <source>Notification Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationContent">
+      <segment>
+        <source>This is the content of the notification. This is the content of the notification. This is the content of the notification.</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationHello">
+      <segment>
+        <source>Hello, AtomUI/Avalonia!</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationNeverCloseContent">
+      <segment>
+        <source>I will never close automatically. This is a purposely very very long description that has many many characters and words.</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTitle">
+      <segment>
+        <source>Notification Title</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTopLeftTitle">
+      <segment>
+        <source>Notification TopLeft</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTopRightTitle">
+      <segment>
+        <source>Notification TopRight</source>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTopTitle">
+      <segment>
+        <source>Notification Top</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Notification displays rich feedback cards near the edge of the window. It supports semantic types, custom icons, placement, manual duration, hover pause, and auto-close progress.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Desktop notifications for longer feedback and non-blocking updates.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="ProgressDescription">
+      <segment>
+        <source>Show progress bar for auto-closing notification.</source>
+      </segment>
+    </unit>
+    <unit id="ProgressTitle">
+      <segment>
+        <source>Show with progress</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>A notification box with a icon at the left side.</source>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>Notification with icon</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

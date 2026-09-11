@@ -4,7 +4,7 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Interactivity;
 using AtomTabItem = AtomUI.Desktop.Controls.TabItem;
@@ -21,7 +21,8 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
     public const string LanguageId = nameof(TabControlShowCase);
 
     private readonly List<WeakReference<CardTabControl>> _dynamicAddTabControls = [];
-    private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
+    private ILanguageManager? _subscribedLanguageManager;
+    private EventHandler<LanguageChangedEventArgs>? _languageChangedHandler;
 
     public TabControlShowCase()
     {
@@ -32,13 +33,13 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
     {
         base.OnAttachedToVisualTree(e);
         RefreshViewModelData();
-        SubscribeLanguageVariantChanged();
+        SubscribeLanguageChanged();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        UnsubscribeLanguageVariantChanged();
+        UnsubscribeLanguageChanged();
         _dynamicAddTabControls.Clear();
     }
 
@@ -120,40 +121,37 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
         }
     }
 
-    private void SubscribeLanguageVariantChanged()
+    private void SubscribeLanguageChanged()
     {
-        if (_languageVariantChangedHandler is not null)
+        if (_subscribedLanguageManager is not null)
         {
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
-        if (languageManager is null)
+        _subscribedLanguageManager = GalleryLocalization.GetLanguageManager();
+        if (_subscribedLanguageManager is null)
         {
             return;
         }
 
-        _languageVariantChangedHandler = (_, _) =>
+        _languageChangedHandler = (_, _) =>
         {
             RefreshViewModelData();
             RefreshDynamicAddedTabs();
         };
-        languageManager.LanguageVariantChanged += _languageVariantChangedHandler;
+        _subscribedLanguageManager.LanguageChanged += _languageChangedHandler;
     }
 
-    private void UnsubscribeLanguageVariantChanged()
+    private void UnsubscribeLanguageChanged()
     {
-        if (_languageVariantChangedHandler is null)
+        if (_subscribedLanguageManager is null || _languageChangedHandler is null)
         {
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
-        if (languageManager is not null)
-        {
-            languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
-        }
-        _languageVariantChangedHandler = null;
+        _subscribedLanguageManager.LanguageChanged -= _languageChangedHandler;
+        _subscribedLanguageManager = null;
+        _languageChangedHandler = null;
     }
 
     private static void RefreshItemsSourceData(TabControlViewModel viewModel)
@@ -198,11 +196,11 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
 
     private static string Lang(TabControlShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 
     private static string Format(TabControlShowCaseLangResourceKind resourceKind, string fallback, params object?[] args)
     {
-        return string.Format(CultureInfo.CurrentCulture, Lang(resourceKind, fallback), args);
+        return GalleryLocalization.Format(resourceKind, fallback, args);
     }
 }

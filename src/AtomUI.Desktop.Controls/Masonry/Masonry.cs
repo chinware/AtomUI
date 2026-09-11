@@ -7,7 +7,8 @@ namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// A masonry (waterfall) layout control that organizes children of uneven heights into columns
-/// and reduces column height differences via a shortest-column strategy.
+/// using stable-column assignments by default, with classic shortest-column reflow available
+/// through <see cref="LayoutStrategy"/>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -69,8 +70,17 @@ public class Masonry : ItemsControl
         AvaloniaProperty.Register<Masonry, ResponsiveGutter?>(nameof(Gutter));
 
     /// <summary>
+    /// Defines the <see cref="LayoutStrategy"/> property.
+    /// </summary>
+    public static readonly StyledProperty<MasonryLayoutStrategy> LayoutStrategyProperty =
+        AvaloniaProperty.Register<Masonry, MasonryLayoutStrategy>(
+            nameof(LayoutStrategy),
+            MasonryLayoutStrategy.StableColumns);
+
+    /// <summary>
     /// Defines the attached <c>Masonry.Column</c> property, which pins a child to a specific
-    /// column. A <c>null</c> value (the default) places the child into the current shortest column.
+    /// column. A <c>null</c> value (the default) delegates automatic placement to
+    /// <see cref="LayoutStrategy"/>.
     /// </summary>
     public static readonly AttachedProperty<int?> ColumnProperty =
         AvaloniaProperty.RegisterAttached<Masonry, Control, int?>("Column");
@@ -156,6 +166,18 @@ public class Masonry : ItemsControl
         set => SetValue(GutterProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the strategy used to assign automatic items to columns. The default
+    /// <see cref="MasonryLayoutStrategy.StableColumns"/> keeps existing items in their columns
+    /// while the effective column count is unchanged. <see cref="MasonryLayoutStrategy.Reflow"/>
+    /// recomputes automatic assignments from the current shortest column on each layout calculation.
+    /// </summary>
+    public MasonryLayoutStrategy LayoutStrategy
+    {
+        get => GetValue(LayoutStrategyProperty);
+        set => SetValue(LayoutStrategyProperty, value);
+    }
+
     /// <summary>Gets the value of the attached <c>Masonry.Column</c> property.</summary>
     public static int? GetColumn(Control element) => element.GetValue(ColumnProperty);
 
@@ -193,7 +215,8 @@ public class Masonry : ItemsControl
             MaxColumnCountProperty,
             ColumnGapProperty,
             RowGapProperty,
-            GutterProperty);
+            GutterProperty,
+            LayoutStrategyProperty);
         ColumnProperty.Changed.AddClassHandler<Control>(HandleItemLayoutPropertyChanged);
         SpanProperty.Changed.AddClassHandler<Control>(HandleItemLayoutPropertyChanged);
     }
@@ -211,7 +234,7 @@ public class Masonry : ItemsControl
     {
         if (control.GetVisualParent() is MasonryPanel panel)
         {
-            panel.InvalidateMeasure();
+            panel.InvalidateStableAssignments();
         }
     }
 

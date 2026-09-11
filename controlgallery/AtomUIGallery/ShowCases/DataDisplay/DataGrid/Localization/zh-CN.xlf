@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DataGridShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simple table with actions.</source>
+        <target state="translated">带操作列的简单表格。</target>
+      </segment>
+    </unit>
+    <unit id="BasicPagingDescription">
+      <segment>
+        <source>Basic pagination table.</source>
+        <target state="translated">基础分页表格。</target>
+      </segment>
+    </unit>
+    <unit id="BasicPagingTitle">
+      <segment>
+        <source>Basic Paging</source>
+        <target state="translated">基础分页</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础表格</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">数据展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="CustomEmptyAndLoadingDescription">
+      <segment>
+        <source>Custom empty status and loading.</source>
+        <target state="translated">自定义空状态和加载状态。</target>
+      </segment>
+    </unit>
+    <unit id="CustomEmptyAndLoadingTitle">
+      <segment>
+        <source>Custom empty and loading</source>
+        <target state="translated">自定义空状态和加载状态</target>
+      </segment>
+    </unit>
+    <unit id="DragColumnSortingDescription">
+      <segment>
+        <source>Drag the Header to sort the columns.</source>
+        <target state="translated">拖拽表头可以对列进行排序。</target>
+      </segment>
+    </unit>
+    <unit id="DragColumnSortingTitle">
+      <segment>
+        <source>Drag Column sorting</source>
+        <target state="translated">拖拽列排序</target>
+      </segment>
+    </unit>
+    <unit id="DragResizeColumnDescription">
+      <segment>
+        <source>You can drag to change the size of the column.</source>
+        <target state="translated">可以通过拖拽改变列宽。</target>
+      </segment>
+    </unit>
+    <unit id="DragResizeColumnTitle">
+      <segment>
+        <source>Drag resize column</source>
+        <target state="translated">拖拽调整列宽</target>
+      </segment>
+    </unit>
+    <unit id="DragSortingWithHandlerDescription">
+      <segment>
+        <source>You can drag the row indicator column to sort the rows.</source>
+        <target state="translated">可以拖拽行指示列对行进行排序。</target>
+      </segment>
+    </unit>
+    <unit id="DragSortingWithHandlerTitle">
+      <segment>
+        <source>Drag sorting with handler</source>
+        <target state="translated">使用拖拽手柄排序</target>
+      </segment>
+    </unit>
+    <unit id="EditableCellsDescription">
+      <segment>
+        <source>Table with editable cells.</source>
+        <target state="translated">包含可编辑单元格的表格。</target>
+      </segment>
+    </unit>
+    <unit id="EditableCellsTitle">
+      <segment>
+        <source>Editable Cells</source>
+        <target state="translated">可编辑单元格</target>
+      </segment>
+    </unit>
+    <unit id="ExpandableRowDescription">
+      <segment>
+        <source>When there's too much information to show and the table can't display all at once.</source>
+        <target state="translated">当需要展示的信息过多，表格无法一次性完整展示时使用。</target>
+      </segment>
+    </unit>
+    <unit id="ExpandableRowTitle">
+      <segment>
+        <source>Expandable Row</source>
+        <target state="translated">可展开行</target>
+      </segment>
+    </unit>
+    <unit id="FilterAndSorterDescription">
+      <segment>
+        <source>Use filters to generate filter menu in columns, onFilter to determine filtered result, and filterMultiple to indicate whether it's multiple or single selection, filterOnClose to specify whether to trigger filter when the filter menu closes. Use defaultFilteredValue to make a column filtered by default.</source>
+        <target state="translated">使用 filters 生成列筛选菜单，onFilter 判断筛选结果，filterMultiple 表示单选或多选，filterOnClose 指定筛选菜单关闭时是否触发筛选。使用 defaultFilteredValue 可以让列默认处于筛选状态。</target>
+      </segment>
+    </unit>
+    <unit id="FilterAndSorterTitle">
+      <segment>
+        <source>Filter and sorter</source>
+        <target state="translated">筛选和排序</target>
+      </segment>
+    </unit>
+    <unit id="FilterInTreeDescription">
+      <segment>
+        <source>You can use filterMode to change default filter interface, options: menu(default) and tree.</source>
+        <target state="translated">可以使用 filterMode 改变默认筛选界面，可选 menu（默认）和 tree。</target>
+      </segment>
+    </unit>
+    <unit id="FilterInTreeTitle">
+      <segment>
+        <source>Filter in Tree</source>
+        <target state="translated">树形筛选</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsAndHeadersDescription">
+      <segment>
+        <source>When there are too many columns, we can make some columns fixed.</source>
+        <target state="translated">当列过多时，可以固定部分列和表头。</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsAndHeadersTitle">
+      <segment>
+        <source>Fixed Columns And Headers</source>
+        <target state="translated">固定列和表头</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsDescription">
+      <segment>
+        <source>When there are too many columns, we can make some columns fixed.</source>
+        <target state="translated">当列过多时，可以固定部分列。</target>
+      </segment>
+    </unit>
+    <unit id="FixedColumnsTitle">
+      <segment>
+        <source>Fixed Columns</source>
+        <target state="translated">固定列</target>
+      </segment>
+    </unit>
+    <unit id="FixedHeaderDescription">
+      <segment>
+        <source>Display large amounts of data in scrollable view.</source>
+        <target state="translated">在可滚动视图中展示大量数据。</target>
+      </segment>
+    </unit>
+    <unit id="FixedHeaderTitle">
+      <segment>
+        <source>Fixed Header</source>
+        <target state="translated">固定表头</target>
+      </segment>
+    </unit>
+    <unit id="GroupingTableHeadDescription">
+      <segment>
+        <source>Group table head with columns[n].children.</source>
+        <target state="translated">使用 columns[n].children 对表头进行分组。</target>
+      </segment>
+    </unit>
+    <unit id="GroupingTableHeadTitle">
+      <segment>
+        <source>Grouping table head</source>
+        <target state="translated">分组表头</target>
+      </segment>
+    </unit>
+    <unit id="HiddenColumnsDescription">
+      <segment>
+        <source>Hide columns with hidden.</source>
+        <target state="translated">使用 hidden 隐藏列。</target>
+      </segment>
+    </unit>
+    <unit id="HiddenColumnsTitle">
+      <segment>
+        <source>Hidden Columns</source>
+        <target state="translated">隐藏列</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSorterDescription">
+      <segment>
+        <source>column.sorter support multiple to config the priority of sort columns. Though sorter.compare to customize compare function. You can also leave it empty to use the interactive only.</source>
+        <target state="translated">column.sorter 支持通过 multiple 配置排序优先级。可以通过 sorter.compare 自定义比较函数，也可以留空只使用交互排序。</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSorterTitle">
+      <segment>
+        <source>Multiple sorter</source>
+        <target state="translated">多列排序</target>
+      </segment>
+    </unit>
+    <unit id="OrderSpecificColumnDescription">
+      <segment>
+        <source>You can control the order of the expand and select columns.</source>
+        <target state="translated">可以控制展开列和选择列的顺序。</target>
+      </segment>
+    </unit>
+    <unit id="OrderSpecificColumnTitle">
+      <segment>
+        <source>Order Specific Column</source>
+        <target state="translated">指定列顺序</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddARow">
+      <segment>
+        <source>Add a row</source>
+        <target state="translated">添加一行</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomPagination">
+      <segment>
+        <source>Bottom Pagination</source>
+        <target state="translated">底部分页</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">居中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearFilters">
+      <segment>
+        <source>Clear filters</source>
+        <target state="translated">清除筛选</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearFiltersAndSorters">
+      <segment>
+        <source>Clear filters and sorters</source>
+        <target state="translated">清除筛选和排序</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN1">
+      <segment>
+        <source>Column 1</source>
+        <target state="translated">列 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN2">
+      <segment>
+        <source>Column 2</source>
+        <target state="translated">列 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN3">
+      <segment>
+        <source>Column 3</source>
+        <target state="translated">列 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN4">
+      <segment>
+        <source>Column 4</source>
+        <target state="translated">列 4</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN5">
+      <segment>
+        <source>Column 5</source>
+        <target state="translated">列 5</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnN6">
+      <segment>
+        <source>Column 6</source>
+        <target state="translated">列 6</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnd">
+      <segment>
+        <source>End</source>
+        <target state="translated">结束</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentExtended">
+      <segment>
+        <source>Extended</source>
+        <target state="translated">多选</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSingle">
+      <segment>
+        <source>Single</source>
+        <target state="translated">单选</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSortAge">
+      <segment>
+        <source>Sort age</source>
+        <target state="translated">按年龄排序</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">开始</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleData">
+      <segment>
+        <source>Toggle Data</source>
+        <target state="translated">切换数据</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleLoading">
+      <segment>
+        <source>Toggle Loading</source>
+        <target state="translated">切换加载</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopPagination">
+      <segment>
+        <source>Top Pagination</source>
+        <target state="translated">顶部分页</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAction">
+      <segment>
+        <source>Action</source>
+        <target state="translated">操作</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAddress">
+      <segment>
+        <source>Address</source>
+        <target state="translated">地址</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAge">
+      <segment>
+        <source>Age</source>
+        <target state="translated">年龄</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBlock">
+      <segment>
+        <source>Block</source>
+        <target state="translated">块</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBuilding">
+      <segment>
+        <source>Building</source>
+        <target state="translated">楼栋</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCashAssets">
+      <segment>
+        <source>Cash Assets</source>
+        <target state="translated">现金资产</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChineseScore">
+      <segment>
+        <source>Chinese Score</source>
+        <target state="translated">语文成绩</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn1">
+      <segment>
+        <source>Column1</source>
+        <target state="translated">列 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn2">
+      <segment>
+        <source>Column2</source>
+        <target state="translated">列 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn3">
+      <segment>
+        <source>Column3</source>
+        <target state="translated">列 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn4">
+      <segment>
+        <source>Column4</source>
+        <target state="translated">列 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn5">
+      <segment>
+        <source>Column5</source>
+        <target state="translated">列 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn6">
+      <segment>
+        <source>Column6</source>
+        <target state="translated">列 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn7">
+      <segment>
+        <source>Column7</source>
+        <target state="translated">列 7</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn8">
+      <segment>
+        <source>Column8</source>
+        <target state="translated">列 8</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumn9">
+      <segment>
+        <source>Column9</source>
+        <target state="translated">列 9</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN1">
+      <segment>
+        <source>Column 1</source>
+        <target state="translated">列 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN10">
+      <segment>
+        <source>Column 10</source>
+        <target state="translated">列 10</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN11">
+      <segment>
+        <source>Column 11</source>
+        <target state="translated">列 11</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN12">
+      <segment>
+        <source>Column 12</source>
+        <target state="translated">列 12</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN13">
+      <segment>
+        <source>Column 13</source>
+        <target state="translated">列 13</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN14">
+      <segment>
+        <source>Column 14</source>
+        <target state="translated">列 14</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN15">
+      <segment>
+        <source>Column 15</source>
+        <target state="translated">列 15</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN16">
+      <segment>
+        <source>Column 16</source>
+        <target state="translated">列 16</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN17">
+      <segment>
+        <source>Column 17</source>
+        <target state="translated">列 17</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN18">
+      <segment>
+        <source>Column 18</source>
+        <target state="translated">列 18</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN19">
+      <segment>
+        <source>Column 19</source>
+        <target state="translated">列 19</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN2">
+      <segment>
+        <source>Column 2</source>
+        <target state="translated">列 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN20">
+      <segment>
+        <source>Column 20</source>
+        <target state="translated">列 20</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN3">
+      <segment>
+        <source>Column 3</source>
+        <target state="translated">列 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN4">
+      <segment>
+        <source>Column 4</source>
+        <target state="translated">列 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN5">
+      <segment>
+        <source>Column 5</source>
+        <target state="translated">列 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN6">
+      <segment>
+        <source>Column 6</source>
+        <target state="translated">列 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN7">
+      <segment>
+        <source>Column 7</source>
+        <target state="translated">列 7</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN8">
+      <segment>
+        <source>Column 8</source>
+        <target state="translated">列 8</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColumnN9">
+      <segment>
+        <source>Column 9</source>
+        <target state="translated">列 9</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCompany">
+      <segment>
+        <source>Company</source>
+        <target state="translated">公司</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCompanyAddress">
+      <segment>
+        <source>Company Address</source>
+        <target state="translated">公司地址</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCompanyName">
+      <segment>
+        <source>Company Name</source>
+        <target state="translated">公司名称</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDoorNo">
+      <segment>
+        <source>Door No.</source>
+        <target state="translated">门牌号</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEmail">
+      <segment>
+        <source>Email</source>
+        <target state="translated">邮箱</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEnglishScore">
+      <segment>
+        <source>English Score</source>
+        <target state="translated">英语成绩</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGender">
+      <segment>
+        <source>Gender</source>
+        <target state="translated">性别</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMathScore">
+      <segment>
+        <source>Math Score</source>
+        <target state="translated">数学成绩</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderName">
+      <segment>
+        <source>Name</source>
+        <target state="translated">姓名</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther">
+      <segment>
+        <source>Other</source>
+        <target state="translated">其他</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStreet">
+      <segment>
+        <source>Street</source>
+        <target state="translated">街道</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTags">
+      <segment>
+        <source>Tags</source>
+        <target state="translated">标签</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBlack">
+      <segment>
+        <source>Black</source>
+        <target state="translated">黑色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBottomPaginationAlign">
+      <segment>
+        <source>Bottom Pagination Align:</source>
+        <target state="translated">底部分页对齐：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">删除</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">绿色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextInvite">
+      <segment>
+        <source>Invite</source>
+        <target state="translated">邀请</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJim">
+      <segment>
+        <source>Jim</source>
+        <target state="translated">吉姆</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJoe">
+      <segment>
+        <source>Joe</source>
+        <target state="translated">乔</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLondon">
+      <segment>
+        <source>London</source>
+        <target state="translated">伦敦</target>
+      </segment>
+    </unit>
+    <unit id="P2TextModify">
+      <segment>
+        <source>Modify</source>
+        <target state="translated">修改</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNewYork">
+      <segment>
+        <source>New York</source>
+        <target state="translated">纽约</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPaginationvisibility">
+      <segment>
+        <source>PaginationVisibility:</source>
+        <target state="translated">分页显示：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubmenu">
+      <segment>
+        <source>Submenu</source>
+        <target state="translated">子菜单</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTopPaginationAlign">
+      <segment>
+        <source>Top Pagination Align:</source>
+        <target state="translated">顶部分页对齐：</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleDragReorderWithFrozenColumns">
+      <segment>
+        <source>Drag reorder with frozen columns</source>
+        <target state="translated">固定列场景下拖拽排序</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleFooter">
+      <segment>
+        <source>Footer</source>
+        <target state="translated">页脚</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleHeader">
+      <segment>
+        <source>Header</source>
+        <target state="translated">标题</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleManyColumns">
+      <segment>
+        <source>Many columns</source>
+        <target state="translated">多列</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">普通</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSureToDelete">
+      <segment>
+        <source>Sure to delete?</source>
+        <target state="translated">确定删除吗？</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>DataGrid presents large tabular datasets with selection, sorting, filtering, frozen columns, row details, editing, drag sorting, and pagination.</source>
+        <target state="translated">DataGrid 用于呈现大型表格数据，支持选择、排序、筛选、固定列、行详情、编辑、拖拽排序和分页。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display, inspect, and edit structured data.</source>
+        <target state="translated">展示、查看和编辑结构化数据。</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeDescription">
+      <segment>
+        <source>Virtualizes one million remote rows by fetching only visible ranges. Reload, request failure, and snapshot expiry remain deterministic.</source>
+        <target state="translated">仅按可见范围请求数据，实现一百万远程行的虚拟化，并可确定性演示重新加载、请求失败和快照过期。</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeExpireSnapshot">
+      <segment>
+        <source>Expire snapshot</source>
+        <target state="translated">使快照过期</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeFailNext">
+      <segment>
+        <source>Fail next reload</source>
+        <target state="translated">下次重载失败</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeReload">
+      <segment>
+        <source>Reload</source>
+        <target state="translated">重新加载</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeTitle">
+      <segment>
+        <source>Remote range virtualization</source>
+        <target state="translated">远程范围虚拟化</target>
+      </segment>
+    </unit>
+    <unit id="ResetFiltersAndSortersDescription">
+      <segment>
+        <source>Control filters and sorters by API.</source>
+        <target state="translated">通过 API 控制筛选和排序。</target>
+      </segment>
+    </unit>
+    <unit id="ResetFiltersAndSortersTitle">
+      <segment>
+        <source>Reset filters and sorters</source>
+        <target state="translated">重置筛选和排序</target>
+      </segment>
+    </unit>
+    <unit id="RowHeaderDescription">
+      <segment>
+        <source>You can control whether to display the Column header and RowHeader.</source>
+        <target state="translated">可以控制是否显示列头和行头。</target>
+      </segment>
+    </unit>
+    <unit id="RowHeaderTitle">
+      <segment>
+        <source>Row Header</source>
+        <target state="translated">行头</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioDrag">
+      <segment>
+        <source>Drag</source>
+        <target state="translated">拖拽</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioEditing">
+      <segment>
+        <source>Editing</source>
+        <target state="translated">编辑</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioFiltering">
+      <segment>
+        <source>Filtering</source>
+        <target state="translated">筛选</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioFixed">
+      <segment>
+        <source>Fixed</source>
+        <target state="translated">固定</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioInteraction">
+      <segment>
+        <source>Interaction</source>
+        <target state="translated">交互</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPaging">
+      <segment>
+        <source>Paging</source>
+        <target state="translated">分页</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioStructure">
+      <segment>
+        <source>Structure</source>
+        <target state="translated">结构</target>
+      </segment>
+    </unit>
+    <unit id="SelectionDescription">
+      <segment>
+        <source>Rows can be selectable by making first column as a selectable column. You can use rowSelection.type to set selection type. Default is checkbox.</source>
+        <target state="translated">通过将第一列设置为可选择列，可以让行支持选择。可使用 rowSelection.type 设置选择类型，默认是 checkbox。</target>
+      </segment>
+    </unit>
+    <unit id="SelectionTitle">
+      <segment>
+        <source>Selection</source>
+        <target state="translated">选择</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>There are two compacted table sizes: middle and small. The small size is used in Modals only.</source>
+        <target state="translated">表格提供 middle 和 small 两种紧凑尺寸，其中 small 尺寸仅用于模态框中。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="TableBorderTitleAndFooterDescription">
+      <segment>
+        <source>Add border, title and footer for table.</source>
+        <target state="translated">为表格添加边框、标题和页脚。</target>
+      </segment>
+    </unit>
+    <unit id="TableBorderTitleAndFooterTitle">
+      <segment>
+        <source>border, title and footer</source>
+        <target state="translated">边框、标题和页脚</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -24,3 +24,11 @@ builder.UseAlibabaPuHuiTiFont();
 ## 使用关系
 
 `AtomUI.Controls` 直接依赖 `AtomUI.Fonts.AlibabaSans`。Browser Gallery 额外引用 `AtomUI.Fonts.AlibabaPuHuiTi`，用于展示环境的中文字体覆盖。
+
+项目引用只保证字体资源随产物分发，不隐含注册；字体集合必须由应用显式调用上述入口加入 `FontManager`。
+
+项目引用只保证字体资源随产物分发，不隐含注册；字体集合必须由应用显式调用上述入口加入 `FontManager`。
+
+## 相关文档
+
+- [字体子系统架构](../../architecture/systems/typography/overview.md)：字体族回退契约、字体 Token 分级、字号阶梯派生算法、消费契约和验证要求。

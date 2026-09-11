@@ -91,7 +91,8 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public string BoundSelectedDateTimeText => BoundSelectedDateTime?.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture) ?? "-";
+    public string BoundSelectedDateTimeText =>
+        BoundSelectedDateTime?.ToString("yyyy-MM-dd", GalleryLocalization.GetFormattingCulture()) ?? "-";
 
     private DateTime? _boundRangeStartSelectedDate = new DateTime(2026, 7, 6);
 
@@ -121,8 +122,9 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
     {
         get
         {
-            var startText = BoundRangeStartSelectedDate?.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture) ?? "-";
-            var endText   = BoundRangeEndSelectedDate?.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture) ?? "-";
+            var culture = GalleryLocalization.GetFormattingCulture();
+            var startText = BoundRangeStartSelectedDate?.ToString("yyyy-MM-dd", culture) ?? "-";
+            var endText   = BoundRangeEndSelectedDate?.ToString("yyyy-MM-dd", culture) ?? "-";
             return $"{startText} → {endText}";
         }
     }

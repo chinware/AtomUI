@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled state of Switch.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="LoadingDescription">
+      <segment>
+        <source>Mark a pending state of switch.</source>
+      </segment>
+    </unit>
+    <unit id="LoadingTitle">
+      <segment>
+        <source>Loading</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleDisabled">
+      <segment>
+        <source>toggle disabled</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleLoading">
+      <segment>
+        <source>toggle loading</source>
+      </segment>
+    </unit>
+    <unit id="P2OffContentOff">
+      <segment>
+        <source>Off</source>
+      </segment>
+    </unit>
+    <unit id="P2OffContentText">
+      <segment>
+        <source>Close</source>
+      </segment>
+    </unit>
+    <unit id="P2OnContentOn">
+      <segment>
+        <source>On</source>
+      </segment>
+    </unit>
+    <unit id="P2OnContentText">
+      <segment>
+        <source>Open</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ToggleSwitch is used for immediate on/off decisions. It supports disabled state, loading state, custom on/off content, icon content, size variants, motion, and wave feedback.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Switch between two mutually exclusive states with optional text, icons, loading, and size variants.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TextAndIconDescription">
+      <segment>
+        <source>With text and icon.</source>
+      </segment>
+    </unit>
+    <unit id="TextAndIconTitle">
+      <segment>
+        <source>Text and icon</source>
+      </segment>
+    </unit>
+    <unit id="TwoSizesDescription">
+      <segment>
+        <source>SizeType controls preset and Custom switch size modes.</source>
+      </segment>
+    </unit>
+    <unit id="TwoSizesTitle">
+      <segment>
+        <source>Sizes</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

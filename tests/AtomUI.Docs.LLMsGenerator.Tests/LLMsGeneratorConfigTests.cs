@@ -19,7 +19,7 @@ public class LLMsGeneratorConfigTests
           "displayName": "AtomUI Desktop Controls",
           "defaultLanguage": "cn",
           "languages": ["cn"],
-          "outputRoot": "docs/AI/llms",
+          "outputRoot": "docs/AI/generated/llms",
           "visibility": {
             "default": "public",
             "included": ["public"],
@@ -51,7 +51,7 @@ public class LLMsGeneratorConfigTests
         config.DisplayName.ShouldBe("AtomUI Desktop Controls");
         config.DefaultLanguage.ShouldBe("cn");
         config.Languages.ShouldBe(["cn"]);
-        config.OutputRoot.ShouldBe("docs/AI/llms");
+        config.OutputRoot.ShouldBe("docs/AI/generated/llms");
         config.Visibility.Default.ShouldBe("public");
         config.Visibility.Included.ShouldBe(["public"]);
         config.Visibility.Excluded.ShouldBe(["internal", "private"]);

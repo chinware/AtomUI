@@ -1,6 +1,6 @@
 # OtpLineEdit 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.OtpLineEdit` 一次性验证码输入控件的设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [OtpLineEdit 桌面版实现原理](implementation.md)，Token 专项设计见 [OtpLineEdit Token 设计](token.md)，设计和契约变化记录见 [OtpLineEdit Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.OtpLineEdit` 一次性验证码输入控件的设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [OtpLineEdit 桌面版实现原理](implementation.md)，Token 专项设计见 [OtpLineEdit Token 设计](token.md)，设计和契约变化记录见 [OtpLineEdit Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -61,7 +61,7 @@ OtpLineEdit 的公共 API 以文本值、长度、输入约束、显示辅助和
 | --- | --- |
 | `SizeType` | 输入尺寸密度，类型为 `CustomizableSizeType`。 |
 | `StyleVariant` | 输入表面样式，复用 `InputControlStyleVariant`。 |
-| `Status` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
+| `Status` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `Separator` | 分隔符内容，仅参与视觉展示，不进入 `Text`。 |
 | `SeparatorInterval` | 分隔符间隔，例如 `3` 表示 `123-456`。 |
 | `SeparatorTemplate` | 分隔符内容模板。 |
@@ -102,7 +102,10 @@ OtpLineEdit 的交互优先级：
 Disabled
 > ReadOnly
 > Native Error
-> Warning / Manual Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Focus
 > PointerOver
 > Normal
@@ -157,12 +160,12 @@ OtpLineEdit 使用“根输入控件 + cell presenter + separator + action 区�
 
 - `SizeType` 控制 cell 高度、宽度、字号和间距。
 - `StyleVariant` 与 `LineEdit` 保持一致，支持 `Outlined`、`Filled`、`Borderless` 和 `Underlined` 四种输入表面；`Filled` 使用填充背景，`Borderless` 移除边框，`Underlined` 只保留下边线。
-- `Status` 只作为无 native error 时的手动状态请求。
+- `Status` 形成 `ExplicitStatus`，在无 native error 且无更高优先级 Form 状态时参与有效状态计算。
 - `DataValidationErrors.HasErrors=true` 时，根控件和所有 cell 呈现 error 视觉。
 - `IsMasked=true` 只改变字符展示，不改变 `Text`、复制、Form 值或 Completed 事件。
 - `Separator` 只占据视觉布局位置，不参与输入、复制、验证或长度计算。
 
-`OtpLineEditToken` 定义 cell 宽度、cell 间距和 separator 间距。边框、背景、focus shadow、disabled、error、warning 等输入表面语义优先复用 SharedToken、AddOnDecoratedBoxToken 与 LineEdit 输入家族 Token。
+`OtpLineEditToken` 定义 cell 宽度和 cell 间距。separator 的默认外边距属于模板布局常量；边框、背景、focus shadow、disabled、error、warning 等输入表面语义由 `InputControlFrameTheme` 与 SharedToken 统一提供，cell 文本字号复用 SharedToken 的输入字号。
 
 ## 6. 控件家族或集成关系
 
@@ -171,7 +174,7 @@ OtpLineEdit 属于 Data Entry 输入控件家族，与 LineEdit、SearchEdit、T
 集成关系：
 
 - `LineEdit` 输入家族：提供命名风格、输入尺寸、状态优先级、清除按钮和 Form 集成参考。
-- `AddOnDecoratedBox`：提供输入表面、variant、effective status 和 CompactSpace 视觉语义参考。
+- `InputControlFrame`：提供输入表面、variant、effective status 和 CompactSpace 视觉语义；OTP cell 只投射根控件状态，不拥有第二套状态源。
 - `InputClearIconButton`：提供清除入口的稳定视觉和交互语义。
 - `IFormItemAware` / `IFormItemFeedbackAware`：提供表单值、Form 扩展状态和 feedback 内容接入；error 由 `DataValidationErrors` 投射。
 - `CustomizableSizeType`：提供 Large/Middle/Small/Custom 尺寸契约。
@@ -227,7 +230,7 @@ LLMS 语义区域：
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
 | `root` | `OtpLineEdit` | 控件根语义区域，承载 public API、文本值、验证状态和主题入口。 | `Text`、`Length`、`Status`、`SizeType` | `OtpLineEditToken`、SharedToken | stable |
-| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator`、`SeparatorInterval` | `CellGap`、`SeparatorMarginInline` | template-stable |
+| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator`、`SeparatorInterval` | `CellGap`、`CellWidth*` | template-stable |
 | `cell` | `OtpLineEditCell` | 展示单个字符、placeholder、mask、active/focus 和 error 状态。 | `Text`、`IsMasked`、`MaskChar` | `CellWidth`、LineEdit 输入字号 | internal-observable |
 | `action` | `PART_ClearButton` | 清空完整验证码文本。 | `IsAllowClear`、`Clear()` | 输入 action 主题资源 | template-stable |
 | `validation` | `PART_FormFeedBack` | 承载 Form feedback 和 native validation 投射。 | `Status`、`IFormItemAware` | SharedToken、Form Token | template-stable |

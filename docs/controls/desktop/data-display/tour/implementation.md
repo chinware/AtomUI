@@ -2,6 +2,8 @@
 
 本文档描述 Tour 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tour 桌面版架构设计](overview.md)，变化记录见 [Tour Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Tour Token 设计](token.md)。
 
+Popup 接入边界：`Tour` 负责业务状态和内容准备，`PART_Popup` 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 本文档覆盖 Tour 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
@@ -12,9 +14,10 @@
 
 - `src/AtomUI.Desktop.Controls/Tour/DefaultTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/ITourAction.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/TourLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/Tour/TextTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/DefaultTourIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TextTourIndicatorTheme.axaml`
@@ -49,9 +52,7 @@
 - `TourStepOption`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TourStepsView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TourToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TourLangResourceKind`：稳定的本地化 Catalog enum；三个 XLIFF 文件提供随模块发布的内置翻译，生成器负责编译资源表和 XAML 扩展。
 
 核心协作规则：
 

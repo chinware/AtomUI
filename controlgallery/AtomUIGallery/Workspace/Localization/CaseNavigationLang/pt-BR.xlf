@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CaseNavigationLangResourceKind">
+    <unit id="CollapseNavigation">
+      <segment>
+        <source>Collapse navigation</source>
+        <target state="translated">Recolhimento navegação</target>
+      </segment>
+    </unit>
+    <unit id="Community">
+      <segment>
+        <source>Community</source>
+        <target state="translated">Comunidade</target>
+      </segment>
+    </unit>
+    <unit id="Components">
+      <segment>
+        <source>Components</source>
+        <target state="translated">Components</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Avatar">
+      <segment>
+        <source>Avatar</source>
+        <target state="translated">Avatar</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Badge">
+      <segment>
+        <source>Badge</source>
+        <target state="translated">Badge</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Calendar">
+      <segment>
+        <source>Calendar</source>
+        <target state="translated">Calendário</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Card">
+      <segment>
+        <source>Card</source>
+        <target state="translated">Cartão</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Carousel">
+      <segment>
+        <source>Carousel</source>
+        <target state="translated">Carousel</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Collapse">
+      <segment>
+        <source>Collapse</source>
+        <target state="translated">Recolhimento</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_DataGrid">
+      <segment>
+        <source>DataGrid</source>
+        <target state="translated">DataGrid</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Descriptions">
+      <segment>
+        <source>Descriptions</source>
+        <target state="translated">Descriptions</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Empty">
+      <segment>
+        <source>Empty</source>
+        <target state="translated">Vazio</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Expander">
+      <segment>
+        <source>Expander</source>
+        <target state="translated">Expander</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_GroupBox">
+      <segment>
+        <source>GroupBox</source>
+        <target state="translated">GroupBox</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_ImagePreviewer">
+      <segment>
+        <source>ImagePreviewer</source>
+        <target state="translated">ImagePreviewer</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_InfoFlyout">
+      <segment>
+        <source>InfoFlyout</source>
+        <target state="translated">InfoFlyout</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_List">
+      <segment>
+        <source>List</source>
+        <target state="translated">Lista</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_QRCode">
+      <segment>
+        <source>QRCode</source>
+        <target state="translated">QRCode</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Segmented">
+      <segment>
+        <source>Segmented</source>
+        <target state="translated">Segmented</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Statistic">
+      <segment>
+        <source>Statistic</source>
+        <target state="translated">Statistic</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Tag">
+      <segment>
+        <source>Tag</source>
+        <target state="translated">Tag</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Timeline">
+      <segment>
+        <source>Timeline</source>
+        <target state="translated">Timeline</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Tooltip">
+      <segment>
+        <source>Tooltip</source>
+        <target state="translated">Tooltip</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_Tour">
+      <segment>
+        <source>Tour</source>
+        <target state="translated">Tour</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_TreeView">
+      <segment>
+        <source>TreeView</source>
+        <target state="translated">TreeView</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_AutoComplete">
+      <segment>
+        <source>AutoComplete</source>
+        <target state="translated">AutoComplete</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Cascader">
+      <segment>
+        <source>Cascader</source>
+        <target state="translated">Cascader</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_CheckBox">
+      <segment>
+        <source>CheckBox</source>
+        <target state="translated">CheckBox</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_ColorPicker">
+      <segment>
+        <source>ColorPicker</source>
+        <target state="translated">ColorPicker</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_DatePicker">
+      <segment>
+        <source>DatePicker</source>
+        <target state="translated">DatePicker</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Form">
+      <segment>
+        <source>Form</source>
+        <target state="translated">Formulário</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_LineEdit">
+      <segment>
+        <source>LineEdit</source>
+        <target state="translated">LineEdit</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Mentions">
+      <segment>
+        <source>Mentions</source>
+        <target state="translated">Mentions</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_NumberUpDown">
+      <segment>
+        <source>NumberUpDown</source>
+        <target state="translated">NumberUpDown</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_RadioButton">
+      <segment>
+        <source>RadioButton</source>
+        <target state="translated">RadioButton</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Rate">
+      <segment>
+        <source>Rate</source>
+        <target state="translated">Avaliação</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Select">
+      <segment>
+        <source>Select</source>
+        <target state="translated">Selecionar</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Slider">
+      <segment>
+        <source>Slider</source>
+        <target state="translated">Slider</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_TimePicker">
+      <segment>
+        <source>TimePicker</source>
+        <target state="translated">TimePicker</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_ToggleSwitch">
+      <segment>
+        <source>ToggleSwitch</source>
+        <target state="translated">ToggleSwitch</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Transfer">
+      <segment>
+        <source>Transfer</source>
+        <target state="translated">Transfer</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_TreeSelect">
+      <segment>
+        <source>TreeSelect</source>
+        <target state="translated">TreeSelect</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Upload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">Enviar arquivo</target>
+      </segment>
+    </unit>
+    <unit id="ExpandNavigation">
+      <segment>
+        <source>Expand navigation</source>
+        <target state="translated">Expand navegação</target>
+      </segment>
+    </unit>
+    <unit id="Feedback">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Alert">
+      <segment>
+        <source>Alert</source>
+        <target state="translated">Alerta</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Drawer">
+      <segment>
+        <source>Drawer</source>
+        <target state="translated">Gaveta</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Message">
+      <segment>
+        <source>Message</source>
+        <target state="translated">Mensagem</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Modal">
+      <segment>
+        <source>Modal</source>
+        <target state="translated">Modal</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Notification">
+      <segment>
+        <source>Notification</source>
+        <target state="translated">Notificação</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_PopupConfirm">
+      <segment>
+        <source>PopupConfirm</source>
+        <target state="translated">PopupConfirm</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_ProgressBar">
+      <segment>
+        <source>ProgressBar</source>
+        <target state="translated">ProgressBar</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Result">
+      <segment>
+        <source>Result</source>
+        <target state="translated">Resultado</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Skeleton">
+      <segment>
+        <source>Skeleton</source>
+        <target state="translated">Skeleton</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Spin">
+      <segment>
+        <source>Spin</source>
+        <target state="translated">Spin</target>
+      </segment>
+    </unit>
+    <unit id="Feedback_Watermark">
+      <segment>
+        <source>Watermark</source>
+        <target state="translated">Watermark</target>
+      </segment>
+    </unit>
+    <unit id="General">
+      <segment>
+        <source>General</source>
+        <target state="translated">Geral</target>
+      </segment>
+    </unit>
+    <unit id="General_AboutUs">
+      <segment>
+        <source>AboutUS</source>
+        <target state="translated">AboutUS</target>
+      </segment>
+    </unit>
+    <unit id="General_Button">
+      <segment>
+        <source>Button</source>
+        <target state="translated">Botão</target>
+      </segment>
+    </unit>
+    <unit id="General_CustomizeTheme">
+      <segment>
+        <source>CustomizeTheme</source>
+        <target state="translated">CustomizeTheme</target>
+      </segment>
+    </unit>
+    <unit id="General_FloatButton">
+      <segment>
+        <source>FloatButton</source>
+        <target state="translated">FloatButton</target>
+      </segment>
+    </unit>
+    <unit id="General_Icons">
+      <segment>
+        <source>Icons</source>
+        <target state="translated">Ícones</target>
+      </segment>
+    </unit>
+    <unit id="General_Palette">
+      <segment>
+        <source>Palette</source>
+        <target state="translated">Paleta</target>
+      </segment>
+    </unit>
+    <unit id="General_Separator">
+      <segment>
+        <source>Separator</source>
+        <target state="translated">Separator</target>
+      </segment>
+    </unit>
+    <unit id="General_SplitButton">
+      <segment>
+        <source>SplitButton</source>
+        <target state="translated">SplitButton</target>
+      </segment>
+    </unit>
+    <unit id="General_Window">
+      <segment>
+        <source>Window</source>
+        <target state="translated">Janela</target>
+      </segment>
+    </unit>
+    <unit id="Layout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="Layout_FlexPanel">
+      <segment>
+        <source>FlexPanel</source>
+        <target state="translated">FlexPanel</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Grid">
+      <segment>
+        <source>Grid</source>
+        <target state="translated">Grid</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Masonry">
+      <segment>
+        <source>Masonry</source>
+        <target state="translated">Masonry</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Space">
+      <segment>
+        <source>Space</source>
+        <target state="translated">Space</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Splitter">
+      <segment>
+        <source>Splitter</source>
+        <target state="translated">Splitter</target>
+      </segment>
+    </unit>
+    <unit id="Navigation">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Breadcrumb">
+      <segment>
+        <source>Breadcrumb</source>
+        <target state="translated">Trilha</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_ButtonSpinner">
+      <segment>
+        <source>ButtonSpinner</source>
+        <target state="translated">ButtonSpinner</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_ComboBox">
+      <segment>
+        <source>ComboBox</source>
+        <target state="translated">ComboBox</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_DropdownButton">
+      <segment>
+        <source>DropdownButton</source>
+        <target state="translated">DropdownButton</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Menu">
+      <segment>
+        <source>Menu</source>
+        <target state="translated">Menu</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Pagination">
+      <segment>
+        <source>Pagination</source>
+        <target state="translated">Paginação</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Steps">
+      <segment>
+        <source>Steps</source>
+        <target state="translated">Etapas</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_TabControl">
+      <segment>
+        <source>TabControl</source>
+        <target state="translated">TabControl</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_TabStrip">
+      <segment>
+        <source>TabStrip</source>
+        <target state="translated">Faixa de guias</target>
+      </segment>
+    </unit>
+    <unit id="Other">
+      <segment>
+        <source>Other</source>
+        <target state="translated">Outro</target>
+      </segment>
+    </unit>
+    <unit id="Other_BorderBeam">
+      <segment>
+        <source>BorderBeam</source>
+        <target state="translated">BorderBeam</target>
+      </segment>
+    </unit>
+    <unit id="Other_Splash">
+      <segment>
+        <source>Splash</source>
+        <target state="translated">Splash</target>
+      </segment>
+    </unit>
+    <unit id="Overview">
+      <segment>
+        <source>Overview</source>
+        <target state="translated">Visão geral</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

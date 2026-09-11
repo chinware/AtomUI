@@ -19,7 +19,8 @@
                                 Background="{atom:DialogTokenResource ContentBg}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 ClipToBounds="True">
-                            <DockPanel LastChildFill="True">
+                            <DockPanel Name="PART_SurfaceContentLayer"
+                                       LastChildFill="True">
                                 <atom:OverlayDialogHeader Name="PART_Header"
                                                           DockPanel.Dock="Top"
                                                           IsVisible="{TemplateBinding IsHeaderVisible}"

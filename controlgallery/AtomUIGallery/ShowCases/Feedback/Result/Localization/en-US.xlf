@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ResultShowCaseLangResourceKind">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="CustomIconDescription">
+      <segment>
+        <source>Custom icon.</source>
+      </segment>
+    </unit>
+    <unit id="CustomIconTitle">
+      <segment>
+        <source>Custom icon</source>
+      </segment>
+    </unit>
+    <unit id="ErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+      </segment>
+    </unit>
+    <unit id="ErrorTitle">
+      <segment>
+        <source>error</source>
+      </segment>
+    </unit>
+    <unit id="ForbiddenDescription">
+      <segment>
+        <source>you are not authorized to access this page.</source>
+      </segment>
+    </unit>
+    <unit id="ForbiddenTitle">
+      <segment>
+        <source>403</source>
+      </segment>
+    </unit>
+    <unit id="InfoDescription">
+      <segment>
+        <source>Show processing results.</source>
+      </segment>
+    </unit>
+    <unit id="InfoTitle">
+      <segment>
+        <source>Info</source>
+      </segment>
+    </unit>
+    <unit id="NotFoundDescription">
+      <segment>
+        <source>The page you visited does not exist.</source>
+      </segment>
+    </unit>
+    <unit id="NotFoundTitle">
+      <segment>
+        <source>404</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBackHome">
+      <segment>
+        <source>Back Home</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBuyAgain">
+      <segment>
+        <source>Buy Again</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentGoConsole">
+      <segment>
+        <source>Go Console</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentNext">
+      <segment>
+        <source>Next</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreatWeHaveDoneAllTheOperations">
+      <segment>
+        <source>Great, we have done all the operations!</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSubmissionFailed">
+      <segment>
+        <source>Submission Failed</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSuccessfullyPurchasedCloudServerEcs">
+      <segment>
+        <source>Successfully Purchased Cloud Server ECS!</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThereAreSomeProblemsWithYourOperation">
+      <segment>
+        <source>There are some problems with your operation.</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYourOperationHasBeenExecuted">
+      <segment>
+        <source>Your operation has been executed.</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderForbidden">
+      <segment>
+        <source>Sorry, you are not authorized to access this page.</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderNotFound">
+      <segment>
+        <source>Sorry, the page you visited does not exist.</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderOrderNumberCloudServerConfiguration">
+      <segment>
+        <source>Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderServerError">
+      <segment>
+        <source>Sorry, something went wrong.</source>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderSubmissionFailed">
+      <segment>
+        <source>Please check and modify the following information before resubmitting.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextApplyUnlock">
+      <segment>
+        <source>Apply Unlock &gt;</source>
+      </segment>
+    </unit>
+    <unit id="P2TextThawImmediately">
+      <segment>
+        <source>Thaw immediately &gt;</source>
+      </segment>
+    </unit>
+    <unit id="P2TextTheContentYouSubmittedHasTheFollowingError">
+      <segment>
+        <source>The content you submitted has the following error:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextYourAccountHasBeenFrozen">
+      <segment>
+        <source>Your account has been frozen.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextYourAccountIsNotYetEligibleToApply">
+      <segment>
+        <source>Your account is not yet eligible to apply.</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Result presents success, warning, error, and empty-state style outcomes with optional follow-up actions.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Feedback page for final operation outcomes.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ServerErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+      </segment>
+    </unit>
+    <unit id="ServerErrorTitle">
+      <segment>
+        <source>500</source>
+      </segment>
+    </unit>
+    <unit id="SuccessDescription">
+      <segment>
+        <source>Show successful results.</source>
+      </segment>
+    </unit>
+    <unit id="SuccessTitle">
+      <segment>
+        <source>Success</source>
+      </segment>
+    </unit>
+    <unit id="WarningDescription">
+      <segment>
+        <source>The result of the warning.</source>
+      </segment>
+    </unit>
+    <unit id="WarningTitle">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

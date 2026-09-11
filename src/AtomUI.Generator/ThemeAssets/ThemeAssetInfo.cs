@@ -12,8 +12,10 @@ internal sealed class ThemeAssetInfo
         SourceText source,
         string fileName,
         string? controlCandidate,
+        string? explicitUnit,
         IReadOnlyList<string> directoryCandidates,
         IReadOnlyList<ThemeAssetTargetTypeReference> targetTypes,
+        IReadOnlyList<ThemeAssetElementTypeReference> elementTypes,
         IReadOnlyList<string> controlTokenFamilies,
         bool isResourceDictionary,
         string? controlThemeClassName,
@@ -24,8 +26,10 @@ internal sealed class ThemeAssetInfo
         Source = source;
         FileName = fileName;
         ControlCandidate = controlCandidate;
+        ExplicitUnit = explicitUnit;
         DirectoryCandidates = directoryCandidates;
         TargetTypes = targetTypes;
+        ElementTypes = elementTypes;
         ControlTokenFamilies = controlTokenFamilies;
         IsResourceDictionary = isResourceDictionary;
         ControlThemeClassName = controlThemeClassName;
@@ -37,8 +41,10 @@ internal sealed class ThemeAssetInfo
     internal SourceText Source { get; }
     internal string FileName { get; }
     internal string? ControlCandidate { get; }
+    internal string? ExplicitUnit { get; }
     internal IReadOnlyList<string> DirectoryCandidates { get; }
     internal IReadOnlyList<ThemeAssetTargetTypeReference> TargetTypes { get; }
+    internal IReadOnlyList<ThemeAssetElementTypeReference> ElementTypes { get; }
     internal IReadOnlyList<string> ControlTokenFamilies { get; }
     internal bool IsResourceDictionary { get; }
     internal string? ControlThemeClassName { get; }
@@ -49,17 +55,20 @@ internal sealed class ThemeAssetInfo
         !ControlThemeTargetTypeName.StartsWith("Abstract", StringComparison.Ordinal) &&
         !ControlThemeTargetTypeName.StartsWith("Base", StringComparison.Ordinal) &&
         string.Equals(FileName, ControlThemeTargetTypeName + "Theme", StringComparison.Ordinal);
+    internal bool HasGeneratedResourceWrapper => IsResourceDictionary || IsDefaultTypedControlTheme;
 
     internal static ThemeAssetInfo Create(
         AdditionalText text,
         string? projectDirectory,
         string? link,
+        string? explicitUnit,
         CancellationToken cancellationToken)
     {
         var source = text.GetText(cancellationToken) ?? SourceText.From(string.Empty);
         var assetPath = NormalizeAssetPath(text.Path, projectDirectory, link);
         var fileName = System.IO.Path.GetFileNameWithoutExtension(assetPath);
         var targetTypes = new List<ThemeAssetTargetTypeReference>();
+        var elementTypes = new HashSet<ThemeAssetElementTypeReference>();
         var controlTokenFamilies = new HashSet<string>(StringComparer.Ordinal);
         var isResourceDictionary = false;
         string? controlThemeClassName = null;
@@ -86,6 +95,9 @@ internal sealed class ThemeAssetInfo
             }
             foreach (var element in document.Descendants())
             {
+                elementTypes.Add(new ThemeAssetElementTypeReference(
+                    element.Name.NamespaceName,
+                    element.Name.LocalName));
                 if (!string.Equals(element.Name.LocalName, "ControlTheme", StringComparison.Ordinal))
                 {
                     continue;
@@ -117,8 +129,12 @@ internal sealed class ThemeAssetInfo
             source,
             fileName,
             GetControlCandidate(fileName),
+            explicitUnit,
             GetDirectoryCandidates(assetPath),
             targetTypes,
+            elementTypes.OrderBy(static reference => reference.NamespaceUri, StringComparer.Ordinal)
+                        .ThenBy(static reference => reference.LocalName, StringComparer.Ordinal)
+                        .ToArray(),
             controlTokenFamilies.OrderBy(static family => family, StringComparer.Ordinal).ToArray(),
             isResourceDictionary,
             controlThemeClassName,
@@ -266,7 +282,7 @@ internal sealed class ThemeAssetInfo
         return value.Skip(1).All(static character => char.IsLetterOrDigit(character) || character == '_');
     }
 
-    private static string NormalizeAssetPath(
+    internal static string NormalizeAssetPath(
         string path,
         string? projectDirectory,
         string? link)
@@ -307,6 +323,36 @@ internal sealed class ThemeAssetInfo
         }
 
         return System.IO.Path.GetFileName(path);
+    }
+}
+
+internal sealed class ThemeAssetElementTypeReference : IEquatable<ThemeAssetElementTypeReference>
+{
+    internal ThemeAssetElementTypeReference(string namespaceUri, string localName)
+    {
+        NamespaceUri = namespaceUri;
+        LocalName = localName;
+    }
+
+    internal string NamespaceUri { get; }
+    internal string LocalName { get; }
+
+    public bool Equals(ThemeAssetElementTypeReference? other)
+    {
+        return other is not null &&
+               string.Equals(NamespaceUri, other.NamespaceUri, StringComparison.Ordinal) &&
+               string.Equals(LocalName, other.LocalName, StringComparison.Ordinal);
+    }
+
+    public override bool Equals(object? obj) => Equals(obj as ThemeAssetElementTypeReference);
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (StringComparer.Ordinal.GetHashCode(NamespaceUri) * 397) ^
+                   StringComparer.Ordinal.GetHashCode(LocalName);
+        }
     }
 }
 
@@ -356,19 +402,37 @@ internal sealed class ResolvedThemeAssetInfo
     internal ResolvedThemeAssetInfo(
         ThemeAssetInfo asset,
         ThemeAssetControlIdentityInfo ownerIdentity,
+        string ownerUnitId,
         IReadOnlyList<ThemeAssetControlIdentityInfo> referencedControlIdentities,
+        IReadOnlyList<string> referencedUnitIds,
         ThemeAssetSemanticPartInfo? semanticPart)
     {
         Asset = asset;
         OwnerIdentity = ownerIdentity;
+        OwnerUnitId = ownerUnitId;
         ReferencedControlIdentities = referencedControlIdentities;
+        ReferencedUnitIds = referencedUnitIds;
         SemanticPart = semanticPart;
     }
 
     internal ThemeAssetInfo Asset { get; }
     internal ThemeAssetControlIdentityInfo OwnerIdentity { get; }
+    internal string OwnerUnitId { get; }
     internal IReadOnlyList<ThemeAssetControlIdentityInfo> ReferencedControlIdentities { get; }
+    internal IReadOnlyList<string> ReferencedUnitIds { get; }
     internal ThemeAssetSemanticPartInfo? SemanticPart { get; }
+}
+
+internal sealed class UnitOwnedThemeAssetInfo
+{
+    internal UnitOwnedThemeAssetInfo(ThemeAssetInfo asset, string unitId)
+    {
+        Asset = asset;
+        UnitId = unitId;
+    }
+
+    internal ThemeAssetInfo Asset { get; }
+    internal string UnitId { get; }
 }
 
 internal sealed class ThemeAssetControlIdentityInfo : IEquatable<ThemeAssetControlIdentityInfo>

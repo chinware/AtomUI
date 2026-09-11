@@ -3,7 +3,7 @@ using AtomUI.Theme.DesignTokens;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class BorderBeamToken : AbstractControlDesignToken
+internal sealed class BorderBeamToken : AbstractControlDesignToken
 {
 
     public double BeamSize { get; set; }

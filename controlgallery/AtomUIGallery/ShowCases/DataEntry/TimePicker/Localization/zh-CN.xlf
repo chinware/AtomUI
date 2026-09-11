@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Click TimePicker, and then we could select or input a time in panel.</source>
+        <target state="translated">点击 TimePicker 后，可以在面板中选择或输入时间。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>SelectedTime, RangeStartSelectedTime, and RangeEndSelectedTime synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.</source>
+        <target state="translated">SelectedTime、RangeStartSelectedTime 与 RangeEndSelectedTime 默认与 ViewModel 双向同步，无需显式设置 Binding Mode=TwoWay。</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>SelectedTime binding</source>
+        <target state="translated">SelectedTime 绑定</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>A disabled state of the TimePicker.</source>
+        <target state="translated">TimePicker 的禁用状态。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="HourFormatsDescription">
+      <segment>
+        <source>TimePicker supports two time types, 12-hour and 24-hour.</source>
+        <target state="translated">TimePicker 支持 12 小时和 24 小时两种时间格式。</target>
+      </segment>
+    </unit>
+    <unit id="HourFormatsTitle">
+      <segment>
+        <source>12-hour and 24-hour formats</source>
+        <target state="translated">12 小时和 24 小时格式</target>
+      </segment>
+    </unit>
+    <unit id="IntervalOptionDescription">
+      <segment>
+        <source>Show stepped options by MinuteIncrement SecondIncrement.</source>
+        <target state="translated">通过 MinuteIncrement 和 SecondIncrement 显示步进选项。</target>
+      </segment>
+    </unit>
+    <unit id="IntervalOptionTitle">
+      <segment>
+        <source>Interval option</source>
+        <target state="translated">间隔选项</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默认</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetNoon">
+      <segment>
+        <source>Set noon</source>
+        <target state="translated">设置为中午</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetWorkHours">
+      <segment>
+        <source>Set work hours</source>
+        <target state="translated">设置工作时间</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">无边框</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充风格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+        <target state="translated">描边风格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select time</source>
+        <target state="translated">选择时间</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+        <target state="translated">开始时间</target>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndTime">
+      <segment>
+        <source>End time</source>
+        <target state="translated">结束时间</target>
+      </segment>
+    </unit>
+    <unit id="P2TextExpandDirection">
+      <segment>
+        <source>Picker size:</source>
+        <target state="translated">选择器尺寸：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedTime">
+      <segment>
+        <source>Selected value:</source>
+        <target state="translated">选中值：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedTimeRange">
+      <segment>
+        <source>Selected range:</source>
+        <target state="translated">选中范围：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TimePicker supports 12-hour and 24-hour clocks, size variants, disabled states, stepped minute and second options, visual variants, validation status, and range selection.</source>
+        <target state="translated">TimePicker 支持 12 小时和 24 小时制、尺寸变体、禁用状态、分钟和秒的步进选项、视觉变体、校验状态以及范围选择。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select a time or a time range from a popup time panel.</source>
+        <target state="translated">从弹出时间面板中选择单个时间或时间范围。</target>
+      </segment>
+    </unit>
+    <unit id="PickerDisplayTimeDescription">
+      <segment>
+        <source>Open the popup panel at a specific display time without committing a selected value.</source>
+        <target state="translated">打开弹出面板时定位到指定时间，但不提交选中值。</target>
+      </segment>
+    </unit>
+    <unit id="PickerDisplayTimeTitle">
+      <segment>
+        <source>Popup display time</source>
+        <target state="translated">弹出面板显示时间</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to TimePicker with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为 TimePicker 添加状态，可设置为错误或警告。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.</source>
+        <target state="translated">输入框提供大号、中号和小号三种尺寸。大号用于表单，中号为默认尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Three Sizes</source>
+        <target state="translated">三种尺寸</target>
+      </segment>
+    </unit>
+    <unit id="TimeRangePickerDescription">
+      <segment>
+        <source>Use time range picker with RangeTimePicker.</source>
+        <target state="translated">使用 RangeTimePicker 进行时间范围选择。</target>
+      </segment>
+    </unit>
+    <unit id="TimeRangePickerTitle">
+      <segment>
+        <source>Time Range Picker</source>
+        <target state="translated">时间范围选择器</target>
+      </segment>
+    </unit>
+    <unit id="TwelveHoursDescription">
+      <segment>
+        <source>TimePicker of 12 hours format, with default format h:mm:ss a.</source>
+        <target state="translated">12 小时格式的 TimePicker，默认格式为 h:mm:ss a。</target>
+      </segment>
+    </unit>
+    <unit id="TwelveHoursTitle">
+      <segment>
+        <source>12 hours</source>
+        <target state="translated">12 小时制</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Bordered-less style component.</source>
+        <target state="translated">无边框风格组件。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">变体</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

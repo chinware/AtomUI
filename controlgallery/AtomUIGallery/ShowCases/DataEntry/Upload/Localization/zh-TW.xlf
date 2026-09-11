@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.UploadShowCaseLangResourceKind">
+    <unit id="AvatarDescription">
+      <segment>
+        <source>Click to upload user's avatar, and validate size and format of picture with beforeUpload.</source>
+        <target state="translated">點擊上傳用戶頭像，並通過 beforeUpload 校驗圖片大小和格式。</target>
+      </segment>
+    </unit>
+    <unit id="AvatarTitle">
+      <segment>
+        <source>Avatar</source>
+        <target state="translated">頭像</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">資料錄入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="DefaultFilesDescription">
+      <segment>
+        <source>Bind Files to provide an initial observable upload file list.</source>
+        <target state="translated">透過綁定 Files 提供初始的可觀察上傳文件列表。</target>
+      </segment>
+    </unit>
+    <unit id="DefaultFilesTitle">
+      <segment>
+        <source>Default Files</source>
+        <target state="translated">默認文件</target>
+      </segment>
+    </unit>
+    <unit id="DragAndDropDescription">
+      <segment>
+        <source>You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting.</source>
+        <target state="translated">可以將文件拖拽到指定區域上傳，也可以通過選擇文件上傳。</target>
+      </segment>
+    </unit>
+    <unit id="DragAndDropTitle">
+      <segment>
+        <source>Drag and Drop</source>
+        <target state="translated">拖拽上傳</target>
+      </segment>
+    </unit>
+    <unit id="FileAndDirectoryDescription">
+      <segment>
+        <source>Compose two UploadTrigger instances to select files and directories independently.</source>
+        <target state="translated">組合兩個 UploadTrigger，分別觸發文件選擇和目錄選擇。</target>
+      </segment>
+    </unit>
+    <unit id="FileAndDirectoryTitle">
+      <segment>
+        <source>Files and directories</source>
+        <target state="translated">文件與目錄</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountDescription">
+      <segment>
+        <source>Limit files with maxCount. Will replace current one when maxCount is 1.</source>
+        <target state="translated">使用 maxCount 限制文件數量。當 maxCount 為 1 時會替換當前文件。</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+        <target state="translated">最大數量</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelImageSize">
+      <segment>
+        <source>Image must be smaller than 2MB!</source>
+        <target state="translated">圖片必須小於 2MB！</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelJpgPngOnly">
+      <segment>
+        <source>You can only upload JPG/PNG file!</source>
+        <target state="translated">只能上傳 JPG/PNG 文件！</target>
+      </segment>
+    </unit>
+    <unit id="P2CancelPngOnly">
+      <segment>
+        <source>You can only upload PNG file!</source>
+        <target state="translated">只能上傳 PNG 文件！</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToUpload">
+      <segment>
+        <source>Click to Upload</source>
+        <target state="translated">點擊上傳</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadDirectory">
+      <segment>
+        <source>Upload Directory</source>
+        <target state="translated">上傳目錄</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadMaxN1">
+      <segment>
+        <source>Upload (Max: 1)</source>
+        <target state="translated">上傳（最多：1）</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadMaxN3">
+      <segment>
+        <source>Upload (Max: 3)</source>
+        <target state="translated">上傳（最多：3）</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUploadPngOnly">
+      <segment>
+        <source>Upload PNG only</source>
+        <target state="translated">僅上傳 PNG</target>
+      </segment>
+    </unit>
+    <unit id="P2ErrorServer500">
+      <segment>
+        <source>Server Error 500</source>
+        <target state="translated">服務器錯誤 500</target>
+      </segment>
+    </unit>
+    <unit id="P2ErrorUpload">
+      <segment>
+        <source>Upload error!</source>
+        <target state="translated">上傳失敗！</target>
+      </segment>
+    </unit>
+    <unit id="P2TextUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">上傳</target>
+      </segment>
+    </unit>
+    <unit id="P2UploadSuccessFormat">
+      <segment>
+        <source>{0} uploaded successfully!</source>
+        <target state="translated">{0} 上傳成功！</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Upload supports composable file and directory triggers, drag-and-drop areas, observable Files state, picture lists, max-count constraints, success cleanup, and file type filtering.</source>
+        <target state="translated">Upload 支援組合式文件和目錄觸發器、拖拽區域、可觀察 Files 狀態、圖片列表、最大數量限制、成功清理和文件類型過濾。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select, validate, preview, and upload files with list and picture presentations.</source>
+        <target state="translated">選擇、校驗、預覽並上傳文件，支援列表和圖片展示方式。</target>
+      </segment>
+    </unit>
+    <unit id="PictureCircleTypeDescription">
+      <segment>
+        <source>Alternative display for picture-card.</source>
+        <target state="translated">picture-card 的另一種展示形式。</target>
+      </segment>
+    </unit>
+    <unit id="PictureCircleTypeTitle">
+      <segment>
+        <source>Pictures with picture-circle type</source>
+        <target state="translated">圓形圖片卡片</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWallDescription">
+      <segment>
+        <source>After users upload a picture, the thumbnail is rendered in the picture-card list and the trigger remains a separate append entry.</source>
+        <target state="translated">用戶上傳圖片後，縮略圖會顯示在 picture-card 列表中，觸發器始終作為獨立 append 入口呈現。</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWallTitle">
+      <segment>
+        <source>Pictures Wall</source>
+        <target state="translated">圖片牆</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWithListStyleDescription">
+      <segment>
+        <source>If uploaded file is a picture, the thumbnail can be shown.</source>
+        <target state="translated">如果上傳文件是圖片，可以顯示縮略圖。</target>
+      </segment>
+    </unit>
+    <unit id="PicturesWithListStyleTitle">
+      <segment>
+        <source>Pictures with list style</source>
+        <target state="translated">列表樣式圖片</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioConstraints">
+      <segment>
+        <source>Constraints</source>
+        <target state="translated">限制</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPictures">
+      <segment>
+        <source>Pictures</source>
+        <target state="translated">圖片</target>
+      </segment>
+    </unit>
+    <unit id="ScrollableListDescription">
+      <segment>
+        <source>UploadList owns the scroll region, so long file lists do not require an outer ScrollViewer.</source>
+        <target state="translated">UploadList 自己管理滾動區域，長文件列表不需要外層 ScrollViewer。</target>
+      </segment>
+    </unit>
+    <unit id="ScrollableListTitle">
+      <segment>
+        <source>Scrollable list</source>
+        <target state="translated">可滾動列表</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveDescription">
+      <segment>
+        <source>Use SuccessAutoRemoveDelay to remove successful files after a short delay.</source>
+        <target state="translated">透過 SuccessAutoRemoveDelay 在上傳成功後延遲移除文件。</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveTitle">
+      <segment>
+        <source>Auto remove successful files</source>
+        <target state="translated">成功後自動移除</target>
+      </segment>
+    </unit>
+    <unit id="UploadByClickingDescription">
+      <segment>
+        <source>Classic mode. File selection dialog pops up when upload button is clicked.</source>
+        <target state="translated">經典模式。點擊上傳按鈕時彈出文件選擇對話框。</target>
+      </segment>
+    </unit>
+    <unit id="UploadByClickingTitle">
+      <segment>
+        <source>Upload by clicking</source>
+        <target state="translated">點擊上傳</target>
+      </segment>
+    </unit>
+    <unit id="UploadPngOnlyDescription">
+      <segment>
+        <source>beforeUpload only prevent upload behavior when return false or reject promise, the prevented file would still show in file list. Here is the example you can keep prevented files out of list by return UPLOAD.LIST_IGNORE.</source>
+        <target state="translated">beforeUpload 返回 false 或拒絕 promise 時只會阻止上傳行為，被阻止的文件仍會顯示在文件列表中。本示例通過返回 UPLOAD.LIST_IGNORE 將被阻止的文件排除在列表外。</target>
+      </segment>
+    </unit>
+    <unit id="UploadPngOnlyTitle">
+      <segment>
+        <source>Upload png file only</source>
+        <target state="translated">僅上傳 PNG 文件</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

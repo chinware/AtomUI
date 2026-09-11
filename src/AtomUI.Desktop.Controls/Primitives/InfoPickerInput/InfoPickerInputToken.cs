@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls.Primitives;
 
 [ControlDesignToken]
-internal class InfoPickerInputToken : AbstractControlDesignToken
+internal sealed class InfoPickerInputToken : AbstractControlDesignToken
 {
     
     public InfoPickerInputToken()

@@ -23,6 +23,8 @@
                             StyleVariant="{TemplateBinding StyleVariant}"
                             SizeType="{TemplateBinding SizeType}"
                             Status="{TemplateBinding Status}"
+                            FormStatus="{TemplateBinding FormStatus}"
+                            IsInputFocusWithin="{TemplateBinding IsKeyboardFocusWithin}"
                             DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             Focusable="True"
@@ -38,18 +40,25 @@
                                             Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                     <atom:InputClearIconButton
                                         Name="PART_ClearButton"
-                                        VerticalAlignment="Center" />
+                                        VerticalAlignment="Center"
+                                        Icon="{Binding $parent[atom:TextArea].ClearIcon}"
+                                        IsVisible="{Binding $parent[atom:TextArea].IsEffectiveShowClearButton}"
+                                        IsMotionEnabled="{Binding $parent[atom:TextArea].IsMotionEnabled}" />
                                     <ContentPresenter
                                         Name="PART_FormFeedBack"
                                         VerticalAlignment="Stretch"
                                         VerticalContentAlignment="Center"
-                                        HorizontalAlignment="Right" />
+                                        HorizontalAlignment="Right"
+                                        Content="{Binding $parent[atom:TextArea].FormFeedback}"
+                                        IsVisible="{Binding $parent[atom:TextArea].IsFormFeedbackVisible}" />
                                     <atom:AddOnContentPresenter
                                         Name="PART_InnerRightContentPresenter"
                                         VerticalAlignment="Center"
                                         VerticalContentAlignment="Center"
                                         HorizontalAlignment="Right"
-                                        Focusable="False" />
+                                        Focusable="False"
+                                        Content="{Binding $parent[atom:TextArea].InnerRightContent}"
+                                        ContentTemplate="{Binding $parent[atom:TextArea].InnerRightContentTemplate}" />
                                 </StackPanel>
                             </atom:TextAreaDecoratedBox.ContentRightAddOn>
 
@@ -209,36 +218,6 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BoxShadow"
                     Value="{atom:TextAreaTokenResource InputActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:TextAreaTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="Background"
-                    Value="{atom:TextAreaTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:TextAreaTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:TextAreaTokenResource InputWarningActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="Background"
-                    Value="{atom:TextAreaTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:TextAreaTokenResource InputWarningActiveShadow}" />
         </Style>
 
         <Style Selector="^:disabled">

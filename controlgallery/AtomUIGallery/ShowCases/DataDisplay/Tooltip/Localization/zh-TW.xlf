@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TooltipShowCaseLangResourceKind">
+    <unit id="ArrowDescription">
+      <segment>
+        <source>Support show, hide or keep arrow in the center.</source>
+        <target state="translated">支持顯示、隱藏或保持箭頭居中。</target>
+      </segment>
+    </unit>
+    <unit id="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+        <target state="translated">箭頭</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage.</source>
+        <target state="translated">最簡單的用法。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ColorfulTooltipDescription">
+      <segment>
+        <source>We preset a series of colorful Tooltip styles for use in different situations.</source>
+        <target state="translated">預設了一系列多彩提示樣式，可用於不同場景。</target>
+      </segment>
+    </unit>
+    <unit id="ColorfulTooltipTitle">
+      <segment>
+        <source>Colorful Tooltip</source>
+        <target state="translated">多彩提示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">數據展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBL">
+      <segment>
+        <source>BL</source>
+        <target state="translated">下左</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBR">
+      <segment>
+        <source>BR</source>
+        <target state="translated">下右</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">藍色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">下方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">居中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCyan">
+      <segment>
+        <source>Cyan</source>
+        <target state="translated">青色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGeekBlue">
+      <segment>
+        <source>GeekBlue</source>
+        <target state="translated">極客藍</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGold">
+      <segment>
+        <source>Gold</source>
+        <target state="translated">金色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">綠色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGrey">
+      <segment>
+        <source>Grey</source>
+        <target state="translated">灰色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+        <target state="translated">隱藏</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLB">
+      <segment>
+        <source>LB</source>
+        <target state="translated">左下</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLT">
+      <segment>
+        <source>LT</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLime">
+      <segment>
+        <source>Lime</source>
+        <target state="translated">青檸色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMagenta">
+      <segment>
+        <source>Magenta</source>
+        <target state="translated">品紅</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOrange">
+      <segment>
+        <source>Orange</source>
+        <target state="translated">橙色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPink">
+      <segment>
+        <source>Pink</source>
+        <target state="translated">粉色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPurple">
+      <segment>
+        <source>Purple</source>
+        <target state="translated">紫色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRB">
+      <segment>
+        <source>RB</source>
+        <target state="translated">右下</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRT">
+      <segment>
+        <source>RT</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRed">
+      <segment>
+        <source>Red</source>
+        <target state="translated">紅色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentShow">
+      <segment>
+        <source>Show</source>
+        <target state="translated">顯示</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTL">
+      <segment>
+        <source>TL</source>
+        <target state="translated">上左</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTR">
+      <segment>
+        <source>TR</source>
+        <target state="translated">上右</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">上方</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentVolcano">
+      <segment>
+        <source>Volcano</source>
+        <target state="translated">火山色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentYellow">
+      <segment>
+        <source>Yellow</source>
+        <target state="translated">黃色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定義</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPresets">
+      <segment>
+        <source>Presets</source>
+        <target state="translated">預設</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTooltipWillShowOnMouseEnter">
+      <segment>
+        <source>Tooltip will show on mouse enter.</source>
+        <target state="translated">鼠標移入時顯示提示。</target>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipPromptText">
+      <segment>
+        <source>prompt text</source>
+        <target state="translated">提示文本</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Tooltip provides concise helper text, placement control, arrow behavior and preset or custom colors for lightweight contextual guidance.</source>
+        <target state="translated">Tooltip 提供簡潔的輔助說明，支持彈出位置、箭頭行爲以及預設或自定義顏色，適合輕量級上下文引導。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display contextual hints when users hover or focus an element.</source>
+        <target state="translated">在用戶懸停或聚焦元素時展示上下文提示。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+        <target state="translated">提供 12 種彈出位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">彈出位置</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

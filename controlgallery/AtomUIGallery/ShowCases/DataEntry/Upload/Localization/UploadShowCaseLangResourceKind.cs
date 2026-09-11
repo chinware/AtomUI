@@ -1,0 +1,52 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum UploadShowCaseLangResourceKind
+{
+    UploadByClickingTitle,
+    UploadByClickingDescription,
+    ScenarioBasic,
+    ScenarioPictures,
+    ScenarioConstraints,
+    AvatarTitle,
+    AvatarDescription,
+    DefaultFilesTitle,
+    DefaultFilesDescription,
+    PicturesWallTitle,
+    PicturesWallDescription,
+    PictureCircleTypeTitle,
+    PictureCircleTypeDescription,
+    DragAndDropTitle,
+    DragAndDropDescription,
+    PicturesWithListStyleTitle,
+    PicturesWithListStyleDescription,
+    MaxCountTitle,
+    MaxCountDescription,
+    FileAndDirectoryTitle,
+    FileAndDirectoryDescription,
+    UploadPngOnlyTitle,
+    UploadPngOnlyDescription,
+    P2ContentClickToUpload,
+    P2TextUpload,
+    P2ContentUploadMaxN1,
+    P2ContentUploadMaxN3,
+    P2ContentUploadDirectory,
+    P2ContentUploadPngOnly,
+    P2ErrorServer500,
+    P2ErrorUpload,
+    P2CancelJpgPngOnly,
+    P2CancelImageSize,
+    P2CancelPngOnly,
+    P2UploadSuccessFormat,
+    PageSubtitle,
+    ScrollableListTitle,
+    ScrollableListDescription,
+    SuccessAutoRemoveTitle,
+    SuccessAutoRemoveDescription,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ScenarioExamples
+}

@@ -3,6 +3,34 @@
 本文档记录 Cascader 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-05
+
+- Theme
+  - Apply the reused SelectToken `MultiModePrefixIndent*` values as the extra left `Margin` of `PART_ContentLeftAddOn` in `CascaderAddOnDecoratedBoxTheme` for `IsMultiple=True` with a non-empty selection, aligning the multiple-mode prefix with the single-mode horizontal padding (same fix as Select / TreeSelect).
+
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record AbstractSelect as the semantic owner for Cascader.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
+## 2026-08-23
+
+- Architecture
+  - Align Cascader and `CascaderAddOnDecoratedBox` with the shared `InputControlFrame` surface owner.
+  - Keep cascade, filter, popup and option state in Cascader while reusing shared input status and Form/native validation semantics.
+
+## 2026-08-19
+
+- Behavior
+  - Make pointer movement and keyboard navigation share one active candidate in both ordinary tree columns and filtered path results.
+  - Preserve hover-triggered expansion while excluding disabled, hidden, and loading nodes from active candidate ownership.
+  - Make `Enter` commit the filtered or tree candidate represented by the single active visual state.
+- Theme
+  - Remove independent pointer-over candidate highlighting while preserving expanded and selected visual precedence.
+- Tests
+  - Add mixed pointer/keyboard and pointer-to-`Enter` coverage for tree and filtered modes.
+
 ## 2026-07-05
 
 - API

@@ -1,6 +1,6 @@
 # ImagePreviewer Token 设计
 
-本文档定义 ImagePreviewer 相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。ImagePreviewer 整体架构见 [ImagePreviewer 桌面版架构设计](overview.md)，内部实现原理见 [ImagePreviewer 桌面版实现原理](implementation.md)，设计和契约变化记录见 [ImagePreviewer Changelog](changelog.md)。
+本文档定义 ImagePreviewer 相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。ImagePreviewer 整体架构见 [ImagePreviewer 桌面版架构设计](overview.md)，内部实现原理见 [ImagePreviewer 桌面版实现原理](implementation.md)，设计和契约变化记录见 [ImagePreviewer Changelog](changelog.md)。
 
 ## 1. 定位
 
@@ -49,7 +49,8 @@ ImagePreviewer 的控件专项模型通过 Theme 消费 Token：
 - 不删除或重命名已生成的 TokenKind、TokenResource key 和 AXAML 引用。
 - 不把实例状态、交互状态或 `EffectiveXxx` 状态写成 Token。
 - 不在 Token 中展开颜色、variant 和状态的组合矩阵；组合关系应由 Theme selector 表达。
-- 不为默认失败文案、加载中状态或远程图片失败状态新增 Token；文案走语言资源，状态走 `ImagePreviewItemState`，视觉由主题和 SharedToken 表达。
+- 不为默认失败文案、加载中状态或远程图片失败状态新增 Token；文案走语言资源，状态走 internal `ImagePreviewEntry` 的
+  `ImageLoadState`，视觉由主题和 SharedToken 表达。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
 - 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
 

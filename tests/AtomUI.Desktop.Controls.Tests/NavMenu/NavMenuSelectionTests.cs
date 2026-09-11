@@ -124,6 +124,59 @@ public class NavMenuSelectionTests
         }
     }
 
+    [Fact]
+    public void DefaultSelectedPath_Traverses_Groups_Without_Consuming_Path_Segments()
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var childGroup = new NavMenuGroup { Header = "Child group" };
+        childGroup.Entries.Add(leaf);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Entries.Add(childGroup);
+        var rootGroup = new NavMenuGroup { Header = "Root group" };
+        rootGroup.Entries.Add(parent);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode                = NavMenuMode.Inline,
+            IsMotionEnabled     = false,
+            DefaultSelectedPath = new TreeNodePath("parent/leaf")
+        };
+        menu.Items.Add(rootGroup);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            RunDispatcherJobsUntil(() => ReferenceEquals(menu.SelectedItem, leaf));
+
+            var rootGroupContainer = menu.ContainerFromItem(rootGroup).ShouldBeOfType<NavMenuGroupItem>();
+            var parentContainer = rootGroupContainer.ContainerFromItem(parent).ShouldBeOfType<NavMenuItem>();
+            var childGroupContainer = parentContainer.ContainerFromItem(childGroup).ShouldBeOfType<NavMenuGroupItem>();
+            var leafContainer = childGroupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
+            menu.SelectedItem.ShouldBeSameAs(leaf);
+            parentContainer.IsInSelectedPath.ShouldBeTrue();
+            leafContainer.IsSelected.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     [Theory]
     [InlineData(NavMenuMode.Horizontal)]
     [InlineData(NavMenuMode.Vertical)]
@@ -250,6 +303,123 @@ public class NavMenuSelectionTests
     }
 
     [Fact]
+    public void NavMenu_Selects_New_Item_After_Replacing_The_Selected_Item_Tree()
+    {
+        var first = new NavMenuNode
+        {
+            Header  = "First",
+            ItemKey = "first"
+        };
+        var replacement = new NavMenuNode
+        {
+            Header  = "Replacement",
+            ItemKey = "replacement"
+        };
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(first);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = menu.ContainerFromItem(first).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.SelectNavMenuItem(firstContainer);
+
+            menu.Items.Clear();
+            menu.Items.Add(replacement);
+            Dispatcher.UIThread.RunJobs();
+
+            var replacementContainer = menu.ContainerFromItem(replacement).ShouldBeOfType<NavMenuItem>();
+            var replacementHeader = GetItemHeader(replacementContainer);
+            var replacementPoint = GetCenterPoint(replacementHeader, window);
+            Should.NotThrow(() =>
+            {
+                window.MouseDown(replacementPoint, MouseButton.Left);
+                Dispatcher.UIThread.RunJobs();
+                window.MouseUp(replacementPoint, MouseButton.Left);
+                Dispatcher.UIThread.RunJobs();
+            });
+
+            replacementContainer.IsSelected.ShouldBeTrue();
+            menu.SelectedItem.ShouldBeSameAs(replacement);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void NavMenu_Detach_Then_Programmatic_Sibling_Selection_Clears_Previous_Selection()
+    {
+        var first = new NavMenuNode
+        {
+            Header  = "First",
+            ItemKey = "first"
+        };
+        var second = new NavMenuNode
+        {
+            Header  = "Second",
+            ItemKey = "second"
+        };
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(first);
+        menu.Items.Add(second);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            menu.SelectedItem = first;
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = menu.ContainerFromItem(first).ShouldBeOfType<NavMenuItem>();
+            firstContainer.IsSelected.ShouldBeTrue();
+
+            window.Content = null;
+            Dispatcher.UIThread.RunJobs();
+
+            menu.SelectedItem = second;
+            window.Content    = menu;
+            Dispatcher.UIThread.RunJobs();
+
+            var secondContainer = menu.ContainerFromItem(second).ShouldBeOfType<NavMenuItem>();
+            firstContainer.IsSelected.ShouldBeFalse(
+                "visual detach must not discard the identity needed to clear the applied selection.");
+            secondContainer.IsSelected.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Inline_Submenu_Child_Press_Does_Not_Apply_Active_Background_To_Parent_Header()
     {
         var menu = new AtomUI.Desktop.Controls.NavMenu
@@ -353,7 +523,7 @@ public class NavMenuSelectionTests
 
             var leafContainer = (NavMenuItem)secondLevelContainer.ContainerFromItem(leaf)!;
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
             Dispatcher.UIThread.RunJobs();
 
             firstLevelContainer.IsInSelectedPath.ShouldBeTrue(
@@ -368,6 +538,102 @@ public class NavMenuSelectionTests
                 "The selected-path state must reach the first ancestor header so its icon, text and arrow use the selected color.");
             secondLevelHeader.IsInSelectedPath.ShouldBeTrue(
                 "Nested ancestor headers must receive selected-path state consistently.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Root_Group_Leaf_Selection_Uses_The_Root_Semantic_Selection_Owner()
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var group = new NavMenuGroup { Header = "Section" };
+        group.Entries.Add(leaf);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(group);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var groupContainer = menu.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
+            var leafContainer = groupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.SelectNavMenuItem(leafContainer);
+
+            leafContainer.IsSelected.ShouldBeTrue();
+            menu.SelectedItem.ShouldBeSameAs(leaf);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Selection_Through_A_Group_Uses_The_Closest_Node_Selected_Path()
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var group = new NavMenuGroup { Header = "Section" };
+        group.Entries.Add(leaf);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Entries.Add(group);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = menu.ContainerFromItem(parent).ShouldBeOfType<NavMenuItem>();
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            var groupContainer = parentContainer.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
+            var leafContainer = groupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.SelectNavMenuItem(leafContainer);
+
+            parentContainer.IsInSelectedPath.ShouldBeTrue();
+            leafContainer.IsSelected.ShouldBeTrue();
+            menu.SelectedItem.ShouldBeSameAs(leaf);
         }
         finally
         {
@@ -414,7 +680,7 @@ public class NavMenuSelectionTests
 
             var leafContainer = (NavMenuItem)parentContainer.ContainerFromItem(leaf)!;
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
             Dispatcher.UIThread.RunJobs();
 
             var parentHeader             = GetItemHeader(parentContainer);
@@ -509,7 +775,7 @@ public class NavMenuSelectionTests
                 "NavMenuItemHeader hover visuals must stay available when NavMenuItem background is disabled.");
 
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(grandchildContainer);
+            menu.SelectNavMenuItem(grandchildContainer);
             Dispatcher.UIThread.RunJobs();
 
             GetSolidBrushColor(grandchildHeader.Background).ShouldNotBe(
@@ -571,7 +837,7 @@ public class NavMenuSelectionTests
 
             var itemContainer = (NavMenuItem)menu.ContainerFromItem(item)!;
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(itemContainer);
+            menu.SelectNavMenuItem(itemContainer);
             Dispatcher.UIThread.RunJobs();
 
             disabledDuringSelection.ShouldBeFalse(
@@ -619,14 +885,14 @@ public class NavMenuSelectionTests
             var parentContainer = (Control)menu.ContainerFromItem(parent)!;
             SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(1));
 
+            var actor = GetChildItemsMotionActor(parentContainer);
             var parentMenuItem = (INavMenuItem)parentContainer;
             parentMenuItem.Open();
-            DrainDispatcher();
+            WaitForInlineMotionCompletion(actor);
 
             parentMenuItem.Close();
-            DrainDispatcher();
+            WaitForInlineMotionCompletion(actor);
 
-            var actor = GetChildItemsMotionActor(parentContainer);
             actor.IsVisible.ShouldBeFalse();
             actor.Opacity.ShouldBe(0.0);
 
@@ -748,7 +1014,7 @@ public class NavMenuSelectionTests
 
             SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(1));
             parentMenuItem.Open();
-            DrainDispatcher();
+            WaitForInlineMotionCompletion(GetChildItemsMotionActor(parentContainer));
 
             SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(500));
             parentMenuItem.Close();
@@ -757,7 +1023,7 @@ public class NavMenuSelectionTests
 
             var actor = GetChildItemsMotionActor(parentContainer);
             actor.IsVisible.ShouldBeTrue();
-            actor.Transitions.ShouldNotBeNull();
+            actor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
 
             menu.IsMotionEnabled = false;
             Dispatcher.UIThread.RunJobs();
@@ -767,11 +1033,54 @@ public class NavMenuSelectionTests
 
             parentMenuItem.IsSubMenuOpen.ShouldBeTrue();
 
+            actor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
             Thread.Sleep(600);
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
             Dispatcher.UIThread.RunJobs();
 
             actor.IsVisible.ShouldBeTrue();
             actor.Opacity.ShouldBe(1.0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void SelectedItem_Is_Already_Updated_When_NodeSelected_Event_Raises()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        var first = new NavMenuNode { Header = "First", ItemKey = "first" };
+        var second = new NavMenuNode { Header = "Second", ItemKey = "second" };
+        menu.Items.Add(first);
+        menu.Items.Add(second);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var secondContainer = menu.ContainerFromItem(second).ShouldBeOfType<NavMenuItem>();
+
+            INavMenuNode? observed = null;
+            menu.NavMenuNodeSelected += (_, _) => observed = menu.SelectedItem;
+            menu.SelectNavMenuItem(secondContainer);
+
+            observed.ShouldBeSameAs(second,
+                "NavMenuNodeSelected subscribers must observe the committed SelectedItem.");
+            menu.SelectedItem.ShouldBeSameAs(second);
         }
         finally
         {
@@ -855,10 +1164,30 @@ public class NavMenuSelectionTests
             : null;
     }
 
+    private static void WaitForInlineMotionCompletion(BaseMotionActor actor)
+    {
+        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(2);
+        do
+        {
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
+            Dispatcher.UIThread.RunJobs();
+            if (!actor.IsAnimating(Visual.OpacityProperty))
+            {
+                return;
+            }
+            Thread.Sleep(10);
+        } while (DateTime.UtcNow < deadline);
+
+        actor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+    }
+
     private static void DrainDispatcher()
     {
         Dispatcher.UIThread.RunJobs();
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick();
         Thread.Sleep(20);
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick();
         Dispatcher.UIThread.RunJobs();
     }
 

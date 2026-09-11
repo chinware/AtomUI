@@ -7,7 +7,8 @@ internal static class AnimationExtensions
     public static async Task RunInfiniteAsync(this Animation animation, Animatable control,
                                               CancellationToken cancellationToken = default)
     {
-        animation.IterationCount = new IterationCount(1);
+        animation.IterationCount   = new IterationCount(1);
+        animation.PlaybackBehavior = PlaybackBehavior.OnlyIfVisible;
         try 
         {
             while (!cancellationToken.IsCancellationRequested)

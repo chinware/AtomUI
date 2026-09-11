@@ -1,6 +1,8 @@
 # DatePicker 桌面版实现原理
 
-本文档描述 DatePicker 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DatePicker 桌面版架构设计](overview.md)，CalendarView 的系统性优化目标见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，变化记录见 [DatePicker Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [DatePicker Token 设计](token.md)。
+本文档描述 DatePicker 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [DatePicker 桌面版架构设计](overview.md)，CalendarView 的系统性优化目标见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，变化记录见 [DatePicker Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [DatePicker Token 设计](token.md)。
+
+Popup 接入边界：`InfoPickerInput` 负责业务状态和内容准备，`PickerPopup` 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
 
 ## 1. 实现定位
 
@@ -12,7 +14,7 @@
 
 - `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerDateRangeConstraint.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
 - `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
-- `src/AtomUI.Desktop.Controls/DatePicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls/DatePicker/Localization`：`DatePickerLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
 - `src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/InfoPickerTextBox.cs` 与 `Themes/InfoPickerTextBoxTheme.axaml`：DatePicker 输入框使用的 internal 子控件及其文本 presenter、padding 基础视觉。
 
@@ -35,7 +37,7 @@
 - `DatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DatePickerDateRangeConstraint`：internal 纯值约束模型，按 `PickerMode` 归一 `MinDate`、`MaxDate`，提供 picker unit 有效性判断和显示锚点收敛，不持有控件或视觉对象。
 - `DatePickerPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `InfoPickerTextBox`：internal 输入子控件，负责 picker 输入框的无 chrome padding 和文本 presenter 间距；DatePicker/RangeDatePicker 主题只负责直接子控件的状态颜色。
+- `InfoPickerTextBox`：internal `AbstractTextInput` 输入子控件，使用 `StyleVariant=Borderless` 表达无 chrome 语义；DatePicker/RangeDatePicker 主题只负责 picker 专用内容和布局。
 - `DatePickerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `DualMonthArrowDecoratedBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DualMonthCalendarItem`：集合项、节点或容器类型，承载单项状态和模板协作。
@@ -47,9 +49,7 @@
 - `RangeDatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `RangeDatePickerPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `TimedRangeDatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `DatePickerLangResourceKind`：稳定的本地化 Catalog enum；生成器从三个 XLIFF 文件编译资源表和 XAML 扩展。
 
 核心协作规则：
 

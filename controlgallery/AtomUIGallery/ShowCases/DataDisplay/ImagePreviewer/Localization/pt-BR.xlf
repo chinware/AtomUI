@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind">
+    <unit id="ApiEventDialogClosed">
+      <segment>
+        <source>Raised after the preview dialog closes.</source>
+        <target state="translated">Emitido depois o preview diálogo closes.</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventDialogClosing">
+      <segment>
+        <source>Raised before the preview dialog closes.</source>
+        <target state="translated">Emitido antes o preview diálogo closes.</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventDialogOpened">
+      <segment>
+        <source>Raised after the preview dialog opens.</source>
+        <target state="translated">Emitido depois o preview diálogo opens.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Click the image to zoom in.</source>
+        <target state="translated">Clique o imagem para zoom em.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">Básico Uso</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomPreviewImageDescription">
+      <segment>
+        <source>Choose which source image is displayed as the cover.</source>
+        <target state="translated">Escolher which source imagem é exibido as o cover.</target>
+      </segment>
+    </unit>
+    <unit id="CustomPreviewImageTitle">
+      <segment>
+        <source>Custom preview image</source>
+        <target state="translated">Personalizado preview imagem</target>
+      </segment>
+    </unit>
+    <unit id="FaultTolerantDescription">
+      <segment>
+        <source>Load failed to display image placeholder.</source>
+        <target state="translated">Load failed para exibir imagem placeholder.</target>
+      </segment>
+    </unit>
+    <unit id="FaultTolerantTitle">
+      <segment>
+        <source>Fault tolerant</source>
+        <target state="translated">Fault tolerant</target>
+      </segment>
+    </unit>
+    <unit id="MultipleImagePreviewDescription">
+      <segment>
+        <source>Click the left and right switch buttons to preview multiple images.</source>
+        <target state="translated">Clique o esquerda e direita alternância botões para preview múltiplos imagens.</target>
+      </segment>
+    </unit>
+    <unit id="MultipleImagePreviewTitle">
+      <segment>
+        <source>Multiple image preview</source>
+        <target state="translated">Múltiplos imagem preview</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ImagePreviewer displays an image cover that opens a preview surface. It supports fallback images, cover indexes, image groups, scaling limits, and dialog lifecycle events.</source>
+        <target state="translated">ImagePreviewer displays an imagem cover que opens a preview surface. Isso oferece suporte fallback imagens, cover indexes, imagem groups, scaling limits, e diálogo lifecycle events.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Preview single or multiple images in an overlay with zooming, moving, and switching controls.</source>
+        <target state="translated">Preview single ou múltiplos imagens em an overlay com zooming, moving, e switching controles.</target>
+      </segment>
+    </unit>
+    <unit id="PreviewFromOneImageDescription">
+      <segment>
+        <source>Preview a collection from one image.</source>
+        <target state="translated">Preview a collection de um imagem.</target>
+      </segment>
+    </unit>
+    <unit id="PreviewFromOneImageTitle">
+      <segment>
+        <source>Preview from one image</source>
+        <target state="translated">Preview de um imagem</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchDescription">
+      <segment>
+        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate loading-placeholder switching with WaitForLoaded hold-until-loaded switching.</source>
+        <target state="translated">Adiciona uma nova imagem a cada 200 ms e acompanha a mais recente. Alterne o modo para comparar Immediate (indicador de carregamento imediato) com WaitForLoaded (mantém a imagem anterior até carregar).</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeImmediate">
+      <segment>
+        <source>Immediate</source>
+        <target state="translated">Imediato</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeWaitForLoaded">
+      <segment>
+        <source>Wait For Loaded</source>
+        <target state="translated">Aguardar carregamento</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">Iniciar</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStop">
+      <segment>
+        <source>Stop</source>
+        <target state="translated">Parar</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchTitle">
+      <segment>
+        <source>Rapid switching</source>
+        <target state="translated">Troca rápida</target>
+      </segment>
+    </unit>
+    <unit id="RemoteImageLoadingDescription">
+      <segment>
+        <source>Load an image directly from an HTTPS source URI.</source>
+        <target state="translated">Load an imagem directly de an HTTPS source URI.</target>
+      </segment>
+    </unit>
+    <unit id="RemoteImageLoadingTitle">
+      <segment>
+        <source>Remote image loading</source>
+        <target state="translated">Remote imagem carregando</target>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementAction">
+      <segment>
+        <source>Replace at the same path</source>
+        <target state="translated">Substituir no mesmo caminho</target>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementDescription">
+      <segment>
+        <source>Replace the file contents, clear and re-add the item with the same path, and verify that source validation displays the new image without clearing the application cache.</source>
+        <target state="translated">Substitua o conteúdo do arquivo, limpe e adicione novamente o item com o mesmo caminho, e verifique que a validação da origem exibe a nova imagem sem limpar o cache do aplicativo.</target>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementTitle">
+      <segment>
+        <source>Same-path file replacement</source>
+        <target state="translated">Substituição de arquivo no mesmo caminho</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="TwentyRemoteImagesDescription">
+      <segment>
+        <source>Load a fixed set of 20 public images with cover-only loading and neighbor preloading.</source>
+        <target state="translated">Load a fixed set of 20 public images with cover-only loading and neighbor preloading.</target>
+      </segment>
+    </unit>
+    <unit id="TwentyRemoteImagesTitle">
+      <segment>
+        <source>20 remote images</source>
+        <target state="translated">20 remote imagens</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

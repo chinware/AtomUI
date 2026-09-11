@@ -6,7 +6,6 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.LineEdit;
@@ -66,30 +65,17 @@ public class LineEditViewModel : ReactiveObject, IRoutableViewModel
         var displayValue = string.IsNullOrEmpty(OtpLineEditBoundValue)
             ? Lang(LineEditShowCaseLangResourceKind.OtpLineEditEmptyValueText)
             : OtpLineEditBoundValue;
-        OtpLineEditBoundValueSummary = string.Format(
-            CultureInfo.CurrentCulture,
-            Lang(LineEditShowCaseLangResourceKind.OtpLineEditCurrentValueFormat),
+        OtpLineEditBoundValueSummary = GalleryLocalization.Format(
+            LineEditShowCaseLangResourceKind.OtpLineEditCurrentValueFormat,
+            "Current value: {0}",
             displayValue);
     }
 
     private static string Lang(LineEditShowCaseLangResourceKind kind)
     {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(LineEditShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            LineEditShowCaseLangResourceKind.OtpLineEditCurrentValueFormat       => en_US.OtpLineEditCurrentValueFormat,
-            LineEditShowCaseLangResourceKind.OtpLineEditEmptyValueText           => en_US.OtpLineEditEmptyValueText,
-            _                                                                    => kind.ToString()
-        };
+        return Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)?.Get(kind) ?? kind.ToString()
+            : kind.ToString();
     }
 }
 

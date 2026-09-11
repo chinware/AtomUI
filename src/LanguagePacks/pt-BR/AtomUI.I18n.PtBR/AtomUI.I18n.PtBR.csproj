@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+        <PackageId>AtomUI.I18n.PtBR</PackageId>
+        <Description>Aggregate Brazilian Portuguese translations for official AtomUI components.</Description>
+        <NuspecFile>AtomUI.I18n.PtBR.nuspec</NuspecFile>
+        <NuspecBasePath>$(IntermediateOutputPath)nuspec-base</NuspecBasePath>
+        <NuspecProperties>version=$(AtomUIVersion)</NuspecProperties>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj"
+                          ReferenceOutputAssembly="false" />
+        <ProjectReference Include="../AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj"
+                          ReferenceOutputAssembly="false" />
+        <ProjectReference Include="../AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj"
+                          ReferenceOutputAssembly="false" />
+        <ProjectReference Include="../AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj"
+                          ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <Target Name="AtomUIPrepareAggregateNuspecBase" BeforeTargets="GenerateNuspec">
+        <RemoveDir Directories="$(NuspecBasePath)" />
+        <MakeDir Directories="$(NuspecBasePath)" />
+        <Copy SourceFiles="$(MSBuildThisFileDirectory)../../../../README.nuget.md"
+              DestinationFiles="$(NuspecBasePath)/README.nuget.md" />
+    </Target>
+</Project>

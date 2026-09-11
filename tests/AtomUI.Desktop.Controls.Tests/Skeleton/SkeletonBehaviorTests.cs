@@ -1,5 +1,7 @@
+using System.Reflection;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -120,6 +122,20 @@ public class SkeletonBehaviorTests
         source.ShouldContain("IterationCount = IterationCount.Infinite");
         source.ShouldContain("await animation.RunAsync(this, cancellationTokenSource.Token)");
         source.ShouldNotContain("RunInfiniteAsync");
+    }
+
+    [Fact]
+    public void Active_Animation_Pauses_When_Skeleton_Is_Effectively_Invisible()
+    {
+        var skeleton = new SkeletonLine();
+        var buildAnimation = typeof(AbstractSkeleton).GetMethod(
+            "BuildActiveAnimation",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        buildAnimation.ShouldNotBeNull();
+        var animation = buildAnimation.Invoke(skeleton, null).ShouldBeOfType<Animation>();
+
+        animation.PlaybackBehavior.ShouldBe(PlaybackBehavior.OnlyIfVisible);
     }
 
     private static void AssertLoadingBrush(IBrush? brush, Point expectedStartPoint, Point expectedEndPoint)

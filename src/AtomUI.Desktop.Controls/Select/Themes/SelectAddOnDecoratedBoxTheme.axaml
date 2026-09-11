@@ -22,6 +22,10 @@
                                 Value="{atom:SelectTokenResource MultiModePaddingSM}" />
                         <Setter Property="ContentMinHeight"
                                 Value="{atom:SelectTokenResource MultipleItemHeightLG}" />
+                        <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentLeftAddOn">
+                            <Setter Property="Margin"
+                                    Value="{atom:SelectTokenResource MultiModePrefixIndentLG}" />
+                        </Style>
                     </Style>
                     <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                         <Setter Property="ContentFramePadding"
@@ -30,6 +34,10 @@
                                 Value="{atom:SelectTokenResource MultiModePaddingSM}" />
                         <Setter Property="ContentMinHeight"
                                 Value="{atom:SelectTokenResource MultipleItemHeight}" />
+                        <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentLeftAddOn">
+                            <Setter Property="Margin"
+                                    Value="{atom:SelectTokenResource MultiModePrefixIndent}" />
+                        </Style>
                     </Style>
                     <Style Selector="^[SizeType=Small]">
                         <Setter Property="ContentFramePadding"
@@ -38,6 +46,10 @@
                                 Value="{atom:SelectTokenResource MultiModePaddingSM}" />
                         <Setter Property="ContentMinHeight"
                                 Value="{atom:SelectTokenResource MultipleItemHeightSM}" />
+                        <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentLeftAddOn">
+                            <Setter Property="Margin"
+                                    Value="{atom:SelectTokenResource MultiModePrefixIndentSM}" />
+                        </Style>
                     </Style>
                 </Style>
 

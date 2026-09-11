@@ -173,7 +173,7 @@ LLMS 导出来源：
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `behavior-design.md` + `lunar-calendar-design.md` + `range-bar-design.md` + `token.md` + Gallery ShowCase | 生成 `controls/calendar/index-cn.md`。 |
 | 单控件语义文档 | `overview.md` + `implementation.md` + `lunar-calendar-design.md` + `range-bar-design.md` + `Themes/` | 生成 `controls/calendar/semantic-cn.md`。 |
-| API 表 | overview 的 API 摘要 + 源码 public surface | 不在 `docs/AI/llms` 中手工维护第二份契约。 |
+| API 表 | overview 的 API 摘要 + 源码 public surface | 不在 `docs/AI/generated/llms` 中手工维护第二份契约。 |
 | Token 表 | `token.md` + `CalendarToken` + `LunarCalendarToken` + AXAML 引用 | 以 Token 源码和主题消费点为准。 |
 | 示例 | Gallery API/Token/ShowCase | 只引用稳定的 Gallery 用法。 |
 
@@ -182,4 +182,4 @@ LLMS 导出来源：
 - 文档改动运行 `git diff --check`，并检查本目录及新增专题文档的相对链接。
 - API/行为改动覆盖默认值、事件顺序、范围和禁用、模板优先级、周序号选择、键盘导航与语言切换。
 - Theme 改动检查四个 ControlTheme、伪类、Token 资源以及 Light/Dark 和 Fullscreen/Mini。
-- 不手工编辑 `docs/AI/llms` 生成产物；LLMS 源文件变化后运行仓库提供的生成/verify 命令。
+- 不手工编辑 `docs/AI/generated/llms` 生成产物；LLMS 源文件变化后运行仓库提供的生成/verify 命令。

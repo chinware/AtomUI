@@ -1055,9 +1055,9 @@ public class TreeSelect : AbstractSelect
     {
         if (Filter != null)
         {
-            if (e.Source is TextBox textBox)
+            if (e.Source is AbstractTextInput textInput)
             {
-                if (ReferenceEquals(textBox, _singleFilterInput) &&
+                if (ReferenceEquals(textInput, _singleFilterInput) &&
                     !IsMultiple &&
                     (_syncingSingleFilterInputText || !IsDropDownOpen || !IsFilterEnabled))
                 {
@@ -1065,7 +1065,7 @@ public class TreeSelect : AbstractSelect
                     return;
                 }
 
-                var searchText = textBox.Text?.Trim();
+                var searchText = textInput.Text?.Trim();
                 FilterValue = string.IsNullOrEmpty(searchText) ? null : searchText;
             }
             ConfigurePlaceholderVisible();

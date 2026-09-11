@@ -5,14 +5,15 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
 internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<LoadedImageSource?> ImageSourceProperty =
-        AvaloniaProperty.Register<ImagePreviewerCover, LoadedImageSource?>(nameof(ImageSource));
+    public static readonly StyledProperty<IImage?> ImageSourceProperty =
+        AvaloniaProperty.Register<ImagePreviewerCover, IImage?>(nameof(ImageSource));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ImagePreviewerCover>();
@@ -26,6 +27,11 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<bool> IsFailedProperty =
         AvaloniaProperty.Register<ImagePreviewerCover, bool>(nameof(IsFailed));
 
+    internal static readonly DirectProperty<ImagePreviewerCover, bool> HasErrorProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerCover, bool>(
+            nameof(HasError),
+            control => control.HasError);
+
     public static readonly StyledProperty<object?> LoadingContentProperty =
         AvaloniaProperty.Register<ImagePreviewerCover, object?>(nameof(LoadingContent));
 
@@ -38,7 +44,7 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<IDataTemplate?> ErrorContentTemplateProperty =
         AvaloniaProperty.Register<ImagePreviewerCover, IDataTemplate?>(nameof(ErrorContentTemplate));
     
-    public LoadedImageSource? ImageSource
+    public IImage? ImageSource
     {
         get => GetValue(ImageSourceProperty);
         set => SetValue(ImageSourceProperty, value);
@@ -111,6 +117,9 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     }
 
     private bool _isCoverMaskVisible = true;
+    private bool _hasError;
+
+    internal bool HasError => _hasError;
 
     internal bool IsCoverMaskVisible
     {
@@ -123,18 +132,21 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsShowCoverMaskProperty ||
+        if (change.Property == ImageSourceProperty ||
+            change.Property == IsShowCoverMaskProperty ||
             change.Property == IsLoadingProperty ||
-            change.Property == IsFailedProperty)
+            change.Property == IsFailedProperty ||
+            change.Property == LoadingContentProperty ||
+            change.Property == LoadingContentTemplateProperty)
         {
-            UpdateCoverMaskVisible();
+            UpdateVisualState();
         }
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        UpdateCoverMaskVisible();
+        UpdateVisualState();
         this.DisableTransitions();
     }
 
@@ -144,12 +156,16 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
         Dispatcher.Post(this.EnableTransitions);
     }
 
-    private void UpdateCoverMaskVisible()
+    private void UpdateVisualState()
     {
-        SetCurrentValue(IsCoverMaskVisibleProperty, IsShowCoverMask && !IsLoading && !IsFailed);
-        if (IsLoading || IsFailed)
-        {
-            SetCurrentValue(MaskOpacityProperty, 0.0);
-        }
+        PseudoClasses.Set(":has-image", ImageSource is not null);
+        PseudoClasses.Set(":loading", IsLoading);
+        PseudoClasses.Set(":failed", IsFailed);
+        PseudoClasses.Set(":loading-skeleton", IsLoading && ImageSource is null && LoadingContent is null);
+        SetAndRaise(HasErrorProperty, ref _hasError, IsFailed && ImageSource is null);
+        // mask 是悬停操作层（点击打开预览在任何加载态都有效），只由 IsShowCoverMask
+        // 决定，与加载/图片/失败状态解耦：透明度完全交给主题（基础 0，悬停 1），
+        // 避免 C# 强制值与悬停样式/过渡互相打断造成闪烁
+        SetCurrentValue(IsCoverMaskVisibleProperty, IsShowCoverMask);
     }
 }

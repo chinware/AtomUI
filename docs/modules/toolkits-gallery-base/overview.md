@@ -4,12 +4,22 @@
 
 该模块可以依赖 AtomUI 作为默认 UI 实现，包括 AtomUI 控件、主题 Token、语言系统和桌面/浏览器平台能力；但它自身必须保持产品中立，不能写入 AtomUI 控件库、AtomIdea 或其他产品的品牌、页面、示例和业务文案。
 
+## 当前平台边界
+
+产品中立不等于当前实现平台中立。`AtomUI.Toolkits.GalleryBase.csproj` 直接引用 `AtomUI.Desktop.Controls`，其 Shell、
+展示控件和主题依赖图当前面向 Desktop/Browser Gallery。Mobile Foundation 不能依赖该包，否则会把 Desktop 产品控件带入
+Mobile 依赖闭包。
+
+目标 Mobile Gallery 从独立最小 Shell 起步。只有 Mobile 与现有 Gallery 在真实实现中出现稳定、无 Desktop 语义的重复后，
+才通过单独批准的设计提取共享 Gallery contracts；不能仅因包名包含 `GalleryBase` 就承诺 Mobile 复用。详见
+[Mobile Gallery](../../gallery/platforms/mobile-gallery.md)。
+
 ## 职责
 
 - 提供可配置的 Gallery Shell 基础，包括共享 Workspace ViewModel、内容路由状态、导航 ViewModel、主题切换和语言切换命令。
 - 提供 Demo 展示基础控件，包括 `ShowCasePanel`、`ShowCaseItem`、瀑布流布局、Sticky 场景导航和延迟创建机制。
 - 提供产品侧注册模型，让产品通过配置注册品牌、导航树、路由、页面工厂、链接和版本信息。
-- 提供 Desktop 与 Browser Gallery 宿主可共用的配置、导航和路由结构，减少每个产品重复维护 Gallery 底层。
+- 提供 Desktop 与 Browser Gallery 宿主可共用的配置、导航和路由结构，减少每个产品重复维护当前 Gallery 底层。
 - 提供 GalleryBase 自身的主题 Token、ControlTheme 和 Shell 文案本地化。
 
 ## 非职责
@@ -51,7 +61,7 @@
 
 - `AtomUIGallery`
 - 未来的 AtomIdea Gallery
-- 未来其他基于 AtomUI/Avalonia 的产品 Gallery
+- 未来其他基于 AtomUI/Avalonia、且接受当前 Desktop/Browser 依赖边界的产品 Gallery
 
 ## 推荐阅读
 
@@ -62,6 +72,5 @@
 - [showcase-controls.md](showcase-controls.md)
 - [source-code-display.md](source-code-display.md)
 - [theming-localization.md](theming-localization.md)
-- [migration-and-testing.md](migration-and-testing.md)
-- [../../gallery/gallery-showcase-design-pattern.md](../../gallery/gallery-showcase-design-pattern.md)
-- [../../architecture/startup-and-registration.md](../../architecture/startup-and-registration.md)
+- [Gallery ShowCase 页面设计](../../gallery/authoring/gallery-showcase-design-pattern.md)
+- [启动与注册链路](../../architecture/foundations/startup-and-registration.md)

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TransferShowCaseLangResourceKind">
+    <unit id="AdvancedDescription">
+      <segment>
+        <source>Advanced Usage of Transfer. You can customize the labels of the transfer buttons, the width and height of the columns, and what should be displayed in the footer.</source>
+        <target state="translated">Transfer 的高級用法。可以自定義穿梭按鈕標籤、列寬和列高，以及頁腳中展示的內容。</target>
+      </segment>
+    </unit>
+    <unit id="AdvancedTitle">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">高級用法</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage of Transfer involves providing the source data and target keys arrays, plus the rendering and some callback functions.</source>
+        <target state="translated">Transfer 的基礎用法需要提供源數據、目標 keys 數組，以及渲染和部分回調函數。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="ControlledKeysDescription">
+      <segment>
+        <source>Bind TargetKeys and SelectedKeys to ObservableCollection values. External collection mutations and Transfer interactions stay synchronized.</source>
+        <target state="translated">將 TargetKeys 和 SelectedKeys 綁定到 ObservableCollection。外部集合變更和 Transfer 交互會保持同步。</target>
+      </segment>
+    </unit>
+    <unit id="ControlledKeysTitle">
+      <segment>
+        <source>Controlled keys</source>
+        <target state="translated">受控 key</target>
+      </segment>
+    </unit>
+    <unit id="OneWayDescription">
+      <segment>
+        <source>Use oneWay to make Transfer the one way style.</source>
+        <target state="translated">使用 oneWay 讓 Transfer 呈現單向樣式。</target>
+      </segment>
+    </unit>
+    <unit id="OneWayTitle">
+      <segment>
+        <source>One Way</source>
+        <target state="translated">單向模式</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddTargetKey">
+      <segment>
+        <source>Add key 3 to target</source>
+        <target state="translated">添加 key 3 到目標</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearTargetKeys">
+      <segment>
+        <source>Clear target keys</source>
+        <target state="translated">清空目標 key</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeftButtonReload">
+      <segment>
+        <source>Left button reload</source>
+        <target state="translated">重新加載左側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRightButtonReload">
+      <segment>
+        <source>Right button reload</source>
+        <target state="translated">重新加載右側</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSelectSourceKey">
+      <segment>
+        <source>Select key 4</source>
+        <target state="translated">選中 key 4</target>
+      </segment>
+    </unit>
+    <unit id="P2FilterPlaceholderTextSearchHere">
+      <segment>
+        <source>Search here</source>
+        <target state="translated">在此搜索</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDescription">
+      <segment>
+        <source>Description</source>
+        <target state="translated">描述</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderName">
+      <segment>
+        <source>Name</source>
+        <target state="translated">姓名</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTag">
+      <segment>
+        <source>Tag</source>
+        <target state="translated">標籤</target>
+      </segment>
+    </unit>
+    <unit id="P2ItemContentFormat">
+      <segment>
+        <source>content{0}</source>
+        <target state="translated">內容{0}</target>
+      </segment>
+    </unit>
+    <unit id="P2ItemDescriptionFormat">
+      <segment>
+        <source>description of content{0}</source>
+        <target state="translated">內容{0}的描述</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentEnable">
+      <segment>
+        <source>Enable</source>
+        <target state="translated">啓用</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentOnyWay">
+      <segment>
+        <source>One way</source>
+        <target state="translated">單向</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentDisable">
+      <segment>
+        <source>Disable</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentOnyWay">
+      <segment>
+        <source>One way</source>
+        <target state="translated">單向</target>
+      </segment>
+    </unit>
+    <unit id="P2SelectedKeysCountLabel">
+      <segment>
+        <source>Selected keys:</source>
+        <target state="translated">選中 key：</target>
+      </segment>
+    </unit>
+    <unit id="P2SourceTitle">
+      <segment>
+        <source>Source</source>
+        <target state="translated">源列表</target>
+      </segment>
+    </unit>
+    <unit id="P2TagBird">
+      <segment>
+        <source>bird</source>
+        <target state="translated">鳥</target>
+      </segment>
+    </unit>
+    <unit id="P2TagCat">
+      <segment>
+        <source>cat</source>
+        <target state="translated">貓</target>
+      </segment>
+    </unit>
+    <unit id="P2TagDog">
+      <segment>
+        <source>dog</source>
+        <target state="translated">狗</target>
+      </segment>
+    </unit>
+    <unit id="P2TargetKeysCountLabel">
+      <segment>
+        <source>Target keys:</source>
+        <target state="translated">目標 key：</target>
+      </segment>
+    </unit>
+    <unit id="P2TargetTitle">
+      <segment>
+        <source>Target</source>
+        <target state="translated">目標列表</target>
+      </segment>
+    </unit>
+    <unit id="P2TextText">
+      <segment>
+        <source>-</source>
+        <target state="translated">-</target>
+      </segment>
+    </unit>
+    <unit id="P2ToSourceButtonTextToLeft">
+      <segment>
+        <source>To left</source>
+        <target state="translated">移到左側</target>
+      </segment>
+    </unit>
+    <unit id="P2ToTargetButtonTextToRight">
+      <segment>
+        <source>To right</source>
+        <target state="translated">移到右側</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Transfer presents candidate items on the left and selected items on the right. It supports one-way movement, filtering, pagination, custom item templates, and tree-backed source data.</source>
+        <target state="translated">Transfer 在左側展示候選條目，在右側展示已選條目。它支持單向移動、篩選、分頁、自定義條目模板和基於樹的數據源。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Move items between two collections with optional search, paging, and tree views.</source>
+        <target state="translated">在兩個集合之間移動條目，支持搜索、分頁和樹形數據。</target>
+      </segment>
+    </unit>
+    <unit id="PaginationDescription">
+      <segment>
+        <source>Store a large amount of items with pagination.</source>
+        <target state="translated">通過分頁承載大量條目。</target>
+      </segment>
+    </unit>
+    <unit id="PaginationTitle">
+      <segment>
+        <source>Pagination</source>
+        <target state="translated">分頁</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">高級</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioTreeStatus">
+      <segment>
+        <source>Tree &amp; Status</source>
+        <target state="translated">樹與狀態</target>
+      </segment>
+    </unit>
+    <unit id="SearchDescription">
+      <segment>
+        <source>Transfer with a search box.</source>
+        <target state="translated">帶搜索框的 Transfer。</target>
+      </segment>
+    </unit>
+    <unit id="SearchTitle">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Transfer with status, which could be error or warning.</source>
+        <target state="translated">通過 status 為 Transfer 添加狀態，可設置為錯誤或警告。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="TreeTransferDescription">
+      <segment>
+        <source>Customize the render list with a Tree component.</source>
+        <target state="translated">使用 Tree 組件自定義渲染列表。</target>
+      </segment>
+    </unit>
+    <unit id="TreeTransferTitle">
+      <segment>
+        <source>Tree Transfer</source>
+        <target state="translated">樹形穿梭框</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

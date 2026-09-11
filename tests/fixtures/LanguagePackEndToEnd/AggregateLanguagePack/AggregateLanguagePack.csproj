@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <PackageId>Acme.LocalizationAggregate.I18n.JaJP</PackageId>
+        <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
+        <NuspecFile>AggregateLanguagePack.nuspec</NuspecFile>
+        <NuspecBasePath>$(IntermediateOutputPath)nuspec-base</NuspecBasePath>
+        <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../LanguagePack/LanguagePack.csproj" />
+        <ProjectReference Include="../OptionalLanguagePack/OptionalLanguagePack.csproj" />
+    </ItemGroup>
+
+    <Target Name="PrepareAggregateNuspecBase" BeforeTargets="GenerateNuspec">
+        <RemoveDir Directories="$(NuspecBasePath)" />
+        <MakeDir Directories="$(NuspecBasePath)" />
+    </Target>
+</Project>

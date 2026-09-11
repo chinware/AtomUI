@@ -1,6 +1,8 @@
 using Avalonia.Controls;
+using Avalonia;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using AtomUI.Localization;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -76,11 +78,71 @@ public class TimePickerDisplayTimeTests
         });
     }
 
+    [Fact]
+    public void TimePicker_Period_Items_Refresh_When_Language_Changes()
+    {
+        RunOnUIThread(() =>
+        {
+            var languageManager = Application.Current!.GetLanguageManager().ShouldNotBeNull();
+            var originalLanguage = languageManager.Current.CurrentLanguage;
+            languageManager.ChangeLanguage(LanguageTags.EnUS);
+
+            var picker = new TestTimePicker
+            {
+                ClockIdentifier = ClockIdentifierType.HourClock12,
+                SelectedTime     = new TimeSpan(14, 25, 30)
+            };
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            try
+            {
+                ShowInWindow(presenter, () =>
+                {
+                    var timeView = presenter.GetVisualDescendants()
+                                            .OfType<TimeView>()
+                                            .Single();
+                    var periodPanel = FindPanel(timeView, "PART_PeriodSelector");
+                    var periodHost = timeView.GetVisualDescendants()
+                                             .OfType<Panel>()
+                                             .Single(panel => panel.Name == "PART_PeriodHost");
+
+                    GetPeriodText(periodPanel, 0).ShouldBe("AM");
+                    GetPeriodText(periodPanel, 1).ShouldBe("PM");
+                    var hostWidth = periodHost.Bounds.Width;
+
+                    languageManager.ChangeLanguage(LanguageTags.ZhCN);
+                    Dispatcher.UIThread.RunJobs();
+
+                    GetPeriodText(periodPanel, 0).ShouldBe("上午");
+                    GetPeriodText(periodPanel, 1).ShouldBe("下午");
+                    periodHost.Bounds.Width.ShouldBe(hostWidth, 0.001);
+                    periodHost.Bounds.Width.ShouldBeGreaterThanOrEqualTo(
+                        periodPanel.Children.OfType<TimeViewCell>().Max(cell => cell.DesiredSize.Width));
+                });
+            }
+            finally
+            {
+                languageManager.ChangeLanguage(originalLanguage);
+            }
+        });
+    }
+
     private static DateTimePickerPanel FindPanel(Control control, string name)
     {
         return control.GetVisualDescendants()
                       .OfType<DateTimePickerPanel>()
                       .Single(panel => panel.Name == name);
+    }
+
+    private static string? GetPeriodText(DateTimePickerPanel panel, int value)
+    {
+        return panel.Children
+                    .OfType<TimeViewCell>()
+                    .Single(cell => (int)cell.Tag! == value)
+                    .Content
+                    .ShouldBeOfType<TextBlock>()
+                    .Text;
     }
 
     private static void ShowInWindow(Control content, Action assertion)

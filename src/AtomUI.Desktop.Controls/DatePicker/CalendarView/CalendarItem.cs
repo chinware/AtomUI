@@ -5,7 +5,7 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using AtomUI.Desktop.Controls.CalendarView.State;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -1232,7 +1232,8 @@ internal class CalendarItem : TemplatedControl
         _pointerTracker ??= new CalendarPointerTracker(this);
         _pointerTracker.Attach(inputManager);
         EnsureGeneratedGrids();
-        AttachLanguageVariantListener();
+        AttachLanguageListener();
+        Owner?.RefreshCulture();
         RefreshLocalizedContent();
     }
 
@@ -1240,41 +1241,43 @@ internal class CalendarItem : TemplatedControl
     {
         base.OnDetachedFromVisualTree(e);
         _pointerTracker?.Detach();
-        DetachLanguageVariantListener();
+        DetachLanguageListener();
         ClearGeneratedGrids();
     }
 
-    private void AttachLanguageVariantListener()
+    private void AttachLanguageListener()
     {
         if (_subscribedLanguageManager is not null)
         {
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
+        var languageManager = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
+            : null;
         if (languageManager is null)
         {
             return;
         }
 
-        languageManager.LanguageVariantChanged += HandleLanguageVariantChanged;
+        languageManager.LanguageChanged += HandleLanguageChanged;
         _subscribedLanguageManager = languageManager;
     }
 
-    private void DetachLanguageVariantListener()
+    private void DetachLanguageListener()
     {
         if (_subscribedLanguageManager is null)
         {
             return;
         }
 
-        _subscribedLanguageManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
+        _subscribedLanguageManager.LanguageChanged -= HandleLanguageChanged;
         _subscribedLanguageManager = null;
     }
 
-    private void HandleLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e)
+    private void HandleLanguageChanged(object? sender, LanguageChangedEventArgs e)
     {
-        Owner?.RefreshCultureFromThemeManager();
+        Owner?.RefreshCulture();
         RefreshLocalizedContent();
     }
 

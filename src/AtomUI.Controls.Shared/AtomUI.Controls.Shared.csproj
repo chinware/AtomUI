@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Avalonia" />
     </ItemGroup>
 
@@ -25,11 +21,13 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI.Controls" />
+        <InternalsVisibleTo Include="AtomUI.Controls.Tests" />
         <InternalsVisibleTo Include="AtomUI.Controls.Shared.Tests" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.Tests" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.Extras" />
+        <InternalsVisibleTo Include="AtomUI.Toolkits.GalleryBase" />
     </ItemGroup>
 </Project>

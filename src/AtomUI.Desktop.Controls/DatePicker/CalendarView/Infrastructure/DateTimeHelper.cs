@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Globalization;
-using AtomUI.Controls;
 using Avalonia;
 
 namespace AtomUI.Desktop.Controls.CalendarView.Infrastructure;
@@ -83,7 +82,9 @@ internal static class DateTimeHelper
 
     public static DateTimeFormatInfo GetCurrentDateFormat()
     {
-        var culture = Application.Current?.GetLanguageVariant()?.ToCultureInfo();
+        var culture = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)?.Current.FormattingCulture
+            : null;
         if (culture?.Calendar is GregorianCalendar)
         {
             return culture.DateTimeFormat;

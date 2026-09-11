@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class DataGridToken : AbstractControlDesignToken
+internal sealed class DataGridToken : AbstractControlDesignToken
 {
     
     public DataGridToken()

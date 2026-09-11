@@ -6,7 +6,7 @@ using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 
 namespace AtomUIGallery.ShowCases.Select;
@@ -24,12 +24,14 @@ public partial class SelectShowCase : GalleryReactiveUserControl<SelectViewModel
                 InitializeRandomOptions(viewModel);
                 RefreshLocalizedOptions(viewModel);
 
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = Application.Current is { } application
+                    ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
+                    : null;
                 if (languageManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptions(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshLocalizedOptions(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    Disposable.Create(() => languageManager.LanguageChanged -= handler)
                         .DisposeWith(disposables);
                 }
 
@@ -327,6 +329,6 @@ internal static class SelectShowCaseLanguage
             return fallback;
         }
 
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 }

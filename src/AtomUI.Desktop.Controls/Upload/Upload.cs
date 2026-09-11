@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Text.RegularExpressions;
 using AtomUI.Controls;
 using Avalonia;
@@ -10,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Metadata;
+using Avalonia.Platform.Storage;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -25,8 +27,16 @@ public partial class Upload : ContentControl,
             defaultBindingMode: BindingMode.TwoWay,
             enableDataValidation: true);
 
-    public static readonly StyledProperty<IReadOnlyList<string>?> AcceptsProperty =
-        AvaloniaProperty.Register<Upload, IReadOnlyList<string>?>(nameof(Accepts));
+    public static readonly StyledProperty<IReadOnlyList<FilePickerFileType>?> AllowedFileTypesProperty =
+        AvaloniaProperty.Register<Upload, IReadOnlyList<FilePickerFileType>?>(nameof(AllowedFileTypes));
+
+    public static readonly StyledProperty<UploadCountOverflowBehavior> CountOverflowBehaviorProperty =
+        AvaloniaProperty.Register<Upload, UploadCountOverflowBehavior>(
+            nameof(CountOverflowBehavior),
+            UploadCountOverflowBehavior.RejectExcess);
+
+    public static readonly StyledProperty<IUploadAdmissionPolicy?> AdmissionPolicyProperty =
+        AvaloniaProperty.Register<Upload, IUploadAdmissionPolicy?>(nameof(AdmissionPolicy));
 
     public static readonly StyledProperty<object?> ExtraContextProperty =
         AvaloniaProperty.Register<Upload, object?>(nameof(ExtraContext));
@@ -45,9 +55,6 @@ public partial class Upload : ContentControl,
 
     public static readonly StyledProperty<bool> IsMultipleEnabledProperty =
         AvaloniaProperty.Register<Upload, bool>(nameof(IsMultipleEnabled));
-
-    public static readonly StyledProperty<bool> IsOpenFileDialogOnClickProperty =
-        AvaloniaProperty.Register<Upload, bool>(nameof(IsOpenFileDialogOnClick), true);
 
     public static readonly StyledProperty<bool> IsShowUploadListProperty =
         AvaloniaProperty.Register<Upload, bool>(nameof(IsShowUploadList), true);
@@ -100,10 +107,22 @@ public partial class Upload : ContentControl,
         set => SetValue(FilesProperty, value);
     }
 
-    public IReadOnlyList<string>? Accepts
+    public IReadOnlyList<FilePickerFileType>? AllowedFileTypes
     {
-        get => GetValue(AcceptsProperty);
-        set => SetValue(AcceptsProperty, value);
+        get => GetValue(AllowedFileTypesProperty);
+        set => SetValue(AllowedFileTypesProperty, value);
+    }
+
+    public UploadCountOverflowBehavior CountOverflowBehavior
+    {
+        get => GetValue(CountOverflowBehaviorProperty);
+        set => SetValue(CountOverflowBehaviorProperty, value);
+    }
+
+    public IUploadAdmissionPolicy? AdmissionPolicy
+    {
+        get => GetValue(AdmissionPolicyProperty);
+        set => SetValue(AdmissionPolicyProperty, value);
     }
 
     public object? ExtraContext
@@ -140,12 +159,6 @@ public partial class Upload : ContentControl,
     {
         get => GetValue(IsMultipleEnabledProperty);
         set => SetValue(IsMultipleEnabledProperty, value);
-    }
-
-    public bool IsOpenFileDialogOnClick
-    {
-        get => GetValue(IsOpenFileDialogOnClickProperty);
-        set => SetValue(IsOpenFileDialogOnClickProperty, value);
     }
 
     public bool IsShowUploadList
@@ -230,6 +243,7 @@ public partial class Upload : ContentControl,
     public event EventHandler<UploadTaskCancelledEventArgs>? UploadTaskCancelled;
     public event EventHandler<UploadTaskFailedEventArgs>? UploadTaskFailed;
     public event EventHandler<UploadTaskRemovedEventArgs>? UploadTaskRemoved;
+    public event EventHandler<UploadInputBatchCompletedEventArgs>? InputBatchCompleted;
 
     #endregion
 
@@ -270,7 +284,9 @@ public partial class Upload : ContentControl,
     private readonly UploadAppendContentItem _appendContentItem = new();
     private readonly HashSet<UploadFileItem> _observedFileItems = new();
     private readonly Dictionary<Guid, CancellationTokenSource> _successAutoRemoveDelays = new();
+    private readonly Dictionary<Guid, UploadFileInfo> _acceptedFileInfos = new();
     private readonly UploadQueue _uploadQueue;
+    private readonly UploadInputPipeline _inputPipeline;
     private IList<UploadFileItem> _effectiveFiles = null!;
     private INotifyCollectionChanged? _attachedFileCollection;
     private EventHandler? _formValueChanged;
@@ -285,18 +301,20 @@ public partial class Upload : ContentControl,
     {
         _effectiveFiles = _ownedFiles;
         _uploadQueue = new UploadQueue(this, UploadTransport, MaxConcurrentTasks);
+        _inputPipeline = new UploadInputPipeline(this);
         SyncAppendContentItem();
         AttachFileCollection(EffectiveFiles);
         SyncEffectivePictureItems();
     }
 
-    public async Task EnqueueFilesAsync(IEnumerable<UploadFileInfo> files, CancellationToken cancellationToken = default)
+    public Task EnqueueFilesAsync(IEnumerable<UploadFileInfo> files, CancellationToken cancellationToken = default)
     {
-        foreach (var file in files)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await EnqueueFileAsync(file, cancellationToken);
-        }
+        ArgumentNullException.ThrowIfNull(files);
+        var materializedFiles = files.ToArray();
+        return _inputPipeline.ProcessFilesAsync(
+            UploadInputSource.Programmatic,
+            materializedFiles,
+            cancellationToken);
     }
 
     public async Task RemoveFileAsync(Guid id, CancellationToken cancellationToken = default)
@@ -310,28 +328,57 @@ public partial class Upload : ContentControl,
 
         await _uploadQueue.CancelAsync(id, cancellationToken);
         CancelSuccessAutoRemove(id);
-        DetachFileItem(item);
-        files.Remove(item);
-        if (files is not INotifyCollectionChanged)
-        {
-            RemoveEffectivePictureItem(item);
-        }
-        NotifyFormValueChanged(files);
-        UploadTaskRemoved?.Invoke(this, new UploadTaskRemovedEventArgs(id, CreateUploadFileInfo(item)));
+        RemoveFileCore(item, raiseRemovedEvent: true);
     }
 
     public async Task ResetAsync(CancellationToken cancellationToken = default)
     {
-        await _uploadQueue.CancelAllAsync(cancellationToken);
-        ClearEffectiveFiles();
+        cancellationToken.ThrowIfCancellationRequested();
+        var cleanupExceptions = new List<Exception>();
+        try
+        {
+            await _inputPipeline.CancelAllAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            cleanupExceptions.Add(ex);
+        }
+
+        try
+        {
+            await _uploadQueue.CancelAllAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            cleanupExceptions.Add(ex);
+        }
+
+        try
+        {
+            await InvokeOnUiThreadAsync(ClearEffectiveFilesAfterQueueCancellation).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            cleanupExceptions.Add(ex);
+        }
+
+        ThrowCleanupExceptions(cleanupExceptions);
     }
 
     public void Reset()
     {
-        Dispatcher.InvokeAsync(async () => await ResetAsync());
+        StartObservedLifecycleOperation(ResetAsync());
     }
 
-    private async void HandleTaskRemoveRequest(TaskRemoveRequestEventArgs args)
+    private void HandleTaskRemoveRequest(TaskRemoveRequestEventArgs args)
     {
         if (args.Handled)
         {
@@ -339,14 +386,18 @@ public partial class Upload : ContentControl,
         }
 
         args.Handled = true;
-        await RemoveFileAsync(args.TaskId);
+        StartObservedLifecycleOperation(RemoveFileAsync(args.TaskId));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        Dispatcher.InvokeAsync(async () => await _uploadQueue.CancelAllAsync());
         CancelAllSuccessAutoRemove();
+        var task = HandleDetachedAsync();
+        if (!task.IsCompletedSuccessfully)
+        {
+            _ = ObserveUploadLifecycleTaskAsync(task);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -366,11 +417,11 @@ public partial class Upload : ContentControl,
         }
         else if (change.Property == UploadTransportProperty)
         {
-            Dispatcher.InvokeAsync(async () => await _uploadQueue.SetTransportAsync(UploadTransport));
+            StartObservedLifecycleOperation(_uploadQueue.SetTransportAsync(UploadTransport));
         }
         else if (change.Property == MaxConcurrentTasksProperty)
         {
-            Dispatcher.InvokeAsync(async () => await _uploadQueue.SetMaxConcurrentTasksAsync(MaxConcurrentTasks));
+            StartObservedLifecycleOperation(_uploadQueue.SetMaxConcurrentTasksAsync(MaxConcurrentTasks));
         }
     }
 
@@ -397,27 +448,10 @@ public partial class Upload : ContentControl,
 
     protected virtual void NotifySetFormValue(object? value)
     {
-        CancelAllSuccessAutoRemove();
-        CancelAllUploadQueue();
-
-        var files = EffectiveFiles;
-        foreach (var item in files.ToArray())
-        {
-            DetachFileItem(item);
-        }
-        files.Clear();
-
-        if (value is IEnumerable<UploadFileItem> items)
-        {
-            foreach (var item in items)
-            {
-                AttachFileItem(item);
-                files.Add(item);
-            }
-        }
-
-        SyncEffectivePictureItems();
-        NotifyFormValueChanged(files);
+        var replacementItems = value is IEnumerable<UploadFileItem> items
+            ? items.ToArray()
+            : [];
+        ReplaceEffectiveFilesContents(replacementItems);
     }
 
     protected virtual object? NotifyGetFormValue()
@@ -440,13 +474,13 @@ public partial class Upload : ContentControl,
     {
         if (Dispatcher.CheckAccess())
         {
-            ClearEffectiveFiles();
-            Dispatcher.InvokeAsync(async () => await _uploadQueue.CancelAllAsync());
+            ReplaceEffectiveFilesContents([]);
         }
         else
         {
-            Dispatcher.InvokeAsync(ClearEffectiveFiles);
-            Dispatcher.InvokeAsync(async () => await _uploadQueue.CancelAllAsync());
+            StartObservedLifecycleOperation(
+                Dispatcher.InvokeAsync(
+                    () => ReplaceEffectiveFilesContents([])).GetTask());
         }
     }
 
@@ -460,6 +494,11 @@ public partial class Upload : ContentControl,
     {
         RunOnUiThread(() =>
         {
+            if (IsTerminalUploadStatus(item.Status))
+            {
+                return;
+            }
+
             item.Status   = FileUploadStatus.Uploading;
             item.Progress = progress;
             SetCurrentValue(IsTaskRunningProperty, true);
@@ -503,35 +542,145 @@ public partial class Upload : ContentControl,
         });
     }
 
-    private async Task EnqueueFileAsync(UploadFileInfo file, CancellationToken cancellationToken)
+    private IReadOnlyList<UploadFileInfo> CommitInputFiles(
+        IReadOnlyList<UploadFileInfo> files,
+        UploadInputBatchOperation operation,
+        UploadInputPipelineOptions options)
     {
-        var files = EffectiveFiles;
-        if (files.Count >= MaxCount)
+        ValidateInputFileOwnership(files, operation);
+        var (filesToCommit, rejectedFiles) = ApplyInputCountPolicy(
+            files,
+            options.CountOverflowBehavior,
+            options.MaxCount,
+            EffectiveFiles.Count);
+        foreach (var file in filesToCommit)
         {
-            if (MaxCount != 1)
-            {
-                return;
-            }
-            await ResetAsync(cancellationToken);
+            CommitInputFile(file, operation);
+        }
+        return rejectedFiles;
+    }
+
+    private IReadOnlyList<UploadFileInfo> ReplaceInputFiles(
+        IReadOnlyList<UploadFileInfo> files,
+        UploadInputBatchOperation operation,
+        UploadInputPipelineOptions options)
+    {
+        ValidateInputFileOwnership(files, operation);
+        var (filesToCommit, rejectedFiles) = ApplyInputCountPolicy(
+            files,
+            UploadCountOverflowBehavior.ReplaceExisting,
+            options.MaxCount,
+            existingCount: 0);
+        if (filesToCommit.Count == 0)
+        {
+            return rejectedFiles;
         }
 
-        var item = new UploadFileItem
+        var entries = filesToCommit
+                      .Select(file => KeyValuePair.Create(CreateInputFileItem(file), file))
+                      .ToArray();
+        var previousItems = EffectiveFiles.ToArray();
+        KeyValuePair<Guid, UploadFileInfo>[]? removedFileInfos = null;
+        try
         {
-            Name        = file.Name,
-            Path        = file.FilePath,
-            Size        = file.Size,
-            PendingText = PendingText,
-            IsImageFile = IsImageFile(file),
-            UserData    = ExtraContext
-        };
+            removedFileInfos = ReplaceEffectiveFilesCore(entries.Select(entry => entry.Key).ToArray());
+            foreach (var entry in entries)
+            {
+                AcceptInputFile(entry.Key, entry.Value, operation);
+            }
+
+            NotifyFormValueChanged(EffectiveFiles);
+            foreach (var entry in entries)
+            {
+                RaiseInputFileCommitted(entry.Key, entry.Value);
+            }
+        }
+        catch
+        {
+            AcceptRetainedInputFiles(entries, operation);
+            throw;
+        }
+        finally
+        {
+            removedFileInfos ??= TakeRemovedAcceptedFileInfos(previousItems);
+            StartUploadCancellationAndRelease(removedFileInfos);
+        }
+        return rejectedFiles;
+    }
+
+    private void CommitInputFile(UploadFileInfo file, UploadInputBatchOperation operation)
+    {
+        var files = EffectiveFiles;
+        var item = CreateInputFileItem(file);
 
         AttachFileItem(item);
-        files.Add(item);
+        try
+        {
+            files.Add(item);
+        }
+        catch
+        {
+            if (files.Contains(item))
+            {
+                AcceptInputFile(item, file, operation);
+            }
+            else
+            {
+                DetachFileItem(item);
+            }
+            throw;
+        }
+
+        AcceptInputFile(item, file, operation);
         if (files is not INotifyCollectionChanged)
         {
             InsertEffectivePictureItem(item, files.IndexOf(item));
         }
         NotifyFormValueChanged(files);
+        RaiseInputFileCommitted(item, file);
+    }
+
+    private UploadFileItem CreateInputFileItem(UploadFileInfo file)
+    {
+        return new UploadFileItem
+        {
+            Name        = file.Name,
+            Path        = file.Path,
+            Size        = file.Size ?? 0,
+            PendingText = PendingText,
+            IsImageFile = IsImageFile(file),
+            UserData    = ExtraContext
+        };
+    }
+
+    private void AcceptInputFile(
+        UploadFileItem item,
+        UploadFileInfo file,
+        UploadInputBatchOperation operation)
+    {
+        _acceptedFileInfos[item.Id] = file;
+        if (file.Source is IUploadFileSourceLease)
+        {
+            operation.TransferFileSourceToUpload(file);
+        }
+        operation.Accept(file);
+    }
+
+    private void AcceptRetainedInputFiles(
+        IReadOnlyList<KeyValuePair<UploadFileItem, UploadFileInfo>> entries,
+        UploadInputBatchOperation operation)
+    {
+        foreach (var entry in entries)
+        {
+            if (EffectiveFiles.Contains(entry.Key) && !_acceptedFileInfos.ContainsKey(entry.Key.Id))
+            {
+                AcceptInputFile(entry.Key, entry.Value, operation);
+            }
+        }
+    }
+
+    private void RaiseInputFileCommitted(UploadFileItem item, UploadFileInfo file)
+    {
         UploadTaskCreated?.Invoke(this, new UploadTaskCreatedEventArgs(item.Id, file));
 
         var aboutToSchedulingEvent = new UploadTaskAboutToSchedulingEventArgs(item.Id, file);
@@ -554,15 +703,68 @@ public partial class Upload : ContentControl,
         }
     }
 
+    private static void ValidateInputFileOwnership(
+        IReadOnlyList<UploadFileInfo> files,
+        UploadInputBatchOperation operation)
+    {
+        var sourceLeases = new HashSet<IUploadFileSourceLease>(ReferenceEqualityComparer.Instance);
+        foreach (var file in files)
+        {
+            if (file.Source is not IUploadFileSourceLease lease)
+            {
+                continue;
+            }
+            if (!operation.OwnsFileSource(file))
+            {
+                throw new InvalidOperationException("The input file source is not owned by this input batch.");
+            }
+            if (!sourceLeases.Add(lease))
+            {
+                throw new InvalidOperationException("An input file source cannot be committed more than once.");
+            }
+        }
+    }
+
+    private static (IReadOnlyList<UploadFileInfo> Accepted, IReadOnlyList<UploadFileInfo> Rejected)
+        ApplyInputCountPolicy(
+            IReadOnlyList<UploadFileInfo> files,
+            UploadCountOverflowBehavior overflowBehavior,
+            int maxCount,
+            int existingCount)
+    {
+        var availableCount = Math.Max(0, Math.Max(0, maxCount) - Math.Max(0, existingCount));
+        if (files.Count <= availableCount)
+        {
+            return (files, []);
+        }
+        if (overflowBehavior == UploadCountOverflowBehavior.RejectBatch)
+        {
+            return ([], files);
+        }
+        return (files.Take(availableCount).ToArray(), files.Skip(availableCount).ToArray());
+    }
+
     private void HandleFilesChanged(IList<UploadFileItem>? oldFiles, IList<UploadFileItem>? newFiles)
     {
         CancelAllSuccessAutoRemove();
-        CancelAllUploadQueue();
-        DetachFileCollection(oldFiles ?? _ownedFiles);
-        EffectiveFiles = newFiles ?? _ownedFiles;
-        AttachFileCollection(EffectiveFiles);
-        SyncEffectivePictureItems();
-        NotifyFormValueChanged(EffectiveFiles);
+        var previousFiles = oldFiles ?? _ownedFiles;
+        var nextFiles = newFiles ?? _ownedFiles;
+        var previousItems = previousFiles.ToArray();
+        try
+        {
+            DetachFileCollection(previousFiles);
+            EffectiveFiles = nextFiles;
+            AttachFileCollection(EffectiveFiles);
+            SyncEffectivePictureItems();
+            NotifyFormValueChanged(EffectiveFiles);
+        }
+        finally
+        {
+            var retainedIds = EffectiveFiles.Select(item => item.Id).ToHashSet();
+            var removedFileInfos = TakeAcceptedFileInfos(
+                previousItems.Where(item => !retainedIds.Contains(item.Id)));
+            StartUploadCancellationAndRelease(removedFileInfos);
+        }
     }
 
     private void AttachFileCollection(IList<UploadFileItem> files)
@@ -595,17 +797,20 @@ public partial class Upload : ContentControl,
 
     private void HandleFilesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.OldItems is not null)
+        var removedFileInfos = new List<KeyValuePair<Guid, UploadFileInfo>>();
+        if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace &&
+            e.OldItems is not null)
         {
             foreach (var item in e.OldItems.OfType<UploadFileItem>())
             {
                 DetachFileItem(item);
                 CancelSuccessAutoRemove(item.Id);
-                CancelUploadQueue(item.Id);
+                AddAcceptedFileInfo(item.Id, removedFileInfos);
             }
         }
 
-        if (e.NewItems is not null)
+        if (e.Action is NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Replace &&
+            e.NewItems is not null)
         {
             foreach (var item in e.NewItems.OfType<UploadFileItem>())
             {
@@ -616,10 +821,11 @@ public partial class Upload : ContentControl,
         if (e.Action == NotifyCollectionChangedAction.Reset)
         {
             CancelAllSuccessAutoRemove();
-            CancelAllUploadQueue();
-            foreach (var item in _observedFileItems.ToArray())
+            var currentItems = new HashSet<UploadFileItem>(EffectiveFiles, ReferenceEqualityComparer.Instance);
+            foreach (var item in _observedFileItems.Where(item => !currentItems.Contains(item)).ToArray())
             {
                 DetachFileItem(item);
+                AddAcceptedFileInfo(item.Id, removedFileInfos);
             }
             foreach (var item in EffectiveFiles)
             {
@@ -627,8 +833,15 @@ public partial class Upload : ContentControl,
             }
         }
 
-        SyncEffectivePictureItems(e);
-        NotifyFormValueChanged(EffectiveFiles);
+        try
+        {
+            SyncEffectivePictureItems(e);
+            NotifyFormValueChanged(EffectiveFiles);
+        }
+        finally
+        {
+            StartUploadCancellationAndRelease(removedFileInfos);
+        }
     }
 
     private void AttachFileItem(UploadFileItem item)
@@ -671,16 +884,20 @@ public partial class Upload : ContentControl,
         return EffectiveFiles.FirstOrDefault(file => file.Id == id);
     }
 
-    private void ClearEffectiveFiles()
+    private void ClearEffectiveFilesAfterQueueCancellation()
     {
-        CancelAllSuccessAutoRemove();
-        foreach (var item in EffectiveFiles.ToArray())
+        var previousItems = EffectiveFiles.ToArray();
+        KeyValuePair<Guid, UploadFileInfo>[]? removedFileInfos = null;
+        try
         {
-            DetachFileItem(item);
+            removedFileInfos = ReplaceEffectiveFilesCore([]);
+            NotifyFormValueChanged(EffectiveFiles);
         }
-        EffectiveFiles.Clear();
-        SyncEffectivePictureItems();
-        NotifyFormValueChanged(EffectiveFiles);
+        finally
+        {
+            removedFileInfos ??= TakeRemovedAcceptedFileInfos(previousItems);
+            DisposeUploadFileInfos(removedFileInfos.Select(pair => pair.Value));
+        }
     }
 
     private void SyncAppendContentItem()
@@ -795,16 +1012,255 @@ public partial class Upload : ContentControl,
             return IsImageFilePredicate.Invoke(file);
         }
 
-        var extension = System.IO.Path.GetExtension(file.FilePath.LocalPath);
+        var extension = System.IO.Path.GetExtension(file.Name);
         return !string.IsNullOrEmpty(extension) && ImageExtensionRegex.IsMatch(extension);
     }
 
-    private static UploadFileInfo CreateUploadFileInfo(UploadFileItem item)
+    private UploadFileInfo CreateUploadFileInfo(UploadFileItem item)
     {
+        if (_acceptedFileInfos.TryGetValue(item.Id, out var fileInfo))
+        {
+            return fileInfo;
+        }
+
         return new UploadFileInfo(
-            item.Name ?? string.Empty,
-            item.Path ?? new Uri("file:///", UriKind.Absolute),
+            string.IsNullOrWhiteSpace(item.Name) ? "unnamed" : item.Name,
+            DisplayOnlyUploadFileSource.Instance,
+            item.Path,
             item.Size);
+    }
+
+    private void RemoveFileCore(UploadFileItem item, bool raiseRemovedEvent)
+    {
+        var files = EffectiveFiles;
+        var fileInfo = CreateUploadFileInfo(item);
+        try
+        {
+            files.Remove(item);
+            if (files.Contains(item))
+            {
+                return;
+            }
+
+            if (files is not INotifyCollectionChanged)
+            {
+                DetachFileItem(item);
+                RemoveEffectivePictureItem(item);
+            }
+            NotifyFormValueChanged(files);
+            if (raiseRemovedEvent)
+            {
+                UploadTaskRemoved?.Invoke(this, new UploadTaskRemovedEventArgs(item.Id, fileInfo));
+            }
+        }
+        finally
+        {
+            if (!files.Contains(item))
+            {
+                DetachFileItem(item);
+                DisposeUploadFileInfo(TakeAcceptedFileInfo(item.Id));
+            }
+        }
+    }
+
+    private void ReleaseAcceptedFileInfo(Guid id)
+    {
+        DisposeUploadFileInfo(TakeAcceptedFileInfo(id));
+    }
+
+    private UploadFileInfo? TakeAcceptedFileInfo(Guid id)
+    {
+        return _acceptedFileInfos.Remove(id, out var fileInfo) ? fileInfo : null;
+    }
+
+    private KeyValuePair<Guid, UploadFileInfo>[] TakeAcceptedFileInfos(IEnumerable<UploadFileItem> items)
+    {
+        var fileInfos = new List<KeyValuePair<Guid, UploadFileInfo>>();
+        foreach (var item in items)
+        {
+            AddAcceptedFileInfo(item.Id, fileInfos);
+        }
+        return fileInfos.ToArray();
+    }
+
+    private void AddAcceptedFileInfo(Guid id, ICollection<KeyValuePair<Guid, UploadFileInfo>> fileInfos)
+    {
+        var fileInfo = TakeAcceptedFileInfo(id);
+        if (fileInfo is not null)
+        {
+            fileInfos.Add(KeyValuePair.Create(id, fileInfo));
+        }
+    }
+
+    private void ReplaceEffectiveFilesContents(IReadOnlyList<UploadFileItem> replacementItems)
+    {
+        var previousItems = EffectiveFiles.ToArray();
+        KeyValuePair<Guid, UploadFileInfo>[]? removedFileInfos = null;
+        try
+        {
+            removedFileInfos = ReplaceEffectiveFilesCore(replacementItems);
+            NotifyFormValueChanged(EffectiveFiles);
+        }
+        finally
+        {
+            removedFileInfos ??= TakeRemovedAcceptedFileInfos(previousItems);
+            StartUploadCancellationAndRelease(removedFileInfos);
+        }
+    }
+
+    private KeyValuePair<Guid, UploadFileInfo>[] ReplaceEffectiveFilesCore(
+        IReadOnlyList<UploadFileItem> replacementItems)
+    {
+        CancelAllSuccessAutoRemove();
+        var files = EffectiveFiles;
+        var previousItems = files.ToArray();
+        DetachFileCollection(files);
+        try
+        {
+            files.Clear();
+            foreach (var item in replacementItems)
+            {
+                files.Add(item);
+            }
+        }
+        finally
+        {
+            AttachFileCollection(files);
+            SyncEffectivePictureItems();
+        }
+        return TakeRemovedAcceptedFileInfos(previousItems);
+    }
+
+    private KeyValuePair<Guid, UploadFileInfo>[] TakeRemovedAcceptedFileInfos(
+        IReadOnlyList<UploadFileItem> previousItems)
+    {
+        var retainedIds = EffectiveFiles.Select(item => item.Id).ToHashSet();
+        return TakeAcceptedFileInfos(previousItems.Where(item => !retainedIds.Contains(item.Id)));
+    }
+
+    private void StartUploadCancellationAndRelease(
+        IReadOnlyList<KeyValuePair<Guid, UploadFileInfo>> fileInfos)
+    {
+        if (fileInfos.Count == 0)
+        {
+            return;
+        }
+
+        StartObservedLifecycleOperation(CancelUploadsAndReleaseAsync(fileInfos));
+    }
+
+    private async Task CancelUploadsAndReleaseAsync(
+        IReadOnlyList<KeyValuePair<Guid, UploadFileInfo>> fileInfos)
+    {
+        foreach (var pair in fileInfos)
+        {
+            try
+            {
+                await _uploadQueue.CancelAsync(pair.Key).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Upload cancellation failed before source release: {ex.Message}");
+            }
+            finally
+            {
+                DisposeUploadFileInfo(pair.Value);
+            }
+        }
+    }
+
+    private static void DisposeUploadFileInfos(IEnumerable<UploadFileInfo> fileInfos)
+    {
+        foreach (var fileInfo in fileInfos)
+        {
+            DisposeUploadFileInfo(fileInfo);
+        }
+    }
+
+    private static void DisposeUploadFileInfo(UploadFileInfo? fileInfo)
+    {
+        if (fileInfo?.Source is IUploadFileSourceLease lease)
+        {
+            lease.Dispose();
+        }
+    }
+
+    private void StartObservedLifecycleOperation(Task task)
+    {
+        if (!task.IsCompletedSuccessfully)
+        {
+            _ = ObserveUploadLifecycleTaskAsync(task);
+        }
+    }
+
+    private async Task HandleDetachedAsync()
+    {
+        var cleanupExceptions = new List<Exception>();
+        try
+        {
+            await _inputPipeline.CancelAllAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            cleanupExceptions.Add(ex);
+        }
+
+        try
+        {
+            await _uploadQueue.CancelAllAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            cleanupExceptions.Add(ex);
+        }
+
+        UploadFileInfo[]? detachedFileInfos = null;
+        try
+        {
+            await InvokeOnUiThreadAsync(() =>
+            {
+                detachedFileInfos = _acceptedFileInfos.Values.ToArray();
+                _acceptedFileInfos.Clear();
+            }).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            cleanupExceptions.Add(ex);
+        }
+
+        if (detachedFileInfos is not null)
+        {
+            DisposeUploadFileInfos(detachedFileInfos);
+        }
+
+        ThrowCleanupExceptions(cleanupExceptions);
+    }
+
+    private static void ThrowCleanupExceptions(IReadOnlyList<Exception> exceptions)
+    {
+        if (exceptions.Count == 1)
+        {
+            ExceptionDispatchInfo.Capture(exceptions[0]).Throw();
+        }
+        if (exceptions.Count > 1)
+        {
+            throw new AggregateException(exceptions);
+        }
+    }
+
+    private static async Task ObserveUploadLifecycleTaskAsync(Task task)
+    {
+        try
+        {
+            await task.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Upload lifecycle cleanup failed: {ex.Message}");
+        }
     }
 
     private void UpdateTaskRunning()
@@ -816,37 +1272,9 @@ public partial class Upload : ContentControl,
         }
     }
 
-    private void CancelUploadQueue(Guid id)
+    private static bool IsTerminalUploadStatus(FileUploadStatus status)
     {
-        var task = _uploadQueue.CancelAsync(id);
-        if (!task.IsCompletedSuccessfully)
-        {
-            _ = ObserveUploadQueueTaskAsync(task);
-        }
-    }
-
-    private void CancelAllUploadQueue()
-    {
-        var task = _uploadQueue.CancelAllAsync();
-        if (!task.IsCompletedSuccessfully)
-        {
-            _ = ObserveUploadQueueTaskAsync(task);
-        }
-    }
-
-    private static async Task ObserveUploadQueueTaskAsync(Task task)
-    {
-        try
-        {
-            await task.ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Upload queue cancellation failed: {ex.Message}");
-        }
+        return status is FileUploadStatus.Success or FileUploadStatus.Failed or FileUploadStatus.Cancelled;
     }
 
     private void RunOnUiThread(Action action)
@@ -857,7 +1285,19 @@ public partial class Upload : ContentControl,
         }
         else
         {
-            Dispatcher.Post(action);
+            Dispatcher.InvokeAsync(action).GetTask().GetAwaiter().GetResult();
+        }
+    }
+
+    private sealed class DisplayOnlyUploadFileSource : IUploadFileSource
+    {
+        internal static DisplayOnlyUploadFileSource Instance { get; } = new();
+
+        public ValueTask<Stream> OpenReadAsync(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return ValueTask.FromException<Stream>(
+                new NotSupportedException("Display-only upload items do not provide file content."));
         }
     }
 }

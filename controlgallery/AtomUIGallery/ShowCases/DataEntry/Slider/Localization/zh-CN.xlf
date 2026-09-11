@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SliderShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.</source>
+        <target state="translated">基础滑块。range 为 true 时显示为双滑块模式；disable 为 true 时滑块不可交互。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTooltipDescription">
+      <segment>
+        <source>Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.</source>
+        <target state="translated">使用 tooltip.formatter 格式化 Tooltip 内容；当 tooltip.formatter 为 null 时隐藏提示。</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTooltipTitle">
+      <segment>
+        <source>Customize tooltip</source>
+        <target state="translated">自定义提示</target>
+      </segment>
+    </unit>
+    <unit id="DisabledHandleDescription">
+      <segment>
+        <source>Set disabled as an array to disable individual handles in range mode. A disabled handle becomes a movement boundary that other handles cannot cross.</source>
+        <target state="translated">设置 disabled 为数组，可以单独禁用 range 模式下特定的 handle。禁用后该 handle 作为移动边界，其他 handle 无法越过。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledHandleTitle">
+      <segment>
+        <source>Disabled handles</source>
+        <target state="translated">禁用指定滑块</target>
+      </segment>
+    </unit>
+    <unit id="GraduatedSliderDescription">
+      <segment>
+        <source>Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb. When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.</source>
+        <target state="translated">使用 marks 属性标记带刻度滑块，使用 value 或 defaultValue 指定滑块位置。当 included 为 false 时，不同滑块相互独立；当 step 为 null 时，用户只能将滑块拖到刻度上。</target>
+      </segment>
+    </unit>
+    <unit id="GraduatedSliderTitle">
+      <segment>
+        <source>Graduated slider</source>
+        <target state="translated">带刻度的滑块</target>
+      </segment>
+    </unit>
+    <unit id="MultiHandleDescription">
+      <segment>
+        <source>Combine multiple points in a range.</source>
+        <target state="translated">范围多个点组合。</target>
+      </segment>
+    </unit>
+    <unit id="MultiHandleTitle">
+      <segment>
+        <source>Multiple points</source>
+        <target state="translated">多点组合</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisabledHandle1">
+      <segment>
+        <source>Disabled Handle 1</source>
+        <target state="translated">Disabled Handle 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisabledHandle2">
+      <segment>
+        <source>Disabled Handle 2</source>
+        <target state="translated">Disabled Handle 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisabledHandle3">
+      <segment>
+        <source>Disabled Handle 3</source>
+        <target state="translated">Disabled Handle 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetRange">
+      <segment>
+        <source>Set 35-85</source>
+        <target state="translated">设为 35-85</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBoundRangeValues">
+      <segment>
+        <source>Bound range:</source>
+        <target state="translated">绑定范围：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextEnabled">
+      <segment>
+        <source>Enabled:</source>
+        <target state="translated">Enabled:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIncludedFalse">
+      <segment>
+        <source>included=false</source>
+        <target state="translated">included=false</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIncludedTrue">
+      <segment>
+        <source>included=true</source>
+        <target state="translated">included=true</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Slider supports single-value and range selection, horizontal or vertical orientation, snap-to-tick behavior, formatted tooltips, marks, included tracks, disabled states, and keyboard interaction.</source>
+        <target state="translated">Slider 支持单值和范围选择、水平或垂直方向、按刻度吸附、格式化提示、刻度标记、包含轨道、禁用状态和键盘交互。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select a numeric value or range from a continuous or graduated track.</source>
+        <target state="translated">从连续或带刻度的轨道中选择数值或范围。</target>
+      </segment>
+    </unit>
+    <unit id="RangeValuesBindingDescription">
+      <segment>
+        <source>RangeValues defaults to TwoWay binding, so range changes update the ViewModel without an explicit binding mode.</source>
+        <target state="translated">RangeValues 默认双向绑定，拖动范围会直接更新 ViewModel，无需显式设置绑定模式。</target>
+      </segment>
+    </unit>
+    <unit id="RangeValuesBindingTitle">
+      <segment>
+        <source>RangeValues binding</source>
+        <target state="translated">RangeValues 绑定</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>The vertical Slider.</source>
+        <target state="translated">垂直滑块。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">垂直方向</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

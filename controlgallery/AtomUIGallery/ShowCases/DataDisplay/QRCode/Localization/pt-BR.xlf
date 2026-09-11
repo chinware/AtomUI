@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind">
+    <unit id="AdvancedUsageDescription">
+      <segment>
+        <source>Example with a popover card.</source>
+        <target state="translated">Exemplo com a popover cartão.</target>
+      </segment>
+    </unit>
+    <unit id="AdvancedUsageTitle">
+      <segment>
+        <source>Advanced usage</source>
+        <target state="translated">Uso avançado</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventRefreshRequested">
+      <segment>
+        <source>Raised when the built-in refresh action is clicked.</source>
+        <target state="translated">Emitido quando o built-em refresh ação é clicado.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">Básico uso exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">Uso básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomColorDescription">
+      <segment>
+        <source>Custom color.</source>
+        <target state="translated">Personalizado cor.</target>
+      </segment>
+    </unit>
+    <unit id="CustomColorTitle">
+      <segment>
+        <source>Custom color</source>
+        <target state="translated">Personalizado cor</target>
+      </segment>
+    </unit>
+    <unit id="CustomSizeDescription">
+      <segment>
+        <source>Custom size.</source>
+        <target state="translated">Personalizado tamanho.</target>
+      </segment>
+    </unit>
+    <unit id="CustomSizeTitle">
+      <segment>
+        <source>Custom size</source>
+        <target state="translated">Personalizado tamanho</target>
+      </segment>
+    </unit>
+    <unit id="CustomStatusRendererDescription">
+      <segment>
+        <source>Use LoadingTemplate, ExpiredTemplate and ScannedTemplate to control rendering for different QR code states.</source>
+        <target state="translated">Usar LoadingTemplate, ExpiredTemplate e ScannedTemplate para controle rendering para diferente QR code states.</target>
+      </segment>
+    </unit>
+    <unit id="CustomStatusRendererTitle">
+      <segment>
+        <source>Custom status renderer</source>
+        <target state="translated">Personalizado status renderer</target>
+      </segment>
+    </unit>
+    <unit id="DifferentStatusDescription">
+      <segment>
+        <source>The QR code status can be controlled by Status. Active, Expired, Loading and Scanned are supported.</source>
+        <target state="translated">O QR code status pode ser controlled por Status. Active, Expired, Carregando e Scanned são supported.</target>
+      </segment>
+    </unit>
+    <unit id="DifferentStatusTitle">
+      <segment>
+        <source>Different status</source>
+        <target state="translated">Diferente status</target>
+      </segment>
+    </unit>
+    <unit id="ErrorLevelDescription">
+      <segment>
+        <source>Set errorLevel to adjust different error correction levels.</source>
+        <target state="translated">Definir errorLevel para adjust diferente erro correction levels.</target>
+      </segment>
+    </unit>
+    <unit id="ErrorLevelTitle">
+      <segment>
+        <source>Error correction level</source>
+        <target state="translated">Erro correction level</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToRefresh">
+      <segment>
+        <source>Click to refresh</source>
+        <target state="translated">Clique para refresh</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">Sobreposição me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarger">
+      <segment>
+        <source>Larger</source>
+        <target state="translated">Larger</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmaller">
+      <segment>
+        <source>Smaller</source>
+        <target state="translated">Smaller</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLoading">
+      <segment>
+        <source>Loading...</source>
+        <target state="translated">Carregando...</target>
+      </segment>
+    </unit>
+    <unit id="P2TextQRCodeExpired">
+      <segment>
+        <source>QR code expired</source>
+        <target state="translated">Código QR expirado</target>
+      </segment>
+    </unit>
+    <unit id="P2TextScanned">
+      <segment>
+        <source>Scanned</source>
+        <target state="translated">Escaneado</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>QRCode encodes text or URLs into a QR image, with configurable size, color, icon, error correction and status content.</source>
+        <target state="translated">QRCode encodes texto ou URLs into a QR imagem, com configurable tamanho, cor, ícone, erro correction e status conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Render scannable QR codes with status overlays and optional branding.</source>
+        <target state="translated">Renderizar scannable QR codes com status overlays e opcional branding.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>A QR code with an icon.</source>
+        <target state="translated">A QR code com an ícone.</target>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With Icon</source>
+        <target state="translated">Com Ícone</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

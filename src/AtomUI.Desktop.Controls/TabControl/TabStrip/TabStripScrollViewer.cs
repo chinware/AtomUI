@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -33,13 +34,12 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         }
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
-        CloseMenuFlyout();
-        base.OnDetachedFromVisualTree(e);
+        OpenMenuFlyout();
     }
 
-    private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
+    private protected override void OpenMenuFlyout()
     {
         if (MenuFlyout != null)
         {
@@ -54,7 +54,9 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         };
         MenuFlyout.Closed += HandleMenuFlyoutClosed;
         _flyoutBindingDisposable?.Dispose();
-        _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
+        _flyoutBindingDisposable = new CompositeDisposable(
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty),
+            BindUtils.RelayBind(this, IsPopupPinnedOpenProperty, MenuFlyout, Flyout.IsPopupPinnedOpenProperty));
         
         if (TabStripPlacement == Dock.Top)
         {
@@ -108,9 +110,10 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                     {
                         var menuItem = new TabStripOverflowMenuItem
                         {
-                            Header       = tabStripItem.Content,
-                            TabStripItem = tabStripItem,
-                            IsClosable   = tabStripItem.IsClosable
+                            Header         = tabStripItem.Content,
+                            HeaderTemplate = tabStripItem.ContentTemplate,
+                            TabStripItem   = tabStripItem,
+                            IsClosable     = tabStripItem.IsClosable
                         };
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
@@ -130,11 +133,11 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         }
     }
 
-    private void CloseMenuFlyout()
+    private protected override void CloseMenuFlyout()
     {
         if (MenuFlyout is { } flyout)
         {
-            flyout.Hide();
+            flyout.CloseForLifecycle();
             HandleMenuFlyoutClosed(flyout, EventArgs.Empty);
         }
     }
@@ -160,12 +163,13 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         }
         flyout.Items.Clear();
 
-        _flyoutBindingDisposable?.Dispose();
-        _flyoutBindingDisposable = null;
         if (ReferenceEquals(MenuFlyout, flyout))
         {
+            _flyoutBindingDisposable?.Dispose();
+            _flyoutBindingDisposable = null;
             MenuFlyout = null;
         }
+        flyout.SetCurrentValue(Flyout.IsPopupPinnedOpenProperty, false);
     }
 
     private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
@@ -189,30 +193,13 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
 
     private void HandleCloseTabRequest(object? sender, RoutedEventArgs args)
     {
-        if (sender is TabStripOverflowMenuItem tabStripMenuItem)
+        if (sender is TabStripOverflowMenuItem { TabStripItem: { } tabStripItem } tabStripMenuItem &&
+            TabStrip is { } tabStrip &&
+            tabStrip.CloseTab(tabStripItem))
         {
-            if (TabStrip is not null)
-            {
-                if (TabStrip.SelectedItem is TabStripItem selectedItem)
-                {
-                    if (selectedItem == tabStripMenuItem.TabStripItem)
-                    {
-                        var     selectedIndex   = TabStrip.SelectedIndex;
-                        object? newSelectedItem = null;
-                        if (selectedIndex != 0)
-                        {
-                            newSelectedItem = TabStrip.Items[--selectedIndex];
-                        }
-
-                        TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
-                        TabStrip.SelectedItem = newSelectedItem;
-                    }
-                    else
-                    {
-                        TabStrip.Items.Remove(tabStripMenuItem.TabStripItem);
-                    }
-                }
-            }
+            tabStripMenuItem.Click    -= HandleMenuItemClicked;
+            tabStripMenuItem.CloseTab -= HandleCloseTabRequest;
+            tabStripMenuItem.RemoveFromMenu();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -33,13 +34,12 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         }
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
-        CloseMenuFlyout();
-        base.OnDetachedFromVisualTree(e);
+        OpenMenuFlyout();
     }
 
-    private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
+    private protected override void OpenMenuFlyout()
     {
         if (MenuFlyout != null)
         {
@@ -53,7 +53,9 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         };
         MenuFlyout.Closed += HandleMenuFlyoutClosed;
         _flyoutBindingDisposable?.Dispose();
-        _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
+        _flyoutBindingDisposable = new CompositeDisposable(
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty),
+            BindUtils.RelayBind(this, IsPopupPinnedOpenProperty, MenuFlyout, Flyout.IsPopupPinnedOpenProperty));
 
         if (TabStripPlacement == Dock.Top)
         {
@@ -108,9 +110,10 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
                     {
                         var menuItem = new TabControlOverflowMenuItem
                         {
-                            Header     = tabItem.Header,
-                            TabItem    = tabItem,
-                            IsClosable = tabItem.IsClosable
+                            Header         = tabItem.Header,
+                            HeaderTemplate = tabItem.HeaderTemplate,
+                            TabItem        = tabItem,
+                            IsClosable     = tabItem.IsClosable
                         };
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
@@ -130,11 +133,11 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         }
     }
 
-    private void CloseMenuFlyout()
+    private protected override void CloseMenuFlyout()
     {
         if (MenuFlyout is { } flyout)
         {
-            flyout.Hide();
+            flyout.CloseForLifecycle();
             HandleMenuFlyoutClosed(flyout, EventArgs.Empty);
         }
     }
@@ -160,12 +163,13 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         }
         flyout.Items.Clear();
 
-        _flyoutBindingDisposable?.Dispose();
-        _flyoutBindingDisposable = null;
         if (ReferenceEquals(MenuFlyout, flyout))
         {
+            _flyoutBindingDisposable?.Dispose();
+            _flyoutBindingDisposable = null;
             MenuFlyout = null;
         }
+        flyout.SetCurrentValue(Flyout.IsPopupPinnedOpenProperty, false);
     }
 
     private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
@@ -189,30 +193,13 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
 
     private void HandleCloseTabRequest(object? sender, RoutedEventArgs args)
     {
-        if (sender is TabControlOverflowMenuItem tabControlMenuItem)
+        if (sender is TabControlOverflowMenuItem { TabItem: { } tabItem } tabControlMenuItem &&
+            TabControl is { } tabControl &&
+            tabControl.CloseTab(tabItem))
         {
-            if (TabControl is not null)
-            {
-                if (TabControl.SelectedItem is TabItem selectedItem)
-                {
-                    if (selectedItem == tabControlMenuItem.TabItem)
-                    {
-                        var     selectedIndex   = TabControl.SelectedIndex;
-                        object? newSelectedItem = null;
-                        if (selectedIndex != 0)
-                        {
-                            newSelectedItem = TabControl.Items[--selectedIndex];
-                        }
-
-                        TabControl.Items.Remove(tabControlMenuItem.TabItem);
-                        TabControl.SelectedItem = newSelectedItem;
-                    }
-                    else
-                    {
-                        TabControl.Items.Remove(tabControlMenuItem.TabItem);
-                    }
-                }
-            }
+            tabControlMenuItem.Click    -= HandleMenuItemClicked;
+            tabControlMenuItem.CloseTab -= HandleCloseTabRequest;
+            tabControlMenuItem.RemoveFromMenu();
         }
     }
 }

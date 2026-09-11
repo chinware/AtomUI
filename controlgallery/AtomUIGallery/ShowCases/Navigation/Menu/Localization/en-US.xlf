@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MenuShowCaseLangResourceKind">
+    <unit id="AccordionMenuDescription">
+      <segment>
+        <source>In accordion mode, only one top-level submenu can be expanded at a time. Opening another top-level submenu automatically collapses the previous one.</source>
+      </segment>
+    </unit>
+    <unit id="AccordionMenuTitle">
+      <segment>
+        <source>Accordion mode</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="ContextMenuDescription">
+      <segment>
+        <source>Right click to bring up the context menu.</source>
+      </segment>
+    </unit>
+    <unit id="ContextMenuItemsSourceDescription">
+      <segment>
+        <source>Right click to bring up the context menu.</source>
+      </segment>
+    </unit>
+    <unit id="ContextMenuItemsSourceTitle">
+      <segment>
+        <source>Context menu, Generate MenuItem by ItemsSource</source>
+      </segment>
+    </unit>
+    <unit id="ContextMenuTitle">
+      <segment>
+        <source>Context menu</source>
+      </segment>
+    </unit>
+    <unit id="DefaultOpenedPathsDescription">
+      <segment>
+        <source>You can open or select the path by default.</source>
+      </segment>
+    </unit>
+    <unit id="DefaultOpenedPathsTitle">
+      <segment>
+        <source>Default Opened paths</source>
+      </segment>
+    </unit>
+    <unit id="IconAndSubmenuDescription">
+      <segment>
+        <source>With icon and submenu.</source>
+      </segment>
+    </unit>
+    <unit id="IconAndSubmenuTitle">
+      <segment>
+        <source>Icon and submenu</source>
+      </segment>
+    </unit>
+    <unit id="InlineCollapsedMenuDescription">
+      <segment>
+        <source>Inline menus can be collapsed and expanded.</source>
+      </segment>
+    </unit>
+    <unit id="InlineCollapsedMenuTitle">
+      <segment>
+        <source>Inline collapsed menu</source>
+      </segment>
+    </unit>
+    <unit id="InlineMenuDescription">
+      <segment>
+        <source>Vertical menu with inline submenus.</source>
+      </segment>
+    </unit>
+    <unit id="InlineMenuTitle">
+      <segment>
+        <source>Inline menu</source>
+      </segment>
+    </unit>
+    <unit id="InlineNavMenuItemsSourceDescription">
+      <segment>
+        <source>Generate inline NavMenu structure based on ItemsSource and template.</source>
+      </segment>
+    </unit>
+    <unit id="InlineNavMenuItemsSourceTitle">
+      <segment>
+        <source>Inline NavMenu by ItemsSource</source>
+      </segment>
+    </unit>
+    <unit id="MenuFlyoutDescription">
+      <segment>
+        <source>Right Click to show Context Flyout</source>
+      </segment>
+    </unit>
+    <unit id="MenuFlyoutTitle">
+      <segment>
+        <source>Menu Flyout</source>
+      </segment>
+    </unit>
+    <unit id="MenuItemItemsSourceDescription">
+      <segment>
+        <source>Generate structure based on ItemsSource and template.</source>
+      </segment>
+    </unit>
+    <unit id="MenuItemItemsSourceTitle">
+      <segment>
+        <source>Generate MenuItem by ItemsSource</source>
+      </segment>
+    </unit>
+    <unit id="NavMenuCompositionDescription">
+      <segment>
+        <source>Compose fixed header and footer slots with grouped entries, dividers, nested groups, and custom item spacing.</source>
+      </segment>
+    </unit>
+    <unit id="NavMenuCompositionTitle">
+      <segment>
+        <source>Structured nav menu</source>
+      </segment>
+    </unit>
+    <unit id="NavMenuItemItemsSourceDescription">
+      <segment>
+        <source>Generate structure based on ItemsSource and template.</source>
+      </segment>
+    </unit>
+    <unit id="NavMenuItemItemsSourceTitle">
+      <segment>
+        <source>Generate NavMenuItem by ItemsSource</source>
+      </segment>
+    </unit>
+    <unit id="NavMenuNodeCommandDescription">
+      <segment>
+        <source>Each navigation node invokes the ViewModel command with its explicit business key.</source>
+      </segment>
+    </unit>
+    <unit id="NavMenuNodeCommandTitle">
+      <segment>
+        <source>NavMenuNode command</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAccountGroup">
+      <segment>
+        <source>Account</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAccountSettings">
+      <segment>
+        <source>Account settings</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCopy">
+      <segment>
+        <source>Copy</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCustomerOverview">
+      <segment>
+        <source>Customer Overview</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCut">
+      <segment>
+        <source>Cut</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDashboard">
+      <segment>
+        <source>Dashboard</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDisabled">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDisabledItem">
+      <segment>
+        <source>Disabled Item</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderEdit">
+      <segment>
+        <source>_Edit</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExit">
+      <segment>
+        <source>Exit</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFile">
+      <segment>
+        <source>_File</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderInvoiceList">
+      <segment>
+        <source>Invoice List</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderItemN1">
+      <segment>
+        <source>Item 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderItemN2">
+      <segment>
+        <source>Item 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderManagementGroup">
+      <segment>
+        <source>Management</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMenu">
+      <segment>
+        <source>_Menu</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMenuA">
+      <segment>
+        <source>_Menu A</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMenuItem">
+      <segment>
+        <source>Menu Item</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationFour">
+      <segment>
+        <source>Navigation Four</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationOne">
+      <segment>
+        <source>Navigation One</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationThreeSubmenu">
+      <segment>
+        <source>Navigation Three - Submenu</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNavigationTwo">
+      <segment>
+        <source>Navigation Two</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewFile">
+      <segment>
+        <source>New File</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewTextFile">
+      <segment>
+        <source>New Text File</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewWindow">
+      <segment>
+        <source>New Window</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN1">
+      <segment>
+        <source>Option 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN2">
+      <segment>
+        <source>Option 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN3">
+      <segment>
+        <source>Option 3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN4">
+      <segment>
+        <source>Option 4</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN5">
+      <segment>
+        <source>Option 5</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN6">
+      <segment>
+        <source>Option 6</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN7">
+      <segment>
+        <source>Option 7</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN8">
+      <segment>
+        <source>Option 8</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPaste">
+      <segment>
+        <source>Paste</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPasteFromHistory">
+      <segment>
+        <source>Paste from History</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPermissions">
+      <segment>
+        <source>Permissions</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPersonalGroup">
+      <segment>
+        <source>Personal</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderProfile">
+      <segment>
+        <source>Profile</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderProjects">
+      <segment>
+        <source>Projects</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSave">
+      <segment>
+        <source>Save</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSaveAll">
+      <segment>
+        <source>Save All</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSaveAs">
+      <segment>
+        <source>Save As...</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSecurity">
+      <segment>
+        <source>Security</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTeamMembers">
+      <segment>
+        <source>Team members</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUndo">
+      <segment>
+        <source>Undo</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWorkspaceGroup">
+      <segment>
+        <source>Workspace</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWorkspaceNavigation">
+      <segment>
+        <source>Workspace navigation</source>
+      </segment>
+    </unit>
+    <unit id="P2TextChangeMode">
+      <segment>
+        <source>Change Mode</source>
+      </segment>
+    </unit>
+    <unit id="P2TextChangeStyle">
+      <segment>
+        <source>Change Style</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCurrentWorkspace">
+      <segment>
+        <source>Current workspace: AtomUI</source>
+      </segment>
+    </unit>
+    <unit id="P2TextEnablePopupScroll">
+      <segment>
+        <source>Enable popup scrolling</source>
+      </segment>
+    </unit>
+    <unit id="P2TextLastCommandKey">
+      <segment>
+        <source>Last executed key:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRightClickToShowContextFlyout">
+      <segment>
+        <source>Right Click to show Context Flyout</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRightClickToShowContextMenu">
+      <segment>
+        <source>Right Click to show Context Menu</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleGeneratedByTemplate">
+      <segment>
+        <source>Generated by template</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Menu, ContextMenu, MenuFlyout, and NavMenu provide command lists, contextual actions, nested navigation, data-driven menu generation, and vertical, inline, or horizontal navigation layouts.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Menus organize commands and navigation actions.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioContext">
+      <segment>
+        <source>Context</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioFeatures">
+      <segment>
+        <source>Features</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioItemsSource">
+      <segment>
+        <source>ItemsSource</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioNavMenu">
+      <segment>
+        <source>NavMenu</source>
+      </segment>
+    </unit>
+    <unit id="ScrollableDescription">
+      <segment>
+        <source>When there are too many menu items, up and down scroll buttons will appear.</source>
+      </segment>
+    </unit>
+    <unit id="ScrollableTitle">
+      <segment>
+        <source>Scrollable menu</source>
+      </segment>
+    </unit>
+    <unit id="SwitchMenuTypeDescription">
+      <segment>
+        <source>Show the dynamic switching mode (between inline and vertical).</source>
+      </segment>
+    </unit>
+    <unit id="SwitchMenuTypeTitle">
+      <segment>
+        <source>Switch the menu type</source>
+      </segment>
+    </unit>
+    <unit id="ToggleTypeDescription">
+      <segment>
+        <source>Renders a checkbox or radio button on a menu.</source>
+      </segment>
+    </unit>
+    <unit id="ToggleTypeTitle">
+      <segment>
+        <source>Menu item with ToggleType</source>
+      </segment>
+    </unit>
+    <unit id="TopNavigationDescription">
+      <segment>
+        <source>Horizontal top navigation menu.</source>
+      </segment>
+    </unit>
+    <unit id="TopNavigationTitle">
+      <segment>
+        <source>Top Navigation</source>
+      </segment>
+    </unit>
+    <unit id="VerticalNavMenuDescription">
+      <segment>
+        <source>Submenus open as pop-ups.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalNavMenuTitle">
+      <segment>
+        <source>Vertical nav menu</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,48 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum CustomizeThemeShowCaseLangResourceKind
+{
+    ScenarioExamples,
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    ApiMemberThemeConfigProviderConfig,
+    ApiMemberThemeConfigInherit,
+    ApiMemberThemeConfigAlgorithms,
+    ApiMemberThemeConfigTokens,
+    ApiMemberThemeConfigControls,
+    ApiMemberControlThemeConfigAlgorithm,
+    ApiMemberControlThemeConfigAlgorithms,
+    ApiMemberControlThemeConfigTokens,
+    CustomizeDesignTokenTitle,
+    CustomizeDesignTokenDescription,
+    PresetAlgorithmsTitle,
+    PresetAlgorithmsDescription,
+    RuntimeTokenUpdatesTitle,
+    RuntimeTokenUpdatesDescription,
+    CustomizeControlTokenTitle,
+    CustomizeControlTokenDescription,
+    NestedThemeTitle,
+    NestedThemeDescription,
+    P2PlaceholderTextPleaseInput,
+    P2ContentPrimaryButton,
+    P2ContentDefaultButton,
+    P2ContentTextButton,
+    P2ContentLinkButton,
+    P2ContentApple,
+    P2ContentPear,
+    P2ContentOrange,
+    P2ContentSubmit,
+    P2ContentUseBlue,
+    P2ContentUseGreen,
+    P2ContentUseMagenta,
+    P2TextEnableAlgorithm,
+    P2TextDisableAlgorithm,
+    P2ContentThemeN1,
+    P2ContentThemeN2,
+    P2ContentThemeN3
+}

@@ -2,6 +2,120 @@
 
 本文档记录 NavMenu 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-10
+
+- Design
+  - 登记与 Collapse、Expander 共用的[内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)，明确 Core 执行职责、菜单状态和事件所有权、模板裁剪及嵌套测量边界。
+- Implementation
+  - 展开进度由动画执行器的私有附加属性持有，基础 actor 通过内部 `IMotionActorLayout` 协作，分离通用布局与内容开合职责。
+  - `NavMenuItem` 接入 Core 内部 `ContentExpansionAnimator`，原生 `Animation` 同步驱动内部布局进度与透明度；控件继续拥有展开状态、排队请求身份和完成事件。
+- Behavior
+  - Inline 手风琴互斥在打开请求时生效，使旧分支收起与新分支展开同时开始。
+  - 收放动画覆盖含内部间距的完整高度和透明度，连续点击从当前画面接续；过期动画不得提交完成状态或事件。
+  - 第一个时钟 tick 前保持当前帧，完成 tick 后保持最终帧，避免动画与稳定状态交接时闪烁或位置突跳。
+- Theme
+  - Inline 收放改用 `MotionDurationMid`，配合统一缓动与既有 actor 裁剪，保留自然文字尺寸、最终布局和滚动契约。
+  - 将 `VerticalChildItemsMargin` 放入内部内容 frame，随 viewport 高度裁剪，避免结束时外部间距先恢复再消失导致文字回弹。
+- Lifecycle
+  - 关闭 motion、重新应用模板及 visual detach 时使请求失效，取消动画并解除内部进度和布局接入，保留自定义尺寸与变换。
+- Verification
+  - 新增真实指针输入与可控时钟测试，覆盖完整高度插值、等高分支切换、快速反转、多分支连续切换、过期事件、motion 关闭与 detach/reattach，并检查首个时钟 tick 前、完成 continuation 前的画面状态及子项文字坐标。
+
+## 2026-09-04
+
+- Architecture
+  - 将用户激活定义为“按下准备、合法释放提交”的有序事务：指针合法释放与键盘 Enter/Space 复用激活入口；程序化 `SelectedItem` 只进入选择协调器，不执行节点命令或触发 `NavMenuItemClick`。新增专项设计文档 [NavMenu 项激活事务设计](item-activation-design.md)。
+  - `SelectedItem` 语义收窄为已提交选择；指针按下只建立待提交事务、显示 selected 背景的 pointer-hold 视觉并按模式尝试移动真实焦点，文字颜色保持按下前状态，不覆盖 keyboard-active owner，不改变选择、不切换子菜单、不执行命令、不触发路由事件。
+  - 定义指针提交合法性判据（同一指针、主按钮、释放点命中待提交项视觉子树、节点与语义祖先可用）与取消路径集合（拖离释放、当前捕获指针丢失、节点移除或禁用、detach、非主按钮释放、新按下替代）。
+  - 修正叶子提交事件顺序：选中路径与 `IsSelected`、`SelectedItem`、`NavMenuNodeSelected` 先于节点 `Command` 与 `NavMenuItemClick`，事件回调读取的公共状态为已提交新值；父节点提交不修改 `SelectedItem`。
+  - 为同步重入定义 superseded policy：`SelectedItem` 在选择事件前被改写时不发布陈旧 `NavMenuNodeSelected`，在选择事件处理期间被改写时停止原节点后续命令与 `NavMenuItemClick`，避免部分提交。
+  - 交互 handler 基类统一持有激活事务（待提交项与指针身份），按激活目标分派叶子选择提交与父节点展开激活；Inline 父节点切换展开，Default 父节点确保 popup 打开，hover 延迟打开流程保持独立。
+- Theme
+  - pointer-hold 与 keyboard-active 由独立 owner 和独立主题输入维护：pointer-hold 通过 `IsPointerHold` 仅使用对应的 light/dark selected 背景 Token，不覆盖既有文字颜色；keyboard-active 通过 `IsKeyboardActive` 使用 `ItemActiveBg`。前者只预览 selected 背景，不写入 `IsSelected` / `SelectedItem`，拖出清除、移回恢复。
+  - 对齐 Ant Design 6.6.2 录屏中的背景变化：header 背景改用 300ms `MotionDurationSlow` 与 CSS `ease` 等价曲线；按下先置 pointer-hold 再捕获，合法释放时保留 pointer-hold 直到 selection 提交完成，避免中间 hover、透明或默认背景闪烁。
+  - 指针捕获目标改为带 `Cursor=Hand` 的 item header，按住期间持续显示手型指针；capture-lost 生命周期跟随实际捕获目标。
+- Token
+  - 新增 `ItemBackgroundMotionEasing` 作为 Base、Inline、Horizontal item header 背景 transition 的统一缓动入口，默认映射 CSS `ease`；主题不再内联构造或复制 `SplineEasing`。
+- Verification
+  - 覆盖按下零提交副作用、背景与 selected 相同且文字颜色不变、按下/释放背景无中间闪烁、300ms ease 背景过渡、手型捕获目标、合法释放单次提交、完整事件顺序、同步选择重入、捕获指针身份、handler 替换、父节点释放激活、键盘与指针提交一致性，以及 pointer-hold / keyboard-active 独立所有权。
+
+## 2026-08-26
+
+- Architecture
+  - Separate transient popup/submenu closing from persistent selection clearing: pointer outside, window deactivation, platform focus loss, non-client click, inline-collapsed transitions, and mode changes preserve `SelectedItem` and selected path.
+  - Keep public `Close()` compatible as the explicit operation that closes all submenus and clears selection.
+- Verification
+  - Cover platform focus loss, mode replacement, popup reopen projection, and the public `Close()` selection-clearing boundary.
+
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record NavMenu/NavMenuItem as the semantic owner for NavMenu.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
+## 2026-08-19
+
+- API
+  - 节点 `Tooltip` 支持直接传入 `ToolTip` 实例：实例上显式设置的呈现类附加属性（位置、颜色、箭头、文本换行等）在打开时优先于菜单级与宿主配置，未设置的回落；纯文本用法不变。
+- Verification
+  - 覆盖 ToolTip 实例经节点、binder、容器到 `PART_Header` 的原样透传。
+
+## 2026-08-18
+
+- API
+  - 新增 `NavMenuNode.Tooltip` / `INavMenuNode.Tooltip` 独立节点提示内容，未设置时回退到节点 `Header`。
+  - 新增节点级 `IsTooltipEnabled`，以及菜单级 `IsCollapsedTooltipEnabled`、`CollapsedTooltipPlacement`、`CollapsedTooltipShowDelay`、`CollapsedTooltipBetweenShowDelay` 折叠提示策略。
+- Architecture
+  - 由 `NavMenuItem` 统一计算 `EffectiveCollapsedTooltip`，只允许有效 inline collapsed 状态下的顶层叶子节点生成提示内容。
+  - 将节点真实 `Header` 单独投影为 `NodeHeader`，避免 generated container 的节点对象进入首字符转换或 Tooltip fallback。
+  - 节点 Tooltip、节点开关和菜单策略 binding 归入现有 container `CompositeDisposable`，在 rebind、clear 和 recycle 时统一释放并清空。
+- Theme
+  - 将 `ToolTip.Tip`、placement 和 delay 附加到实际 `VerticalNavMenuItemHeader`，保持 `ToolTip` 服务的视觉宿主边界。
+  - 无图标折叠项的首字符改为从节点 `Header` 投影取得，不再对整个节点调用 `ToString()`。
+- Verification
+  - 覆盖显式 Tooltip、Header fallback、节点/菜单禁用、submenu 抑制、模式切换、运行期更新、自定义节点通知、动态资源和容器回收。
+
+## 2026-08-05
+
+- API
+  - 定义 `INavMenuEntry` 作为节点、分组和分隔线的共同结构契约，`INavMenuNode` 保持唯一可交互节点语义。
+  - 定义 `NavMenuGroup`、`NavMenuDivider` 和 `NavMenuNode.Entries`，支持在根、子菜单、popup 和分组中任意层级组合结构 entry。
+  - 保留 `NavMenuNode.Children : IList<INavMenuNode>`，将其定义为 `Entries` 的实时语义节点兼容视图；`INavMenuNode.Entries : IEnumerable<INavMenuEntry>` 通过协变接口默认 `Entries => Children` 保持既有自定义节点兼容，`NavMenuNode.Entries` 继续提供 `IList<INavMenuEntry>` 可写入口。
+  - 定义 `NavMenu.Header`、`HeaderTemplate`、`Footer`、`FooterTemplate` 和 `ItemSpacing`；继续以 `IsInlineCollapsed` 作为唯一折叠状态源，不增加相反语义的 `Expanded` 属性。
+- Architecture
+  - 定义 `NavMenuItem`、`NavMenuGroupItem`、`NavMenuDividerItem` 三类内部容器，并由统一 entry container coordinator 管理类型分派、独立 recycle key、prepare 和 clear。
+  - 定义 direct `Items`、`ItemsSource`、节点 `Entries` 和分组 `Entries` 的统一 entry source 校验；初始装载、source replacement、Add、Replace、Reset 均只接受 `INavMenuNode`、`NavMenuGroup` 或 `NavMenuDivider`，仅实现 marker 的未知种类也在容器生成前确定性失败。
+  - 为内置 `NavMenuNode` / `NavMenuGroup` 定义唯一弱 structural owner，禁止同一有状态实例在 entry 树中重复挂载，并在 Remove、Replace、Clear 和根 source removal 后释放；无状态 `NavMenuDivider` 保持可复用。
+  - 每个内置 entry owner 和根 `NavMenu` 都协调自己的 structural scope：递归穿过 custom node，遇到 built-in child 后由 child 自身协调器接管。custom node 的内置后代继承最近 scope owner，使离线树和根菜单中的 custom wrapper 都无法绕过唯一性；动态 source 重新执行 owner-cycle 校验，拒绝指回当前 built-in owner 或祖先。协调器只弱订阅当前 scope 的 custom source，避免纯 built-in 深树形成 O(N²) 祖先订阅和重复扫描。
+  - `Entries` 的 Add、Insert、Replace 和批量初始化在 mutation 前预检完整 prospective tree；成功写入先提交全部 structural ownership，再调用自定义 parent callback、投影父级并发送通知，后续项冲突、callback 重入或同步观察者重入都不能留下部分写入或抢占 entry。
+  - 将逻辑树父级与导航语义父级分离；分组对 `ParentNode`、`Level`、`IsTopLevel`、selection path、default path、Accordion 和 keyboard navigation 保持透明。
+  - 定义无扁平列表分配的 semantic navigator，按已生成容器处理同层和 inline 可见树漫游，跳过分组、分隔线和不可交互项。
+  - 将 generated container clear 定义为 selection 与 interaction 的统一失效出口，清除 realized selection、keyboard active、pointer press/release 目标和指向旧容器的 hover 延迟任务。
+  - 明确模板重应用与容器回收的状态边界：`NavMenuItem.OnApplyTemplate` 只替换 template part、订阅和局部 motion 资源，不清理打开路径或选中路径；节点状态只由对应 coordinator 和真实 container clear 路径维护。
+  - selection coordinator 区分已应用节点身份和临时 realized container 引用；容器回收只失效临时引用，视觉树 detach 保留已应用节点身份，后续选择按语义路径解析并清除当前旧容器，避免模板重建或重新挂载后出现多个 selected leaf。
+  - generated node container 在 prepare 完成后统一从 selection coordinator 投影 `IsSelected` / `IsInSelectedPath`，使任意深度 collapsed popup 延迟生成、关闭重开或容器复用时恢复同一持久选择，不依赖 popup 打开事件或 dispatcher 刷新时机。
+  - generated node container clear 完整复位 `IsSelected`、`IsInSelectedPath` 和 `IsSubMenuOpen`，避免 recycle 把旧节点视觉状态转移给新节点。
+  - keyboard active 有效性同时检查 effective visible/effective enabled 与语义父链打开状态，避免 popup 关闭后提交仍被框架保留的 child container。
+- Theme
+  - 定义 Inline/Vertical 固定 Header/Footer 与中间滚动 entry 区，Horizontal 左 Header、右 Footer 和中间菜单区。
+  - 定义 root inline collapsed 隐藏分组标题、popup 分组标题保持可见、Horizontal 根分组透明和 divider orientation 规则。
+  - 明确 root inline collapsed 的透明分组后代继续继承折叠视觉并使用 `CollapsedIconSize` 居中；Footer 在折叠态退出布局，Header 保持可见以承载展开入口。
+  - 根 ItemsPanel 通过 `TemplateBinding` 消费公开 `ItemSpacing`；后代 ItemsPanel 消费内部可继承的 `EntryItemSpacing`，既保持 Horizontal 根层默认 `0`，也使 popup、submenu 和 group 正确使用垂直 spacing Token；该路径不使用穿透子控件模板的 selector 或逐容器 binding。
+- Token
+  - 复用 `GroupTitleColor`、`DarkGroupTitleColor`、`GroupTitleLineHeight`、`GroupTitleFontSize` 表达非交互分组标题，不新增专属 divider token。
+  - 明确 `CollapsedIconSize` 默认映射全局 `IconSizeLG`，相对普通 `ItemIconSize=IconSize` 使用大一档图标尺寸。
+  - 明确 `VerticalItemsPanelSpacing=0` 保持默认 block margin 视觉；显式 `NavMenu.ItemSpacing` 是实例级额外 panel spacing，可覆盖根与后代默认 ItemsPanel，但不改写 Token。
+  - 将 `MenuPopupMaxHeight` 默认值定义为八个标准菜单项高度；短菜单保持自然高度，长菜单在固定可见范围内滚动。
+- Verification
+  - 定义任意层级结构 entry、集合全动作、非法数据确定性失败、路径、选择、键盘、collapsed、Header/Footer、spacing、资源释放、容器回收隔离和纯节点快路径验证矩阵。
+  - 覆盖 active container 移除后的 Enter、pressed container 移除后的 pointer release、pending open/close 目标回收，以及 popup 关闭后隐藏 child 不得被 Enter 提交。
+  - 覆盖开启宽度 motion 后连续两轮 inline collapsed 折叠/展开，验证任意深度的 selected item、祖先 selected path 和 cached inline open path 在模板重应用后完整恢复。
+  - 覆盖连续折叠/展开后切换 sibling、视觉树 detach 后程序化切换 sibling，以及 node container clear 的完整选择状态复位。
+  - 覆盖与 Gallery 相同的三级 collapsed popup 路径，验证当前 leaf 在两轮 popup 关闭重开和容器重新生成后持续保持唯一 selected 状态。
+  - 覆盖 node/group 同 owner 与跨 owner 重复拒绝、释放后重挂载、root source 重复、跨根迁移、弱 owner 回收和 divider 复用。
+  - 覆盖离线和根菜单中的 custom wrapper 共享内置后代、嵌套 observable source 动态获取/释放 owner、动态重复、动态 owner/祖先环拒绝、custom source weak subscription 回收、批量初始化原子失败、parent callback 与集合通知同步重入，以及纯 built-in 深树不产生祖先重复订阅。
+  - Menu Gallery 增加结构化 NavMenu 示例，覆盖固定 Header/Footer、根与嵌套分组、分隔线和显式 `ItemSpacing`，并由页面结构测试与 approved snapshot 保护。
+
 ## 2026-07-13
 
 - API

@@ -3,7 +3,7 @@ using AtomUI.Theme.DesignTokens;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class MarqueeLabelToken : AbstractControlDesignToken
+internal sealed class MarqueeLabelToken : AbstractControlDesignToken
 {
     
     /// <summary>

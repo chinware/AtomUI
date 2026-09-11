@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CalendarShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>A full-screen month calendar.</source>
+        <target state="translated">完整模式的月曆。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="CardDescription">
+      <segment>
+        <source>Nested inside a container element for rendering in limited space.</source>
+        <target state="translated">用於嵌套在空間有限的容器中。</target>
+      </segment>
+    </unit>
+    <unit id="CardTitle">
+      <segment>
+        <source>Card</source>
+        <target state="translated">卡片模式</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">資料展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsBugFixText">
+      <segment>
+        <source>Bug fix</source>
+        <target state="translated">缺陷修復</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsDescription">
+      <segment>
+        <source>Declare RangeBars and let Calendar draw continuous event bars across dates.</source>
+        <target state="translated">宣告 RangeBars，由 Calendar 自動繪製跨日期連續事件條。</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsDesignReviewText">
+      <segment>
+        <source>Design review</source>
+        <target state="translated">設計評審</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsMaintenanceText">
+      <segment>
+        <source>Maintenance</source>
+        <target state="translated">維護窗口</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsReleaseText">
+      <segment>
+        <source>Release window</source>
+        <target state="translated">發布窗口</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsTitle">
+      <segment>
+        <source>Event Range</source>
+        <target state="translated">跨日期事件</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderContentTitle">
+      <segment>
+        <source>Custom header</source>
+        <target state="translated">自訂 Header</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderDescription">
+      <segment>
+        <source>Customize Calendar header content.</source>
+        <target state="translated">自訂日曆標頭內容。</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderMonthText">
+      <segment>
+        <source>Month</source>
+        <target state="translated">月</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderTitle">
+      <segment>
+        <source>Customize Header</source>
+        <target state="translated">自訂 Header</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderYearText">
+      <segment>
+        <source>Year</source>
+        <target state="translated">年</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarCardDescription">
+      <segment>
+        <source>A compact lunar calendar for limited spaces.</source>
+        <target state="translated">適用於有限空間的緊湊農曆日曆。</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarCardTitle">
+      <segment>
+        <source>Lunar Calendar Card</source>
+        <target state="translated">農曆卡片日曆</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarDescription">
+      <segment>
+        <source>A full-screen calendar with lunar dates, solar terms, traditional festivals, and application-provided holiday annotations.</source>
+        <target state="translated">完整模式的日曆，展示農曆日期、二十四節氣、傳統節日和應用提供的節假日標記。</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarTitle">
+      <segment>
+        <source>Lunar Calendar</source>
+        <target state="translated">農曆日曆</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarBacklogText">
+      <segment>
+        <source>Backlog number</source>
+        <target state="translated">待辦數量</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarDescription">
+      <segment>
+        <source>Render notice items in date cells and backlog numbers in month cells.</source>
+        <target state="translated">在日期儲存格內展示通知事項，在月份儲存格內展示待辦數量。</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent1Text">
+      <segment>
+        <source>This is error event 1.</source>
+        <target state="translated">這是錯誤事項 1。</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent2Text">
+      <segment>
+        <source>This is error event 2.</source>
+        <target state="translated">這是錯誤事項 2。</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent3Text">
+      <segment>
+        <source>This is error event 3.</source>
+        <target state="translated">這是錯誤事項 3。</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent4Text">
+      <segment>
+        <source>This is error event 4.</source>
+        <target state="translated">這是錯誤事項 4。</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEventText">
+      <segment>
+        <source>This is error event.</source>
+        <target state="translated">這是錯誤事項。</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarLongUsualEventText">
+      <segment>
+        <source>This is very long usual event......</source>
+        <target state="translated">這是很長的一般事項......</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarTitle">
+      <segment>
+        <source>Notice Calendar</source>
+        <target state="translated">通知事項日曆</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarUsualEventText">
+      <segment>
+        <source>This is usual event.</source>
+        <target state="translated">這是一般事項。</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarWarningEventText">
+      <segment>
+        <source>This is warning event.</source>
+        <target state="translated">這是警告事項。</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Calendar presents a month date grid or a year month grid with valid range, disabled dates, cell customization, and selection events.</source>
+        <target state="translated">Calendar 以月日期網格或年月份網格呈現日期，支援有效範圍、停用日期、儲存格定製與選擇事件。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Organize business content by date in a desktop calendar panel.</source>
+        <target state="translated">在桌面日曆面板中依日期組織業務內容。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarDescription">
+      <segment>
+        <source>A basic calendar component with Year/Month switch.</source>
+        <target state="translated">一個通用的日曆面板，支援年/月切換。</target>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarSelectedMessage">
+      <segment>
+        <source>You selected date: {0:yyyy-MM-dd}</source>
+        <target state="translated">你選擇的日期：{0:yyyy-MM-dd}</target>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarTitle">
+      <segment>
+        <source>Selectable Calendar</source>
+        <target state="translated">可選擇的日曆</target>
+      </segment>
+    </unit>
+    <unit id="ShowWeekDescription">
+      <segment>
+        <source>Show week numbers in full-screen and card calendars by setting ShowWeek to True.</source>
+        <target state="translated">透過將 ShowWeek 設定為 True，在完整模式和卡片模式日曆中顯示週數。</target>
+      </segment>
+    </unit>
+    <unit id="ShowWeekTitle">
+      <segment>
+        <source>Show Week</source>
+        <target state="translated">顯示週數</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

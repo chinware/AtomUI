@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind">
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>The simplest use.</source>
+        <target state="translated">O simplest usar.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">Básico Uso</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorDescription">
+      <segment>
+        <source>The separator can be customized by setting the separator property: separator equals &gt;</source>
+        <target state="translated">O separator pode ser customized por configuração o separator propriedade: separator equals &gt;</target>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorIndependentlyDescription">
+      <segment>
+        <source>Customize separator for each other.</source>
+        <target state="translated">Personalizar separator para each outro.</target>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorIndependentlyTitle">
+      <segment>
+        <source>Configuring the Separator Independently</source>
+        <target state="translated">Configuring o Separator Independently</target>
+      </segment>
+    </unit>
+    <unit id="ConfiguringSeparatorTitle">
+      <segment>
+        <source>Configuring the Separator</source>
+        <target state="translated">Configuring o Separator</target>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateDescription">
+      <segment>
+        <source>Generate BreadcrumbItem by template.</source>
+        <target state="translated">Generate BreadcrumbItem por template.</target>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateTitle">
+      <segment>
+        <source>Generate BreadcrumbItem by template</source>
+        <target state="translated">Generate BreadcrumbItem por template</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAnApplication">
+      <segment>
+        <source>An Application</source>
+        <target state="translated">An Application</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentApplication">
+      <segment>
+        <source>Application</source>
+        <target state="translated">Application</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentApplicationCenter">
+      <segment>
+        <source>Application Center</source>
+        <target state="translated">Application Center</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentApplicationList">
+      <segment>
+        <source>Application List</source>
+        <target state="translated">Application Lista</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHome">
+      <segment>
+        <source>Home</source>
+        <target state="translated">Inicial</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLocation">
+      <segment>
+        <source>Location</source>
+        <target state="translated">Location</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentParam">
+      <segment>
+        <source>Param</source>
+        <target state="translated">Param</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUsers">
+      <segment>
+        <source>Users</source>
+        <target state="translated">Usuários</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Breadcrumb helps users understand where they are and move back through parent levels. It supports icons, custom separators, route context, URI navigation, and item templates.</source>
+        <target state="translated">Trilha helps usuários understand where they são e move voltar through pai levels. Isso oferece suporte ícones, personalizado separators, route context, URI navegação, e item templates.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Show the current page location in a navigation hierarchy.</source>
+        <target state="translated">Mostrar o atual página location em a navegação hierarchy.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>The icon should be placed in front of the text.</source>
+        <target state="translated">O ícone should ser placed em front de o texto.</target>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With an Icon</source>
+        <target state="translated">Com an Ícone</target>
+      </segment>
+    </unit>
+    <unit id="WithParamsDescription">
+      <segment>
+        <source>With route params.</source>
+        <target state="translated">Com route params.</target>
+      </segment>
+    </unit>
+    <unit id="WithParamsTitle">
+      <segment>
+        <source>With Params</source>
+        <target state="translated">Com Params</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

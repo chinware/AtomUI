@@ -8,11 +8,34 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-24
+
+- Theme
+  - Make the TextBox input frame fill the width allocated by its owner so placeholder and text measurement cannot resize the visible input surface.
+- Tests
+  - Cover stable TextBox frame width across placeholder, short-text and long-text states.
+
 ## 2026-08-03
 
 - Architecture
   - Define an internal text viewport metric owned by TextBox/TextArea so consumers can react to effective text width without traversing input templates.
   - Define viewport, padding, presenter margin and template reapply lifecycle as the single source of truth for input text width.
+
+## 2026-08-23
+
+- Architecture
+  - Establish `AbstractTextInput` as the shared text-input logic owner for `TextBox`, `LineEdit` and `TextArea`.
+  - Establish `InputControlFrame` as the shared input-surface owner for variant, effective status, border, background, corner, shadow, CompactSpace and motion.
+  - Define `AddOnDecoratedBox` and its specialized descendants as layout extensions of `InputControlFrame`; they no longer own duplicated input-surface status selectors.
+  - Define template-owned events and subscriptions as template-lifetime resources replaced on template reapply, while external Form feedback subscriptions follow logical attach/detach.
+- API
+  - Align `StyleVariant`, `Status`, clear, count, Form, native validation and CompactSpace semantics across the three base text-input controls.
+  - Define `NativeValidationStatus`, `FormStatus`, `ExplicitStatus` and the `EffectiveStatus` priority used by all input surfaces.
+- Theme
+  - Move shared input-surface values to `SharedToken` and the frame theme; retain control tokens only for stable text/layout or TextArea resize differences.
+  - Move stable clear, reveal, feedback, inner-right and count state projection from C# relay bindings to AXAML template or typed ancestor bindings.
+- Tests
+  - Cover logical detach/reattach for the complete `AbstractTextInput` descendant set and AutoComplete composition hosts.
 
 ## 2026-06-26
 

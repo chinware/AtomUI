@@ -1,6 +1,6 @@
 # Slider Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.SliderToken` 的 Slider 专属语义、分类和使用边界。控件 Token 通用规范见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Slider 架构见 [Slider 桌面版架构设计](overview.md)，多 handle 模型见 [Slider 多 Handle 设计](multi-handle-design.md)，实现原理见 [Slider 桌面版实现原理](implementation.md)，变化记录见 [Slider Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.SliderToken` 的 Slider 专属语义、分类和使用边界。控件 Token 通用规范见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Slider 架构见 [Slider 桌面版架构设计](overview.md)，多 handle 模型见 [Slider 多 Handle 设计](multi-handle-design.md)，实现原理见 [Slider 桌面版实现原理](implementation.md)，变化记录见 [Slider Changelog](changelog.md)。
 
 ## 1. 定位
 

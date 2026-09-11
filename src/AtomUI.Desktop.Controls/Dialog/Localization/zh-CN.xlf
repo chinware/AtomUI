@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.DialogLangResourceKind">
+    <unit id="Abort">
+      <segment>
+        <source>Abort</source>
+        <target state="translated">中止</target>
+      </segment>
+    </unit>
+    <unit id="Apply">
+      <segment>
+        <source>Apply</source>
+        <target state="translated">应用</target>
+      </segment>
+    </unit>
+    <unit id="Cancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="translated">取消</target>
+      </segment>
+    </unit>
+    <unit id="Close">
+      <segment>
+        <source>Close</source>
+        <target state="translated">关闭</target>
+      </segment>
+    </unit>
+    <unit id="Discard">
+      <segment>
+        <source>Discard</source>
+        <target state="translated">丢弃</target>
+      </segment>
+    </unit>
+    <unit id="Help">
+      <segment>
+        <source>Help</source>
+        <target state="translated">帮助</target>
+      </segment>
+    </unit>
+    <unit id="Ignore">
+      <segment>
+        <source>Ignore</source>
+        <target state="translated">忽略</target>
+      </segment>
+    </unit>
+    <unit id="No">
+      <segment>
+        <source>No</source>
+        <target state="translated">否</target>
+      </segment>
+    </unit>
+    <unit id="NoToAll">
+      <segment>
+        <source>No to All</source>
+        <target state="translated">全部否</target>
+      </segment>
+    </unit>
+    <unit id="Ok">
+      <segment>
+        <source>OK</source>
+        <target state="translated">确定</target>
+      </segment>
+    </unit>
+    <unit id="Open">
+      <segment>
+        <source>Open</source>
+        <target state="translated">打开</target>
+      </segment>
+    </unit>
+    <unit id="Reload">
+      <segment>
+        <source>Reload</source>
+        <target state="translated">重新加载</target>
+      </segment>
+    </unit>
+    <unit id="Reset">
+      <segment>
+        <source>Reset</source>
+        <target state="translated">重置</target>
+      </segment>
+    </unit>
+    <unit id="RestoreDefaults">
+      <segment>
+        <source>Restore Defaults</source>
+        <target state="translated">恢复默认值</target>
+      </segment>
+    </unit>
+    <unit id="Retry">
+      <segment>
+        <source>Retry</source>
+        <target state="translated">重试</target>
+      </segment>
+    </unit>
+    <unit id="Save">
+      <segment>
+        <source>Save</source>
+        <target state="translated">保存</target>
+      </segment>
+    </unit>
+    <unit id="SaveAll">
+      <segment>
+        <source>Save All</source>
+        <target state="translated">全部保存</target>
+      </segment>
+    </unit>
+    <unit id="Yes">
+      <segment>
+        <source>Yes</source>
+        <target state="translated">是</target>
+      </segment>
+    </unit>
+    <unit id="YesToAll">
+      <segment>
+        <source>Yes to All</source>
+        <target state="translated">全部是</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

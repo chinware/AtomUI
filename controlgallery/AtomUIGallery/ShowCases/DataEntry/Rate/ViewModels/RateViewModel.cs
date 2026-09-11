@@ -1,5 +1,4 @@
 using AtomUIGallery.Localization;
-using System.Globalization;
 using System.Reactive;
 using AtomUI.Controls;
 using ReactiveUI;
@@ -82,8 +81,9 @@ public class RateViewModel : ReactiveObject, IRoutableViewModel
 
     private void UpdateTwoWayValueSummary()
     {
-        TwoWayValueSummary = string.Format(CultureInfo.CurrentCulture,
-            RateShowCaseLanguage.Get(RateShowCaseLangResourceKind.P2TwoWayValueSummaryFormat, "Selected value: {0:0.#}"),
+        TwoWayValueSummary = RateShowCaseLanguage.Format(
+            RateShowCaseLangResourceKind.P2TwoWayValueSummaryFormat,
+            "Selected value: {0:0.#}",
             TwoWayValue);
     }
 

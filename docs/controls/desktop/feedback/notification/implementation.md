@@ -25,6 +25,7 @@
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/WindowNotificationManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Utils/NotificationProgressBarVisibleConverter.cs`
 - `src/AtomUI.Desktop.Controls/Notifications/WindowNotificationManager.cs`
+- `src/AtomUI.Core/MotionScene/MotionExecutionState.cs`
 
 职责边界：
 
@@ -79,6 +80,11 @@ Public API / ItemsSource / Command / Event
 
 `NotificationType.Default` 是普通通知入口，不生成类型图标；带类型通知由 `NotificationType` 映射到 success/info/warning/error 伪类和默认状态图标。自定义 `Icon` 始终优先于类型图标。
 
+`IsClosing` 和 `IsClosed` 是 NotificationCard 的 public 业务状态。关闭动效执行由 NotificationCard 实例单独持有
+`MotionExecutionState`，按 `Idle -> Pending -> Playing -> Completing -> Idle` 推进；Core 的共享 enum 只统一阶段语义，
+不拥有 Dispatcher 任务、MotionActor、Position 或 public 属性。属性变化与模板重套用都进入同一个 Pending 调度入口，
+不能并行启动两次退出动效；Completing 只负责提交一次 `IsClosed=true`。
+
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
@@ -122,6 +128,7 @@ Notification 的交互事件应从输入源收敛到控件级语义事件：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
+- NotificationCard 的关闭请求、模板状态回放和最终 `IsClosed` 提交必须经过同一个关闭动效执行状态流。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
@@ -150,11 +157,14 @@ Notification 的交互事件应从输入源收敛到控件级语义事件：
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- `IsClosing` / `IsClosed` public 状态不得与 internal `MotionExecutionState` 合并；重复调度不得创建并行退出动效。
 
 ## 10. 测试与验证
 
 推荐验证：
 
+- `CloseMotionExecutionTests` 验证关闭属性变化与模板重套用同时请求退出动效时只启动一次 motion，并只提交一次
+  `IsClosed=true`。
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。

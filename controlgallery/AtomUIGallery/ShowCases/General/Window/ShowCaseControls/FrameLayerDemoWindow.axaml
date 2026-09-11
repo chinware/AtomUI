@@ -1,0 +1,39 @@
+<atom:Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:Class="AtomUIGallery.ShowCases.Window.FrameLayerDemoWindow"
+             x:ClassModifier="internal"
+             Title="AtomUI Window"
+             WindowFrameLayerOpacity="0.35"
+             Width="680"
+             Height="420"
+             WindowStartupLocation="CenterOwner">
+    <atom:Window.TitleBarFrameBackground>
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#E6FFFB" Offset="0" />
+            <GradientStop Color="#BAE7FF" Offset="1" />
+        </LinearGradientBrush>
+    </atom:Window.TitleBarFrameBackground>
+    <atom:Window.ContentFrameBackground>
+        <SolidColorBrush Color="#F6FFED" />
+    </atom:Window.ContentFrameBackground>
+    <atom:Window.WindowFrameLayer>
+        <Border IsHitTestVisible="False"
+                BorderBrush="#5BA8FF"
+                BorderThickness="1"
+                CornerRadius="10">
+            <Border Background="#405BA8FF"
+                    CornerRadius="8"
+                    Margin="8"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Width="120"
+                    Height="48" />
+        </Border>
+    </atom:Window.WindowFrameLayer>
+    <StackPanel Margin="24" Spacing="12">
+        <atom:TextBlock Text="{gallery:WindowShowCaseLangResource FrameLayerTitle}" FontWeight="Bold" />
+        <atom:TextBlock Text="{gallery:WindowShowCaseLangResource FrameLayerHint}" TextWrapping="Wrap" />
+    </StackPanel>
+</atom:Window>

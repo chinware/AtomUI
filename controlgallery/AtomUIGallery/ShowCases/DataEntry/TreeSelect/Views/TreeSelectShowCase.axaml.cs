@@ -7,7 +7,7 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeSelect;
@@ -26,12 +26,14 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
                 viewModel.AsyncLoadTreeNodeLoader = new LocalizedTreeSelectItemDataLoader();
                 viewModel.Placement = SelectPopupPlacement.TopEdgeAlignedLeft;
 
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = Application.Current is { } application
+                    ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
+                    : null;
                 if (languageManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTreeNodes(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshLocalizedTreeNodes(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    Disposable.Create(() => languageManager.LanguageChanged -= handler)
                               .DisposeWith(disposables);
                 }
 
@@ -462,6 +464,6 @@ internal static class TreeSelectShowCaseLanguage
 {
     public static string Get(TreeSelectShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 }

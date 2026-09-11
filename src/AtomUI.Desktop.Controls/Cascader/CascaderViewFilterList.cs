@@ -64,7 +64,18 @@ internal class CascaderViewFilterList : ListBox
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
-        ClearCandidate();
+        if (e.Pointer.Type != PointerType.Mouse ||
+            GetContainerFromEventSource(e.Source) is not CascaderViewFilterListItem listItem)
+        {
+            return;
+        }
+
+        var index = IndexFromContainer(listItem);
+        if (index >= 0 && index < ItemCount &&
+            Items[index] is CascaderViewFilterListItemData itemData && itemData.IsEnabled)
+        {
+            SetCandidate(index);
+        }
     }
 
     internal bool TryMoveCandidate(int delta)

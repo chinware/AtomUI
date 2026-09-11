@@ -1,7 +1,7 @@
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.VisualTree;
+using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -9,7 +9,6 @@ internal sealed class DialogOverlayLayer : Canvas
 {
     private readonly Panel _hostLayer;
     private readonly TopLevel? _topLevel;
-    private readonly bool _usesArrangedHostBounds;
 
     internal Size AvailableSize { get; private set; }
 
@@ -17,10 +16,6 @@ internal sealed class DialogOverlayLayer : Canvas
     {
         _hostLayer = hostLayer;
         _topLevel = topLevel;
-        _usesArrangedHostBounds = hostLayer is not Canvas &&
-                                  hostLayer.IsAttachedToVisualTree() &&
-                                  topLevel is Window window &&
-                                  ReferenceEquals(hostLayer, window.GetDrawnDialogOverlayLayer());
         _hostLayer.SizeChanged += HandleHostLayerSizeChanged;
         if (_topLevel is not null)
         {
@@ -46,15 +41,8 @@ internal sealed class DialogOverlayLayer : Canvas
     private static (Panel HostLayer, TopLevel? TopLevel) ResolveHostLayer(Visual anchor)
     {
         var topLevel = TopLevel.GetTopLevel(anchor);
-        if (topLevel is Window window &&
-            window.GetDrawnDialogOverlayLayer() is { } drawnDialogLayer &&
-            drawnDialogLayer.IsAttachedToVisualTree())
-        {
-            return (drawnDialogLayer, topLevel);
-        }
-
         if (topLevel is not null &&
-            topLevel.GetPopupOverlayLayer() is Panel topLevelLayer)
+            OverlayLayer.GetOverlayLayer(anchor) is Panel topLevelLayer)
         {
             return (topLevelLayer, topLevel);
         }
@@ -148,17 +136,8 @@ internal sealed class DialogOverlayLayer : Canvas
         }
 
         AvailableSize = size;
-        if (_usesArrangedHostBounds)
-        {
-            ClearValue(WidthProperty);
-            ClearValue(HeightProperty);
-        }
-        else
-        {
-            Width  = size.Width;
-            Height = size.Height;
-        }
-
+        Width  = size.Width;
+        Height = size.Height;
         Canvas.SetLeft(this, 0);
         Canvas.SetTop(this, 0);
         foreach (var presenter in Children.OfType<OverlayDialogPresenter>())

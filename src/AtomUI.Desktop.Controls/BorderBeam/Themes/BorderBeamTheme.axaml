@@ -21,6 +21,7 @@
                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                Duration="{TemplateBinding Duration}"
                                                BeamSize="{TemplateBinding BeamSize}"
+                                               Count="{TemplateBinding Count}"
                                                BeamOpacity="{TemplateBinding BeamOpacity}"
                                                MaxVisibleStopPercent="{TemplateBinding MaxVisibleStopPercent}"
                                                DefaultStartColor="{TemplateBinding DefaultStartColor}"

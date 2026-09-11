@@ -1,0 +1,47 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum ComboBoxShowCaseLangResourceKind
+{
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    ScenarioExamples,
+    BasicTitle,
+    BasicDescription,
+    ItemsSourceTitle,
+    ItemsSourceDescription,
+    BindingTitle,
+    BindingDescription,
+    BindingSelectedItemLabel,
+    BindingViewModelValueLabel,
+    BindingSetButton,
+    BindingClearButton,
+    EditableFilterTitle,
+    EditableFilterDescription,
+    DisabledTitle,
+    DisabledDescription,
+    ThreeSizesTitle,
+    ThreeSizesDescription,
+    VariantsTitle,
+    VariantsDescription,
+    PrePostTabTitle,
+    PrePostTabDescription,
+    PrefixSuffixTitle,
+    PrefixSuffixDescription,
+    StatusTitle,
+    StatusDescription,
+    P2PlaceholderTextPleaseSelect,
+    P2PlaceholderTextTypeToFilter,
+    P2PlaceholderSizeTypeLarge,
+    P2PlaceholderSizeTypeMiddle,
+    P2PlaceholderSizeTypeSmall,
+    P2PlaceholderSizeTypeCustom,
+    P2ContentPoemLine1,
+    P2ContentPoemLine2,
+    P2ContentPoemLine3,
+    P2ContentPoemLine4
+}

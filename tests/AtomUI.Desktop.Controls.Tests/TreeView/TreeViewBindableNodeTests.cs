@@ -130,6 +130,62 @@ public class TreeViewBindableNodeTests
     }
 
     [Fact]
+    public void BindableNode_VisualTree_Reattach_Continues_To_Sync_Node_State()
+    {
+        var child = new BindableTreeItemNode
+        {
+            Header = "Child"
+        };
+        var parent = new BindableTreeItemNode
+        {
+            Header   = "Parent",
+            IsExpanded = true,
+            Children = [child]
+        };
+        var treeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            ToggleType           = ItemToggleType.CheckBox,
+            IsMotionEnabled      = false,
+            IsShowEmptyIndicator = false,
+            ItemsSource          = new[] { parent }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 420,
+            Height  = 320,
+            Content = treeView
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (AtomTreeViewItem)treeView.ContainerFromItem(parent)!;
+            parentContainer.ContainerFromItem(child).ShouldBeAssignableTo<AtomTreeViewItem>();
+
+            window.Content = null;
+            Dispatcher.UIThread.RunJobs();
+            window.Content = treeView;
+            Dispatcher.UIThread.RunJobs();
+
+            var reopenedParentContainer = (AtomTreeViewItem)treeView.ContainerFromItem(parent)!;
+            var reopenedChildContainer = (AtomTreeViewItem)reopenedParentContainer.ContainerFromItem(child)!;
+            reopenedParentContainer.ShouldBeSameAs(parentContainer);
+            reopenedChildContainer.SetCurrentValue(AtomTreeViewItem.IsCheckedProperty, true);
+            Dispatcher.UIThread.RunJobs();
+
+            child.IsChecked.ShouldBe(true);
+        }
+        finally
+        {
+            window.Content = null;
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void Dynamic_Resource_Header_Uses_Owner_TreeView_Resources()
     {
         var resourceKey = CreateResourceKey();

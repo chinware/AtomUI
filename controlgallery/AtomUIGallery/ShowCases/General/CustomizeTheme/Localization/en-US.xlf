@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind">
+    <unit id="ApiMemberControlThemeConfigAlgorithm">
+      <segment>
+        <source>How the control applies algorithms: Unspecified, Disabled, Global, or Custom.</source>
+      </segment>
+    </unit>
+    <unit id="ApiMemberControlThemeConfigAlgorithms">
+      <segment>
+        <source>Ordered ThemeAlgorithm values used only when Algorithm is Custom.</source>
+      </segment>
+    </unit>
+    <unit id="ApiMemberControlThemeConfigTokens">
+      <segment>
+        <source>Global Token and Own Token overrides applied only to the selected Control identity.</source>
+      </segment>
+    </unit>
+    <unit id="ApiMemberThemeConfigAlgorithms">
+      <segment>
+        <source>Ordered ThemeAlgorithm values. A null value inherits the parent algorithm chain.</source>
+      </segment>
+    </unit>
+    <unit id="ApiMemberThemeConfigControls">
+      <segment>
+        <source>Control theme configurations keyed by ControlTokenIdentity.</source>
+      </segment>
+    </unit>
+    <unit id="ApiMemberThemeConfigInherit">
+      <segment>
+        <source>Whether this configuration inherits and merges the parent theme configuration.</source>
+      </segment>
+    </unit>
+    <unit id="ApiMemberThemeConfigProviderConfig">
+      <segment>
+        <source>Immutable scoped theme configuration. Runtime updates replace the complete value.</source>
+      </segment>
+    </unit>
+    <unit id="ApiMemberThemeConfigTokens">
+      <segment>
+        <source>Global token overrides keyed by token name.</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeControlTokenDescription">
+      <segment>
+        <source>Every publicly themeable Control has an independent identity. Its configuration can override any Global Token and that Control's Own Tokens; the overrides affect only the selected Control and do not leak to other Controls.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeControlTokenTitle">
+      <segment>
+        <source>Customize Control Tokens</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeDesignTokenDescription">
+      <segment>
+        <source>By modifying token property of theme, we can modify Design Token globally. Some tokens will affect other tokens. We call these tokens Seed Token.</source>
+      </segment>
+    </unit>
+    <unit id="CustomizeDesignTokenTitle">
+      <segment>
+        <source>Customize Design Token</source>
+      </segment>
+    </unit>
+    <unit id="NestedThemeDescription">
+      <segment>
+        <source>By nesting ConfigProvider you can apply a local theme to part of your page. Design Tokens that are not changed in the child theme inherit from the parent theme.</source>
+      </segment>
+    </unit>
+    <unit id="NestedThemeTitle">
+      <segment>
+        <source>Nested Theme</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentApple">
+      <segment>
+        <source>Apple</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefaultButton">
+      <segment>
+        <source>Default Button</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLinkButton">
+      <segment>
+        <source>Link Button</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOrange">
+      <segment>
+        <source>Orange</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPear">
+      <segment>
+        <source>Pear</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimaryButton">
+      <segment>
+        <source>Primary Button</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSubmit">
+      <segment>
+        <source>Submit</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTextButton">
+      <segment>
+        <source>Text Button</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThemeN1">
+      <segment>
+        <source>Theme 1</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThemeN2">
+      <segment>
+        <source>Theme 2</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentThemeN3">
+      <segment>
+        <source>No inherit</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUseBlue">
+      <segment>
+        <source>Blue</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUseGreen">
+      <segment>
+        <source>Green</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUseMagenta">
+      <segment>
+        <source>Magenta</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseInput">
+      <segment>
+        <source>Please input</source>
+      </segment>
+    </unit>
+    <unit id="P2TextDisableAlgorithm">
+      <segment>
+        <source>Disable algorithm:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextEnableAlgorithm">
+      <segment>
+        <source>Enable algorithm:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Customize Theme demonstrates how ThemeConfigProvider overrides Global Tokens, applies preset algorithms, configures Control Tokens, and nests theme contexts without changing the global application theme.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Customize AtomUI themes with Global Tokens, algorithms, Control Tokens, and nested local theme scopes.</source>
+      </segment>
+    </unit>
+    <unit id="PresetAlgorithmsDescription">
+      <segment>
+        <source>Themes with different styles can be quickly generated by modifying algorithm. Ant Design 5.0 provides three sets of preset algorithms by default: DefaultAlgorithm, DarkAlgorithm, CompactAlgorithm.</source>
+      </segment>
+    </unit>
+    <unit id="PresetAlgorithmsTitle">
+      <segment>
+        <source>Use Preset Algorithms</source>
+      </segment>
+    </unit>
+    <unit id="RuntimeTokenUpdatesDescription">
+      <segment>
+        <source>Replace ThemeConfigProvider.Config with a new immutable ThemeConfig to publish one scoped snapshot without adding resource provider layers.</source>
+      </segment>
+    </unit>
+    <unit id="RuntimeTokenUpdatesTitle">
+      <segment>
+        <source>Runtime Token Updates</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

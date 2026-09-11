@@ -3,70 +3,44 @@ param (
     [string]$buildType = "Release"
 )
 
+$ErrorActionPreference = "Stop"
+$packageOutputDir = Join-Path $PSScriptRoot "../.artifacts/Nuget/$buildType"
+
 function Push-NuGetPackages {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param(
-        [string]$PackagePath = "../output/Nuget",
+        [string]$PackagePath = "../.artifacts/Nuget",
         [Parameter(Mandatory = $true)]
         [string]$Source
     )
 
     # 获取所有NuGet包
-    $packages = Get-ChildItem -Path $PackagePath -Filter *.nupkg -Recurse -File
+    $packages = Get-ChildItem -LiteralPath $PackagePath -Filter "*.nupkg" -File |
+        Sort-Object Name
 
     if (-not $packages) {
         Write-Warning "未找到任何.nupkg文件"
         return
     }
 
-    # 处理每个包
+    $pushedPackages = @()
     foreach ($pkg in $packages) {
-        if ($PSCmdlet.ShouldProcess($pkg.Name, "推送并删除")) {
-            try {
-                # 推送包
-                dotnet nuget push $pkg.FullName --source $Source
+        if ($PSCmdlet.ShouldProcess($pkg.Name, "推送")) {
+            dotnet nuget push $pkg.FullName --source $Source --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+                throw "推送失败: $($pkg.Name) (退出码: $LASTEXITCODE)"
+            }
 
-                if ($LASTEXITCODE -eq 0) {
-                    # 删除成功推送的包
-                    Remove-Item $pkg.FullName -Force
-                    Write-Host "✓ 成功: $($pkg.Name)" -ForegroundColor Green
-                } else {
-                    Write-Warning "推送失败: $($pkg.Name) (退出码: $LASTEXITCODE)"
-                }
-            }
-            catch {
-                Write-Error "处理 $($pkg.Name) 时出错: $_"
-            }
+            $pushedPackages += $pkg
+            Write-Host "成功: $($pkg.Name)" -ForegroundColor Green
         }
+    }
+
+    foreach ($pkg in $pushedPackages) {
+        Remove-Item $pkg.FullName -Force
     }
 }
 
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Core/AtomUI.Core.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
+& "$PSScriptRoot/BuildNuGetPackages.ps1" -BuildType $buildType -PackageOutputDir $packageOutputDir
 
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Core/AtomUI.Core.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
-
-Push-NuGetPackages -Source $localSourcesDir
-
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
-
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
-
-Push-NuGetPackages -Source $localSourcesDir
+Push-NuGetPackages -PackagePath $packageOutputDir -Source $localSourcesDir

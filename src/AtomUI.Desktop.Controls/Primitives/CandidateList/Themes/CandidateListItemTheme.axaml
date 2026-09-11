@@ -8,12 +8,19 @@
     </ControlTheme.BasedOn>
     
     <Style Selector="^:is(atom|CandidateListItem)">
-        <Style Selector="^[IsSelected=False][IsCandidateSelected=True]">
+        <Style Selector="^:pointerover:not(:disabled)">
+            <Setter Property="Foreground" Value="{atom:ListBoxTokenResource ItemColor}" />
+            <Setter Property="Background" Value="{atom:ListBoxTokenResource ItemBgColor}" />
+        </Style>
+
+        <Style Selector="^[IsSelected=False][IsCandidateSelected=True]:not(:disabled)">
+            <Setter Property="Foreground" Value="{atom:ListBoxTokenResource ItemHoverColor}" />
             <Setter Property="Background" Value="{Binding ItemHoverBg, RelativeSource={RelativeSource Self}}" />
         </Style>
         
-        <Style Selector="^[IsSelected=True]">
-            <Setter Property="Background" Value="{Binding ItemHoverBg, RelativeSource={RelativeSource Self}}" />
+        <Style Selector="^[IsSelected=True]:not(:disabled)">
+            <Setter Property="Foreground" Value="{atom:ListBoxTokenResource ItemSelectedColor}" />
+            <Setter Property="Background" Value="{Binding ItemSelectedBg, RelativeSource={RelativeSource Self}}" />
         </Style>
     </Style>
     

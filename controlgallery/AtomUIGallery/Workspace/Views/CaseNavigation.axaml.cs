@@ -1,27 +1,55 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Icons.AntDesign;
+using AtomUI.Localization;
 using AtomUI.Toolkits.GalleryBase.Navigation;
+using AtomUI.Toolkits.GalleryBase.Shell;
+using AtomUIGallery.Localization;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using DesktopButton = AtomUI.Desktop.Controls.Button;
 using Window = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Workspace.Views;
 
-public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationViewModel>
+public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationViewModel>,
+                                      IGallerySidebarNavMenuHost
 {
     public const string LanguageId = nameof(CaseNavigation);
-    private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
+    private ILanguageManager? _subscribedLanguageManager;
+    private EventHandler<LanguageChangedEventArgs>? _languageChangedHandler;
+    private readonly PathIcon _collapseNavigationIcon;
+    private readonly PathIcon _expandNavigationIcon;
+    private readonly DesktopButton _navigationCollapseButton;
+
+    NavMenu IGallerySidebarNavMenuHost.SidebarNavMenu => ShowCaseNavMenu;
+    Control? IGallerySidebarNavMenuHost.SidebarHeaderAction => _navigationCollapseButton;
 
     public CaseNavigation()
     {
         InitializeComponent();
+        _collapseNavigationIcon = CreateNavigationIcon(AntDesignIconKind.MenuFoldOutlined);
+        _expandNavigationIcon   = CreateNavigationIcon(AntDesignIconKind.MenuUnfoldOutlined);
+        _navigationCollapseButton = new DesktopButton
+        {
+            Name                = "NavigationCollapseButton",
+            Width               = 40,
+            Height              = 40,
+            ButtonType          = ButtonType.Text,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _navigationCollapseButton.Click += HandleToggleNavigationCollapsedClick;
         ConfigureNavigationMenu();
+        UpdateNavigationCollapseButtonPresentation();
 
         this.WhenActivated(disposables =>
         {
@@ -41,6 +69,9 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
             ShowCaseNavMenu.NavMenuItemClick += NavMenuItemClickHandler;
             Disposable.Create(() => ShowCaseNavMenu.NavMenuItemClick -= NavMenuItemClickHandler)
                       .DisposeWith(disposables);
+            ShowCaseNavMenu.GetObservable(NavMenu.IsInlineCollapsedProperty)
+                           .Subscribe(_ => UpdateNavigationCollapseButtonPresentation())
+                           .DisposeWith(disposables);
         });
     }
 
@@ -83,35 +114,35 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
 
     private void SubscribeLanguageChanged()
     {
-        if (_languageVariantChangedHandler is not null)
+        if (_subscribedLanguageManager is not null)
         {
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
-        if (languageManager is null)
+        _subscribedLanguageManager = GalleryLocalization.GetLanguageManager();
+        if (_subscribedLanguageManager is null)
         {
             return;
         }
 
-        _languageVariantChangedHandler = (_, _) => ConfigureNavigationMenu();
-        languageManager.LanguageVariantChanged += _languageVariantChangedHandler;
+        _languageChangedHandler = (_, _) =>
+        {
+            ConfigureNavigationMenu();
+            UpdateNavigationCollapseButtonPresentation();
+        };
+        _subscribedLanguageManager.LanguageChanged += _languageChangedHandler;
     }
 
     private void UnsubscribeLanguageChanged()
     {
-        if (_languageVariantChangedHandler is null)
+        if (_subscribedLanguageManager is null || _languageChangedHandler is null)
         {
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
-        if (languageManager is not null)
-        {
-            languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
-        }
-
-        _languageVariantChangedHandler = null;
+        _subscribedLanguageManager.LanguageChanged -= _languageChangedHandler;
+        _subscribedLanguageManager = null;
+        _languageChangedHandler = null;
     }
 
     private void OnGlobalKeyDown(object? sender, KeyEventArgs e)
@@ -130,5 +161,31 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
                          .Subscribe();
             }
         }
+    }
+
+    private void HandleToggleNavigationCollapsedClick(object? sender, RoutedEventArgs e)
+    {
+        ShowCaseNavMenu.IsInlineCollapsed = !ShowCaseNavMenu.IsInlineCollapsed;
+        UpdateNavigationCollapseButtonPresentation();
+    }
+
+    private void UpdateNavigationCollapseButtonPresentation()
+    {
+        var isCollapsed = ShowCaseNavMenu.IsInlineCollapsed;
+        var resourceKind = isCollapsed
+            ? CaseNavigationLangResourceKind.ExpandNavigation
+            : CaseNavigationLangResourceKind.CollapseNavigation;
+        var fallback = isCollapsed ? "Expand navigation" : "Collapse navigation";
+        var accessibleText = GalleryLocalization.Get(resourceKind, fallback);
+
+        _navigationCollapseButton.Icon = isCollapsed
+            ? _expandNavigationIcon
+            : _collapseNavigationIcon;
+        AutomationProperties.SetName(_navigationCollapseButton, accessibleText);
+    }
+
+    private static PathIcon CreateNavigationIcon(AntDesignIconKind iconKind)
+    {
+        return (PathIcon)new AntDesignIconProvider(iconKind).ProvideValue(null!);
     }
 }

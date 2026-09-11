@@ -56,6 +56,7 @@ public class StepsLayoutMatrixTests
                 var content = FindControl(item, "ContentPresenter");
                 var connector = FindControl(item, "Connector");
                 var arrow = FindControl(item, "NavigationArrow");
+                var panelArrow = FindControl(item, "PanelArrow");
 
                 AssertFinite(indicator);
                 AssertFinite(header);
@@ -63,9 +64,14 @@ public class StepsLayoutMatrixTests
                 AssertFinite(content);
                 AssertFinite(connector);
                 AssertFinite(arrow);
+                AssertFinite(panelArrow);
 
-                indicator.Bounds.Width.ShouldBeGreaterThan(0);
-                indicator.Bounds.Height.ShouldBeGreaterThan(0);
+                indicator.IsVisible.ShouldBe(type != Desktop.Controls.StepsType.Panel);
+                if (type != Desktop.Controls.StepsType.Panel)
+                {
+                    indicator.Bounds.Width.ShouldBeGreaterThan(0);
+                    indicator.Bounds.Height.ShouldBeGreaterThan(0);
+                }
                 AssertNoInteriorOverlap(indicator, header);
                 AssertNoInteriorOverlap(indicator, subHeader);
                 AssertNoInteriorOverlap(indicator, content);
@@ -73,8 +79,12 @@ public class StepsLayoutMatrixTests
                 AssertNoInteriorOverlap(subHeader, content);
 
                 content.IsVisible.ShouldBe(type != Desktop.Controls.StepsType.Inline);
-                connector.IsVisible.ShouldBe(type != Desktop.Controls.StepsType.Navigation && !item.IsLast);
+                connector.IsVisible.ShouldBe(
+                    type != Desktop.Controls.StepsType.Navigation &&
+                    type != Desktop.Controls.StepsType.Panel &&
+                    !item.IsLast);
                 arrow.IsVisible.ShouldBe(type == Desktop.Controls.StepsType.Navigation && !item.IsLast);
+                panelArrow.IsVisible.ShouldBe(type == Desktop.Controls.StepsType.Panel && !item.IsLast);
             }
         });
     }

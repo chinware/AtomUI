@@ -16,7 +16,7 @@ namespace AtomUI.Core.Tests.Theme;
 public class ThemeStartupTests
 {
     [Fact]
-    public void Control_Package_Registration_Adds_Descriptors_Assets_Themes_And_Languages_Atomically()
+    public void Control_Package_Registration_Adds_Descriptors_Assets_And_Themes_Atomically()
     {
         HeadlessTestApp.Run(() =>
         {
@@ -41,8 +41,7 @@ public class ThemeStartupTests
                 provider.Id,
                 [descriptor],
                 [asset],
-                provider,
-                Array.Empty<AtomUI.Theme.Language.LanguageProvider>());
+                provider);
             var builder = new ThemeManagerBuilder();
 
             builder.AddControlPackage(package);

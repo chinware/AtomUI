@@ -455,7 +455,7 @@ internal static partial class ShowCaseCodeSnippetCatalog
 
 生成物命名应位于产品 Gallery namespace 下，例如 `AtomUIGallery.Generated.ShowCaseCodeSnippetCatalog`。GalleryBase 只认识 provider 契约，不认识生成物名称。
 
-Generator 诊断遵循 [AtomUI 编译期诊断规范](../../engineering/compiler-diagnostics-guidelines.md)，诊断 ID 使用 `ATOMUIGEN` 领域前缀并登记到诊断注册表。源码展示 generator 已使用 `ATOMUIGEN101` 覆盖默认源码匹配缺少 panel key 的场景，其他诊断按同一领域前缀扩展。
+Generator 诊断遵循 [AtomUI 编译期诊断规范](../../engineering/development/compiler-diagnostics-guidelines.md)，诊断 ID 使用 `ATOMUIGEN` 领域前缀并登记到诊断注册表。源码展示 generator 已使用 `ATOMUIGEN101` 覆盖默认源码匹配缺少 panel key 的场景，其他诊断按同一领域前缀扩展。
 
 | 场景 | Severity | 行为 |
 |---|---|---|
@@ -553,9 +553,9 @@ Clipboard 操作通过当前 `TopLevel` 获取剪贴板服务。没有可用 cli
 - [AtomUI.Toolkits.GalleryBase 模块概览](overview.md)
 - [AtomUI.Toolkits.GalleryBase 设计文档](architecture.md)
 - [GalleryBase ShowCase 控件设计](showcase-controls.md)
-- [Gallery ShowCase Design Pattern](../../gallery/gallery-showcase-design-pattern.md)
-- [AtomUI AOT 编程规范](../../engineering/aot-programming-guidelines.md)
-- [AtomUI 编译期诊断规范](../../engineering/compiler-diagnostics-guidelines.md)
+- [Gallery ShowCase Design Pattern](../../gallery/authoring/gallery-showcase-design-pattern.md)
+- [AtomUI AOT 编程规范](../../engineering/development/aot-programming-guidelines.md)
+- [AtomUI 编译期诊断规范](../../engineering/development/compiler-diagnostics-guidelines.md)
 
 验证要求：
 

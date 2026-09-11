@@ -242,7 +242,12 @@ public abstract class AbstractToggleSwitch : ToggleButton,
     
     static AbstractToggleSwitch()
     {
-        AffectsMeasure<AbstractToggleSwitch>(SizeTypeProperty);
+        AffectsMeasure<AbstractToggleSwitch>(
+            SizeTypeProperty,
+            OnContentProperty,
+            OnContentTemplateProperty,
+            OffContentProperty,
+            OffContentTemplateProperty);
         AffectsArrange<AbstractToggleSwitch>(
             IsPressedProperty,
             KnobRectProperty,

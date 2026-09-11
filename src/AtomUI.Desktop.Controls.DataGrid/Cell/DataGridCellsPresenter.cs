@@ -69,7 +69,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             // When we initially load an auto-column, we have to wait for all the rows to be measured
             // before we know its final desired size.  We need to trigger a new round of measures now
             // that the final sizes have been calculated.
-            OwningGrid.AutoSizingColumns = false;
+            OwningGrid.CompleteAutoSizing(OwningGrid.CellsWidth);
             return base.ArrangeOverride(finalSize);
         }
 

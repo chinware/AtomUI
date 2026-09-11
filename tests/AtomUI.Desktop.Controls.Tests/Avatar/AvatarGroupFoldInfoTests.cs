@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
@@ -8,7 +9,8 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 
-using DesktopAvatar = AtomUI.Desktop.Controls.Avatar;
+using DesktopAvatar = AtomUI.Controls.Avatar;
+using AtomUIWindow = AtomUI.Desktop.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.Avatar;
 
@@ -146,6 +148,128 @@ public class AvatarGroupFoldInfoTests
     }
 
     [Fact]
+    public void Pinned_AvatarGroup_Opens_Fold_Flyout_And_Rejects_Normal_Hide()
+    {
+        var group  = CreateFoldedGroup();
+        var window = new AtomUIWindow
+        {
+            Width   = 240,
+            Height  = 160,
+            Content = group
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            var host   = GetFoldHost(group);
+            var flyout = host.Flyout.ShouldNotBeNull();
+
+            SetPopupPinnedOpen(group, true);
+            Dispatcher.UIThread.RunJobs();
+
+            host.IsPopupPinnedOpen.ShouldBeTrue();
+            flyout.IsPopupPinnedOpen.ShouldBeTrue();
+            flyout.IsOpen.ShouldBeTrue();
+            flyout.Popup.ShouldBeOfType<Popup>().IsPopupPinnedOpen.ShouldBeTrue();
+
+            flyout.Hide();
+            Dispatcher.UIThread.RunJobs();
+
+            flyout.IsOpen.ShouldBeTrue();
+            flyout.Popup.IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            SetPopupPinnedOpenIfAvailable(group, false);
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
+    public void Pinned_AvatarGroup_Disabling_Fold_ForceCloses_And_Releases_Fold_Host()
+    {
+        var group  = CreateFoldedGroup();
+        var window = new AtomUIWindow
+        {
+            Width   = 240,
+            Height  = 160,
+            Content = group
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            var host   = GetFoldHost(group);
+            var flyout = host.Flyout.ShouldNotBeNull();
+            SetPopupPinnedOpen(group, true);
+            Dispatcher.UIThread.RunJobs();
+            flyout.IsOpen.ShouldBeTrue();
+
+            group.MaxDisplayCount = null;
+            Dispatcher.UIThread.RunJobs();
+
+            GetPresentedFoldHostCount(group).ShouldBe(0);
+            host.IsPopupPinnedOpen.ShouldBeFalse();
+            flyout.IsPopupPinnedOpen.ShouldBeFalse();
+            flyout.IsOpen.ShouldBeFalse();
+            flyout.Popup.IsOpen.ShouldBeFalse();
+        }
+        finally
+        {
+            SetPopupPinnedOpenIfAvailable(group, false);
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
+    public void Pinned_AvatarGroup_Detach_Closes_Old_And_Reattach_Opens_New_Fold_Flyout()
+    {
+        var group  = CreateFoldedGroup();
+        var window = new AtomUIWindow
+        {
+            Width   = 240,
+            Height  = 160,
+            Content = group
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            var oldHost   = GetFoldHost(group);
+            var oldFlyout = oldHost.Flyout.ShouldNotBeNull();
+            SetPopupPinnedOpen(group, true);
+            Dispatcher.UIThread.RunJobs();
+            oldFlyout.IsOpen.ShouldBeTrue();
+
+            window.Content = null;
+            Dispatcher.UIThread.RunJobs();
+
+            oldHost.IsPopupPinnedOpen.ShouldBeFalse();
+            oldFlyout.IsOpen.ShouldBeFalse();
+            oldFlyout.Popup.IsOpen.ShouldBeFalse();
+
+            window.Content = group;
+            Dispatcher.UIThread.RunJobs();
+
+            var newHost = GetFoldHost(group);
+            newHost.ShouldNotBeSameAs(oldHost);
+            newHost.IsPopupPinnedOpen.ShouldBeTrue();
+            newHost.Flyout.ShouldNotBeNull().IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            SetPopupPinnedOpenIfAvailable(group, false);
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void AvatarGroup_Move_Across_Fold_Boundary_Rebuilds_Visible_Order()
     {
         var group = CreateFoldedGroup();
@@ -214,22 +338,27 @@ public class AvatarGroupFoldInfoTests
     }
 
     [Fact]
-    public void Avatar_BitmapSrc_Content_Is_Clipped_By_Circle_Shape()
+    public void Avatar_Borrowed_Image_Content_Is_Clipped_By_Circle_Shape()
     {
         using var bitmap = new RenderTargetBitmap(new PixelSize(4, 4), new Vector(96, 96));
         var avatar = new DesktopAvatar
         {
             Size      = 64,
-            Shape     = AvatarShape.Circle,
-            BitmapSrc = bitmap
+            Shape  = AvatarShape.Circle,
+            Source = new BorrowedImageSource(bitmap)
         };
+        avatar.Measure(new Size(64, 64));
+        avatar.Arrange(new Rect(0, 0, 64, 64));
 
         ShowInWindow(avatar, () =>
         {
+            avatar.LoadError.ShouldBeNull();
+            avatar.LoadState.ShouldBe(ImageLoadState.Loaded);
             var imagePresenter = avatar.GetVisualDescendants()
                                        .OfType<Image>()
                                        .Single(image => image.Name == "ImagePresenter");
 
+            imagePresenter.Source.ShouldBeSameAs(bitmap);
             imagePresenter.IsVisible.ShouldBeTrue();
 
             var clippingFrame = imagePresenter.GetVisualAncestors()
@@ -274,6 +403,29 @@ public class AvatarGroupFoldInfoTests
                     .Count();
     }
 
+    private static FlyoutHost GetFoldHost(AvatarGroup group)
+    {
+        return group.GetLogicalChildren()
+                    .OfType<FlyoutHost>()
+                    .Single();
+    }
+
+    private static void SetPopupPinnedOpen(object target, bool value)
+    {
+        var property = target.GetType().GetProperty(
+            "IsPopupPinnedOpen",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        property.ShouldNotBeNull($"{target.GetType().Name} must own the internal popup pin contract.")
+                .SetValue(target, value);
+    }
+
+    private static void SetPopupPinnedOpenIfAvailable(object target, bool value)
+    {
+        target.GetType()
+              .GetProperty("IsPopupPinnedOpen", BindingFlags.Instance | BindingFlags.NonPublic)?
+              .SetValue(target, value);
+    }
+
     private static void ShowInWindow(Control content, Action assertion)
     {
         var window = new Avalonia.Controls.Window
@@ -287,6 +439,17 @@ public class AvatarGroupFoldInfoTests
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
+            if (content is IImageLoadControl imageControl && imageControl.Source is not null)
+            {
+                SpinWait.SpinUntil(
+                        () =>
+                        {
+                            Dispatcher.UIThread.RunJobs();
+                            return imageControl.LoadState is ImageLoadState.Loaded or ImageLoadState.Failed;
+                        },
+                        TimeSpan.FromSeconds(2))
+                    .ShouldBeTrue("the image request should reach a terminal state");
+            }
             assertion();
         }
         finally

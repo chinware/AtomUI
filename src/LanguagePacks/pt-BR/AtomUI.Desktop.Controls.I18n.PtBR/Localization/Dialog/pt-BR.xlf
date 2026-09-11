@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.DialogLangResourceKind">
+    <unit id="Abort">
+      <segment>
+        <source>Abort</source>
+        <target state="final">Interromper</target>
+      </segment>
+    </unit>
+    <unit id="Apply">
+      <segment>
+        <source>Apply</source>
+        <target state="final">Aplicar</target>
+      </segment>
+    </unit>
+    <unit id="Cancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="final">Cancelar</target>
+      </segment>
+    </unit>
+    <unit id="Close">
+      <segment>
+        <source>Close</source>
+        <target state="final">Fechar</target>
+      </segment>
+    </unit>
+    <unit id="Discard">
+      <segment>
+        <source>Discard</source>
+        <target state="final">Descartar</target>
+      </segment>
+    </unit>
+    <unit id="Help">
+      <segment>
+        <source>Help</source>
+        <target state="final">Ajuda</target>
+      </segment>
+    </unit>
+    <unit id="Ignore">
+      <segment>
+        <source>Ignore</source>
+        <target state="final">Ignorar</target>
+      </segment>
+    </unit>
+    <unit id="No">
+      <segment>
+        <source>No</source>
+        <target state="final">Não</target>
+      </segment>
+    </unit>
+    <unit id="NoToAll">
+      <segment>
+        <source>No to All</source>
+        <target state="final">Não para todos</target>
+      </segment>
+    </unit>
+    <unit id="Ok">
+      <segment>
+        <source>OK</source>
+        <target state="final">OK</target>
+      </segment>
+    </unit>
+    <unit id="Open">
+      <segment>
+        <source>Open</source>
+        <target state="final">Abrir</target>
+      </segment>
+    </unit>
+    <unit id="Reload">
+      <segment>
+        <source>Reload</source>
+        <target state="final">Recarregar</target>
+      </segment>
+    </unit>
+    <unit id="Reset">
+      <segment>
+        <source>Reset</source>
+        <target state="final">Redefinir</target>
+      </segment>
+    </unit>
+    <unit id="RestoreDefaults">
+      <segment>
+        <source>Restore Defaults</source>
+        <target state="final">Restaurar padrões</target>
+      </segment>
+    </unit>
+    <unit id="Retry">
+      <segment>
+        <source>Retry</source>
+        <target state="final">Tentar novamente</target>
+      </segment>
+    </unit>
+    <unit id="Save">
+      <segment>
+        <source>Save</source>
+        <target state="final">Salvar</target>
+      </segment>
+    </unit>
+    <unit id="SaveAll">
+      <segment>
+        <source>Save All</source>
+        <target state="final">Salvar tudo</target>
+      </segment>
+    </unit>
+    <unit id="Yes">
+      <segment>
+        <source>Yes</source>
+        <target state="final">Sim</target>
+      </segment>
+    </unit>
+    <unit id="YesToAll">
+      <segment>
+        <source>Yes to All</source>
+        <target state="final">Sim para todos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -10,6 +10,8 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -42,7 +44,7 @@ public class ToolTip : ContentControl,
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsPointAtCenter");
     
     public static readonly AttachedProperty<bool> IsOpenProperty =
-        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen", coerce: CoerceIsOpen);
 
     public static readonly AttachedProperty<PlacementMode> PlacementProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, PlacementMode>("Placement",
@@ -76,6 +78,12 @@ public class ToolTip : ContentControl,
     public static readonly AttachedProperty<bool> IsCustomShowAndHideProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomShowAndHide");
     
+    public static readonly AttachedProperty<TextWrapping> TextWrappingProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, TextWrapping>("TextWrapping", TextWrapping.Wrap);
+
+    public static readonly AttachedProperty<TextTrimming> TextTrimmingProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, TextTrimming>("TextTrimming", TextTrimming.None);
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -97,6 +105,12 @@ public class ToolTip : ContentControl,
 
     internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
+
+    internal static readonly AttachedProperty<bool> IsPopupPinnedOpenProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsPopupPinnedOpen");
+
+    private static readonly AttachedProperty<EventHandler<VisualTreeAttachmentEventArgs>?> PendingAttachHandlerProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, EventHandler<VisualTreeAttachmentEventArgs>?>("PendingAttachHandler");
     
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<ToolTip>();
@@ -128,6 +142,8 @@ public class ToolTip : ContentControl,
     static ToolTip()
     {
         IsOpenProperty.Changed.Subscribe(IsOpenChanged);
+        TipProperty.Changed.Subscribe(TipChanged);
+        IsPopupPinnedOpenProperty.Changed.Subscribe(IsPopupPinnedOpenChanged);
     }
 
     #region 附加属性访问器
@@ -302,6 +318,26 @@ public class ToolTip : ContentControl,
         element.SetValue(IsCustomShowAndHideProperty, flag);
     }
 
+    public static TextWrapping GetTextWrapping(Control element)
+    {
+        return element.GetValue(TextWrappingProperty);
+    }
+
+    public static void SetTextWrapping(Control element, TextWrapping value)
+    {
+        element.SetValue(TextWrappingProperty, value);
+    }
+
+    public static TextTrimming GetTextTrimming(Control element)
+    {
+        return element.GetValue(TextTrimmingProperty);
+    }
+
+    public static void SetTextTrimming(Control element, TextTrimming value)
+    {
+        element.SetValue(TextTrimmingProperty, value);
+    }
+
     #endregion
 
     #region 路由事件访问器
@@ -318,14 +354,86 @@ public class ToolTip : ContentControl,
     public static void RemoveToolTipClosingHandler(Control element, EventHandler<RoutedEventArgs> handler) =>
         element.RemoveHandler(ToolTipClosingEvent, handler);
 
+    internal static bool GetIsPopupPinnedOpen(Control element)
+    {
+        return element.GetValue(IsPopupPinnedOpenProperty);
+    }
+
+    internal static void SetIsPopupPinnedOpen(Control element, bool value)
+    {
+        element.SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var control = (Control)e.Sender;
-        var newValue = (bool)e.NewValue!;
+        ReconcileOpenState(control);
+    }
 
-        if (newValue)
+    private static void TipChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        ReconcileOpenState((Control)e.Sender);
+    }
+
+    private static void IsPopupPinnedOpenChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var control = (Control)e.Sender;
+        if (e.GetNewValue<bool>())
+        {
+            if (!GetIsOpen(control))
+            {
+                control.SetCurrentValue(IsOpenProperty, true);
+                return;
+            }
+        }
+        else if (GetIsOpen(control))
+        {
+            var toolTip = control.GetValue(ToolTipProperty);
+            control.SetCurrentValue(IsOpenProperty, toolTip?._popup?.IsOpen == true);
+            return;
+        }
+
+        ReconcileOpenState(control);
+    }
+
+    private static bool CoerceIsOpen(AvaloniaObject sender, bool value)
+    {
+        return !value && sender is Control control && GetIsPopupPinnedOpen(control)
+            ? true
+            : value;
+    }
+
+    /// <summary>
+    /// 打开状态调和入口。IsOpen 是声明式的期望打开状态，该方法把期望状态
+    /// （IsOpen 为 true、Tip 内容就绪、宿主已挂入 visual tree）与物理弹层状态收敛一致。
+    /// 所有影响打开状态的输入（IsOpen 变化、Tip 变化、宿主 attach）都汇聚到该方法，
+    /// 不允许出现第二条直接开关 popup 的路径。该方法必须是幂等的。
+    /// </summary>
+    private static void ReconcileOpenState(Control control)
+    {
+        var toolTip          = control.GetValue(ToolTipProperty);
+        var isPhysicallyOpen = toolTip?._popup?.IsOpen == true;
+        var isAttached       = control.IsAttachedToVisualTree();
+        var wantOpen         = GetIsOpen(control) && GetTip(control) is not null && isAttached;
+
+        if (!GetIsOpen(control) || wantOpen)
+        {
+            ClearPendingAttachHandler(control);
+        }
+        else if (!isAttached)
+        {
+            // 期望打开但宿主尚未挂入 visual tree：挂一次性订阅，attach 后重新调和
+            EnsurePendingAttachHandler(control);
+        }
+
+        if (wantOpen == isPhysicallyOpen)
+        {
+            return;
+        }
+
+        if (wantOpen)
         {
             var args = new CancelRoutedEventArgs(ToolTipOpeningEvent);
             control.RaiseEvent(args);
@@ -335,28 +443,58 @@ public class ToolTip : ContentControl,
                 return;
             }
 
-            var tip = GetTip(control);
-            if (tip == null)
-            {
-                control.SetCurrentValue(IsOpenProperty, false);
-                return;
-            }
-
-            var toolTip = control.GetValue(ToolTipProperty);
+            var tip = GetTip(control)!;
             if (toolTip == null || (tip != toolTip && tip != toolTip.Content))
             {
                 toolTip?.Close();
                 toolTip = tip as ToolTip ?? new ToolTip() { Content = tip };
                 control.SetValue(ToolTipProperty, toolTip);
             }
-            
+
             toolTip.AdornedControl = control;
             toolTip.Open(control);
         }
-        else if (control.GetValue(ToolTipProperty) is { } toolTip)
+        else if (toolTip is not null)
         {
-            toolTip.AdornedControl = null;
-            toolTip.Close();
+            // 只关闭物理弹层；IsOpen 仍为 true（Tip 未就绪或宿主已卸载）时保留期望状态，
+            // 条件满足后由调和流程重新打开。
+            if (GetIsPopupPinnedOpen(control))
+            {
+                toolTip.CloseForLifecycle();
+            }
+            else
+            {
+                toolTip.Close();
+            }
+        }
+    }
+
+    private static void EnsurePendingAttachHandler(Control control)
+    {
+        if (control.GetValue(PendingAttachHandlerProperty) is not null)
+        {
+            return;
+        }
+
+        EventHandler<VisualTreeAttachmentEventArgs> handler = (s, _) =>
+        {
+            if (s is Control attachedControl)
+            {
+                ClearPendingAttachHandler(attachedControl);
+                ReconcileOpenState(attachedControl);
+            }
+        };
+        control.SetValue(PendingAttachHandlerProperty, handler);
+        control.AttachedToVisualTree += handler;
+    }
+
+    private static void ClearPendingAttachHandler(Control control)
+    {
+        var handler = control.GetValue(PendingAttachHandlerProperty);
+        if (handler is not null)
+        {
+            control.AttachedToVisualTree -= handler;
+            control.ClearValue(PendingAttachHandlerProperty);
         }
     }
 
@@ -382,16 +520,17 @@ public class ToolTip : ContentControl,
             _popup.Bind(Popup.ShouldUseOverlayLayerProperty, this.GetObservable(ShouldUseOverlayPopupProperty)),
             _popup.Bind(Popup.MotionDurationProperty, this.GetObservable(MotionDurationProperty)),
             _popup.Bind(Popup.IsMotionEnabledProperty, this.GetObservable(IsMotionEnabledProperty)),
-            _popup.Bind(Popup.HorizontalOffsetProperty, control.GetBindingObservable(HorizontalOffsetProperty)),
-            _popup.Bind(Popup.VerticalOffsetProperty, control.GetBindingObservable(VerticalOffsetProperty)),
-            _popup.Bind(Popup.RequestedPlacementProperty, control.GetBindingObservable(PlacementProperty, v => (PlacementMode?)v)),
-            _popup.Bind(Popup.MarginToAnchorProperty, control.GetBindingObservable(MarginToAnchorProperty)),
-            _popup.Bind(Popup.IsPointAtCenterProperty, control.GetBindingObservable(IsPointAtCenterProperty)),
+            _popup.Bind(Popup.HorizontalOffsetProperty, ResolveValueSource(control, HorizontalOffsetProperty).GetBindingObservable(HorizontalOffsetProperty)),
+            _popup.Bind(Popup.VerticalOffsetProperty, ResolveValueSource(control, VerticalOffsetProperty).GetBindingObservable(VerticalOffsetProperty)),
+            _popup.Bind(Popup.RequestedPlacementProperty, ResolveValueSource(control, PlacementProperty).GetBindingObservable(PlacementProperty, v => (PlacementMode?)v)),
+            _popup.Bind(Popup.MarginToAnchorProperty, ResolveValueSource(control, MarginToAnchorProperty).GetBindingObservable(MarginToAnchorProperty)),
+            _popup.Bind(Popup.IsPointAtCenterProperty, ResolveValueSource(control, IsPointAtCenterProperty).GetBindingObservable(IsPointAtCenterProperty)),
+            _popup.Bind(Popup.IsPopupPinnedOpenProperty, control.GetBindingObservable(IsPopupPinnedOpenProperty)),
         ]);
 
         _popup.PlacementTarget = control;
         _popup.SetPopupParent(control);
-        
+
         if (_arrowDecoratedBox is not null)
         {
             SetupArrowDecoratedBox(control);
@@ -401,8 +540,23 @@ public class ToolTip : ContentControl,
             TemplateApplied += DeferSetupArrowDecoratedBox;
         }
 
-        ConfigureMotion(_popup, GetPlacement(control));
+        ConfigureMotion(_popup, GetToolTipValue(control, PlacementProperty));
         _popup.IsOpen = true;
+    }
+
+    /// <summary>
+    /// 呈现类附加属性的取值来源解析：Tip 直接传入 ToolTip 实例时，实例自身显式设置
+    /// （IsSet）的值优先于宿主控件；未设置的回落到宿主。这让 ToolTip 实例成为完整
+    /// 定制面，而不需要宿主侧新增任何配置语言。
+    /// </summary>
+    private AvaloniaObject ResolveValueSource(Control host, AvaloniaProperty property)
+    {
+        return IsSet(property) ? this : host;
+    }
+
+    private T GetToolTipValue<T>(Control host, AttachedProperty<T> property)
+    {
+        return IsSet(property) ? GetValue(property) : host.GetValue(property);
     }
 
     private void ConfigureMotion(Popup popup, PlacementMode placement)
@@ -429,12 +583,26 @@ public class ToolTip : ContentControl,
         }
     }
 
+    private void CloseForLifecycle()
+    {
+        if (_popup != null)
+        {
+            _popup.CloseForLifecycle();
+        }
+        else
+        {
+            _subscriptions?.Dispose();
+        }
+    }
+
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
         if (AdornedControl is { } adornedControl
             && GetIsOpen(adornedControl))
         {
-            adornedControl.SetCurrentValue(IsOpenProperty, false);
+            // Closed 可能在宿主 DetachedFromVisualTree 过程中同步触发，此时 PresentationSource 尚未清空，
+            // 无法可靠区分卸载语义；推迟到当前 detach/attach 流程结束后按实际挂载状态收敛期望状态。
+            Dispatcher.UIThread.Post(() => ConvergeIsOpenAfterPopupClosed(adornedControl), DispatcherPriority.Background);
         }
 
         UpdatePseudoClasses(false);
@@ -448,11 +616,31 @@ public class ToolTip : ContentControl,
         }
     }
 
+    private void ConvergeIsOpenAfterPopupClosed(Control adornedControl)
+    {
+        if (!GetIsOpen(adornedControl) || _popup?.IsOpen == true)
+        {
+            // 期望状态已被调和流程收敛，或弹层已重新打开
+            return;
+        }
+
+        if (adornedControl.IsAttachedToVisualTree())
+        {
+            // 弹层被宿主卸载以外的原因关闭：期望状态回写为关闭
+            adornedControl.SetCurrentValue(IsOpenProperty, false);
+        }
+        else
+        {
+            // 宿主卸载触发的生命周期关闭：保留 IsOpen 期望状态，重新挂入后由调和流程重开
+            EnsurePendingAttachHandler(adornedControl);
+        }
+    }
+
     private void HandlePositionFlipped(object? sender, PopupFlippedEventArgs args)
     {
         if (sender is Popup popup && popup.PlacementTarget != null)
         {
-            SetupArrowPosition(GetPlacement(popup.PlacementTarget), args.HorizontalFlipped, args.VerticalFlipped);
+            SetupArrowPosition(GetToolTipValue(popup.PlacementTarget, PlacementProperty), args.HorizontalFlipped, args.VerticalFlipped);
         }
     }
 
@@ -532,23 +720,27 @@ public class ToolTip : ContentControl,
             SetToolTipColor(control);
             if (_contentPresenter != null)
             {
-                _contentPresenter.Width = GetTipHostWidth(control);
+                _contentPresenter.Width = GetToolTipValue(control, TipHostWidthProperty);
+                _subscriptions?.Add(_contentPresenter.Bind(ContentPresenter.TextWrappingProperty,
+                    ResolveValueSource(control, TextWrappingProperty).GetBindingObservable(TextWrappingProperty)));
+                _subscriptions?.Add(_contentPresenter.Bind(ContentPresenter.TextTrimmingProperty,
+                    ResolveValueSource(control, TextTrimmingProperty).GetBindingObservable(TextTrimmingProperty)));
             }
-            
+
             _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsArrowVisibleProperty,
-                control.GetBindingObservable(IsArrowVisibleProperty, flag =>
+                ResolveValueSource(control, IsArrowVisibleProperty).GetBindingObservable(IsArrowVisibleProperty, flag =>
                 {
                     // 有些条件下是不能开启箭头指针的
                     if (flag && _popup is not null)
                     {
-                        return PopupUtils.CanEnabledArrow(GetPlacement(control));
+                        return PopupUtils.CanEnabledArrow(GetToolTipValue(control, PlacementProperty));
                     }
 
                     return flag;
                 }));
             if (_popup is not null)
             {
-                SetupArrowPosition(GetPlacement(control), false, false);
+                SetupArrowPosition(GetToolTipValue(control, PlacementProperty), false, false);
             }
         }
     }
@@ -578,8 +770,8 @@ public class ToolTip : ContentControl,
         // Preset 优先级高
         if (_arrowDecoratedBox is not null)
         {
-            var presetColorType = GetPresetColor(control);
-            var color           = GetColor(control);
+            var presetColorType = GetToolTipValue(control, PresetColorProperty);
+            var color           = GetToolTipValue(control, ColorProperty);
             if (presetColorType is not null)
             {
                 var presetColor = PresetPrimaryColor.GetColor(presetColorType.Value);

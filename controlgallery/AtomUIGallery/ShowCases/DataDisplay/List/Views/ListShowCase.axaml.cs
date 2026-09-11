@@ -5,7 +5,7 @@ using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -28,12 +28,12 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
                 viewModel.SelectionMode            = SelectionMode.Single;
                 viewModel.OrderedSortDescriptions  = [ListSortDescription.FromPath(nameof(IListItemData.Content))];
 
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = GalleryLocalization.GetLanguageManager();
                 if (languageManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedListItems(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshLocalizedListItems(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    Disposable.Create(() => languageManager.LanguageChanged -= handler)
                               .DisposeWith(disposables);
                 }
 
@@ -100,12 +100,11 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
         viewModel.EmptyDemoItems = items;
     }
 
-    private void HandleFilterListBoxClicked(object? sender, RoutedEventArgs e)
+    private void HandleFilterListBoxSearchRequested(object? sender, SearchRequestedEventArgs e)
     {
-        if (sender is SearchEdit searchEdit &&
-            DataContext is ListViewModel viewModel)
+        if (DataContext is ListViewModel viewModel)
         {
-            viewModel.SearchFilterValue = searchEdit.Text?.Trim();
+            viewModel.SearchFilterValue = e.Query.Trim();
         }
     }
 
@@ -375,8 +374,9 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
             list.Add(new ListItemData()
             {
                 ItemKey = $"{i}",
-                Content = string.Format(
-                    Lang(ListShowCaseLangResourceKind.P2ContentPaginationItemFormat, "Content {0}"),
+                Content = GalleryLocalization.Format(
+                    ListShowCaseLangResourceKind.P2ContentPaginationItemFormat,
+                    "Content {0}",
                     i)
             });
         }
@@ -394,6 +394,6 @@ internal static class ListShowCaseLanguage
             return fallback;
         }
 
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 }

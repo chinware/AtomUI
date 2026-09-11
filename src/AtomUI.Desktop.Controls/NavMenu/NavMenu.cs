@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Data;
 using AtomUI.Theme.Resources;
 using AtomUI.Utils;
 using Avalonia;
@@ -20,6 +18,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -63,12 +62,41 @@ public class NavMenu : ItemsControl,
 
     public static readonly StyledProperty<double> InlineCollapsedWidthProperty =
         AvaloniaProperty.Register<NavMenu, double>(nameof(InlineCollapsedWidth));
+
+    public static readonly StyledProperty<bool> IsCollapsedTooltipEnabledProperty =
+        AvaloniaProperty.Register<NavMenu, bool>(nameof(IsCollapsedTooltipEnabled), true);
+
+    public static readonly StyledProperty<PlacementMode> CollapsedTooltipPlacementProperty =
+        AvaloniaProperty.Register<NavMenu, PlacementMode>(
+            nameof(CollapsedTooltipPlacement),
+            PlacementMode.Right);
+
+    public static readonly StyledProperty<int> CollapsedTooltipShowDelayProperty =
+        AvaloniaProperty.Register<NavMenu, int>(nameof(CollapsedTooltipShowDelay), 400);
+
+    public static readonly StyledProperty<int> CollapsedTooltipBetweenShowDelayProperty =
+        AvaloniaProperty.Register<NavMenu, int>(nameof(CollapsedTooltipBetweenShowDelay), 100);
     
     public static readonly StyledProperty<bool> IsDarkStyleProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsDarkStyle), false);
     
     public static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsItemBackgroundEnabled), true);
+
+    public static readonly StyledProperty<object?> HeaderProperty =
+        AvaloniaProperty.Register<NavMenu, object?>(nameof(Header));
+
+    public static readonly StyledProperty<IDataTemplate?> HeaderTemplateProperty =
+        AvaloniaProperty.Register<NavMenu, IDataTemplate?>(nameof(HeaderTemplate));
+
+    public static readonly StyledProperty<object?> FooterProperty =
+        AvaloniaProperty.Register<NavMenu, object?>(nameof(Footer));
+
+    public static readonly StyledProperty<IDataTemplate?> FooterTemplateProperty =
+        AvaloniaProperty.Register<NavMenu, IDataTemplate?>(nameof(FooterTemplate));
+
+    public static readonly StyledProperty<double> ItemSpacingProperty =
+        AvaloniaProperty.Register<NavMenu, double>(nameof(ItemSpacing), inherits: true);
 
     public static readonly DirectProperty<NavMenu, IList<TreeNodePath>?> DefaultOpenPathsProperty =
         AvaloniaProperty.RegisterDirect<NavMenu, IList<TreeNodePath>?>(
@@ -133,6 +161,30 @@ public class NavMenu : ItemsControl,
         get => GetValue(InlineCollapsedWidthProperty);
         set => SetValue(InlineCollapsedWidthProperty, value);
     }
+
+    public bool IsCollapsedTooltipEnabled
+    {
+        get => GetValue(IsCollapsedTooltipEnabledProperty);
+        set => SetValue(IsCollapsedTooltipEnabledProperty, value);
+    }
+
+    public PlacementMode CollapsedTooltipPlacement
+    {
+        get => GetValue(CollapsedTooltipPlacementProperty);
+        set => SetValue(CollapsedTooltipPlacementProperty, value);
+    }
+
+    public int CollapsedTooltipShowDelay
+    {
+        get => GetValue(CollapsedTooltipShowDelayProperty);
+        set => SetValue(CollapsedTooltipShowDelayProperty, value);
+    }
+
+    public int CollapsedTooltipBetweenShowDelay
+    {
+        get => GetValue(CollapsedTooltipBetweenShowDelayProperty);
+        set => SetValue(CollapsedTooltipBetweenShowDelayProperty, value);
+    }
     
     public bool IsDarkStyle
     {
@@ -144,6 +196,36 @@ public class NavMenu : ItemsControl,
     {
         get => GetValue(IsItemBackgroundEnabledProperty);
         set => SetValue(IsItemBackgroundEnabledProperty, value);
+    }
+
+    public object? Header
+    {
+        get => GetValue(HeaderProperty);
+        set => SetValue(HeaderProperty, value);
+    }
+
+    public IDataTemplate? HeaderTemplate
+    {
+        get => GetValue(HeaderTemplateProperty);
+        set => SetValue(HeaderTemplateProperty, value);
+    }
+
+    public object? Footer
+    {
+        get => GetValue(FooterProperty);
+        set => SetValue(FooterProperty, value);
+    }
+
+    public IDataTemplate? FooterTemplate
+    {
+        get => GetValue(FooterTemplateProperty);
+        set => SetValue(FooterTemplateProperty, value);
+    }
+
+    public double ItemSpacing
+    {
+        get => GetValue(ItemSpacingProperty);
+        set => SetValue(ItemSpacingProperty, value);
     }
 
     public bool ShouldUseOverlayPopup
@@ -194,6 +276,14 @@ public class NavMenu : ItemsControl,
             nameof(InlineCollapsedLayoutWidth),
             double.NaN);
 
+    internal static readonly StyledProperty<double> EntryItemSpacingProperty =
+        AvaloniaProperty.Register<NavMenu, double>(
+            nameof(EntryItemSpacing),
+            inherits: true);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<NavMenu>();
+
     private NavMenuMode _effectiveMode = NavMenuMode.Inline;
 
     internal NavMenuMode EffectiveMode
@@ -216,16 +306,25 @@ public class NavMenu : ItemsControl,
         private set => SetValue(InlineCollapsedLayoutWidthProperty, value);
     }
 
+    internal double EntryItemSpacing
+    {
+        get => GetValue(EntryItemSpacingProperty);
+        private set => SetValue(EntryItemSpacingProperty, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     private IEnumerable<INavMenuItem> EnumerateSubItems()
     {
-        foreach (var child in LogicalChildren)
+        foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
         {
-            if (child is INavMenuItem item)
-            {
-                yield return item;
-            }
+            yield return child;
         }
     }
     
@@ -243,6 +342,9 @@ public class NavMenu : ItemsControl,
     private List<TreeNodePath>? _inlineCollapsedDefaultOpenPathCache;
     private CancellationTokenSource? _inlineCollapsedWidthMotionCancellationTokenSource;
     private readonly NavMenuSelectionCoordinator _selectionCoordinator = new();
+    private readonly NavMenuEntryOwnershipCoordinator _entryOwnershipCoordinator;
+    private readonly List<NavMenuItem> _pinnedOpenItems = new();
+    private int _pinnedOpenGeneration;
     private double _lastInlineExpandedWidth = double.NaN;
     
     static NavMenu()
@@ -269,6 +371,7 @@ public class NavMenu : ItemsControl,
     
     public NavMenu()
     {
+        _entryOwnershipCoordinator = new NavMenuEntryOwnershipCoordinator(this, () => Items);
         UpdatePseudoClasses();
         Items.CollectionChanged += HandleItemsViewCollectionChanged;
 
@@ -288,26 +391,7 @@ public class NavMenu : ItemsControl,
     
     private protected virtual void HandleItemsViewCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (!Items.IsReadOnly)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                {
-                    if (e.NewItems != null)
-                    {
-                        foreach (var item in e.NewItems)
-                        {
-                            if (item is not INavMenuNode)
-                            {
-                                throw new InvalidOperationException("The item does not implement the INavMenuNode interface.");
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-        }
+        _entryOwnershipCoordinator.Synchronize();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -318,13 +402,22 @@ public class NavMenu : ItemsControl,
         {
             if (change.GetNewValue<bool>())
             {
-                for (var i = 0; i < LogicalChildren.Count; i++)
+                foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
                 {
-                    if (LogicalChildren[i] is NavMenuItem child)
-                    {
-                        child.IsSubMenuOpen = false;
-                    }
+                    child.IsSubMenuOpen = false;
                 }
+            }
+        }
+
+        if (change.Property == ItemSpacingProperty)
+        {
+            if (change.Priority == BindingPriority.Unset)
+            {
+                ClearValue(EntryItemSpacingProperty);
+            }
+            else
+            {
+                EntryItemSpacing = change.GetNewValue<double>();
             }
         }
         if (change.Property == IsDarkStyleProperty ||
@@ -355,11 +448,23 @@ public class NavMenu : ItemsControl,
             CancelInlineCollapsedWidthMotion();
             ClearInlineCollapsedLayoutWidth();
         }
+        else if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                EnsurePinnedOpenItem();
+            }
+            else
+            {
+                _pinnedOpenGeneration++;
+                ClearPinnedOpenItems();
+            }
+        }
     }
     
     private void HandleModeChanged()
     {
-        Close();
+        CloseOpenSubmenusPreservingSelection(this);
         UpdateEffectiveMode();
         ConfigureInteractionHandler(true);
     }
@@ -397,68 +502,43 @@ public class NavMenu : ItemsControl,
         base.OnAttachedToVisualTree(e);
         CoerceInlineCollapsedLayoutConstraints();
         ConfigureInteractionHandler(true);
+        EnsurePinnedOpenItem();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        if (IsPopupPinnedOpen)
+        {
+            _pinnedOpenGeneration++;
+            ClosePinnedForLifecycle();
+        }
+
         base.OnDetachedFromVisualTree(e);
         CancelInlineCollapsedWidthMotion();
         ClearInlineCollapsedLayoutWidth();
         InteractionHandler?.Detach(this);
         InteractionHandler = null;
-        _selectionCoordinator.Reset();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
-        return NeedsContainer<NavMenuItem>(item, out recycleKey);
+        return NavMenuEntryContainerCoordinator.NeedsContainer(this, item, index, out recycleKey);
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new NavMenuItem();
+        return NavMenuEntryContainerCoordinator.CreateContainer(item, index, recycleKey);
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
-        if (container is NavMenuItem menuItem)
-        {
-            menuItem.OwnerMenu = this;
-            var nodeBindingDisposables = menuItem.ResetNodeBindingDisposables();
-            NavMenuItemContainerBinder.BindNode(menuItem, item, this, nodeBindingDisposables);
-
-            if (!NavMenuItemContainerBinder.TryBindNodeHeaderTemplate(menuItem, item, nodeBindingDisposables) &&
-                ItemTemplate != null)
-            {
-                nodeBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem,
-                    NavMenuItem.HeaderTemplateProperty));
-            }
-            
-            menuItem[!NavMenuItem.ModeProperty]                  = this[!EffectiveModeProperty];
-            menuItem[!NavMenuItem.IsInlineCollapsedProperty]     = this[!IsEffectiveInlineCollapsedProperty];
-            menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
-            menuItem[!NavMenuItem.IsItemBackgroundEnabledProperty] = this[!IsItemBackgroundEnabledProperty];
-            menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-            menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
-           
-            PrepareNavMenuItem(menuItem, item, index);
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
-        }
+        NavMenuEntryContainerCoordinator.PrepareContainer(this, container, item, index);
     }
 
     protected override void ClearContainerForItemOverride(Control container)
     {
-        if (container is NavMenuItem menuItem)
-        {
-            menuItem.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, false);
-            _selectionCoordinator.Forget(menuItem);
-            menuItem.ClearNodeBindingDisposables();
-        }
-
+        NavMenuEntryContainerCoordinator.ClearContainer(this, container);
         base.ClearContainerForItemOverride(container);
     }
     
@@ -466,14 +546,157 @@ public class NavMenu : ItemsControl,
     {
     }
 
-    internal void SelectNavMenuItem(NavMenuItem menuItem)
+    internal void ApplySelectionStateToPreparedContainer(NavMenuItem menuItem)
     {
-        _selectionCoordinator.Select(this, menuItem);
+        _selectionCoordinator.PrepareContainer(this, menuItem);
+    }
+
+    internal void ForgetGeneratedContainer(NavMenuItem menuItem)
+    {
+        if (_pinnedOpenItems.Any(item => IsSameOrDescendant(item, menuItem)))
+        {
+            for (var i = _pinnedOpenItems.Count - 1; i >= 0; i--)
+            {
+                var pinnedItem = _pinnedOpenItems[i];
+                if (!IsSameOrDescendant(pinnedItem, menuItem))
+                {
+                    continue;
+                }
+
+                pinnedItem.IsPopupPinnedOpen = false;
+                _pinnedOpenItems.RemoveAt(i);
+            }
+
+            menuItem.CloseForLifecycle();
+        }
+
+        _selectionCoordinator.Forget(menuItem);
+        InteractionHandler?.Forget(menuItem);
+        QueuePinnedOpenItem();
+    }
+
+    private void EnsurePinnedOpenItem()
+    {
+        if (!IsPopupPinnedOpen ||
+            EffectiveMode == NavMenuMode.Inline ||
+            !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        var menuItem = NavMenuSemanticNavigator.EnumerateDirectItems(this)
+                                               .OfType<NavMenuItem>()
+                                               .FirstOrDefault(item => item.HasSubMenu && item.IsSubMenuOpen) ??
+                       NavMenuSemanticNavigator.EnumerateDirectItems(this)
+                                               .OfType<NavMenuItem>()
+                                               .FirstOrDefault(item => item.HasSubMenu);
+        if (menuItem == null)
+        {
+            return;
+        }
+
+        var deepestOpenItem = menuItem;
+        while (NavMenuSemanticNavigator.EnumerateDirectItems(deepestOpenItem)
+                                             .OfType<NavMenuItem>()
+                                             .FirstOrDefault(item => item.HasSubMenu && item.IsSubMenuOpen) is { } child)
+        {
+            deepestOpenItem = child;
+        }
+
+        PinOpenPath(deepestOpenItem);
+    }
+
+    private void PinOpenPath(NavMenuItem leafItem)
+    {
+        var path = new List<NavMenuItem>();
+        for (var current = leafItem;
+             current != null && ReferenceEquals(current.OwnerMenu, this);
+             current = current.SemanticParentItem)
+        {
+            if (current.HasSubMenu && current.Mode != NavMenuMode.Inline)
+            {
+                path.Add(current);
+            }
+        }
+        path.Reverse();
+
+        for (var i = _pinnedOpenItems.Count - 1; i >= 0; i--)
+        {
+            var pinnedItem = _pinnedOpenItems[i];
+            if (path.Any(item => ReferenceEquals(item, pinnedItem)))
+            {
+                continue;
+            }
+
+            pinnedItem.IsPopupPinnedOpen = false;
+            _pinnedOpenItems.RemoveAt(i);
+        }
+
+        foreach (var item in path)
+        {
+            if (!_pinnedOpenItems.Any(pinnedItem => ReferenceEquals(pinnedItem, item)))
+            {
+                _pinnedOpenItems.Add(item);
+            }
+
+            item.IsPopupPinnedOpen = true;
+        }
+    }
+
+    private void ClearPinnedOpenItems()
+    {
+        foreach (var menuItem in _pinnedOpenItems)
+        {
+            menuItem.IsPopupPinnedOpen = false;
+        }
+
+        _pinnedOpenItems.Clear();
+    }
+
+    private void QueuePinnedOpenItem()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        Dispatcher.UIThread.Post(
+            () =>
+            {
+                if (generation == _pinnedOpenGeneration)
+                {
+                    EnsurePinnedOpenItem();
+                }
+            },
+            DispatcherPriority.Loaded);
+    }
+
+    private void ClosePinnedForLifecycle()
+    {
+        ClearPinnedOpenItems();
+        foreach (var menuItem in NavMenuSemanticNavigator.EnumerateDirectItems(this).OfType<NavMenuItem>())
+        {
+            menuItem.CloseForLifecycle();
+        }
+    }
+
+    private static bool IsSameOrDescendant(NavMenuItem candidate, NavMenuItem ancestor)
+    {
+        for (var current = candidate; current != null; current = current.SemanticParentItem)
+        {
+            if (ReferenceEquals(current, ancestor))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    internal bool SelectNavMenuItem(NavMenuItem menuItem)
+    {
+        return _selectionCoordinator.Select(this, menuItem);
     }
 
     internal void ClearSelectionState()
     {
-        _selectionCoordinator.ClearSelection();
+        _selectionCoordinator.ClearSelection(this);
     }
     
     private void ConfigureInteractionHandler(bool needMount = false)
@@ -567,18 +790,28 @@ public class NavMenu : ItemsControl,
     
     protected virtual void NotifySubmenuOpened(RoutedEventArgs e)
     {
-        if (IsAccordionMode)
+        if (IsPopupPinnedOpen &&
+            e.Source is NavMenuItem openedItem &&
+            ReferenceEquals(openedItem.OwnerMenu, this))
         {
-            if (e.Source is INavMenuItem menuItem && menuItem.Parent == this)
+            PinOpenPath(openedItem);
+        }
+
+        if (EffectiveMode != NavMenuMode.Inline && e.Source is INavMenuItem menuItem)
+        {
+            CloseOtherTopLevelSubmenus(menuItem);
+        }
+    }
+
+    internal void CloseOtherTopLevelSubmenus(INavMenuItem menuItem)
+    {
+        if (IsAccordionMode && menuItem.Parent == this)
+        {
+            foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
             {
-                for (var i = 0; i < LogicalChildren.Count; i++)
+                if (child != menuItem && child.IsSubMenuOpen)
                 {
-                    if (LogicalChildren[i] is INavMenuItem child &&
-                        child != menuItem &&
-                        child.IsSubMenuOpen)
-                    {
-                        child.IsSubMenuOpen = false;
-                    }
+                    child.IsSubMenuOpen = false;
                 }
             }
         }
@@ -598,7 +831,6 @@ public class NavMenu : ItemsControl,
         CloseOpenSubmenusPreservingSelection(this);
         UpdateEffectiveMode();
         ConfigureInteractionHandler(true);
-        QueueApplySelectedStateToRealizedPath();
         StartPreparedInlineCollapsedWidthMotion(shouldAnimateWidth, motionStartWidth, motionTargetWidth);
     }
 
@@ -609,7 +841,6 @@ public class NavMenu : ItemsControl,
         UpdateEffectiveMode();
         ConfigureInteractionHandler(true);
         RestoreInlineCollapsedOpenPaths();
-        QueueApplySelectedStateToRealizedPath();
         StartPreparedInlineCollapsedWidthMotion(shouldAnimateWidth, motionStartWidth, motionTargetWidth);
     }
 
@@ -823,10 +1054,9 @@ public class NavMenu : ItemsControl,
         List<INavMenuNode> currentPath,
         List<IReadOnlyList<INavMenuNode>> openPaths)
     {
-        for (var i = 0; i < owner.ItemCount; i++)
+        foreach (var item in NavMenuSemanticNavigator.EnumerateDirectItems(owner))
         {
-            if (owner.ContainerFromIndex(i) is not NavMenuItem item ||
-                ((INavMenuItem)item).Node is not { } node)
+            if (((INavMenuItem)item).Node is not { } node)
             {
                 continue;
             }
@@ -844,13 +1074,8 @@ public class NavMenu : ItemsControl,
 
     private static void CloseOpenSubmenusPreservingSelection(ItemsControl owner)
     {
-        for (var i = 0; i < owner.ItemCount; i++)
+        foreach (var item in NavMenuSemanticNavigator.EnumerateDirectItems(owner))
         {
-            if (owner.ContainerFromIndex(i) is not NavMenuItem item)
-            {
-                continue;
-            }
-
             CloseOpenSubmenusPreservingSelection(item);
             item.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, false);
         }
@@ -882,7 +1107,7 @@ public class NavMenu : ItemsControl,
         for (var i = 0; i < path.Count; i++)
         {
             ExecutePendingContainerLayout(current);
-            if (current.ContainerFromItem(path[i]) is not NavMenuItem item)
+            if (NavMenuSemanticNavigator.FindDirectItem(current, path[i]) is not { } item)
             {
                 return;
             }
@@ -897,44 +1122,6 @@ public class NavMenu : ItemsControl,
         }
     }
 
-    private void ApplySelectedStateToRealizedPath()
-    {
-        if (SelectedItem is null)
-        {
-            return;
-        }
-
-        var pathNodes = CollectPathNodes(SelectedItem);
-        if (pathNodes.Count == 0)
-        {
-            return;
-        }
-
-        ItemsControl current = this;
-        for (var i = 0; i < pathNodes.Count; i++)
-        {
-            if (current.ContainerFromItem(pathNodes[i]) is not NavMenuItem item)
-            {
-                return;
-            }
-
-            if (i == pathNodes.Count - 1)
-            {
-                item.SetCurrentValue(NavMenuItem.IsSelectedProperty, true);
-                return;
-            }
-
-            item.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, true);
-            current = item;
-        }
-    }
-
-    private void QueueApplySelectedStateToRealizedPath()
-    {
-        ApplySelectedStateToRealizedPath();
-        Dispatcher.InvokeAsync(ApplySelectedStateToRealizedPath, DispatcherPriority.Loaded);
-    }
-    
     private void ConfigureDefaultOpenedPaths()
     {
         if (DefaultOpenPaths != null && !_defaultOpenPathsApplied)
@@ -1017,7 +1204,7 @@ public class NavMenu : ItemsControl,
         {
             if (i == path.Length - 1)
             {
-                InteractionHandler?.Select(menuItem);
+                SelectNavMenuItem(menuItem);
             }
         });
 
@@ -1048,7 +1235,7 @@ public class NavMenu : ItemsControl,
                 selectedItemRevision == _selectedItemRevision &&
                 ReferenceEquals(SelectedItem, node))
             {
-                InteractionHandler?.Select(menuItem);
+                SelectNavMenuItem(menuItem);
             }
         });
 
@@ -1072,7 +1259,7 @@ public class NavMenu : ItemsControl,
         ItemsControl current = this;
         for (var i = 0; i < pathNodes.Count; i++)
         {
-            var menuItem = current.ContainerFromItem(pathNodes[i]) as NavMenuItem;
+            var menuItem = NavMenuSemanticNavigator.FindDirectItem(current, pathNodes[i]);
             if (menuItem is null)
             {
                 return false;
@@ -1095,15 +1282,44 @@ public class NavMenu : ItemsControl,
         return false;
     }
 
+    internal NavMenuItem? FindRealizedMenuItem(INavMenuNode node)
+    {
+        var pathNodes = CollectPathNodes(node);
+        if (pathNodes.Count == 0)
+        {
+            return null;
+        }
+
+        ItemsControl current = this;
+        for (var i = 0; i < pathNodes.Count; i++)
+        {
+            var menuItem = NavMenuSemanticNavigator.FindDirectItem(current, pathNodes[i]);
+            if (menuItem is null)
+            {
+                return null;
+            }
+
+            if (i == pathNodes.Count - 1)
+            {
+                return menuItem;
+            }
+
+            current = menuItem;
+        }
+
+        return null;
+    }
+
     public void Close()
     {
-        var children = LogicalChildren;
-        for (var i = 0; i < children.Count; i++)
+        if (IsPopupPinnedOpen)
         {
-            if (children[i] is INavMenuItem menuItem)
-            {
-                menuItem.Close();
-            }
+            return;
+        }
+
+        foreach (var menuItem in NavMenuSemanticNavigator.EnumerateDirectItems(this))
+        {
+            menuItem.Close();
         }
         
         SelectedItem = null;
@@ -1114,12 +1330,18 @@ public class NavMenu : ItemsControl,
         RaiseEvent(new NavMenuItemClickEventArgs(NavMenuItemClickEvent, menuItem));
     }
     
-    internal void RaiseNavMenuItemSelected(NavMenuItem menuItem)
+    internal bool TryPublishNavMenuItemSelection(NavMenuItem menuItem)
     {
         var node = (menuItem as INavMenuItem).Node;
         Debug.Assert(node != null);
-        RaiseEvent(new NavMenuNodeSelectedEventArgs(NavMenuNodeSelectedEvent, node));
         SetCurrentValue(SelectedItemProperty, node);
+        if (!ReferenceEquals(SelectedItem, node))
+        {
+            return false;
+        }
+
+        RaiseEvent(new NavMenuNodeSelectedEventArgs(NavMenuNodeSelectedEvent, node));
+        return ReferenceEquals(SelectedItem, node);
     }
 
     internal static List<NavMenuItem> CollectSelectPathItems(NavMenuItem menuItem)
@@ -1131,11 +1353,11 @@ public class NavMenu : ItemsControl,
             items.Add(null!);
         }
 
-        var current = menuItem.GetLogicalParent<NavMenuItem>();
+        var current = menuItem.SemanticParentItem;
         for (var i = itemCount - 1; current != null; i--)
         {
             items[i] = current;
-            current  = current.GetLogicalParent<NavMenuItem>();
+            current  = current.SemanticParentItem;
         }
         return items;
     }
@@ -1154,11 +1376,11 @@ public class NavMenu : ItemsControl,
     private static int CountSelectPathItems(NavMenuItem menuItem)
     {
         var          count   = 0;
-        NavMenuItem? current = menuItem.GetLogicalParent<NavMenuItem>();
+        NavMenuItem? current = menuItem.SemanticParentItem;
         while (current != null)
         {
             count++;
-            current = current.GetLogicalParent<NavMenuItem>();
+            current = current.SemanticParentItem;
         }
 
         return count;
@@ -1206,47 +1428,36 @@ public class NavMenu : ItemsControl,
         try
         {
             EnterDisableMotionRegion();
-            IList        items        = Items;
+            ItemsControl current      = this;
             var          pathItems    = new List<NavMenuItem>(segments.Count);
-            NavMenuItem? previousItem = null;
             for (int i = 0; i < segments.Count; i++)
             {
                 var  segment    = segments[i];
                 bool childFound = false;
-                for (var j = 0; j < items.Count; j++)
+                ExecutePendingContainerLayout(current);
+                foreach (var navMenuItem in NavMenuSemanticNavigator.EnumerateDirectItems(current))
                 {
-                    if (items[j] is INavMenuNode node)
+                    if (((INavMenuItem)navMenuItem).Node is { } node &&
+                        isTargetSegment(node, navMenuItem, segment))
                     {
-                        var navMenuItem = previousItem != null
-                            ? GetNavMenuItemContainer(node, previousItem)
-                            : GetNavMenuItemContainer(node, this);
-                        if (navMenuItem == null)
+                        var requiresChildContainer = i < segments.Count - 1;
+                        if (requiresChildContainer || HasNodeChildren(node))
                         {
-                            return null;
+                            if (!OpenPathSubmenu(navMenuItem, requiresChildContainer))
+                            {
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
                         }
 
-                        if (isTargetSegment(node, navMenuItem, segment))
-                        {
-                            var requiresChildContainer = i < segments.Count - 1;
-                            if (requiresChildContainer || HasNodeChildren(node))
-                            {
-                                if (!OpenPathSubmenu(navMenuItem, requiresChildContainer))
-                                {
-                                    return null;
-                                }
-                            }
-                            else
-                            {
-                                navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
-                            }
-
-                            items      = navMenuItem.Items;
-                            childFound = true;
-                            pathItems.Add(navMenuItem);
-                            action?.Invoke(navMenuItem, i);
-                            previousItem = navMenuItem;
-                            break;
-                        }
+                        current    = navMenuItem;
+                        childFound = true;
+                        pathItems.Add(navMenuItem);
+                        action?.Invoke(navMenuItem, i);
+                        break;
                     }
                 }
 
@@ -1306,15 +1517,7 @@ public class NavMenu : ItemsControl,
             Debug.Assert(pathNodes.Count > 0);
             // 检查是否是野数据
             var rootNode  = pathNodes[0];
-            var foundRoot = false;
-            foreach (var root in Items)
-            {
-                if (rootNode == root)
-                {
-                    foundRoot = true;
-                    break;
-                }
-            }
+            var foundRoot = NavMenuEntryGraph.ContainsDirectNode(Items, rootNode);
             if (!foundRoot || node != pathNodes[^1])
             {
                 throw new ArgumentOutOfRangeException(nameof(node), "Wild INavMenuNode, Only part of the path was found");
@@ -1337,18 +1540,6 @@ public class NavMenu : ItemsControl,
         return count;
     }
     
-    private NavMenuItem? GetNavMenuItemContainer(INavMenuNode childNode, ItemsControl current)
-    {
-        var target = current.ContainerFromItem(childNode) as NavMenuItem;
-        if (target != null)
-        {
-            return target;
-        }
-
-        ExecutePendingContainerLayout(current);
-        return current.ContainerFromItem(childNode) as NavMenuItem;
-    }
-
     internal void ExecutePendingContainerLayout(ItemsControl current)
     {
         current.ApplyTemplate();
@@ -1356,10 +1547,6 @@ public class NavMenu : ItemsControl,
         if (current.Presenter is { Panel: null } presenter)
         {
             presenter.ApplyTemplate();
-            if (current.Presenter?.Panel != null)
-            {
-                return;
-            }
         }
 
         if (current is NavMenuItem { Popup.Child: ILogical popupContent })
@@ -1370,10 +1557,6 @@ public class NavMenu : ItemsControl,
                     ReferenceEquals(popupPresenter.TemplatedParent, current))
                 {
                     popupPresenter.ApplyTemplate();
-                    if (current.Presenter?.Panel != null)
-                    {
-                        return;
-                    }
                 }
             }
         }
@@ -1381,14 +1564,16 @@ public class NavMenu : ItemsControl,
         if (current is NavMenuItem { Popup: { IsOpen: true, Child: { } popupChild } })
         {
             popupChild.UpdateLayout();
-            if (current.Presenter?.Panel != null)
-            {
-                return;
-            }
         }
 
         var topLevel = TopLevel.GetTopLevel(current);
-        topLevel?.GetLayoutManager()?.ExecuteLayoutPass();
+        void ExecuteLayoutPass()
+        {
+            topLevel?.GetLayoutManager()?.ExecuteLayoutPass();
+        }
+
+        ExecuteLayoutPass();
+        NavMenuSemanticNavigator.EnsureGroupContainers(current, ExecuteLayoutPass);
     }
 
     private static bool HasNodeChildren(INavMenuNode node)

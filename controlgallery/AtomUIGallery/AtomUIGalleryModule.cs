@@ -80,6 +80,7 @@ using AtomUIGallery.ShowCases.TreeSelect;
 using AtomUIGallery.ShowCases.TreeView;
 using AtomUIGallery.ShowCases.Upload;
 using AtomUIGallery.ShowCases.Watermark;
+using AtomUIGallery.ShowCases.Window;
 using Avalonia.Controls;
 using ReactiveUI;
 
@@ -145,7 +146,8 @@ public static class AtomUIGalleryModule
                   .AddPage(FloatButtonViewModel.ID, Nav(CaseNavigationLangResourceKind.General_FloatButton, "FloatButton"))
                   .AddPage(SplitButtonViewModel.ID, Nav(CaseNavigationLangResourceKind.General_SplitButton, "SplitButton"))
                   .AddPage(SeparatorViewModel.ID, Nav(CaseNavigationLangResourceKind.General_Separator, "Separator"))
-                  .AddPage(CustomizeThemeViewModel.ID, Nav(CaseNavigationLangResourceKind.General_CustomizeTheme, "CustomizeTheme"));
+                  .AddPage(CustomizeThemeViewModel.ID, Nav(CaseNavigationLangResourceKind.General_CustomizeTheme, "CustomizeTheme"))
+                  .AddPage(WindowViewModel.ID, Nav(CaseNavigationLangResourceKind.General_Window, "Window"));
 
         components.AddGroup("Layout", Nav(CaseNavigationLangResourceKind.Layout, "Layout"), Icon(AntDesignIconKind.LayoutOutlined))
                   .AddPage(FlexPanelViewModel.ID, Nav(CaseNavigationLangResourceKind.Layout_FlexPanel, "FlexPanel"))
@@ -286,6 +288,7 @@ public static class AtomUIGalleryModule
         routes.Map(BadgeViewModel.ID, screen => new BadgeViewModel(screen), () => new BadgeShowCase());
         routes.Map(BorderBeamViewModel.ID, screen => new BorderBeamViewModel(screen), () => new BorderBeamShowCase());
         routes.Map(SplashViewModel.ID, screen => new SplashViewModel(screen), () => new SplashShowCase());
+        routes.Map(WindowViewModel.ID, screen => new WindowViewModel(screen), () => new WindowShowCase());
         routes.Map(StatisticViewModel.ID, screen => new StatisticViewModel(screen), () => new StatisticShowCase());
         routes.Map(TimelineViewModel.ID, screen => new TimelineViewModel(screen), () => new TimelineShowCase());
         routes.Map(QRCodeViewModel.ID, screen => new QRCodeViewModel(screen), () => new QRCodeShowCase());

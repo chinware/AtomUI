@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <RootNamespace>AtomUI.Localization</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="LanguageData/language-tags.tsv"
+                         AtomUILanguageTagsData="true" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles"
+                                     MetadataName="AtomUILanguageTagsData" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI.Core" />
+        <InternalsVisibleTo Include="AtomUI.Core.Tests" />
+        <InternalsVisibleTo Include="AtomUI.Localization.Tests" />
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.Minimal" />
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.TwoUnits" />
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.DynamicFallback" />
+        <InternalsVisibleTo Include="AtomUI.LinkedRegistration.Fixtures.Full" />
+        <InternalsVisibleTo Include="AtomUI.Localization.Performance" />
+        <InternalsVisibleTo Include="AtomUI.Performance" />
+    </ItemGroup>
+</Project>

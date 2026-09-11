@@ -6,6 +6,6 @@ internal class AtomUIDataGridThemesProvider : ControlThemesProvider
 {
     public AtomUIDataGridThemesProvider()
     {
-        Id = "AtomUI.Desktop.Controls.DataGrid";
+        Id = DataGridThemeManagerBuilderExtensions.PackageId;
     }
 }

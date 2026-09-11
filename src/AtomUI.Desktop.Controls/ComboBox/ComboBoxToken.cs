@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ComboBoxToken : AbstractControlDesignToken
+internal sealed class ComboBoxToken : AbstractControlDesignToken
 {
 
     public ComboBoxToken()

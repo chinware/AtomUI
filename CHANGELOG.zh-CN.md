@@ -6,6 +6,167 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.8
+
+`2026-09-08`
+
+- 破坏性变更
+  - DataGrid：以基于 Range 的 `IDataGridSource`、不可变 `DataGridQuery`、`DataGridSelectionState` 和 `CurrentRowKey` 契约替代集合型 `ItemsSource` 与可变 CollectionView 状态。本地集合必须包装为 `DataGridLocalSource<T>`，远端数据源需实现 `IDataGridSource`；列查询改为通过 `FieldId` 和 Source Schema 绑定，不再使用成员路径排序/过滤 API。
+  - 图片加载：以封闭的 `ImageSource` 类型层次及其构造器替代 `ImageLoadSource` 工厂；将 `ImageCacheMode` 拆分为 `ImageCacheReadPolicy` 与 `ImageCacheStoragePolicy`；加载结果改用 `ImageLoadOrigin`、`ImageSourceValidation` 和内容身份描述缓存与校验状态。
+  - 主题：具体 `[ControlDesignToken]` 类型现在必须为 `sealed`；需要共享继承时必须引入显式标记的抽象 Token 层。`ColorPickerToken` 现已封闭，不能继续派生。迁移示例见 [6.1.8 API 变更示例](docs/releases/6.1.8-api-changes.zh-CN.md)。
+- DataGrid
+  - 新增基于本地或远端 Range Source 的不可变查询、分页、分组展开与声明式选择状态，支持有界 Viewport 加载、取消、Snapshot 校验和远端能力接口。#455
+  - 修复排序后选中行样式丢失，并在数据变化时正确重置 Viewport Range 与自动行高估值。#454 #457
+- 图片加载与 ImagePreviewer
+  - 新增封闭的强类型图片来源模型、来源校验、内容寻址缓存、独立的缓存读取/存储策略以及更安全的 borrowed image 所有权。
+  - 新增 `ImageSwitchMode.Immediate` 和 `WaitForLoaded`，并修复快速切换预览时过期加载覆盖当前图片的问题。#450
+- Window 与导航
+  - 新增 `Window.IsTitleVisible`，改进标题栏 Logo 的实时回退行为，并扩充 Gallery 标题栏示例。#451
+  - 统一 NavMenu 指针和键盘激活顺序，保护可重入选择变化，并恢复 Pressed 视觉与动效 Easing。#452
+- Select 家族
+  - 修复 Select、TreeSelect 和 Cascader 多选模式的 Prefix 间距，并统一 Select、AutoComplete 与 Mentions 的空结果提示。
+- NativeAOT、Browser Gallery 与构建
+  - 保留 trimmed/NativeAOT 应用跨项目和 binary-only 依赖的 linked-registration 闭包。#453
+  - 普通 Browser Gallery 构建继续启用原生 WebAssembly 链接，确保运行时包含 SkiaSharp 原生资产。
+  - 修复 NuGet 发布产物上传路径，将 canonical XLIFF 统一为单个末尾 LF，并新增 VSTest 临时目录自动清理且不收集崩溃 Dump。
+- Gallery、依赖与平台
+  - 降低 ShowCase Masonry 在窗口缩放过程中的闪烁。
+  - 将 Avalonia 升级到 `12.1.2`，并简化平台相关项目接线。
+
+## 6.1.7
+
+`2026-09-02`
+
+- DataGrid
+  - 修复启用网格线和冻结列时左上角表头在行表头旁额外绘制列分隔线的问题。
+- TextBox
+  - 修复 `SizeType=Small` 与自定义高度 TextBox 的布局，使输入框架正确跟随共享尺寸 Token 或本地高度。
+- Button 和 Browser Gallery
+  - Browser 环境下的桌面控件改用共享的 Button、DropdownButton 和 IconButton 主题资产，不再维护 Browser-only override 副本，使 Button 家族在不同目标上的视觉表现保持一致。
+- 文档
+  - 刷新 README 赞助者致谢信息。
+
+## 6.1.6
+
+`2026-08-29`
+
+- 破坏性变更
+  - Avatar：将 `Avatar` 和 `AbstractAvatar` 移至 `AtomUI.Controls`；以强类型 `Source`、`FallbackSource` 和 `RequestOptions` 替代 `Src`、`BitmapSrc`；将 `TextRenderTransform` 调整为内部 API；并将生成的 Avatar Token API 移至 `AtomUI.Controls.DesignTokens`。`CardMetaContent.Avatar` 现在使用基础控件包中的 Avatar 类型。
+  - ImagePreviewer：以包含不可变 `ImagePreviewItem` 的 `ItemsSource` 替代 `Source`、`Sources`、`FallbackSource`、`MaxConcurrentLoads` 及预览器专用的 source/loader 契约，图片来源统一使用 `ImageLoadSource`。并发改为通过应用级 `UseImageLoading` 配置，标题解析器需接受 `in ImagePreviewTitleResolveContext` 并读取 `context.Item`。
+  - 输入控件：`LineEdit` 不再继承 AtomUI `TextBox`；`LineEdit`、`TextBox` 和 `TextArea` 现在共享公开基类 `AbstractTextInput`。`OtpLineEditCell` 及其生成的单元格 Token API 调整为内部实现；OTP 外观应通过 `OtpLineEdit` 和共享输入框架契约配置。迁移示例见 [6.1.6 API 变更示例](docs/releases/6.1.6-api-changes.zh-CN.md)。
+- 图片加载、Avatar 与 ImagePreviewer
+  - 新增应用级统一图片加载管线，提供 `AsyncImage`、强类型 URI/文件/资源/存储/字节/流/图片来源、请求选项、加载状态、进度与错误事件、有界并发、优先级以及编码/解码缓存。
+  - 新增安全的网络 SVG 加载，并提供重定向、响应大小、图片尺寸和凭据转发限制；同时强化取消、缓存所有权以及附加/分离生命周期行为。
+  - 将 Avatar 和 ImagePreviewer 迁移到统一管线，支持缩略图/回退来源、重新加载、封面与当前图片加载状态、不可变预览项和稳定的标题元数据。
+- 输入控件与 Form
+  - 以 `AbstractTextInput` 和 `InputControlFrame` 统一 TextBox、TextArea、LineEdit 与 OTP 输入的校验、状态、尺寸、外观变体、AddOn 和反馈架构。
+  - 编辑期间保持 TextBox 输入框架宽度稳定，并在模板和生命周期变化后保留校验反馈订阅。
+- Steps、Masonry 与导航
+  - 新增 Steps `Panel` 类型及 Filled、Outlined 变体，提供 Token 化表面和响应式布局行为。
+  - 新增 Masonry `StableColumns` 和 `Reflow` 布局策略，默认使用稳定列，同时避免图片解码与布局反馈循环，并恢复最终宽度测量和加载骨架布局。
+  - TreeView 重新附加到可视树后恢复节点绑定；NavMenu 临时弹层关闭时保留选择；语言切换后重新测量 ToggleSwitch 内容。
+- TabControl 和 TabStrip
+  - 修复 overflow 页签关闭行为：遵循最终生效的 `IsClosable`，统一转发到控件 owner 的关闭流程；关闭被拒绝或取消时保留源页签和菜单项，并确保 `Items` 与 `ItemsSource` 路径下的 `Closing`/`Closed`、选择状态和集合语义一致。
+- Window 与平台
+  - 新增公开的 `WindowTitleBarButton` 和 `WindowTitleBarToggleButton`，用于实现标题栏 AddOn 操作。
+  - 修复 Windows 实时调整窗口大小时的合成回退对齐，以及 macOS 录屏或显示几何变化后的 caption button 位置。
+- Motion、Popup 与生命周期
+  - 控件实际不可见时暂停周期性动画、计时器和视觉工作，恢复可见后从当前状态继续。
+- 构建、打包与本地化
+  - 从按内容键控的影子副本加载 MSBuild Task，避免重复构建时使用过期 Task 程序集或发生依赖冲突。
+  - 将托管构建输出迁移到 `.artifacts`，并在消费项目树中隐藏语言包实现文件。
+
+## 6.1.5
+
+`2026-08-21`
+
+- Dialog、Drawer 和 MessageBox
+  - 新增 `Dialog.IsMaskClosable`（默认 `true`）和 `MessageBoxOptions.IsMaskClosable`，控制点击模态遮罩是否关闭弹窗；`IsClosable` 仍只控制头部关闭按钮，设为 `false` 时遮罩点击会被忽略。
+  - 让 Dialog 或 Window Drawer 内容中的 Popup、Flyout、MenuFlyout、ToolTip、ContextMenu 和带 Popup 控件始终留在所属 Window 的 `TopLevel`，位于模态内容之上并保留正常 light-dismiss 层级，包括 DataGrid 过滤弹层。
+  - 直接实例化的 Dialog 默认居中，与 `DialogOptions` 和静态 Dialog API 保持一致，同时保留显式 `Custom` 锚点和偏移语义。
+  - Dialog 关闭动画期间保持完整 Surface 内容附着，使文本、输入控件、Footer 操作和阴影同步完成动画与释放。
+- Popup
+  - 新增可选的 `Popup.SurfaceBackground`，默认值为 `null`。设置非空 Brush 时启用 host-owned surface；内置 Flyout、ToolTip、ContextMenu、选择器、Picker、菜单、Tour 和 ColorPicker 家族继续使用既有 content-owned surface，不重复绘制 frame 表面。
+- ToolTip
+  - 新增 `TextWrapping`（默认 `Wrap`）和 `TextTrimming` 附加属性，长提示文本在 `ToolTipMaxWidth` 内换行，而不是被裁剪。
+  - 允许以 `ToolTip` 实例作为 `Tip` 时覆盖宿主的呈现属性；实例上显式设置的呈现属性优先，未设置时回落到宿主。
+  - 将 `IsOpen` 视为声明式的期望打开状态，与 `Tip` 就绪状态和宿主挂载状态协调，而不是设置即打开的边沿触发行为。
+- Window 和 WindowTitleBar
+  - 统一逻辑树中各标题栏的宿主行为与 CSD 几何；内容区标题栏获得标题按钮、拖动和双击行为，但不拥有尺寸提示。
+  - 隐藏 AtomUI 标题栏时保留 `WindowDecorations.Full`，仅隐藏绘制层，避免留下标题栏高度的空白带。
+- 候选交互
+  - 统一 Select、AutoComplete、ComboBox、Cascader 和 Mentions 的指针与键盘候选导航，使高亮项与 `Enter` 提交目标保持一致；指针移动仍不会提交选择。
+- NativeAOT 和 Build
+  - 按程序集 identity 和契约 hash 规范化 linked-registration Sidecar 输入，优先使用正式 Project 或 Package Sidecar，再回退到 metadata extraction；发现冲突 manifest 时直接报告，而不是向 linked build 输入重复注册计划。
+  - 在隔离的 .NET task host 中运行 linked-registration、Localization 和主题资产 MSBuild Task，避免不同构建之间发生 Task 依赖与加载上下文冲突。
+
+## 6.1.4
+
+`2026-08-18`
+
+- 破坏性变更
+  - SearchEdit：以 `SearchRequested` 替代 `SearchButtonClick`。事件处理器需迁移到 `SearchRequestedEventArgs`，从中读取查询文本快照以及 `Button` / `EnterKey` 触发来源；Enter 现在默认发起搜索，可通过 `IsSearchOnEnterEnabled=false` 禁用。
+  - Localization：移除 `LanguageCatalogAttribute`、`LanguageCatalogDescriptor` 和 `TranslationBundleDescriptor` 的 `ContractVersion`，包括 Descriptor 构造参数；移除 `AtomUILanguageContractVersion` 和 `AtomUIRequireVerifiedLanguageContract`；并以 `AtomUIBuildTasksAssembly` 替代自定义构建任务路径覆盖属性 `AtomUILocalizationBuildTasksAssembly`。自定义 Catalog 和语言包需改用稳定 Catalog Key 与源文本 fingerprint，并基于 6.1.4 重新构建。迁移写法见 [6.1.4 API 变更示例](docs/releases/6.1.4-api-changes.zh-CN.md)。
+- AOT、Generator 和 Build
+  - 为 trimming、NativeAOT 和 WebAssembly AOT 应用新增编译期 linked registration。AtomUI 现在根据 C# 和 AXAML 使用情况生成静态注册计划，保留所需控件包资源，并通过有界的包级 fallback 处理动态场景，不进行运行时程序集扫描。
+  - 新增构建期 linked-registration sidecar 和包 manifest；普通构建不加载 publish analyzer，Gallery 普通构建不再隐式执行 publish 工作，并减少重复生成的 Descriptor Factory。
+  - 为第三方控件包新增 `ControlPackageRegistrationEntryAttribute` 和默认包粒度注册；真正可独立裁剪的控件族可以显式启用目录粒度。
+  - 集中维护 NuGet 发布清单，将 `AtomUI.Desktop.Controls.Extras` 纳入扩展包 build、pack 和产物校验，并在项目没有 AXAML 输入时跳过主题资产生成。
+- Window 和导航
+  - 为 `Window` 新增 `IsMinimizeCaptionButtonVisible` 和 `IsMaximizeCaptionButtonVisible`，补齐最小化、最大化、关闭、全屏和置顶 caption button 的独立可见性控制，同时继续由平台能力和窗口状态决定操作是否有效。
+  - 修复 Wayland 启动时原生标题栏闪现；避免 trimmed Window 应用保留完整 Ant Design 图标目录；为标题栏 Logo 与 LeftAddOn 新增 Token 化间距。
+  - NavMenu 新增可配置的折叠 Tooltip，支持节点级内容、Header fallback、Placement 和延迟设置。
+  - 修复 Tab Header 进入 overflow menu 后丢失模板的问题，保持 `TabControl.HeaderTemplate` 和 `CardTabStrip.ItemTemplate` 渲染一致。#430
+- 数据录入和 DataGrid
+  - Select 将 pointer hover 和键盘导航统一到同一个 active candidate，使 Single、Multiple 和 Tags 模式下的高亮项与 Enter 提交目标保持一致。
+  - 修复非编辑 ComboBox 重新打开后键盘焦点丢失的问题，使连续使用 Down 和 Enter 仍能更新选中项。#428
+  - 修复 `ItemsSource` 为空时 DataGrid Star 列宽未按有限 Header viewport 正确分配的问题。
+- Gallery
+  - 为桌面和浏览器 Gallery Shell 新增响应式内容断点、Metadata 布局和侧边栏折叠行为。
+  - Icon Gallery 新增实时筛选和一键复制图标名称，并提供本地化成功或失败反馈。
+
+## 6.1.3
+
+`2026-08-08`
+
+- 破坏性变更
+  - Theme：自定义主题和控件包需要从手工维护 Token/Theme 注册迁移到生成式控件包 descriptor 和 `Themes/**/*.axaml` 资源清单，并在主题 schema 冻结前通过 `Application.UseAtomUI(...)` 完成注册。主题 builder、attribute、descriptor 和状态中的字符串算法 ID 需要改为 `ThemeAlgorithm` 枚举值。
+  - Localization：已移除 `LanguageCode`、`LanguageVariant`、语言 Provider/Pool 和 ThemeManager 语言注册 API，请迁移到 `LanguageTag`、Catalog enum、XLIFF 2.1 资源、`UseLanguages()` 和生成式模块注册。Catalog enum 成员名和 XLIFF unit ID 现在是稳定契约 identity；应用与静态语言包必须一起重新构建，不能混用原数字 ID Catalog 与新 Key Catalog。
+  - Upload：移除 `Upload.IsOpenFileDialogOnClick`，改用 `UploadDropZone.IsOpenFileDialogOnClick` 和 `SourceKind`；以 `AllowedFileTypes` 替代 `Upload.Accepts`；移除旧 drop 事件和仅 URI 文件契约；自定义集成需迁移到强类型 source、input batch、admission 和 completion 契约，并以 `Files` 作为唯一状态所有者。
+  - Timeline：新增水平 `Orientation`，以逻辑方向 `Start` / `End` 替代 `TimelineMode.Left` / `Right`，并将 `IndicatorLeftModeMargin` / `IndicatorRightModeMargin` 重命名为 `IndicatorStartModeMargin` / `IndicatorEndModeMargin`。
+  - Tag：以 `TagVariant`（`Filled`、`Solid` 或 `Outlined`）替代 `IsBordered`；可选择标签场景请使用新的 `CheckableTag` / `CheckableTagGroup` 选择 API。
+  - Separator：`SizeType` 从 `SizeType` 改为 `CustomizableSizeType`，并实现 `ICustomizableSizeTypeAware`；`Custom` 间距由控件实例或其所在样式负责。迁移写法见 [6.1.3 API 变更示例](docs/releases/6.1.3-api-changes.zh-CN.md)。
+- Calendar 和 DatePicker
+  - 新增 Calendar 控件，支持日期、月份和年份视图、Mini/Fullscreen 密度、自定义 Header 和 Cell、周数显示、日程通知、范围条、禁用日期组合、键盘导航及自动化访问。
+  - DatePicker 新增可切换 picker 模式以及 `MinDate` / `MaxDate` 范围约束。
+- Localization、Generator 和 Build
+  - 以生成式 XLIFF 2.1 Catalog、强类型资源扩展、应用 bootstrap 和不可变语言快照替代运行时语言 Provider，同时保留现有 `{atom:XxxLangResource Key}` XAML 用法。
+  - 新增静态语言包构建契约、active/dormant 模块生成式注册、verified/deferred 包 manifest、局部覆盖和 Catalog 校验；注册流程不依赖运行时程序集扫描或 XLIFF 解析，并保持 NativeAOT 兼容。
+  - 为 AtomUI 各模块新增官方葡萄牙语（巴西）`pt-BR` 语言包，并在 Gallery 中支持语言切换。
+- Theme
+  - 将主题定义和生成式控件主题 manifest 编译为完整、不可变的根级与局部快照，原子发布主题变化，并按规范化内容 digest 复用等价主题缓存。
+  - 对齐 Ant Design Token 语义、完整控件 Token 快照和组合输入控件状态，包括生成式 exact control identity、资源 key 以及 Effective Global/Own Token 访问。
+- Upload
+  - 将文件选择、目录选择、拖放和程序化输入统一到跨平台准入管线，使用强类型文件 source 所有权、串行批次和确定性终态。
+  - 新增目录策略、遍历限制、数量溢出策略和快照错误报告，并统一 picker 与 drop 输入的 `IsMultipleEnabled` 行为。
+  - 加固替换、取消、清理和上传进度收尾；已接收 source 会保留到执行退出，任务进入终态后不再更新进度。
+- 导航和选择控件
+  - Menu 新增 `IsScrollEnabled`，支持可滚动的弹出菜单。
+  - NavMenu 新增层级条目组合、可折叠侧边栏 Header，改进内联折叠显示，并在 Items 替换时清理过期选择。
+  - Segmented 新增垂直和圆角变体、键盘导航及动态选项加载。
+  - OptionButtonGroup 新增垂直布局；Timeline 新增水平布局和逻辑 Start/End/Alternate 放置模式。
+- 数据录入、数据展示和通用控件
+  - Tag 新增 Filled/Solid/Outlined 变体、预设/状态/自定义颜色处理、CheckableTag 以及支持单选和多选的 CheckableTagGroup。
+  - Slider 新增多 Handle 值和单个 Handle 禁用状态。
+  - Button 新增 `IconWidth` 和 `IconHeight`；Steps 新增 `ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 语义样式属性。
+  - TextBox 和 TextArea 使用文本 viewport metrics 改进 OverflowTip 判断，恢复 Separator 预设间距，并新增 Gallery Drawer 表单示例。
+  - 新增 LunarCalendar，支持农历日期换算、节气、传统节日、节假日/调休标记和可配置的周末高亮。
+- Window、DataGrid、Gallery 和依赖
+  - 新增 Window 标题栏 add-on facade，并修复 ImagePreviewer 从客户端装饰 overlay 路由工具栏请求的行为。
+  - 修复 DataGrid 行重排重置崩溃、集合移动和重排生命周期问题，并减少重排路径中的内存分配。
+  - 补充打包版本 Gallery Developer Tools 所需的运行时依赖。
+  - Avalonia 从 `12.1.0` 升级到 `12.1.1`；该补丁依赖升级不要求 AtomUI 源码迁移。
+
 ## 6.1.2
 
 `2026-07-27`
@@ -23,7 +184,7 @@ AtomUI 的重要变更记录在此文件中。
 `2026-07-25`
 
 - 破坏性变更
-  - ListView：将选择状态从可替换的 Avalonia `ISelectionModel` 调整为只读 `IListViewSelection` 门面。直接设置 `Selection`、`SelectedItem`、`SelectedItems` 或 `SelectedValue` 的代码，需要迁移到 `SelectedIndex` 或 `Selection.Select` / `Selection.Deselect` / `Selection.Clear` / `Selection.SelectAll`；`SelectionChanged` 事件参数改为 `ListViewSelectionChangedEventArgs`，并移除旧的 `ListCollectionViewChangedEventArgs` 类型。`ListItemData.IsSelected` 已移除，`ListItemData`、`GroupListItemData` 和 `SelectOption` 从 record 调整为 class。迁移示例见 [6.1.1 API 变更示例](docs/release-notes/6.1.1-api-changes.md)。
+  - ListView：将选择状态从可替换的 Avalonia `ISelectionModel` 调整为只读 `IListViewSelection` 门面。直接设置 `Selection`、`SelectedItem`、`SelectedItems` 或 `SelectedValue` 的代码，需要迁移到 `SelectedIndex` 或 `Selection.Select` / `Selection.Deselect` / `Selection.Clear` / `Selection.SelectAll`；`SelectionChanged` 事件参数改为 `ListViewSelectionChangedEventArgs`，并移除旧的 `ListCollectionViewChangedEventArgs` 类型。`ListItemData.IsSelected` 已移除，`ListItemData`、`GroupListItemData` 和 `SelectOption` 从 record 调整为 class。迁移示例见 [6.1.1 API 变更示例](docs/releases/6.1.1-api-changes.zh-CN.md)。
 - Window 和 Dialog
   - 修复 macOS modal dialog window 的标题栏和 resize 区域行为，避免窗口内外出现重复 resizer，并稳定点击 owner 外区域时的 modal 闪动。
   - 修复 Wayland dialog/window resize 过程中尺寸约束丢失、窗口突然变大、fractional scale 边框和 mask 错位的问题。
@@ -52,8 +213,8 @@ AtomUI 的重要变更记录在此文件中。
 `2026-07-20`
 
 - 破坏性变更
-  - Dialog 和 MessageBox：围绕异步 Session 重建静态展示和宿主生命周期。直接引用 `IDialogHost`、`IDialogHostProvider`、`IDialogActionResult` 或 `IMessageBoxActionResult`，或依赖 callback 式宿主关闭 API 的自定义代码，应迁移到 `ShowDialogAsync`、`ShowDialogModalAsync`、`ShowMessageBoxAsync`、`ShowMessageBoxModalAsync`、`Dialog.OpenAsync`、`Dialog.BeforeCloseAsync` 和返回的 `Task<object?>`。迁移示例见 [6.1.0 API 变更示例](docs/release-notes/6.1.0-api-changes.md)。
-  - Steps：将基于 Selection 的契约替换为受控步骤状态。请将 `CurrentStep` 迁移到 `Current`，`InitialStep` 迁移到 `Initial`，`CurrentStepStatus` / `StepsItemStatus` 迁移到 `Status` / `StepsStatus`，`Style` / `ItemIndicatorType` 迁移到 `Type`，`LabelPlacement` 迁移到 `TitlePlacement`，`ProgressValue` / `IsShowItemProgress` 迁移到可空 `Percent`；步骤项描述从 `Description` / `DescriptionTemplate` 迁移到 `Content` / `ContentTemplate`，可点击步骤变更改为处理 `CurrentChangeRequested`，不再依赖 Selection 直接变更。迁移示例见 [6.1.0 API 变更示例](docs/release-notes/6.1.0-api-changes.md)。
+  - Dialog 和 MessageBox：围绕异步 Session 重建静态展示和宿主生命周期。直接引用 `IDialogHost`、`IDialogHostProvider`、`IDialogActionResult` 或 `IMessageBoxActionResult`，或依赖 callback 式宿主关闭 API 的自定义代码，应迁移到 `ShowDialogAsync`、`ShowDialogModalAsync`、`ShowMessageBoxAsync`、`ShowMessageBoxModalAsync`、`Dialog.OpenAsync`、`Dialog.BeforeCloseAsync` 和返回的 `Task<object?>`。迁移示例见 [6.1.0 API 变更示例](docs/releases/6.1.0-api-changes.zh-CN.md)。
+  - Steps：将基于 Selection 的契约替换为受控步骤状态。请将 `CurrentStep` 迁移到 `Current`，`InitialStep` 迁移到 `Initial`，`CurrentStepStatus` / `StepsItemStatus` 迁移到 `Status` / `StepsStatus`，`Style` / `ItemIndicatorType` 迁移到 `Type`，`LabelPlacement` 迁移到 `TitlePlacement`，`ProgressValue` / `IsShowItemProgress` 迁移到可空 `Percent`；步骤项描述从 `Description` / `DescriptionTemplate` 迁移到 `Content` / `ContentTemplate`，可点击步骤变更改为处理 `CurrentChangeRequested`，不再依赖 Selection 直接变更。迁移示例见 [6.1.0 API 变更示例](docs/releases/6.1.0-api-changes.zh-CN.md)。
 - Theme
   - 新增基于 resolver 的主题定义加载能力，支持内置资源、应用资源和显式启用的用户主题目录，并统一使用 XML 主题定义格式。
   - 新增 `IThemeDefinitionResolver`、`IThemeManager.AvailableThemes`、`IThemeManager.CurrentTheme`、`ThemeCatalogDiagnostics`、`ThemeCatalogChanged` 和 `ReloadThemesAsync`，应用可以发现、切换并原子刷新主题 Catalog。
@@ -96,8 +257,8 @@ AtomUI 的重要变更记录在此文件中。
 `2026-07-10`
 
 - 破坏性变更
-  - ImagePreviewer：将 `SourceUri`、`SourceUris`、`FallbackSourceUri` 统一替换为基于 `IImagePreviewSource` 的 `Source`、`Sources`、`FallbackSource`；URI、本地文件和 Avalonia 资源请使用 `UriImagePreviewSource`，按需数据流请使用 `StreamImagePreviewSource`。迁移示例见 [6.0.8 API 变更示例](docs/release-notes/6.0.8-api-changes.md)。
-  - Upload：移除旧的 `IsUploadDirectoryEnabled`、`IsShowUploadTrigger` 和 `DefaultTaskList` 组合方式，改为由 `UploadTrigger`、`UploadDropZone` 和 `Files` 组成可组合上传入口。迁移示例见 [6.0.8 API 变更示例](docs/release-notes/6.0.8-api-changes.md)。
+  - ImagePreviewer：将 `SourceUri`、`SourceUris`、`FallbackSourceUri` 统一替换为基于 `IImagePreviewSource` 的 `Source`、`Sources`、`FallbackSource`；URI、本地文件和 Avalonia 资源请使用 `UriImagePreviewSource`，按需数据流请使用 `StreamImagePreviewSource`。迁移示例见 [6.0.8 API 变更示例](docs/releases/6.0.8-api-changes.zh-CN.md)。
+  - Upload：移除旧的 `IsUploadDirectoryEnabled`、`IsShowUploadTrigger` 和 `DefaultTaskList` 组合方式，改为由 `UploadTrigger`、`UploadDropZone` 和 `Files` 组成可组合上传入口。迁移示例见 [6.0.8 API 变更示例](docs/releases/6.0.8-api-changes.zh-CN.md)。
 - 数据录入和选择控件
   - 新增 OtpLineEdit 一次性验证码输入控件，支持 `Text` 双向绑定、`Length`、`InputMode`、`Formatter`、遮罩、分隔符、`Completed` 事件、四种 `StyleVariant`、Form 和 `DataValidationErrors` 集成。
   - 将 Form 验证统一接入 Avalonia `DataValidationErrors`，并新增 `ValidateTrigger`；默认改为值变更时验证，也可配置为失焦触发。

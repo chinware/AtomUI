@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Headless;
+using AtomUI.Localization;
 using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.DataGrid.TestAppBuilder))]
@@ -39,6 +40,9 @@ internal sealed class TestApplication : Application
         {
             builder.UseDesktopControls();
             builder.UseDesktopDataGrid();
+            builder.UseLanguages(
+                LanguageTags.EnUS,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
         });
     }
 }

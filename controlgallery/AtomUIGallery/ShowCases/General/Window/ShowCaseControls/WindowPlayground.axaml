@@ -1,0 +1,115 @@
+<atom:Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:sc="clr-namespace:AtomUIGallery.ShowCases.Window"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             x:Class="AtomUIGallery.ShowCases.Window.WindowPlayground"
+             x:ClassModifier="internal"
+             Title="AtomUI Playground"
+             Width="1020"
+             Height="600"
+             WindowStartupLocation="CenterOwner">
+    <atom:Window.Resources>
+        <LinearGradientBrush x:Key="PlaygroundGradientTitleBarBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#E6FFFB" Offset="0" />
+            <GradientStop Color="#BAE7FF" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="PlaygroundGradientContentBrush" Color="#F6FFED" />
+        <SolidColorBrush x:Key="PlaygroundDarkTitleBarBrush" Color="#2A2A2A" />
+        <SolidColorBrush x:Key="PlaygroundDarkContentBrush" Color="#1F1F1F" />
+        <StackPanel x:Key="PlaygroundLeftAddOn" Orientation="Horizontal" Spacing="4">
+            <atom:WindowTitleBarButton Icon="{antdicons:AntDesignIconProvider Kind=MenuOutlined}"
+                                       atom:ToolTip.Tip="Menu" />
+        </StackPanel>
+        <StackPanel x:Key="PlaygroundRightAddOn" Orientation="Horizontal" Spacing="4">
+            <atom:WindowTitleBarButton Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                                       atom:ToolTip.Tip="Search" />
+        </StackPanel>
+    </atom:Window.Resources>
+    <Grid ColumnDefinitions="*,320">
+        <StackPanel Margin="24" Spacing="12" VerticalAlignment="Center" MaxWidth="520">
+            <atom:TextBlock Text="{gallery:WindowShowCaseLangResource PlaygroundTitle}" FontWeight="Bold" FontSize="16" />
+            <atom:TextBlock Text="{gallery:WindowShowCaseLangResource PlaygroundHint}" TextWrapping="Wrap" />
+        </StackPanel>
+        <Border Grid.Column="1" BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}" BorderThickness="1,0,0,0"
+                Background="{atom:SharedTokenResource ColorBgContainer}">
+            <ScrollViewer>
+                <StackPanel Margin="20,12,20,16" Spacing="12">
+                    <atom:TextBlock Text="Title" FontWeight="Bold" />
+                    <atom:TextBox x:Name="TitleTextBox" PlaceholderText="AtomUI Playground"
+                                  TextChanged="HandleTitleChanged" />
+
+                    <atom:TextBlock Text="Title options" FontWeight="Bold" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="IsTitleVisible" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1" IsChecked="True"
+                                           IsCheckedChanged="HandleTitleVisibleSwitched" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="IsTitleBarVisible" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1" IsChecked="True"
+                                           IsCheckedChanged="HandleTitleBarVisibleSwitched" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="Logo" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1"
+                                           IsCheckedChanged="HandleLogoSwitched" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="LeftAddOn / RightAddOn" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1"
+                                           IsCheckedChanged="HandleAddOnSwitched" />
+                    </Grid>
+
+                    <atom:TextBlock Text="TitleAlignment" FontWeight="Bold" />
+                    <atom:Segmented SelectionChanged="HandleAlignmentChanged">
+                        <atom:SegmentedItem Content="Auto" />
+                        <atom:SegmentedItem Content="Left" />
+                        <atom:SegmentedItem Content="Center" />
+                        <atom:SegmentedItem Content="WindowCenter" />
+                        <atom:SegmentedItem Content="Right" />
+                    </atom:Segmented>
+
+                    <atom:TextBlock Text="LogoVisibility" FontWeight="Bold" />
+                    <atom:Segmented SelectionChanged="HandleLogoVisibilityChanged">
+                        <atom:SegmentedItem Content="Auto" />
+                        <atom:SegmentedItem Content="Always" />
+                        <atom:SegmentedItem Content="Never" />
+                    </atom:Segmented>
+
+                    <atom:TextBlock Text="Frame background" FontWeight="Bold" />
+                    <atom:Segmented SelectionChanged="HandleBackgroundPresetChanged">
+                        <atom:SegmentedItem Content="Default" />
+                        <atom:SegmentedItem Content="Gradient" />
+                        <atom:SegmentedItem Content="Dark" />
+                    </atom:Segmented>
+
+                    <atom:TextBlock Text="Caption buttons" FontWeight="Bold" />
+                    <atom:TextBlock Text="{gallery:WindowShowCaseLangResource PlaygroundCaptionButtonsHint}"
+                                    TextWrapping="Wrap" Opacity="0.65" />
+                    <Grid x:Name="MinimizeCaptionRow" ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="IsMinimizeCaptionButtonVisible" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1" IsChecked="True"
+                                           IsCheckedChanged="HandleMinimizeCaptionSwitched" />
+                    </Grid>
+                    <Grid x:Name="MaximizeCaptionRow" ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="IsMaximizeCaptionButtonVisible" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1" IsChecked="True"
+                                           IsCheckedChanged="HandleMaximizeCaptionSwitched" />
+                    </Grid>
+                    <Grid x:Name="FullScreenCaptionRow" ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="IsFullScreenCaptionButtonVisible" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1"
+                                           IsCheckedChanged="HandleFullScreenCaptionSwitched" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <atom:TextBlock Text="IsPinCaptionButtonVisible" VerticalAlignment="Center" />
+                        <atom:ToggleSwitch Grid.Column="1"
+                                           IsCheckedChanged="HandlePinCaptionSwitched" />
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</atom:Window>

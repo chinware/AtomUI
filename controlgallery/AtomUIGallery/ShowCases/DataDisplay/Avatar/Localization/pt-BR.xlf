@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.AvatarShowCaseLangResourceKind">
+    <unit id="AutoSetFontSizeDescription">
+      <segment>
+        <source>For letter type Avatar, when the letters are too long to display, the font size can be automatically adjusted according to the width of the Avatar. You can also use gap to set the unit distance between left and right sides.</source>
+        <target state="translated">Para letter tipo Avatar, quando o letters são too longo para exibir, o font tamanho pode ser automatically adjusted according para o largura de o Avatar. Você pode also usar gap para definir o unit distance between esquerda e direita sides.</target>
+      </segment>
+    </unit>
+    <unit id="AutoSetFontSizeTitle">
+      <segment>
+        <source>Autoset Font Size</source>
+        <target state="translated">Autoset Font Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="AvatarGroupDescription">
+      <segment>
+        <source>Avatar group display.</source>
+        <target state="translated">Avatar grupo exibir.</target>
+      </segment>
+    </unit>
+    <unit id="AvatarGroupTitle">
+      <segment>
+        <source>Avatar.Group</source>
+        <target state="translated">Avatar.Group</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Three sizes and two shapes are available.</source>
+        <target state="translated">Três tamanhos e dois shapes são disponível.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="NetworkImageDescription">
+      <segment>
+        <source>Load avatar images directly from HTTPS URLs through the shared image-loading pipeline.</source>
+        <target state="translated">Carregue imagens de avatar diretamente de URLs HTTPS pelo pipeline compartilhado de carregamento de imagens.</target>
+      </segment>
+    </unit>
+    <unit id="NetworkImageTitle">
+      <segment>
+        <source>Remote Image</source>
+        <target state="translated">Imagem remota</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentA">
+      <segment>
+        <source>A</source>
+        <target state="translated">A</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentChangegap">
+      <segment>
+        <source>Change gap</source>
+        <target state="translated">Alterar gap</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentChangeuser">
+      <segment>
+        <source>Change user</source>
+        <target state="translated">Alterar usuário</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentK">
+      <segment>
+        <source>K</source>
+        <target state="translated">K</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentU">
+      <segment>
+        <source>U</source>
+        <target state="translated">U</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUser">
+      <segment>
+        <source>USER</source>
+        <target state="translated">USER</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Avatar provides compact identity visuals for users, teams, and objects. It supports circle and square shapes, explicit sizes, automatic text scaling, and grouped overflow display.</source>
+        <target state="translated">Avatar provides compacto identity visuals para usuários, teams, e objects. Isso oferece suporte círculo e quadrado shapes, explicit tamanhos, automatic texto scaling, e grouped overflow exibir.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Represent people or entities with image, icon, or text avatars.</source>
+        <target state="translated">Represent people ou entities com imagem, ícone, ou texto avatars.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="TypeDescription">
+      <segment>
+        <source>Image, Icon and letter are supported, and the latter two kinds of avatar can have custom colors and background colors.</source>
+        <target state="translated">Imagem, Ícone e letter são supported, e o latter dois kinds de avatar pode have personalizado cores e background cores.</target>
+      </segment>
+    </unit>
+    <unit id="TypeTitle">
+      <segment>
+        <source>Type</source>
+        <target state="translated">Tipo</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class SelectToken : AbstractControlDesignToken
+internal sealed class SelectToken : AbstractControlDesignToken
 {
 
     /// <summary>
@@ -125,6 +125,22 @@ internal class SelectToken : AbstractControlDesignToken
     /// </summary>
     public Thickness SingleModePaddingLG { get; set; }
 
+    /// <summary>
+    /// 多选模式下前缀（ContentLeftAddOn）的额外左缩进，
+    /// 补偿多选内边距与单选水平内边距的差值，使前缀与单选模式左对齐
+    /// </summary>
+    public Thickness MultiModePrefixIndent { get; set; }
+
+    /// <summary>
+    /// 多选模式下的小号前缀额外左缩进
+    /// </summary>
+    public Thickness MultiModePrefixIndentSM { get; set; }
+
+    /// <summary>
+    /// 多选模式下的大号前缀额外左缩进
+    /// </summary>
+    public Thickness MultiModePrefixIndentLG { get; set; }
+
     public SelectToken()
 
     {
@@ -170,12 +186,15 @@ internal class SelectToken : AbstractControlDesignToken
 
         var multiPaddingRight = EffectiveGlobalToken.UniformlyPaddingSM - lineWidth;
         MultiModePadding = new Thickness(multiPaddingVertical, multiPaddingVertical, multiPaddingRight, multiPaddingVertical);
+        MultiModePrefixIndent = new Thickness(Math.Max(0, multiPaddingRight - multiPaddingVertical), 0, 0, 0);
 
         var multiPaddingRightSM = EffectiveGlobalToken.ControlPaddingHorizontalSM - lineWidth;
         MultiModePaddingSM = new Thickness(multiPaddingVerticalSM, multiPaddingVerticalSM, multiPaddingRightSM, multiPaddingVerticalSM);
+        MultiModePrefixIndentSM = new Thickness(Math.Max(0, multiPaddingRightSM - multiPaddingVerticalSM), 0, 0, 0);
 
         var multiPaddingRightLG = EffectiveGlobalToken.ControlPaddingHorizontal - lineWidth;
         MultiModePaddingLG = new Thickness(multiPaddingVerticalLG, multiPaddingVerticalLG, multiPaddingRightLG, multiPaddingVerticalLG);
+        MultiModePrefixIndentLG = new Thickness(Math.Max(0, multiPaddingRightLG - multiPaddingVerticalLG), 0, 0, 0);
 
         SingleModePadding   = new Thickness(multiPaddingRight, multiPaddingVertical);
         SingleModePaddingSM = new Thickness(multiPaddingRightSM, multiPaddingVerticalSM);

@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace AtomUI.Generator;
 
@@ -10,7 +11,14 @@ internal static class GeneratorSymbolDisplay
             ~SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 }
 
-internal class ControlTokenInfo
+internal enum ControlTokenRole
+{
+    Invalid,
+    AbstractLayer,
+    Terminal
+}
+
+internal sealed class ControlTokenInfo
 {
     public string TokenNamespace { get; set; }
     public string TokenName { get; set; }
@@ -19,7 +27,12 @@ internal class ControlTokenInfo
     public HashSet<SchemaTokenInfo> SchemaTokens { get; }
     public List<Diagnostic> Diagnostics { get; }
     public Location? DeclarationLocation { get; set; }
-    public bool IsValid => Diagnostics.Count == 0 && !string.IsNullOrWhiteSpace(ControlName);
+    public ControlTokenRole Role { get; set; }
+    public bool IsTerminal => Role == ControlTokenRole.Terminal;
+    public bool IsValid => Diagnostics.Count == 0 &&
+                           (Role == ControlTokenRole.AbstractLayer ||
+                            (Role == ControlTokenRole.Terminal &&
+                             !string.IsNullOrWhiteSpace(ControlName)));
 
     public ControlTokenInfo(string ns, string tokenName, HashSet<TokenName> tokens)
     {
@@ -75,19 +88,37 @@ internal sealed class ThemeCompilationInfo
     internal ThemeCompilationInfo(
         Compilation compilation,
         string assemblyName,
+        string packageId,
+        LinkedRegistration.Model.RegistrationUnitGranularity registrationGranularity,
+        string? invalidRegistrationGranularity,
+        string? projectDirectory,
         string controlCatalog,
-        IReadOnlyList<string> globalTokenNames)
+        IReadOnlyList<string> globalTokenNames,
+        AnalyzerConfigOptionsProvider optionsProvider,
+        LinkedRegistration.ControlPackageRegistrationEntrySet entryMethods)
     {
         Compilation = compilation;
         AssemblyName = assemblyName;
+        PackageId = packageId;
+        RegistrationGranularity = registrationGranularity;
+        InvalidRegistrationGranularity = invalidRegistrationGranularity;
+        ProjectDirectory = projectDirectory;
         ControlCatalog = controlCatalog;
         GlobalTokenNames = globalTokenNames;
+        OptionsProvider = optionsProvider;
+        EntryMethods = entryMethods;
     }
 
     internal Compilation Compilation { get; }
     internal string AssemblyName { get; }
+    internal string PackageId { get; }
+    internal LinkedRegistration.Model.RegistrationUnitGranularity RegistrationGranularity { get; }
+    internal string? InvalidRegistrationGranularity { get; }
+    internal string? ProjectDirectory { get; }
     internal string ControlCatalog { get; }
     internal IReadOnlyList<string> GlobalTokenNames { get; }
+    internal AnalyzerConfigOptionsProvider OptionsProvider { get; }
+    internal LinkedRegistration.ControlPackageRegistrationEntrySet EntryMethods { get; }
 }
 
 internal enum SchemaTokenStage

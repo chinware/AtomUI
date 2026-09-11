@@ -17,11 +17,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class AddOnDecoratedBox : ContentControl, 
-                                   ICustomizableSizeTypeAware,
-                                   IMotionAwareControl,
-                                   IInputControlStatusAware,
-                                   IInputControlStyleVariantAware
+internal class AddOnDecoratedBox : InputControlFrame
 {
     public const string AddOnDecoratedBoxPart = "PART_AddOnDecoratedBox";
     
@@ -50,21 +46,6 @@ internal class AddOnDecoratedBox : ContentControl,
     
     public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(ContentRightAddOnTemplate));
-
-    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
-        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
-
-    public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
-        InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<AddOnDecoratedBox>();
-
-    public static readonly StyledProperty<InputControlStatus> StatusProperty =
-        InputControlStatusProperty.StatusProperty.AddOwner<AddOnDecoratedBox>();
-    
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedBox>();
-
-    public static readonly StyledProperty<BoxShadows> BoxShadowProperty =
-        Border.BoxShadowProperty.AddOwner<AddOnDecoratedBox>();
 
     [DependsOn(nameof(LeftAddOnTemplate))]
     public object? LeftAddOn
@@ -118,36 +99,6 @@ internal class AddOnDecoratedBox : ContentControl,
         set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
 
-    public CustomizableSizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public InputControlStyleVariant StyleVariant
-    {
-        get => GetValue(StyleVariantProperty);
-        set => SetValue(StyleVariantProperty, value);
-    }
-
-    public InputControlStatus Status
-    {
-        get => GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
-    }
-    
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-
-    public BoxShadows BoxShadow
-    {
-        get => GetValue(BoxShadowProperty);
-        set => SetValue(BoxShadowProperty, value);
-    }
-
     #endregion
     
     #region 内部属性定义
@@ -156,12 +107,6 @@ internal class AddOnDecoratedBox : ContentControl,
 
     internal static readonly StyledProperty<IBrush?> AddOnStatusIconBrushProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(AddOnStatusIconBrush));
-
-    internal static readonly DirectProperty<AddOnDecoratedBox, InputControlStatus> EffectiveStatusProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, InputControlStatus>(
-            nameof(EffectiveStatus),
-            o => o.EffectiveStatus,
-            (o, v) => o.EffectiveStatus = v);
 
     internal IBrush? AddOnStatusForeground
     {
@@ -173,14 +118,6 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         get => GetValue(AddOnStatusIconBrushProperty);
         set => SetValue(AddOnStatusIconBrushProperty, value);
-    }
-
-    private InputControlStatus _effectiveStatus;
-
-    internal InputControlStatus EffectiveStatus
-    {
-        get => _effectiveStatus;
-        private set => SetAndRaise(EffectiveStatusProperty, ref _effectiveStatus, value);
     }
 
     internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> InnerBoxBorderThicknessProperty =
@@ -213,25 +150,6 @@ internal class AddOnDecoratedBox : ContentControl,
             o => o.RightAddOnBorderThickness,
             (o, v) => o.RightAddOnBorderThickness = v);
     
-    internal static readonly DirectProperty<AddOnDecoratedBox, bool> IsInnerBoxHoverProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, bool>(nameof(IsInnerBoxHover),
-            o => o.IsInnerBoxHover,
-            (o, v) => o.IsInnerBoxHover = v);
-    
-    internal static readonly DirectProperty<AddOnDecoratedBox, bool> IsInnerBoxPressedProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, bool>(nameof(IsInnerBoxPressed),
-            o => o.IsInnerBoxPressed,
-            (o, v) => o.IsInnerBoxPressed = v);
-    
-    internal static readonly StyledProperty<SpaceItemPosition?> CompactSpaceItemPositionProperty = 
-        CompactSpaceAwareControlProperty.CompactSpaceItemPositionProperty.AddOwner<AddOnDecoratedBox>();
-    
-    internal static readonly StyledProperty<Orientation> CompactSpaceOrientationProperty = 
-        CompactSpaceAwareControlProperty.CompactSpaceOrientationProperty.AddOwner<AddOnDecoratedBox>();
-    
-    internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty = 
-        CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<AddOnDecoratedBox>();
-
     internal static readonly StyledProperty<double> CustomControlHeightProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, double>(nameof(CustomControlHeight), double.NaN);
 
@@ -298,40 +216,6 @@ internal class AddOnDecoratedBox : ContentControl,
         set => SetAndRaise(RightAddOnBorderThicknessProperty, ref _rightAddOnBorderThickness, value);
     }
     
-    private bool _isInnerBoxHover;
-
-    internal bool IsInnerBoxHover
-    {
-        get => _isInnerBoxHover;
-        set => SetAndRaise(IsInnerBoxHoverProperty, ref _isInnerBoxHover, value);
-    }
-    
-    private bool _isInnerBoxPressed;
-
-    internal bool IsInnerBoxPressed
-    {
-        get => _isInnerBoxPressed;
-        set => SetAndRaise(IsInnerBoxPressedProperty, ref _isInnerBoxPressed, value);
-    }
-    
-    internal SpaceItemPosition? CompactSpaceItemPosition
-    {
-        get => GetValue(CompactSpaceItemPositionProperty);
-        set => SetValue(CompactSpaceItemPositionProperty, value);
-    }
-    
-    internal Orientation CompactSpaceOrientation
-    {
-        get => GetValue(CompactSpaceOrientationProperty);
-        set => SetValue(CompactSpaceOrientationProperty, value);
-    }
-    
-    internal bool IsUsedInCompactSpace
-    {
-        get => GetValue(IsUsedInCompactSpaceProperty);
-        set => SetValue(IsUsedInCompactSpaceProperty, value);
-    }
-
     internal double CustomControlHeight
     {
         get => GetValue(CustomControlHeightProperty);
@@ -397,29 +281,9 @@ internal class AddOnDecoratedBox : ContentControl,
     {
     }
     
-    protected virtual void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Underlined, StyleVariant == InputControlStyleVariant.Underlined);
-    }
-    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-
-        if (change.Property == StyleVariantProperty)
-        {
-            UpdatePseudoClasses();
-        }
-
-        if (change.Property == StatusProperty ||
-            change.Property == DataValidationErrors.HasErrorsProperty ||
-            change.Property == DataValidationErrors.ErrorsProperty)
-        {
-            UpdateEffectiveStatus();
-        }
 
         if (change.Property == StyleVariantProperty ||
             change.Property == BorderThicknessProperty)
@@ -457,6 +321,7 @@ internal class AddOnDecoratedBox : ContentControl,
         }
 
         if (change.Property == StatusProperty ||
+            change.Property == EffectiveStatusProperty ||
             change.Property == IsEnabledProperty ||
             change.Property == ContentLeftAddOnProperty ||
             change.Property == ContentRightAddOnProperty ||
@@ -467,17 +332,6 @@ internal class AddOnDecoratedBox : ContentControl,
         }
 
         ScheduleLayoutUpdate();
-    }
-
-    private void UpdateEffectiveStatus()
-    {
-        var effectiveStatus = DataValidationErrors.GetHasErrors(this)
-            ? InputControlStatus.Error
-            : Status;
-        if (EffectiveStatus != effectiveStatus)
-        {
-            EffectiveStatus = effectiveStatus;
-        }
     }
 
     private void ConfigureEffectiveContentFramePadding()
@@ -676,7 +530,6 @@ internal class AddOnDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        UpdatePseudoClasses();
 
         // 取消旧的 ContentPresenter 订阅
         if (_contentLeftAddOn != null)
@@ -985,54 +838,54 @@ internal class AddOnDecoratedBoxContentFrame : PixelAlignedBorder
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
-        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        if (TemplatedParent is InputControlFrame frame)
         {
-            SetInnerBoxHoverIfChanged(decoratedBox, true);
+            SetInnerBoxHoverIfChanged(frame, true);
         }
     }
 
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
-        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        if (TemplatedParent is InputControlFrame frame)
         {
-            SetInnerBoxHoverIfChanged(decoratedBox, false);
+            SetInnerBoxHoverIfChanged(frame, false);
         }
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        if (TemplatedParent is InputControlFrame frame)
         {
-            SetInnerBoxHoverIfChanged(decoratedBox, true);
-            SetInnerBoxPressedIfChanged(decoratedBox, true);
+            SetInnerBoxHoverIfChanged(frame, true);
+            SetInnerBoxPressedIfChanged(frame, true);
         }
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
-        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        if (TemplatedParent is InputControlFrame frame)
         {
-            SetInnerBoxPressedIfChanged(decoratedBox, false);
-            SetInnerBoxHoverIfChanged(decoratedBox, true);
+            SetInnerBoxPressedIfChanged(frame, false);
+            SetInnerBoxHoverIfChanged(frame, true);
         }
     }
 
-    private static void SetInnerBoxHoverIfChanged(AddOnDecoratedBox decoratedBox, bool isHover)
+    private static void SetInnerBoxHoverIfChanged(InputControlFrame frame, bool isHover)
     {
-        if (decoratedBox.IsInnerBoxHover != isHover)
+        if (frame.IsInnerBoxHover != isHover)
         {
-            decoratedBox.IsInnerBoxHover = isHover;
+            frame.IsInnerBoxHover = isHover;
         }
     }
 
-    private static void SetInnerBoxPressedIfChanged(AddOnDecoratedBox decoratedBox, bool isPressed)
+    private static void SetInnerBoxPressedIfChanged(InputControlFrame frame, bool isPressed)
     {
-        if (decoratedBox.IsInnerBoxPressed != isPressed)
+        if (frame.IsInnerBoxPressed != isPressed)
         {
-            decoratedBox.IsInnerBoxPressed = isPressed;
+            frame.IsInnerBoxPressed = isPressed;
         }
     }
 }

@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ButtonShowCaseLangResourceKind">
+    <unit id="BlockButtonDescription">
+      <segment>
+        <source>block property will make the button fit to its parent width.</source>
+        <target state="translated">block propriedade irá make o botão fit para its pai largura.</target>
+      </segment>
+    </unit>
+    <unit id="BlockButtonTitle">
+      <segment>
+        <source>Block Button</source>
+        <target state="translated">Block Botão</target>
+      </segment>
+    </unit>
+    <unit id="ButtonShapeDescription">
+      <segment>
+        <source>Supported button shape display, such as primary, default, dashed and text, etc.</source>
+        <target state="translated">Supported botão forma exibir, such as primário, padrão, dashed e texto, etc.</target>
+      </segment>
+    </unit>
+    <unit id="ButtonShapeTitle">
+      <segment>
+        <source>Button Shape</source>
+        <target state="translated">Botão Forma</target>
+      </segment>
+    </unit>
+    <unit id="ColorVariantDescription">
+      <segment>
+        <source>Combine semantic color with visual variant to create primary, danger and preset-color buttons.</source>
+        <target state="translated">Combine semantic cor com visual variant para criar primário, perigo e predefinido-cor botões.</target>
+      </segment>
+    </unit>
+    <unit id="ColorVariantTitle">
+      <segment>
+        <source>Color and variant</source>
+        <target state="translated">Cor e variant</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">Geral</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DangerButtonsDescription">
+      <segment>
+        <source>danger is a property of button after antd 4.0.</source>
+        <target state="translated">perigo é a propriedade de botão depois antd 4.0.</target>
+      </segment>
+    </unit>
+    <unit id="DangerButtonsTitle">
+      <segment>
+        <source>Danger Buttons</source>
+        <target state="translated">Perigo Botões</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>To mark a button as disabled, add the disabled property to the Button.</source>
+        <target state="translated">Para mark a botão as desativado, adicionar o desativado propriedade para o Botão.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupBasicDescription">
+      <segment>
+        <source>Use button type to express action priority in the current region.</source>
+        <target state="translated">Usar botão tipo para express ação priority em o atual region.</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupBasicTitle">
+      <segment>
+        <source>Button type</source>
+        <target state="translated">Botão tipo</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupShapeDescription">
+      <segment>
+        <source>Round, circle and icon buttons keep compact actions easy to recognize.</source>
+        <target state="translated">Arredondado, círculo e ícone botões keep compacto ações easy para recognize.</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupShapeTitle">
+      <segment>
+        <source>Shape and icon</source>
+        <target state="translated">Forma e ícone</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupSizeDescription">
+      <segment>
+        <source>Switch between large, middle and small sizes to match density requirements.</source>
+        <target state="translated">Alternância between grande, centro e pequeno tamanhos para match density requirements.</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupSizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupStateDescription">
+      <segment>
+        <source>Loading, disabled, danger and ghost states communicate availability and risk.</source>
+        <target state="translated">Carregando, desativado, perigo e ghost states communicate availability e risco.</target>
+      </segment>
+    </unit>
+    <unit id="ExampleGroupStateTitle">
+      <segment>
+        <source>State</source>
+        <target state="translated">Estado</target>
+      </segment>
+    </unit>
+    <unit id="GhostButtonDescription">
+      <segment>
+        <source>ghost property will make button's background transparent, it is commonly used in colored background.</source>
+        <target state="translated">ghost propriedade irá make botão's background transparent, isso é commonly usado em colored background.</target>
+      </segment>
+    </unit>
+    <unit id="GhostButtonTitle">
+      <segment>
+        <source>Ghost Button</source>
+        <target state="translated">Ghost Botão</target>
+      </segment>
+    </unit>
+    <unit id="GradientButtonDescription">
+      <segment>
+        <source>Customize solid buttons with gradient backgrounds through CustomBackground.</source>
+        <target state="translated">Personalizar solid botões com gradient backgrounds through CustomBackground.</target>
+      </segment>
+    </unit>
+    <unit id="GradientButtonTitle">
+      <segment>
+        <source>Gradient Button</source>
+        <target state="translated">Gradient Botão</target>
+      </segment>
+    </unit>
+    <unit id="IconDescription">
+      <segment>
+        <source>You can add an icon through the Icon property and adjust the position of the icon using IconPlacement.</source>
+        <target state="translated">You can add an icon through the Icon property and adjust the position of the icon using IconPlacement.</target>
+      </segment>
+    </unit>
+    <unit id="IconPlacementDescription">
+      <segment>
+        <source>Set IconPlacement to Start or End to place the button icon before or after the content.</source>
+        <target state="translated">Definir IconPlacement para Início ou Fim para place o botão ícone antes ou depois o conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="IconPlacementTitle">
+      <segment>
+        <source>Button icon placement</source>
+        <target state="translated">Botão ícone posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="IconTitle">
+      <segment>
+        <source>Icon</source>
+        <target state="translated">Ícone</target>
+      </segment>
+    </unit>
+    <unit id="LoadingDescription">
+      <segment>
+        <source>A loading indicator can be added to a button by setting the loading property on the Button.</source>
+        <target state="translated">A carregando indicator pode ser adicionado para a botão por configuração o carregando propriedade em o Botão.</target>
+      </segment>
+    </unit>
+    <unit id="LoadingTitle">
+      <segment>
+        <source>Loading</source>
+        <target state="translated">Carregando</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorCyan">
+      <segment>
+        <source>Cyan</source>
+        <target state="translated">Cyan</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorDanger">
+      <segment>
+        <source>Danger</source>
+        <target state="translated">Perigo</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorPink">
+      <segment>
+        <source>Pink</source>
+        <target state="translated">Pink</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorPrimary">
+      <segment>
+        <source>Primary</source>
+        <target state="translated">Primário</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorPurple">
+      <segment>
+        <source>Purple</source>
+        <target state="translated">Purple</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAa">
+      <segment>
+        <source>AA</source>
+        <target state="translated">AA</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickMe">
+      <segment>
+        <source>Click me!</source>
+        <target state="translated">Clique me!</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDanger">
+      <segment>
+        <source>Danger</source>
+        <target state="translated">Perigo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerDefault">
+      <segment>
+        <source>Danger Default</source>
+        <target state="translated">Perigo Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerDefaultDisabled">
+      <segment>
+        <source>Danger Default(disabled)</source>
+        <target state="translated">Perigo Padrão(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerLink">
+      <segment>
+        <source>Danger Link</source>
+        <target state="translated">Perigo Link</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerLinkDisabled">
+      <segment>
+        <source>Danger Link(disabled)</source>
+        <target state="translated">Perigo Link(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerPrimary">
+      <segment>
+        <source>Danger Primary</source>
+        <target state="translated">Perigo Primário</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerPrimaryDisabled">
+      <segment>
+        <source>Danger Primary(disabled)</source>
+        <target state="translated">Perigo Primário(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerText">
+      <segment>
+        <source>Danger Text</source>
+        <target state="translated">Perigo Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDangerTextDisabled">
+      <segment>
+        <source>Danger Text(disabled)</source>
+        <target state="translated">Perigo Texto(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDashed">
+      <segment>
+        <source>Dashed</source>
+        <target state="translated">Dashed</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDashedDisabled">
+      <segment>
+        <source>Dashed(disabled)</source>
+        <target state="translated">Dashed(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefaultButton">
+      <segment>
+        <source>Default Button</source>
+        <target state="translated">Padrão Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefaultDisabled">
+      <segment>
+        <source>Default(disabled)</source>
+        <target state="translated">Padrão(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDownload">
+      <segment>
+        <source>Download</source>
+        <target state="translated">Baixar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnd">
+      <segment>
+        <source>end</source>
+        <target state="translated">fim</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">Preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGhost">
+      <segment>
+        <source>Ghost</source>
+        <target state="translated">Ghost</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGhostDisabled">
+      <segment>
+        <source>Ghost(disabled)</source>
+        <target state="translated">Ghost(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGradient">
+      <segment>
+        <source>Gradient Button</source>
+        <target state="translated">Gradient Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLink">
+      <segment>
+        <source>Link</source>
+        <target state="translated">Link</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLinkButton">
+      <segment>
+        <source>Link Button</source>
+        <target state="translated">Link Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLinkDisabled">
+      <segment>
+        <source>Link(disabled)</source>
+        <target state="translated">Link(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLoading">
+      <segment>
+        <source>Loading</source>
+        <target state="translated">Carregando</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">Contornado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+        <target state="translated">Primário</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimaryButton">
+      <segment>
+        <source>Primary Button</source>
+        <target state="translated">Primário Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimaryDisabled">
+      <segment>
+        <source>Primary(disabled)</source>
+        <target state="translated">Primário(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSolid">
+      <segment>
+        <source>Solid</source>
+        <target state="translated">Solid</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentStart">
+      <segment>
+        <source>start</source>
+        <target state="translated">início</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentText">
+      <segment>
+        <source>Text</source>
+        <target state="translated">Texto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTextButton">
+      <segment>
+        <source>Text Button</source>
+        <target state="translated">Texto Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTextDisabled">
+      <segment>
+        <source>Text(disabled)</source>
+        <target state="translated">Texto(desativado)</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarmGradient">
+      <segment>
+        <source>Warm Gradient</source>
+        <target state="translated">Warm Gradient</target>
+      </segment>
+    </unit>
+    <unit id="P2TextExpandDirection">
+      <segment>
+        <source>Button size:</source>
+        <target state="translated">Botão tamanho:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIconPlacement">
+      <segment>
+        <source>Icon placement:</source>
+        <target state="translated">Ícone posicionamento:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Button is the primary action control in AtomUI. Use type, shape, size, icon and loading states to build predictable workflows without losing the Ant Design interaction model.</source>
+        <target state="translated">Botão é o primário ação controle em AtomUI. Usar tipo, forma, tamanho, ícone e carregando states para build predictable workflows sem losing o Ant Design interaction model.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Trigger actions and express intent with clear visual priority.</source>
+        <target state="translated">Gatilho ações e express intent com limpar visual priority.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.</source>
+        <target state="translated">AtomUI oferece suporte três tamanhos de botões: pequeno, padrão e grande. Se a grande ou pequeno botão é desired, definir o tamanho propriedade para either grande ou pequeno respectively. Omit o tamanho propriedade para a botão com o padrão tamanho.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="TypeDescription">
+      <segment>
+        <source>There are primary button, default button, dashed button, text button and link button in antd.</source>
+        <target state="translated">Há são primário botão, padrão botão, dashed botão, texto botão e link botão em antd.</target>
+      </segment>
+    </unit>
+    <unit id="TypeTitle">
+      <segment>
+        <source>Type</source>
+        <target state="translated">Tipo</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

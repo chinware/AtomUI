@@ -2,11 +2,34 @@
 
 本文档记录 SearchEdit 控件级设计、API、主题契约、Token 和实现结构的变化。它用于维护控件设计历史，不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-23
+
+- Architecture
+  - Align SearchEdit with the shared `AbstractTextInput` logic layer and `InputControlFrame` surface layer.
+  - Make `SearchEditDecoratedBox` a search-button layout extension rather than an independent input-surface status owner.
+- Theme
+  - Route SearchEdit border, background, variant, effective status, CompactSpace and motion through the shared frame theme.
+  - Keep the public Button search part as a consumer of the frame effective status, not a validation owner.
+
 记录原则：
 
 - 只记录会影响 SearchEdit 设计理解、兼容边界、实现架构或维护方式的变化。
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
+
+## 2026-08-11
+
+- API
+  - Replace `HandleEnterAsSearch` with `IsSearchOnEnterEnabled` and enable Enter-triggered search by default.
+  - Replace `SearchButtonClick` with `SearchRequested` and add `SearchRequestedEventArgs` plus `SearchTriggerSource`.
+- Behavior
+  - Route search-button clicks and unhandled Enter `KeyUp` events through `RaiseSearchRequested()`.
+  - Include the query snapshot and `Button` / `EnterKey` trigger source in every search request.
+  - Suppress repeated requests while `IsOperating=true` and leave Enter unconsumed when Enter search is disabled.
+- Tests
+  - Add SearchEdit behavior coverage for defaults, query snapshots, trigger sources and repeated-request suppression.
+- Docs
+  - Synchronize SearchEdit, LineEdit and AutoComplete contracts with the unified search-request model.
 
 ## 2026-08-01
 

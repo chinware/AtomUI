@@ -129,7 +129,11 @@ public class AbstractMotion : IMotion
             maxDuration += delta;
             actor.Transitions = transitions;
             ConfigureMotionEndValue(actor);
-            await Task.WhenAny(Task.WhenAny(tasks), Task.Delay(maxDuration));
+            // A motion owns all configured transitions.  Waiting for the first
+            // transition lets the caller tear down the actor while another
+            // property is still being animated, which can leave composition
+            // children visible after the surface has disappeared.
+            await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(maxDuration));
             actor.NotifyMotionCompleted();
             NotifyCompleted(actor);
             completedAction?.Invoke();
@@ -215,7 +219,10 @@ public class AbstractMotion : IMotion
             maxDuration       += delta;
             actor.Transitions =  transitions;
             ConfigureMotionEndValue(actor);
-            await Task.WhenAny(Task.WhenAny(tasks), Task.Delay(maxDuration, cancellationToken));
+            // Do not complete a motion when only one of its transitions has
+            // finished.  The timeout remains a safety net for transitions
+            // whose property value does not produce a completion callback.
+            await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(maxDuration, cancellationToken));
 
             if (!cancellationToken.IsCancellationRequested)
             {

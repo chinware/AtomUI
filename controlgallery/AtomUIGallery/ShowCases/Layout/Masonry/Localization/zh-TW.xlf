@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MasonryShowCaseLangResourceKind">
+    <unit id="ApiEventLayoutChanged">
+      <segment>
+        <source>Raised when the effective column assignment of children changes, dispatched after the layout pass.</source>
+        <target state="translated">當子項有效列分配變化時觸發，延遲到佈局週期結束後派發。</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic usage. Set the number of columns with ColumnCount and the spacing with ColumnGap and RowGap.</source>
+        <target state="translated">基礎用法展示。透過 ColumnCount 設定列數，ColumnGap 和 RowGap 設定間距。</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">佈局</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="DynamicAddItemLabel">
+      <segment>
+        <source>Add Item</source>
+        <target state="translated">Add Item</target>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>Demonstrate dynamic item updates and explicit Masonry.Column assignments.</source>
+        <target state="translated">展示瀑布流子項的動態增刪和明確 Masonry.Column 欄位分配。</target>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">動態更新</target>
+      </segment>
+    </unit>
+    <unit id="ImageDescription">
+      <segment>
+        <source>With StableColumns, images update size and vertical positions as they load without moving existing items between columns.</source>
+        <target state="translated">在 StableColumns 策略下，圖片載入時會更新尺寸和縱向位置，但現有項目不會在欄之間移動。</target>
+      </segment>
+    </unit>
+    <unit id="ImageTitle">
+      <segment>
+        <source>Image</source>
+        <target state="translated">圖片</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Masonry uses stable column assignments by default and can opt into classic shortest-column reflow, with fixed or adaptive column counts and row/column gaps.</source>
+        <target state="translated">Masonry 預設保持已分配欄，也可選擇經典最短欄重排，並支援固定或自適應欄數以及行列間距。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Lay out children of unequal heights into stable or reflowing columns.</source>
+        <target state="translated">將不同高度的子項排列為穩定欄或動態重排欄。</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveDescription">
+      <segment>
+        <source>Use responsive values to adapt to different screen widths. ColumnInfo controls the column count at each breakpoint, and Gutter controls the spacing.</source>
+        <target state="translated">使用響應式參數來適配不同螢幕寬度。ColumnInfo 可以設定在不同斷點下的列數，Gutter 可以設定不同斷點下的間距大小。</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveTitle">
+      <segment>
+        <source>Responsive</source>
+        <target state="translated">響應式</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

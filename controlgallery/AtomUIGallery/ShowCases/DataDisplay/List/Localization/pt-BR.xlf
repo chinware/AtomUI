@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ListShowCaseLangResourceKind">
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">Básico uso exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">Uso básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="EmptyDescription">
+      <segment>
+        <source>show empty indicator when no data.</source>
+        <target state="translated">mostrar vazio indicator quando não dados.</target>
+      </segment>
+    </unit>
+    <unit id="EmptyTitle">
+      <segment>
+        <source>Empty</source>
+        <target state="translated">Vazio</target>
+      </segment>
+    </unit>
+    <unit id="FilterDescription">
+      <segment>
+        <source>You can filter the data based on criteria; here we've filtered for items containing 'a'.</source>
+        <target state="translated">You can filter the data based on criteria; here we've filtered for items containing 'a'.</target>
+      </segment>
+    </unit>
+    <unit id="FilterTitle">
+      <segment>
+        <source>Filter</source>
+        <target state="translated">Filter</target>
+      </segment>
+    </unit>
+    <unit id="GroupDescription">
+      <segment>
+        <source>You can group the data based on conditions.</source>
+        <target state="translated">Você pode grupo o dados based em conditions.</target>
+      </segment>
+    </unit>
+    <unit id="GroupTitle">
+      <segment>
+        <source>Group</source>
+        <target state="translated">Grupo</target>
+      </segment>
+    </unit>
+    <unit id="ItemDisabledDescription">
+      <segment>
+        <source>Disabled item.</source>
+        <target state="translated">Desativado item.</target>
+      </segment>
+    </unit>
+    <unit id="ItemDisabledTitle">
+      <segment>
+        <source>Item disabled</source>
+        <target state="translated">Item desativado</target>
+      </segment>
+    </unit>
+    <unit id="ListBoxEmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default ListBox empty content.</source>
+        <target state="translated">Usar EmptyIndicator para replace o padrão ListBox vazio conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="ListBoxEmptyIndicatorTitle">
+      <segment>
+        <source>ListBox custom empty indicator</source>
+        <target state="translated">ListBox personalizado vazio indicator</target>
+      </segment>
+    </unit>
+    <unit id="ListViewEmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default ListView empty content.</source>
+        <target state="translated">Usar EmptyIndicator para replace o padrão ListView vazio conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="ListViewEmptyIndicatorTitle">
+      <segment>
+        <source>ListView custom empty indicator</source>
+        <target state="translated">ListView personalizado vazio indicator</target>
+      </segment>
+    </unit>
+    <unit id="OrderedDescription">
+      <segment>
+        <source>We can sort according to specified attributes.</source>
+        <target state="translated">Nós pode sort according para specified attributes.</target>
+      </segment>
+    </unit>
+    <unit id="OrderedTitle">
+      <segment>
+        <source>Ordered</source>
+        <target state="translated">Ordered</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBeige">
+      <segment>
+        <source>Beige</source>
+        <target state="translated">Beige</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBlack">
+      <segment>
+        <source>Black</source>
+        <target state="translated">Black</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">Blue</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorBrown">
+      <segment>
+        <source>Brown</source>
+        <target state="translated">Brown</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorCyan">
+      <segment>
+        <source>Cyan</source>
+        <target state="translated">Cyan</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorGray">
+      <segment>
+        <source>Gray</source>
+        <target state="translated">Gray</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">Green</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorLavender">
+      <segment>
+        <source>Lavender</source>
+        <target state="translated">Lavender</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorMagenta">
+      <segment>
+        <source>Magenta</source>
+        <target state="translated">Magenta</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorMaroon">
+      <segment>
+        <source>Maroon</source>
+        <target state="translated">Maroon</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorNavy">
+      <segment>
+        <source>Navy</source>
+        <target state="translated">Navy</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorOlive">
+      <segment>
+        <source>Olive</source>
+        <target state="translated">Olive</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorOrange">
+      <segment>
+        <source>Orange</source>
+        <target state="translated">Orange</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorPink">
+      <segment>
+        <source>Pink</source>
+        <target state="translated">Pink</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorPurple">
+      <segment>
+        <source>Purple</source>
+        <target state="translated">Purple</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorRed">
+      <segment>
+        <source>Red</source>
+        <target state="translated">Red</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorTurquoise">
+      <segment>
+        <source>Turquoise</source>
+        <target state="translated">Turquoise</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorViolet">
+      <segment>
+        <source>Violet</source>
+        <target state="translated">Violet</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorWhite">
+      <segment>
+        <source>White</source>
+        <target state="translated">White</target>
+      </segment>
+    </unit>
+    <unit id="P2ColorYellow">
+      <segment>
+        <source>Yellow</source>
+        <target state="translated">Yellow</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddItem">
+      <segment>
+        <source>Add Item</source>
+        <target state="translated">Adicionar item</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAustralianWalksN100kmAfterOutbackCrash">
+      <segment>
+        <source>Australian walks 100km after outback crash.</source>
+        <target state="translated">Australian walks 100km depois outback crash.</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearSelection">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDynamicItem">
+      <segment>
+        <source>Dynamic item</source>
+        <target state="translated">Dinâmico item</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentJapanesePrincessToWedCommoner">
+      <segment>
+        <source>Japanese princess to wed commoner.</source>
+        <target state="translated">Japanese princess para wed commoner.</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLosAngelesBattlesHugeWildfires">
+      <segment>
+        <source>Los Angeles battles huge wildfires.</source>
+        <target state="translated">Los Angeles battles huge wildfires.</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentManChargedOverMissingWeddingGirl">
+      <segment>
+        <source>Man charged over missing wedding girl.</source>
+        <target state="translated">Man charged over missing wedding girl.</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMultiple">
+      <segment>
+        <source>Multiple</source>
+        <target state="translated">Múltiplos</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPaginationItemFormat">
+      <segment>
+        <source>Content {0}</source>
+        <target state="translated">Conteúdo {0}</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRacingCarSpraysBurningFuelIntoCrowd">
+      <segment>
+        <source>Racing car sprays burning fuel into crowd.</source>
+        <target state="translated">Racing car sprays burning fuel into crowd.</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRemoveItem">
+      <segment>
+        <source>Remove Item</source>
+        <target state="translated">Remover Item</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSelectColors">
+      <segment>
+        <source>Select Green / Yellow</source>
+        <target state="translated">Selecionar Green / Yellow</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSingle">
+      <segment>
+        <source>Single</source>
+        <target state="translated">Single</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggle">
+      <segment>
+        <source>Toggle</source>
+        <target state="translated">Toggle</target>
+      </segment>
+    </unit>
+    <unit id="P2FilterValue">
+      <segment>
+        <source>a</source>
+        <target state="translated">a</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupBasicColors">
+      <segment>
+        <source>Basic Colors</source>
+        <target state="translated">Básico Cores</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupNeutralColors">
+      <segment>
+        <source>Neutral Colors</source>
+        <target state="translated">Neutral Cores</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupSpecificShades">
+      <segment>
+        <source>Specific Shades</source>
+        <target state="translated">Specific Shades</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No items to display</source>
+        <target state="translated">Não itens para exibir</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNoSelection">
+      <segment>
+        <source>None</source>
+        <target state="translated">None</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedItems">
+      <segment>
+        <source>Selected:</source>
+        <target state="translated">Selecionado:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectionMode">
+      <segment>
+        <source>Selection Mode:</source>
+        <target state="translated">Seleção Modo:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>List presents repeated information in a compact vertical format. It supports ListView scenarios such as grouping, selection indicators, empty state, filtering, ordering, and pagination, plus simple ListBox usage.</source>
+        <target state="translated">Lista presents repeated informação em a compacto vertical format. Isso oferece suporte ListView scenarios such as grouping, seleção indicators, vazio estado, filtering, ordering, e paginação, plus simples ListBox uso.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display a collection of related items with selection, grouping, sorting, filtering, and paging.</source>
+        <target state="translated">Exibir a collection de related itens com seleção, grouping, sorting, filtering, e paging.</target>
+      </segment>
+    </unit>
+    <unit id="PaginationListDescription">
+      <segment>
+        <source>Pagination list.</source>
+        <target state="translated">Paginação lista.</target>
+      </segment>
+    </unit>
+    <unit id="PaginationListTitle">
+      <segment>
+        <source>Pagination list</source>
+        <target state="translated">Paginação lista</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">Avançado</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable List.</source>
+        <target state="translated">Searchable Lista.</target>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">Searchable</target>
+      </segment>
+    </unit>
+    <unit id="SelectedItemsBindingDescription">
+      <segment>
+        <source>SelectedItems can be bound without an explicit Mode=TwoWay; both user selection and collection mutations stay synchronized.</source>
+        <target state="translated">SelectedItems can be bound without an explicit Mode=TwoWay; both user selection and collection mutations stay synchronized.</target>
+      </segment>
+    </unit>
+    <unit id="SelectedItemsBindingTitle">
+      <segment>
+        <source>SelectedItems binding</source>
+        <target state="translated">SelectedItems vinculação</target>
+      </segment>
+    </unit>
+    <unit id="SelectionDescription">
+      <segment>
+        <source>You can set single selection, multiple selection or no selection.</source>
+        <target state="translated">Você pode definir single seleção, múltiplos seleção ou não seleção.</target>
+      </segment>
+    </unit>
+    <unit id="SelectionTitle">
+      <segment>
+        <source>Selection</source>
+        <target state="translated">Seleção</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">Básico uso exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxItemsSourceDescription">
+      <segment>
+        <source>Basic ItemsSource and template usage example.</source>
+        <target state="translated">Básico ItemsSource e template uso exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxItemsSourceTitle">
+      <segment>
+        <source>Simple listbox control</source>
+        <target state="translated">Simples listbox controle</target>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxTitle">
+      <segment>
+        <source>Simple listbox control</source>
+        <target state="translated">Simples listbox controle</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

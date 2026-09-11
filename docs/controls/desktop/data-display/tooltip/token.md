@@ -1,6 +1,6 @@
 # Tooltip Token 设计
 
-本文档定义 Tooltip 相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Tooltip 整体架构见 [Tooltip 桌面版架构设计](overview.md)，内部实现原理见 [Tooltip 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Tooltip Changelog](changelog.md)。
+本文档定义 Tooltip 相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Tooltip 整体架构见 [Tooltip 桌面版架构设计](overview.md)，内部实现原理见 [Tooltip 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Tooltip Changelog](changelog.md)。
 
 ## 1. 定位
 
@@ -31,6 +31,7 @@ Tooltip 的控件专项模型通过 Theme 消费 Token：
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
 - Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
+- `ToolTipMaxWidth` 约束弹层内容最大宽度；文本内容默认在该约束内换行（`TextWrapping.Wrap`），超出部分换行展示而不是被裁剪或截断。
 
 ## 4. 控件家族影响
 

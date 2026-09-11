@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Controls.AsyncLoad;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Input;
 using Avalonia;
@@ -494,6 +495,12 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
         AvaloniaProperty.Register<AbstractAutoComplete, FormValidateFeedback?>(nameof(FormFeedback));
+
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<AbstractAutoComplete>();
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractAutoComplete>();
     
     private double _itemHeight;
 
@@ -547,6 +554,18 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     {
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
     
     protected AvaloniaTextBox? TextInputBox
@@ -644,6 +663,8 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     private bool _skipSelectedOptionTextUpdate;
     private bool _isFocused;
     private IDisposable? _deactivationSubscription;
+    private IDisposable? _popupPinnedOpenBinding;
+    private int _popupLifecycleCloseDepth;
     static AbstractAutoComplete()
     {
         IsTabStopProperty.OverrideDefaultValue<AbstractAutoComplete>(false);
@@ -699,6 +720,12 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         else if (change.Property == PopupPlacementProperty)
         {
             ConfigurePopupMotion();
+        }
+        else if (change.Property == IsPopupPinnedOpenProperty &&
+                 change.GetNewValue<bool>() &&
+                 !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
         }
     }
 
@@ -1177,6 +1204,20 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         bool oldValue = (bool)e.OldValue!;
         bool newValue = (bool)e.NewValue!;
 
+        if (!newValue && _popupLifecycleCloseDepth > 0)
+        {
+            UpdatePseudoClasses();
+            return;
+        }
+
+        if (!newValue && IsPopupPinnedOpen)
+        {
+            _ignorePropertyChange = true;
+            SetCurrentValue(IsDropDownOpenProperty, oldValue);
+            UpdatePseudoClasses();
+            return;
+        }
+
         if (newValue)
         {
             HandleValueUpdated(Value, true);
@@ -1300,6 +1341,8 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         
         if (_popup != null)
         {
+            _popupPinnedOpenBinding?.Dispose();
+            _popupPinnedOpenBinding = null;
             _popup.Opened -= HandlePopupOpened;
             _popup.Closed -= HandlePopupClosed;
         }
@@ -1310,6 +1353,11 @@ public abstract class AbstractAutoComplete : TemplatedControl,
 
         if (_popup != null)
         {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _popup,
+                Popup.IsPopupPinnedOpenProperty);
             _popup.Opened              += HandlePopupOpened;
             _popup.Closed              += HandlePopupClosed;
             _popup.OverlayInputPassThroughElement = TextInputBox;
@@ -1329,10 +1377,25 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         base.OnAttachedToVisualTree(e);
         _deactivationSubscription =
             TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
+        if (IsPopupPinnedOpen && !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _popupLifecycleCloseDepth++;
+        try
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            _popup?.CloseForLifecycle();
+        }
+        finally
+        {
+            _popupLifecycleCloseDepth--;
+        }
+
         base.OnDetachedFromVisualTree(e);
         _deactivationSubscription?.Dispose();
         _deactivationSubscription = null;
@@ -1747,17 +1810,9 @@ public abstract class AbstractAutoComplete : TemplatedControl,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
-        }
-        else
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
     

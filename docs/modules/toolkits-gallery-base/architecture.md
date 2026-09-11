@@ -1,8 +1,19 @@
 # AtomUI.Toolkits.GalleryBase 设计文档
 
-`AtomUI.Toolkits.GalleryBase` 的目标是把当前 `AtomUIGallery` 中可复用的 Gallery 应用底层抽象成产品中立的工具库。未来任何基于 AtomUI/Avalonia 的产品需要构建 Demo、文档、示例展示或控件预览应用时，都应复用 GalleryBase，而不是复制 `AtomUIGallery` 的 Workspace、导航、Browser Shell 和 ShowCase 控件。
+`AtomUI.Toolkits.GalleryBase` 的目标是把当前 `AtomUIGallery` 中可复用的 Desktop/Browser Gallery 应用底层抽象成
+产品中立的工具库。接受当前 Desktop/Browser 依赖边界的 AtomUI/Avalonia 产品应优先复用 GalleryBase，而不是复制
+`AtomUIGallery` 的 Workspace、导航、Browser Shell 和 ShowCase 控件。
 
 GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 UI 技术中立，而是产品中立：库内不出现具体产品页面、品牌资产、示例注册和业务文案。
+
+## 当前平台边界
+
+`AtomUI.Toolkits.GalleryBase.csproj` 当前直接引用 `AtomUI.Desktop.Controls`。因此它的产品内容和品牌契约可以保持中立，
+但源码依赖、Shell 控件和主题资产仍是 Desktop/Browser-bound；不能把当前包描述为 Mobile 可直接复用的跨平台 Foundation。
+
+Mobile Gallery Foundation 不依赖 GalleryBase，而是建立独立最小 Mobile Shell。后续只有在 Mobile 与 Desktop/Browser Gallery
+出现真实、稳定、无 Desktop Control 语义的重复后，才通过单独批准设计提取共享 contracts；提取前不移动现有 API，也不让
+Mobile 先依赖 Desktop 再通过构建过滤补偿。目标边界见 [Mobile Gallery](../../gallery/platforms/mobile-gallery.md)。
 
 本文档只描述总架构和边界。各部分的详细设计分布在以下专题文档：
 
@@ -14,13 +25,12 @@ GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 U
 | [showcase-controls.md](showcase-controls.md) | ShowCase 控件、延迟创建、sticky host、场景 lazy controller |
 | [source-code-display.md](source-code-display.md) | ShowCase 源码展示、Drawer 查看器、源码片段 Provider、生成器边界 |
 | [theming-localization.md](theming-localization.md) | XAML namespace、Control Token、主题注册、Shell 本地化边界 |
-| [migration-and-testing.md](migration-and-testing.md) | 迁移阶段、测试拆分、验证命令、回滚策略 |
 
 ## 设计目标
 
-- 多产品复用：同一套 Gallery Shell 能承载 AtomUI、AtomIdea 和后续产品的 Gallery。
+- 多产品复用：同一套 Desktop/Browser Gallery Shell 能承载 AtomUI、AtomIdea 和接受当前依赖边界的后续产品。
 - 显式注册：产品侧通过配置注册品牌、导航、路由和页面工厂，避免反射扫描带来的 AOT、裁剪和 Browser 体积风险。
-- 平台共用：Desktop 与 Browser 宿主共享同一套 Gallery 配置和导航路由模型。
+- 平台共用：Desktop 与 Browser 宿主共享同一套 Gallery 配置和导航路由模型；Mobile 不在当前复用范围内。
 - 保留 AtomUI 体验：默认 UI 使用 AtomUI 控件、Token、主题、图标和语言系统。
 - 渐进迁移：先抽离可复用底层，再让现有 `AtomUIGallery` 作为第一个消费方迁入，避免一次性重写所有 ShowCase 页面。
 
@@ -245,6 +255,7 @@ GalleryBase 提供两个宿主：
 |---|---|
 | `GalleryShellView` | Desktop 与 Browser 共用的侧边栏、footer 和内容路由布局 |
 | `GalleryBrowserShellView` | Browser 单页面基础视图，继承 `UserControl` 并实现 `IScreen`、`IMediaBreakAwareControl` |
+| `IGallerySidebarNavMenuHost` | 产品导航视图显式暴露根 `NavMenu` 和可选品牌区 Header Action，使共享 Shell 可以跟随 NavMenu 的有效折叠宽度并摆放产品操作，而不遍历产品视图内部结构 |
 
 两者共享：
 
@@ -294,8 +305,8 @@ GalleryBase 维护自己的 Control Token：
 主题注册入口：
 
 ```csharp
-public static IThemeManagerBuilder UseGalleryBase(
-    this IThemeManagerBuilder builder,
+public static IAtomUIBuilder UseGalleryBase(
+    this IAtomUIBuilder builder,
     Action<GalleryBaseOptions>? configure = null);
 ```
 
@@ -303,13 +314,13 @@ public static IThemeManagerBuilder UseGalleryBase(
 
 - 一次注册 GalleryBase 生成的 Control descriptor、可选 Own Token schema 和强类型 Token 资源扩展。
 - 注册从 `Themes/**/*.axaml` 生成的 ControlTheme asset owner/reference manifest 和平台主题 Provider。
-- 注册 GalleryBase Shell 语言 Provider。
+- 注册 GalleryBase 生成的 Catalog、内置 XLIFF 和语言模块入口。
 - 保存或合并 `GalleryBaseOptions`，供 Shell 构造时读取。
 
 GalleryBase 不维护逐 Control/逐 Theme 注册代码、聚合 AXAML、手工 manifest 或 Token identity。没有 Own Token 的
 public 可主题化 Control 仍由生成器提供独立 identity 和 descriptor。
 
-具体产品自己的语言 Provider 和主题仍由产品项目注册。
+具体产品自己的 Catalog、XLIFF 和主题仍由产品项目通过各自生成的模块入口注册。
 
 ## 本地化边界
 
@@ -332,7 +343,8 @@ GalleryBase 只提供 Shell 级语言资源：
 - 控件 API 文档说明
 - Design Token 文档说明
 
-语言切换由 AtomUI `ThemeManager.LanguageVariant` 驱动。GalleryBase 只负责响应语言变更并刷新 Shell 文案；产品页面继续使用自己的语言资源扩展和绑定策略。
+语言切换由 AtomUI `ILanguageManager` 驱动。GalleryBase 只负责响应 `LanguageChanged` 并刷新 Shell 文案；产品页面
+继续使用各自 Catalog 生成的语言资源扩展和 `ILocalizer`，不再依赖 ThemeManager 的语言状态。
 
 ## Browser 与 AOT 约束
 

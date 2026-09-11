@@ -1,15 +1,17 @@
 # NavMenu Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.NavMenuToken` 的 NavMenu 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。NavMenu 整体架构见 [NavMenu 桌面版架构设计](overview.md)，内部实现原理见 [NavMenu 桌面版实现原理](implementation.md)，设计和契约变化记录见 [NavMenu Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.NavMenuToken` 的 NavMenu 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。NavMenu 整体架构见 [NavMenu 桌面版架构设计](overview.md)，内部实现原理见 [NavMenu 桌面版实现原理](implementation.md)，设计和契约变化记录见 [NavMenu Changelog](changelog.md)。
 
 ## 1. 定位
 
-NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体和 popup 体系转换为 NavMenu 可消费的语义值。
+NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体、动效和 popup 体系转换为 NavMenu 可消费的语义值。
 
 NavMenuToken 服务以下主题：
 
 - `NavMenuTheme.axaml`
 - `NavMenuItemTheme.axaml`
+- `NavMenuGroupItemTheme.axaml`
+- `NavMenuDividerItemTheme.axaml`
 - `BaseNavMenuItemHeaderTheme.axaml`
 - `HorizontalNavMenuItemHeaderTheme.axaml`
 - `VerticalNavMenuItemHeaderTheme.axaml`
@@ -42,9 +44,9 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 - `GroupTitleLineHeight`
 - `GroupTitleFontSize`
 
-用于菜单项前景、快捷键、分组标题和 horizontal 顶层文字状态。`ItemSelectedColor` 同时服务 selected leaf 和 selected path ancestor 的前景语义。
+用于菜单项前景、快捷键、分组标题和 horizontal 顶层文字状态。`GroupTitleColor`、`GroupTitleLineHeight`、`GroupTitleFontSize` 只服务 `NavMenuGroupItem` 的非交互标题，不应复用菜单项 selected、hover 或 disabled 状态。`ItemSelectedColor` 同时服务 selected leaf 和 selected path ancestor 的前景语义。
 
-### 2.3 菜单项背景 Token
+### 2.3 菜单项背景与动效 Token
 
 - `ItemHoverBg`
 - `ItemActiveBg`
@@ -52,8 +54,9 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 - `SubMenuItemBg`
 - `HorizontalItemHoverBg`
 - `HorizontalItemSelectedBg`
+- `ItemBackgroundMotionEasing`
 
-用于 header hover、active、selected 以及 inline submenu 背景块。`SubMenuItemBg` 只应用于 inline child frame，不应被用作 root menu 背景。
+用于 header hover、active、selected、背景状态过渡以及 inline submenu 背景块。`SubMenuItemBg` 只应用于 inline child frame，不应被用作 root menu 背景。`ItemBackgroundMotionEasing` 是所有 NavMenu item header 背景 transition 的统一缓动入口，默认值为 CSS `ease` 等价曲线 `0.25,0.1,0.25,1`；Base、Inline、Horizontal 主题必须通过 `NavMenuTokenResource` 消费它，不在 AXAML 中复制曲线常量。
 
 ### 2.4 尺寸、圆角与间距 Token
 
@@ -76,6 +79,8 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 
 `CollapsedWidth` 是既有折叠宽度 token，保留兼容，不删除、不重命名。新的 inline collapsed 设计、文档和实现应优先使用 `InlineCollapsedWidth` 表达内联折叠菜单宽度，避免把旧 token 继续扩展为多语义 token。
 
+`NavMenu.ItemSpacing` 是实例级布局输入。默认主题按 mode 将 `VerticalItemsPanelSpacing` 投影到 Inline/Vertical 根层，并通过内部 `EntryItemSpacing` 投影到 popup、submenu 和分组的默认 ItemsPanel；Horizontal 根层公开值默认使用 `0`，但其后代默认值仍来自 `VerticalItemsPanelSpacing`。调用方显式设置 `ItemSpacing` 时，包括显式设置为 `0`，该值同时覆盖根与后代默认 ItemsPanel，并作为相邻 entry 容器之间的额外间距叠加在 item 自身 margin 之外；它不改写任何 Token，也不要求自定义 ItemsPanel 消费该属性。
+
 ### 2.5 Icon 与箭头 Token
 
 - `ItemIconSize`
@@ -87,7 +92,7 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 
 用于菜单项图标、horizontal 顶层图标间距、箭头尺寸和 inline 缩进。`InlineItemIndentUnit` 默认来自 `ItemHeight / 2`，使层级缩进与菜单项高度保持比例关系。
 
-`CollapsedIconSize` 继续作为 inline collapsed 顶层图标尺寸 token。它只控制图标尺寸，不控制折叠宽度；折叠宽度由 `InlineCollapsedWidth` 或控件本地属性值决定。
+`CollapsedIconSize` 继续作为 inline collapsed 顶层图标尺寸 token，默认映射全局 `IconSizeLG`，比普通菜单项使用的 `ItemIconSize=IconSize` 大一档。它只控制图标尺寸，不控制折叠宽度；折叠宽度由 `InlineCollapsedWidth` 或控件本地属性值决定。
 
 ### 2.6 Popup Token
 
@@ -100,6 +105,8 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 - `TopLevelItemPopupMarginToAnchor`
 
 用于 `Vertical` / `Horizontal` 弹出式子菜单。Popup 视觉不能直接使用 shared elevated background 绕过组件 token，因为 NavMenu popup 背景和 root/background/dark style 是稳定主题契约。
+
+`MenuPopupMaxHeight` 的默认值为 `ItemHeight * 8`。短菜单按内容自然高度测量；长菜单由 popup 内部滚动容器承载，避免弹出层随条目数量无限增长。主题可以覆盖该 token 调整可见范围，但不应通过改变 `ItemHeight` 间接控制 popup 容量。
 
 ### 2.7 Horizontal 导航 Token
 
@@ -152,6 +159,8 @@ VerticalMenuContentPadding = 0, marginXXS, 0, 0
 
 相邻 item 的垂直间距由 item header 的 bottom margin 表达，不通过 StackPanel spacing 叠加。
 
+上述规则描述主题默认值：`VerticalItemsPanelSpacing=0`，因此默认视觉仍只由 item block margin 决定。开发者显式设置 `NavMenu.ItemSpacing` 时，新增的 panel spacing 是受控实例定制，不应被折算进 `ItemContentMargin` 或写回 Token。
+
 inline 子菜单第一项与父 header 之间不增加额外顶部 margin。inline 子菜单背景块与下一个根项之间的背景模式 gap 由 `VerticalChildItemsMargin` 表达，并且只在 `IsItemBackgroundEnabled=true` 时由主题 selector 应用。
 
 ### 3.2 Root、Popup、Header 与 Inline 背景分离
@@ -180,12 +189,28 @@ inline 子菜单第一项与父 header 之间不增加额外顶部 margin。inli
 
 Horizontal light style 的顶层选中主要由 `PART_ActiveIndicator` 表达，背景保持透明。Dark style 顶层选中可以使用 `DarkItemSelectedBg`。
 
+所有 item header 的背景状态切换共用 `ItemBackgroundMotionEasing`。该 Token 只定义缓动曲线；过渡时长继续使用有效的全局 `MotionDurationSlow`，全局关闭 motion 时由主题编译器把标准 duration 归零。
+
+### 3.4 Group 与 Divider
+
+分组标题按语义使用：
+
+| 场景 | Token |
+| --- | --- |
+| Light group title | `GroupTitleColor`、`GroupTitleFontSize`、`GroupTitleLineHeight` |
+| Dark group title | `DarkGroupTitleColor`、`GroupTitleFontSize`、`GroupTitleLineHeight` |
+| Group entry spacing | 内部 `EntryItemSpacing` 的当前 effective value；默认由 `VerticalItemsPanelSpacing` 映射，显式 `NavMenu.ItemSpacing` 可以覆盖 |
+
+根层 inline collapsed 和 Horizontal 根层隐藏分组标题，但不改变 title token 的含义；popup 或非根语义层级恢复正常标题视觉。Divider 的线宽和颜色使用 shared `LineWidth` / `ColorSplit` 语义，不新增 NavMenu 专属 divider token。Divider orientation 由 mode 和 semantic top-level 状态决定，不进入 Token。
+
 ## 4. 控件家族影响
 
 NavMenuToken 当前服务 NavMenu 及其 internal container/header 体系：
 
 - `NavMenu`
 - `NavMenuItem`
+- `NavMenuGroupItem`
+- `NavMenuDividerItem`
 - `HorizontalNavMenuItemHeader`
 - `VerticalNavMenuItemHeader`
 - `InlineNavMenuItemHeader`
@@ -205,8 +230,11 @@ Token 变更要求：
 - 不改变既有 Token 的语义含义。
 - 不把实例状态迁移到 Token。
 - 不把 root、popup、header、inline submenu block 背景合并为同一职责。
+- 不在 Base、Inline 或 Horizontal header 主题中直接构造背景 easing；统一使用 `ItemBackgroundMotionEasing`。
 - 不让 `VerticalChildItemsMargin` 在 `IsItemBackgroundEnabled=false` 时影响布局。
 - 不把 参考 block margin 映射改为 StackPanel spacing 叠加。
+- `VerticalItemsPanelSpacing` 的主题默认值保持 `0`；显式 `NavMenu.ItemSpacing` 可以增加实例级 panel spacing，但不能反向改写 `ItemContentMargin` 或 Token。
+- `GroupTitleColor`、`DarkGroupTitleColor`、`GroupTitleLineHeight`、`GroupTitleFontSize` 保持非交互分组标题语义，不参与节点选择、hover 或命令状态。
 - 不把 `InlineCollapsedWidth` 写成实例状态；`IsInlineCollapsed` 是状态，`InlineCollapsedWidth` / `NavMenuToken.InlineCollapsedWidth` 是布局输入。
 - 不删除或重命名 `CollapsedWidth`；它是既有兼容 token，新的 inline collapsed 宽度语义使用 `InlineCollapsedWidth`。
 - 需要破坏性变更时，必须先说明影响范围并获得授权。
@@ -217,7 +245,10 @@ Token 变更要求：
 | --- | --- |
 | 新增 NavMenuToken | 检查生成的 `NavMenuTokenKind`、AXAML 引用和默认值计算。 |
 | 修改颜色 Token | 覆盖 light / dark root、popup、inline child、header hover、selected path。 |
+| 修改背景动效 Token | 覆盖默认曲线、Control Token override、Base/Inline/Horizontal header 消费和 motion disabled。 |
 | 修改间距 Token | 运行 `NavMenuLayoutTests`，覆盖 root inset、inline child gap、popup inset 和 `IsItemBackgroundEnabled` true/false。 |
+| 修改分组标题 Token | 覆盖 light/dark、root、nested、popup、Horizontal root 和 inline collapsed 标题可见性及排版。 |
+| 修改 `VerticalItemsPanelSpacing` 映射 | 覆盖 root、submenu、group 的默认 spacing，并验证显式 `NavMenu.ItemSpacing` 覆盖和纯默认视觉不变。 |
 | 修改 inline collapsed 宽度 Token | 覆盖 `InlineCollapsedWidth` 默认值、本地属性覆盖、`Mode=Inline && IsInlineCollapsed=true` 生效和 `Vertical` / `Horizontal` 不受影响。 |
 | 修改 popup Token | 覆盖 vertical/horizontal popup 背景、尺寸、padding 和 overlay popup 行为。 |
 | 修改 horizontal Token | 覆盖 active indicator、top-level margin、line height 和 dark selected background。 |

@@ -1,0 +1,39 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum ImagePreviewerShowCaseLangResourceKind
+{
+    ScenarioExamples,
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    BasicUsageTitle,
+    BasicUsageDescription,
+    RemoteImageLoadingTitle,
+    RemoteImageLoadingDescription,
+    FaultTolerantTitle,
+    FaultTolerantDescription,
+    TwentyRemoteImagesTitle,
+    TwentyRemoteImagesDescription,
+    PreviewFromOneImageTitle,
+    PreviewFromOneImageDescription,
+    CustomPreviewImageTitle,
+    CustomPreviewImageDescription,
+    RapidSwitchTitle,
+    RapidSwitchDescription,
+    RapidSwitchModeImmediate,
+    RapidSwitchModeWaitForLoaded,
+    RapidSwitchStart,
+    RapidSwitchStop,
+    SamePathReplacementTitle,
+    SamePathReplacementDescription,
+    SamePathReplacementAction,
+    MultipleImagePreviewTitle,
+    MultipleImagePreviewDescription,
+    ApiEventDialogOpened,
+    ApiEventDialogClosing,
+    ApiEventDialogClosed
+}

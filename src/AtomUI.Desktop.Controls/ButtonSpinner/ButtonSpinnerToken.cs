@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ButtonSpinnerToken : AbstractControlDesignToken
+internal sealed class ButtonSpinnerToken : AbstractControlDesignToken
 {
     
     public ButtonSpinnerToken()

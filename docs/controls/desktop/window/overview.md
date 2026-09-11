@@ -10,5 +10,6 @@
 - [Window Changelog](window/changelog.md)
 - [WindowTitleBar 桌面版架构设计](window-title-bar/overview.md)
 - [WindowTitleBar 桌面版实现原理](window-title-bar/implementation.md)
+- [WindowTitleBar Caption Button 配置设计](window-title-bar/caption-button-configuration-design.md)
 - [WindowTitleBar Token 设计](window-title-bar/token.md)
 - [WindowTitleBar Changelog](window-title-bar/changelog.md)

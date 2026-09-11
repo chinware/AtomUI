@@ -1,0 +1,51 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog]
+public enum TimePickerShowCaseLangResourceKind
+{
+    BasicTitle,
+    BasicDescription,
+    BindingTitle,
+    BindingDescription,
+    PickerDisplayTimeTitle,
+    PickerDisplayTimeDescription,
+    HourFormatsTitle,
+    HourFormatsDescription,
+    ThreeSizesTitle,
+    ThreeSizesDescription,
+    DisabledTitle,
+    DisabledDescription,
+    IntervalOptionTitle,
+    IntervalOptionDescription,
+    TwelveHoursTitle,
+    TwelveHoursDescription,
+    VariantsTitle,
+    VariantsDescription,
+    StatusTitle,
+    StatusDescription,
+    TimeRangePickerTitle,
+    TimeRangePickerDescription,
+    P2PlaceholderTextSelectTime,
+    P2PlaceholderTextOutline,
+    P2PlaceholderTextFilled,
+    P2PlaceholderTextBorderless,
+    P2PlaceholderTextStartTime,
+    P2SecondaryPlaceholderTextEndTime,
+    P2TextExpandDirection,
+    P2ContentLarge,
+    P2ContentDefault,
+    P2ContentSmall,
+    P2ContentCustom,
+    P2TextSelectedTime,
+    P2TextSelectedTimeRange,
+    P2ContentSetNoon,
+    P2ContentSetWorkHours,
+    P2ContentClear,
+    PageSubtitle,
+    PageDescription,
+    ComponentCategory,
+    ComponentStatusStable,
+    ScenarioExamples
+}

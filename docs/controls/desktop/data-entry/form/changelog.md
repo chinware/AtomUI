@@ -3,6 +3,12 @@
 本文档记录 Form 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-23
+
+- Architecture
+  - Define Form as the bridge that writes Form-owned native errors to `DataValidationErrors` and relays warning/success/validating through `FormStatus`.
+  - Align size, variant, feedback and validation propagation with the shared input-control architecture.
+
 ## 2026-06-26
 
 - Docs

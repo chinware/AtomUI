@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <TargetFramework>$(AtomUIDevelopTargetFramework)</TargetFramework>
         <OutputType>Exe</OutputType>
         <RootNamespace>AtomUI.GalleryPerformance</RootNamespace>
         <AssemblyName>AtomUI.GalleryPerformance</AssemblyName>

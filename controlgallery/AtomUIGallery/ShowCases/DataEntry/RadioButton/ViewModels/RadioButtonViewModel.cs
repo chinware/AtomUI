@@ -141,8 +141,9 @@ public class RadioButtonViewModel : ReactiveObject, IRoutableViewModel
             selectedText = option.Content.ToString() ?? selectedText;
         }
 
-        TwoWayCheckedSummary = string.Format(CultureInfo.CurrentCulture,
-            RadioButtonShowCaseLanguage.Get(RadioButtonShowCaseLangResourceKind.P2CheckedItemSummaryFormat, "Selected: {0}"),
+        TwoWayCheckedSummary = RadioButtonShowCaseLanguage.Format(
+            RadioButtonShowCaseLangResourceKind.P2CheckedItemSummaryFormat,
+            "Selected: {0}",
             selectedText);
     }
 

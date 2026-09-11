@@ -1,12 +1,13 @@
 ﻿using AtomUI.Media;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
+using Avalonia.Animation.Easings;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class NavMenuToken : AbstractControlDesignToken
+internal sealed class NavMenuToken : AbstractControlDesignToken
 {
 
     /// <summary>
@@ -143,7 +144,12 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// 菜单项选中态背景色
     /// </summary>
     public Color ItemSelectedBg { get; set; }
-    
+
+    /// <summary>
+    /// 菜单项背景过渡统一缓动曲线
+    /// </summary>
+    public Easing? ItemBackgroundMotionEasing { get; set; }
+
     /// <summary>
     /// 图标尺寸
     /// </summary>
@@ -389,6 +395,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         ItemActiveBg                = EffectiveGlobalToken.ColorFillContent;
         SubMenuItemBg               = EffectiveGlobalToken.ColorFillAlter;
         ItemSelectedBg              = EffectiveGlobalToken.ControlItemBgActive;
+        ItemBackgroundMotionEasing  = Easing.Parse("0.25,0.1,0.25,1");
         HorizontalItemSelectedBg    = Colors.Transparent;
         ActiveBarScaleX              = activeBarWidth;
         ActiveBarHeight             = activeBarHeight;
@@ -413,7 +420,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         CollapsedWidth       = EffectiveGlobalToken.ControlHeight * 2;
         InlineCollapsedWidth = 48d;
         IconMargin           = new Thickness(0, 0, EffectiveGlobalToken.ControlHeightSM - EffectiveGlobalToken.FontSize, 0);
-        CollapsedIconSize    = EffectiveGlobalToken.FontSizeLG;
+        CollapsedIconSize    = EffectiveGlobalToken.IconSizeLG;
         GroupTitleFontSize   = EffectiveGlobalToken.FontSize;
         
         // Disabled
@@ -453,7 +460,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         MenuPopupMinWidth               = 160d;
         MenuPopupMaxWidth               = 800d;
-        MenuPopupMaxHeight              = ItemHeight * 30;
+        MenuPopupMaxHeight              = ItemHeight * 8;
         TopLevelItemPopupMarginToAnchor = EffectiveGlobalToken.UniformlyMarginXS;
         
         MenuPopupBg               = EffectiveGlobalToken.ColorBgElevated;

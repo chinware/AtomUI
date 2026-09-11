@@ -376,6 +376,40 @@
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem
+        Title="{gallery:MenuShowCaseLangResource AccordionMenuTitle}"
+        Description="{gallery:MenuShowCaseLangResource AccordionMenuDescription}"
+        SourceKey="nav-menu-accordion"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:MenuViewModel">
+        <atom:NavMenu Mode="Inline" IsAccordionMode="True" Width="300" Margin="0, 0, 0, 20">
+            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}"
+                              Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                </atom:NavMenuNode>
+            </atom:NavMenuNode>
+            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}"
+                              Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" />
+                </atom:NavMenuNode>
+            </atom:NavMenuNode>
+            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}"
+                              Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN5}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN6}" />
+                </atom:NavMenuNode>
+            </atom:NavMenuNode>
+        </atom:NavMenu>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
         Title="{gallery:MenuShowCaseLangResource NavMenuNodeCommandTitle}"
         Description="{gallery:MenuShowCaseLangResource NavMenuNodeCommandDescription}"
         BadgeText="v6.1.0"
@@ -448,11 +482,18 @@
                           DefaultOpenPaths="{Binding InlineCollapsedOpenPaths}"
                           DefaultSelectedPath="{Binding InlineCollapsedSelectedPath}">
                 <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}"
+                                  Tooltip="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}"
                                   Icon="{antdicons:AntDesignIconProvider Kind=PieChartOutlined}"
                                   ItemKey="Option1" />
                 <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}"
                                   Icon="{antdicons:AntDesignIconProvider Kind=DesktopOutlined}"
-                                  ItemKey="Option2" />
+                                  ItemKey="Option2">
+                    <atom:NavMenuNode.Tooltip>
+                        <atom:ToolTip atom:ToolTip.Placement="Bottom"
+                                      atom:ToolTip.PresetColor="GeekBlue"
+                                      Content="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                    </atom:NavMenuNode.Tooltip>
+                </atom:NavMenuNode>
                 <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}"
                                   Icon="{antdicons:AntDesignIconProvider Kind=ContainerOutlined}"
                                   ItemKey="Option3" />
@@ -591,6 +632,73 @@
             </atom:NavMenuNode>
             <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}" ItemKey="4" />
         </atom:NavMenu>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:MenuShowCaseLangResource NavMenuCompositionTitle}"
+        Description="{gallery:MenuShowCaseLangResource NavMenuCompositionDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:MenuViewModel">
+                <atom:NavMenu Mode="Inline"
+                              Width="320"
+                              ItemSpacing="4"
+                              IsInlineCollapsed="{Binding IsStructuredNavMenuCollapsed}">
+                    <atom:NavMenu.Header>
+                        <Grid Margin="8"
+                              ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0"
+                                        IsVisible="{Binding IsStructuredNavMenuCollapsed, Converter={x:Static BoolConverters.Not}}"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                <atom:IconPresenter Icon="{antdicons:AntDesignIconProvider Kind=ProductOutlined}" />
+                                <atom:TextBlock VerticalAlignment="Center"
+                                                FontWeight="SemiBold"
+                                                Text="{gallery:MenuShowCaseLangResource P2HeaderWorkspaceNavigation}" />
+                            </StackPanel>
+                            <atom:Button Grid.Column="1"
+                                         ButtonType="Primary"
+                                         Icon="{antdicons:AntDesignIconProvider Kind=MenuFoldOutlined}"
+                                         Click="HandleToggleStructuredNavMenuCollapsedClick" />
+                        </Grid>
+                    </atom:NavMenu.Header>
+
+                    <atom:NavMenuGroup Header="{gallery:MenuShowCaseLangResource P2HeaderWorkspaceGroup}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderDashboard}"
+                                          Icon="{antdicons:AntDesignIconProvider Kind=DashboardOutlined}" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderProjects}"
+                                          Icon="{antdicons:AntDesignIconProvider Kind=ProjectOutlined}" />
+                    </atom:NavMenuGroup>
+
+                    <atom:NavMenuDivider />
+
+                    <atom:NavMenuGroup Header="{gallery:MenuShowCaseLangResource P2HeaderAccountGroup}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderAccountSettings}"
+                                          Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                            <atom:NavMenuNode.Entries>
+                                <atom:NavMenuGroup Header="{gallery:MenuShowCaseLangResource P2HeaderManagementGroup}">
+                                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderTeamMembers}" />
+                                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderPermissions}" />
+                                </atom:NavMenuGroup>
+
+                                <atom:NavMenuDivider />
+
+                                <atom:NavMenuGroup Header="{gallery:MenuShowCaseLangResource P2HeaderPersonalGroup}">
+                                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderProfile}" />
+                                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderSecurity}" />
+                                </atom:NavMenuGroup>
+                            </atom:NavMenuNode.Entries>
+                        </atom:NavMenuNode>
+                    </atom:NavMenuGroup>
+
+                    <atom:NavMenu.Footer>
+                        <atom:TextBlock Margin="12,12,12,8"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                        Text="{gallery:MenuShowCaseLangResource P2TextCurrentWorkspace}" />
+                    </atom:NavMenu.Footer>
+                </atom:NavMenu>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>

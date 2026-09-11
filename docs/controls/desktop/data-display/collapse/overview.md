@@ -1,6 +1,6 @@
 # Collapse 桌面版架构设计
 
-本文档定义 `Collapse` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Collapse 桌面版实现原理](implementation.md)，Collapse Token 的专项设计见 [Collapse Token 设计](token.md)，设计和契约变化记录见 [Collapse Changelog](changelog.md)。
+本文档定义 `Collapse` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Collapse 桌面版实现原理](implementation.md)，Collapse Token 的专项设计见 [Collapse Token 设计](token.md)，设计和契约变化记录见 [Collapse Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -92,6 +92,12 @@ Public API / inherited command / item source / user input
 - 内容可见性、箭头方向和动效目标只从 `IsSelected` 派生；模板节点之间不得双向同步展开状态。
 - 模板重套用、items reset/replace/clear 和模式切换后必须保持 selection model、容器与内容视觉一致。
 
+普通模式与手风琴模式使用 Core 共用内容展开机制：
+内容按正常尺寸排版，通过高度和透明度呈现收放，反转从当前帧接续。手风琴在 selection 提交时同步产生旧项收起和
+新项展开目标，两项使用同一进度交换空间，互斥不依赖动画完成事件。关闭动效及模板生命周期边界直接投影当前状态，
+释放仅限该机制拥有的动画和内部布局控制，保留自定义尺寸与变换。
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
+
 ## 5. 视觉与主题模型
 
 Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
@@ -155,7 +161,13 @@ Collapse 的展开状态由 Avalonia selection model 单独拥有。普通模式
 
 ### 8.2 动效模型
 
-Collapse 的动效只处理 content 的布局展开、裁剪、透明度和最终可见性，不改变 selection 或边框语义。初始加载、禁用态、快速反向切换、template reapply 和卸载路径必须取消旧动效并收敛到最新 `IsSelected`。
+Collapse 的动效只处理 content 的布局展开、裁剪、透明度和最终可见性，不改变 selection 或边框语义。
+其共享契约以完整内容高度为展开目标，以零为收起目标；内容 frame 的 padding 和顶边线一起参与裁剪，item shell
+底线和标题不进入内容动画。等高手风琴内容保持总占位稳定，不等高内容在两个稳定高度之间连续变化。
+
+初始加载、关闭动效、template reapply 和卸载直接按最新 `IsSelected` 收敛；播放中的反向请求先保存当前呈现值，
+再取消旧请求并接续插值。公共机制不保存 active-key 或第二份展开集合。完整算法和首尾帧约束见
+[内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)。
 
 ### 8.3 分隔线模型
 
@@ -170,6 +182,7 @@ Collapse 的视觉选项通过 public API 归一为 theme variables、伪类或�
 关联文档：
 
 - [Collapse 桌面版实现原理](implementation.md)
+- [内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)
 - [Collapse Token 设计](token.md)
 - [Collapse Changelog](changelog.md)
 
@@ -201,6 +214,7 @@ LLMS 导出来源：
 | 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
 | 状态模型 | 覆盖 selection/checked/active、motion、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
+| 内容动效设计 | 逐帧验证等高/不等高手风琴、首尾时钟边界、快速反转、嵌套尺寸变化、固定分隔线和原有滚动/命中约束。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

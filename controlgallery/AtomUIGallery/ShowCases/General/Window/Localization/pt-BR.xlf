@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WindowShowCaseLangResourceKind">
+    <unit id="AddOnDescription">
+      <segment>
+        <source>Place application-owned buttons in the title bar LeftAddOn/RightAddOn areas using WindowTitleBarButton and WindowTitleBarToggleButton.</source>
+        <target state="translated">Coloque botões do aplicativo nas áreas LeftAddOn/RightAddOn da barra de título usando WindowTitleBarButton e WindowTitleBarToggleButton.</target>
+      </segment>
+    </unit>
+    <unit id="AddOnHint">
+      <segment>
+        <source>The left add-on hosts a menu button and a pin toggle; the right add-on hosts search and settings buttons.</source>
+        <target state="translated">O complemento esquerdo tem um botão de menu e um alternador de pino; o direito tem botões de busca e configurações.</target>
+      </segment>
+    </unit>
+    <unit id="AddOnOpenButtonText">
+      <segment>
+        <source>Open add-on window</source>
+        <target state="translated">Abrir janela com complementos</target>
+      </segment>
+    </unit>
+    <unit id="AddOnTitle">
+      <segment>
+        <source>Title bar add-on</source>
+        <target state="translated">Complementos da barra de título</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The default Window shape: title, three caption buttons and standard interactions, as the baseline for other demos.</source>
+        <target state="translated">A forma padrão da janela: título, três botões de legenda e interações padrão, usada como linha de base para as outras demonstrações.</target>
+      </segment>
+    </unit>
+    <unit id="BasicOpenButtonText">
+      <segment>
+        <source>Open basic window</source>
+        <target state="translated">Abrir janela básica</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic window</source>
+        <target state="translated">Janela básica</target>
+      </segment>
+    </unit>
+    <unit id="BasicWindowHint">
+      <segment>
+        <source>This is the default look of an AtomUI Window. The title bar shows the title together with the standard caption buttons.</source>
+        <target state="translated">Esta é a aparência padrão de uma AtomUI Window. A barra de título mostra o título junto com os botões de legenda padrão.</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsDescription">
+      <segment>
+        <source>Compose the caption button set: hide the minimize button and show the full screen and pin buttons.</source>
+        <target state="translated">Compose o conjunto de botões de legenda: oculte o botão de minimizar e mostre os botões de tela cheia e pino.</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsHint">
+      <segment>
+        <source>Only full screen and pin buttons remain on the right of the title bar; minimizing is disabled for this window.</source>
+        <target state="translated">Apenas os botões de tela cheia e pino permanecem à direita da barra de título; minimizar está desativado nesta janela.</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsOpenButtonText">
+      <segment>
+        <source>Open caption buttons window</source>
+        <target state="translated">Abrir janela com botões de legenda</target>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsTitle">
+      <segment>
+        <source>Caption buttons</source>
+        <target state="translated">Botões de legenda</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">Geral</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerDescription">
+      <segment>
+        <source>Customize TitleBarFrameBackground, ContentFrameBackground and a decorative WindowFrameLayer with opacity.</source>
+        <target state="translated">Personalize TitleBarFrameBackground, ContentFrameBackground e uma WindowFrameLayer decorativa com opacidade.</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerHint">
+      <segment>
+        <source>The title bar uses a gradient, the content area a brand tint, and a corner-decorated layer floats above them.</source>
+        <target state="translated">A barra de título usa um gradiente, a área de conteúdo um tom de marca e uma camada decorativa flutua sobre elas.</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerOpenButtonText">
+      <segment>
+        <source>Open frame layer window</source>
+        <target state="translated">Abrir janela com moldura</target>
+      </segment>
+    </unit>
+    <unit id="FrameLayerTitle">
+      <segment>
+        <source>Frame layer</source>
+        <target state="translated">Camada de moldura</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleDescription">
+      <segment>
+        <source>IsTitleVisible=False hides only the title text inside the title bar; the taskbar and window switching still show the OS window title. Different from IsTitleBarVisible, which hides the whole title bar.</source>
+        <target state="translated">IsTitleVisible=False oculta apenas o texto do título dentro da barra de título; a barra de tarefas e a alternância de janelas continuam mostrando o título do sistema. Diferente de IsTitleBarVisible, que oculta a barra de título inteira.</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleHint">
+      <segment>
+        <source>The title bar shows no title text, but the taskbar still shows "AtomUI Demo".</source>
+        <target state="translated">A barra de título não mostra texto, mas a barra de tarefas ainda exibe "AtomUI Demo".</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleOpenButtonText">
+      <segment>
+        <source>Open title-hidden window</source>
+        <target state="translated">Abrir janela com título oculto</target>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleTitle">
+      <segment>
+        <source>Hide title text</source>
+        <target state="translated">Ocultar texto do título</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityDescription">
+      <segment>
+        <source>Switch the Logo display policy between Auto, Always and Never.</source>
+        <target state="translated">Alterne a política de exibição do Logo entre Auto, Always e Never.</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityHint">
+      <segment>
+        <source>Switch the segmented control below and watch the Logo visibility change.</source>
+        <target state="translated">Alterne o controle segmentado abaixo e observe a visibilidade do Logo mudar.</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityOpenButtonText">
+      <segment>
+        <source>Open Logo policy window</source>
+        <target state="translated">Abrir janela de política do Logo</target>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityTitle">
+      <segment>
+        <source>Logo visibility policy</source>
+        <target state="translated">Política de visibilidade do Logo</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Explore Window title bar content, window chrome and frame layer customization.</source>
+        <target state="translated">Explore a personalização de conteúdo da barra de título, forma da janela e camadas de moldura do Window.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Window and title bar customization.</source>
+        <target state="translated">Personalização de janela e barra de título.</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundCaptionButtonsHint">
+      <segment>
+        <source>On macOS the system traffic lights are native: the minimize, maximize and full screen switches apply to the AtomUI-drawn buttons on Windows/Linux; only the pin switch takes effect here.</source>
+        <target state="translated">No macOS os botões de semáforo do sistema são nativos: as chaves de minimizar, maximizar e tela cheia aplicam-se aos botões desenhados pelo AtomUI no Windows/Linux; aqui apenas a chave de pino tem efeito.</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundDescription">
+      <segment>
+        <source>A live window combining every option on this page: title text, alignment, logo policy, add-ons, caption buttons and frame backgrounds.</source>
+        <target state="translated">Uma janela ao vivo combinando todas as opções desta página: texto do título, alinhamento, política de logo, complementos, botões de legenda e fundos de moldura.</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundHint">
+      <segment>
+        <source>The panel on the right acts on this window's title bar and frame in real time.</source>
+        <target state="translated">O painel à direita atua em tempo real na barra de título e na moldura desta janela.</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundOpenButtonText">
+      <segment>
+        <source>Open playground</source>
+        <target state="translated">Abrir playground</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundTitle">
+      <segment>
+        <source>Playground</source>
+        <target state="translated">Playground</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentDescription">
+      <segment>
+        <source>Switch the title group alignment between Auto, Left, Center, WindowCenter and Right.</source>
+        <target state="translated">Alterne o alinhamento do grupo de título entre Auto, Left, Center, WindowCenter e Right.</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentHint">
+      <segment>
+        <source>Switch the segmented control below and watch the title group alignment change.</source>
+        <target state="translated">Alterne o controle segmentado abaixo e observe o alinhamento do título mudar.</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentOpenButtonText">
+      <segment>
+        <source>Open alignment window</source>
+        <target state="translated">Abrir janela de alinhamento</target>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentTitle">
+      <segment>
+        <source>Title alignment</source>
+        <target state="translated">Alinhamento do título</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessDescription">
+      <segment>
+        <source>IsTitleBarVisible=False removes the built-in title bar; a custom header row and an embedded WindowTitleBar keep dragging and double-click maximize working.</source>
+        <target state="translated">IsTitleBarVisible=False remove a barra de título integrada; uma linha de cabeçalho personalizada e um WindowTitleBar incorporado mantêm o arrasto e o maximizar com duplo clique.</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessHint">
+      <segment>
+        <source>The top area is fully custom. The embedded title bar still supports dragging and double-click to maximize.</source>
+        <target state="translated">A área superior é totalmente personalizada. A barra de título incorporada ainda suporta arrastar e maximizar com duplo clique.</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessOpenButtonText">
+      <segment>
+        <source>Open title barless window</source>
+        <target state="translated">Abrir janela sem barra de título</target>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessTitle">
+      <segment>
+        <source>Title barless</source>
+        <target state="translated">Sem barra de título</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

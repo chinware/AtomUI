@@ -1,6 +1,8 @@
 # Mentions 桌面版实现原理
 
-本文档描述 Mentions 桌面版的内部模板组合、触发符识别、候选弹层、同步/异步加载、过滤、候选插入、Form 和 Token 资源边界。公共设计与 API 契约见 [Mentions 桌面版架构设计](overview.md)，Token 语义见 [Mentions Token 设计](token.md)，变化记录见 [Mentions Changelog](changelog.md)。
+本文档描述 Mentions 桌面版的内部模板组合、触发符识别、候选弹层、同步/异步加载、过滤、候选插入、Form 和 Token 资源边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Mentions 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Mentions Token 设计](token.md)，变化记录见 [Mentions Changelog](changelog.md)。
+
+Popup 接入边界：`Mentions` 负责业务状态和内容准备，internal Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
 
 ## 1. 实现定位
 
@@ -25,9 +27,9 @@ Mentions 的实现以 `MentionTextArea` 为输入内核，`Popup` 和 `Candidate
 
 `Mentions` 是状态协调器。它不直接编辑文本 run，也不渲染候选项；它接收 `MentionTextArea` 的候选打开/关闭请求，协调本地/异步候选数据，维护候选视图，控制 popup 生命周期，并把候选提交结果写回内部文本区域。
 
-`MentionTextArea` 是文本输入和 trigger 检测边界。它继承 `TextArea`，复用 TextArea 的多行输入、清除、状态、Form feedback 和尺寸能力，并增加 `TriggerPrefix`、`FilterValue`、`IsDropDownOpen`、`CandidateOpenRequest` 和 `CandidateCloseRequest`。
+`MentionTextArea` 是文本输入和 trigger 检测边界。它继承 `TextArea`，复用 `AbstractTextInput` 的多行输入、清除、状态、Form feedback、尺寸和 `InputControlFrame` 输入表面，并增加 `TriggerPrefix`、`FilterValue`、`IsDropDownOpen`、`CandidateOpenRequest` 和 `CandidateCloseRequest`。
 
-`CandidateList` 是候选选择边界。Mentions 只依赖 `ICandidateList` 的 `ItemsSource`、`SelectedItem`、`Commit`、`Cancel` 和 `HandleKeyDown()`，不直接管理候选项容器。
+`CandidateList` 是候选选择边界和 active candidate owner。Mentions 只依赖 `ICandidateList` 的 `ItemsSource`、`SelectedItem`、`Commit`、`Cancel` 和 `HandleKeyDown()`，不直接管理候选项容器；鼠标候选迁移、键盘导航和 `Enter` 提交必须最终读取同一 active candidate。
 
 `IMentionOptionsAsyncLoader` 是异步数据边界。控件只调用 `LoadAsync(context, token)`，不假设远程协议、缓存策略或错误显示方式。
 
@@ -83,8 +85,8 @@ Form.SetValue(object?) → Value
 Value changed          → IFormItemAware.ValueChanged
 Form.GetValue()        → Value
 Form.ClearValue()      → Value = null
-DataValidationErrors   → native error visual + AddOn effective error state
-ValidateStatus         → Warning/Success/Validating extension state
+DataValidationErrors   → InputControlFrame.EffectiveStatus
+ValidateStatus         → FormStatus → InputControlFrame + FormFeedback
 FeedbackControl        → FormFeedback
 ```
 
@@ -121,6 +123,8 @@ Popup 打开时创建 `_subscriptionsOnOpen`，订阅自身 `IsVisible`、`IsEna
 - 点击 popup 内部时保持弹层。
 - 弹层打开时点击非文本区域会关闭弹层。
 - 普通按下状态通过标准 `:pressed` 伪类表达。
+
+候选项的 `:pointerover` 只表示指针命中事实，不单独绘制候选 active 背景。候选列表把鼠标移动到可用项转换为 active candidate 迁移；键盘路径复用同一 owner，且只有键盘路径负责滚动到可见区域。
 
 候选提交：
 

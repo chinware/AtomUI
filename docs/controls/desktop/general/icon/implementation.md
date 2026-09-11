@@ -56,10 +56,12 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`Icon`、`IconBrush`、`IconTemplate`。
+- 单色宿主投影：`IconPresenter` 和 `IconTemplatePresenter` 在承载 AtomUI `Icon` 时，将 `IconBrush` 以 Template 优先级同步到 `StrokeBrush`、`FillBrush`、`SecondaryStrokeBrush`、`SecondaryFillBrush` 和 `FallbackBrush`。承载普通 Avalonia `PathIcon` 时，同步到 `PathIcon.Foreground`。
 
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
+- `IconBrush` 的单色投影不得只覆盖主画刷槽位；IconPark 等多画刷图标在宿主控件中必须能随宿主 `Foreground` 的 hover、pressed、disabled 状态完整同步。调用方在图标实例上设置的本地画刷值仍按 Avalonia 优先级高于 Template 投影。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
@@ -99,6 +101,8 @@ Icon 的交互事件应从输入源收敛到控件级语义事件：
 - 内容、命令和视觉状态在模板节点之间的同步。
 - 状态变化时避免创建不必要的视觉对象、订阅或动画对象。
 
+`LoadingAnimation=Spin/Pulse` 使用 Icon 对应 `CompositionVisual` 的无限旋转动画。Icon 只在已加载、动画已配置且有效可见时启动；自身或 Visual 祖先不可见时停止动画并把 rotation 复位，重新可见时按当前 duration 和 bounds 重建动画。可见性订阅与 Compositor target 必须在 unload 和 detach 时释放。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -115,6 +119,7 @@ Icon 的交互事件应从输入源收敛到控件级语义事件：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 未配置 loading animation 的普通 Icon 不建立有效可见性跟踪；隐藏祖先下的 loading Icon 不保留 Compositor 无限动画。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 9. 维护不变量
