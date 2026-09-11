@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.6-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.8-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
@@ -69,9 +69,10 @@ Avalonia 12.1.2<br>
 
 #### 最新版本说明
 
-AtomUI 6.1.6 引入应用级统一图片加载管线、AsyncImage 和安全 SVG 支持，新增 Steps Panel 与
-Masonry 稳定列/重排布局，统一输入校验界面，并修复隐藏控件工作负载以及 Windows、macOS 平台行为。
-本版本包含 Avatar、ImagePreviewer、输入继承关系和 OTP 单元格 API 的破坏性变更；升级前请查看
+AtomUI 6.1.8 重构 DataGrid 为基于 Range 的 `IDataGridSource`，引入不可变查询与选择状态；图片加载改用封闭的
+`ImageSource` 类型层次与独立的缓存读写策略；具体 `[ControlDesignToken]` 类型现在必须为 `sealed`。本版本还新增
+`Window.IsTitleVisible`，统一 NavMenu 激活顺序，修复 Select 家族多选模式的 Prefix 间距，并完善 trimmed 应用的
+NativeAOT linked-registration 闭包。本版本包含 DataGrid、图片加载和主题 Token 的破坏性变更；升级前请查看
 [更新日志](./CHANGELOG.zh-CN.md)。
 
 #### 感谢通明湖中心孵化 AtomUI OSS
@@ -129,10 +130,10 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.6
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.6
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.6
-dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.6
+dotnet add package AtomUI.Desktop.Controls --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.8
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -159,10 +160,10 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.6"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.6"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.6"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.6"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.8"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>

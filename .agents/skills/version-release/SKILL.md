@@ -1,6 +1,6 @@
 ---
 name: version-release
-description: Use when preparing or validating an AtomUI release, including version-scope confirmation, AtomUIVersion consistency, CHANGELOG and Chinese release sections, breaking-API docs under docs/releases, release validation, and the release commit. Use changelog-collect for ordinary changelog collection instead.
+description: Use when preparing or validating an AtomUI release, including version-scope confirmation, AtomUIVersion consistency, README version sync, CHANGELOG and Chinese release sections, breaking-API docs under docs/releases, release validation, and the release commit. Use changelog-collect for ordinary changelog collection instead.
 ---
 
 # Version Release
@@ -26,6 +26,26 @@ Use this skill when the user asks to release or prepare an AtomUI version, or re
   `AtomUI.Core` embeds it as assembly metadata and `PublishToLocal.ps1` reads it.
   Do not hardcode version strings in project files, package metadata, or scripts.
 - Scan for stale previous-version references and update only release-required files.
+
+## README version references
+
+`README.md` and `README.zh-CN.md` are user-facing release pages and are part of every
+release. Update both in the same release commit and keep their versions identical. The
+version appears in four places in each file, and every one must change together:
+
+1. The AtomUI badge near the top: `.../badge/AtomUI-<version>-1677ff?...`.
+2. The `#### Latest Release Notes` (English) / `#### 最新版本说明` (Chinese) paragraph:
+   rewrite the summary for this release instead of leaving the previous release's text,
+   mention any breaking changes, and link the changelog.
+3. The `dotnet add package ... --version <version>` block.
+4. The `<PackageReference ... Version="<version>"/>` project example.
+
+Bumping only the badge while the release-notes paragraph still describes the previous
+version is a release defect. Verify no stale version remains before the release commit:
+
+```bash
+grep -n "<previous-version>" README.md README.zh-CN.md
+```
 
 ## Changelog
 
@@ -65,7 +85,8 @@ Only when the release contains breaking public API changes:
 
 ## Release commit
 
-- Stage only release-required files.
+- Stage only release-required files. This includes `build/Versions.props`, both
+  changelogs, any breaking-API docs, and both `README.md` and `README.zh-CN.md`.
 - Follow repository history style, for example:
   `fix(CHANGELOG): update for AtomUI 6.1.5 release with breaking changes and new features`.
 
