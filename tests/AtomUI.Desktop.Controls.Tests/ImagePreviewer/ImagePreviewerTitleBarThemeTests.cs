@@ -105,10 +105,9 @@ public class ImagePreviewerTitleBarThemeTests
             }
             finally
             {
-                if (window.IsVisible)
-                {
-                    window.Close();
-                }
+                window.Content = null;
+                window.Close();
+                Dispatcher.UIThread.RunJobs();
             }
         });
     }
