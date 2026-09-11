@@ -102,8 +102,8 @@
                                                       VerticalAlignment="Center"
                                                       HorizontalContentAlignment="Center"
                                                       VerticalContentAlignment="Center"
-                                                      Content="{Binding $parent[atom:Window].EffectiveLogo}"
-                                                      ContentTemplate="{Binding $parent[atom:Window].EffectiveLogoTemplate}"
+                                                      Content="{Binding $parent[atom:Window].EffectiveFullscreenLogo}"
+                                                      ContentTemplate="{Binding $parent[atom:Window].EffectiveFullscreenLogoTemplate}"
                                                       IsVisible="{Binding $parent[atom:Window].IsEffectiveFullscreenLogoVisible}"/>
                                     <TextBlock Name="FullscreenTitleText"
                                                HorizontalAlignment="Left"
@@ -180,7 +180,7 @@
             <Setter Property="CornerRadius" Value="0" />
         </Style>
 
-        <Style Selector="^:fullscreen /template/ Panel#PART_TitleBarPresenter">
+        <Style Selector="^:fullscreen /template/ ContentPresenter#PART_TitleBarPresenter">
             <Setter Property="IsVisible" Value="False" />
         </Style>
         <Style Selector="^:fullscreen /template/ ContentPresenter#PART_TitleBar">

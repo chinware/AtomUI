@@ -358,6 +358,16 @@ public partial class Window : AvaloniaWindow,
             nameof(EffectiveLogoTemplate),
             o => o.EffectiveLogoTemplate);
 
+    internal static readonly DirectProperty<Window, object?> EffectiveFullscreenLogoProperty =
+        AvaloniaProperty.RegisterDirect<Window, object?>(
+            nameof(EffectiveFullscreenLogo),
+            o => o.EffectiveFullscreenLogo);
+
+    internal static readonly DirectProperty<Window, IDataTemplate?> EffectiveFullscreenLogoTemplateProperty =
+        AvaloniaProperty.RegisterDirect<Window, IDataTemplate?>(
+            nameof(EffectiveFullscreenLogoTemplate),
+            o => o.EffectiveFullscreenLogoTemplate);
+
     internal static readonly DirectProperty<Window, bool> IsEffectiveFullscreenTitleVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsEffectiveFullscreenTitleVisible),
@@ -478,6 +488,28 @@ public partial class Window : AvaloniaWindow,
     {
         get => _effectiveLogoTemplate;
         private set => SetAndRaise(EffectiveLogoTemplateProperty, ref _effectiveLogoTemplate, value);
+    }
+
+    private object? _effectiveFullscreenLogo;
+
+    internal object? EffectiveFullscreenLogo
+    {
+        get => _effectiveFullscreenLogo;
+        private set => SetAndRaise(
+            EffectiveFullscreenLogoProperty,
+            ref _effectiveFullscreenLogo,
+            value);
+    }
+
+    private IDataTemplate? _effectiveFullscreenLogoTemplate;
+
+    internal IDataTemplate? EffectiveFullscreenLogoTemplate
+    {
+        get => _effectiveFullscreenLogoTemplate;
+        private set => SetAndRaise(
+            EffectiveFullscreenLogoTemplateProperty,
+            ref _effectiveFullscreenLogoTemplate,
+            value);
     }
 
     private bool _isEffectiveFullscreenTitleVisible;
@@ -1698,7 +1730,8 @@ public partial class Window : AvaloniaWindow,
             change.Property == EffectiveLogoTemplateProperty ||
             change.Property == LogoVisibilityProperty ||
             change.Property == TitleProperty ||
-            change.Property == IsTitleVisibleProperty)
+            change.Property == IsTitleVisibleProperty ||
+            change.Property == WindowStateProperty)
         {
             UpdateEffectiveFullscreenLogoVisible();
         }
@@ -1712,12 +1745,28 @@ public partial class Window : AvaloniaWindow,
     private void UpdateEffectiveFullscreenLogoVisible()
     {
         var hasLogo = EffectiveLogo is not null || EffectiveLogoTemplate is not null;
-        IsEffectiveFullscreenLogoVisible = LogoVisibility switch
+        var isLogoVisibleByMode = LogoVisibility switch
         {
             WindowTitleBarLogoVisibility.Always => hasLogo,
             WindowTitleBarLogoVisibility.Never => false,
             _ => hasLogo && HasTitleContent(Title) && IsEffectiveFullscreenTitleVisible
         };
+        IsEffectiveFullscreenLogoVisible = WindowState == WindowState.FullScreen && isLogoVisibleByMode;
+        UpdateEffectiveFullscreenLogo();
+    }
+
+    private void UpdateEffectiveFullscreenLogo()
+    {
+        if (IsEffectiveFullscreenLogoVisible)
+        {
+            EffectiveFullscreenLogo         = EffectiveLogo;
+            EffectiveFullscreenLogoTemplate = EffectiveLogoTemplate;
+        }
+        else
+        {
+            EffectiveFullscreenLogo         = null;
+            EffectiveFullscreenLogoTemplate = null;
+        }
     }
 
     private static bool HasTitleContent(object? title)

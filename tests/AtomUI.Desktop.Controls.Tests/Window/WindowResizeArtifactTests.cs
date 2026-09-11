@@ -657,10 +657,19 @@ public class WindowResizeArtifactTests
     {
         var document = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
+        XNamespace av = "https://github.com/avaloniaui";
 
         AssertTitleBarVisibilityContract(document, "PART_TitleBar");
         AssertTitleBarVisibilityContract(document, "PART_TitleBarPresenter");
         AssertTitleBarVisibilityContract(document, "WindowTitleBarShadowBackground");
+        document.Descendants(av + "Style")
+                .ShouldContain(style =>
+                    (string?)style.Attribute("Selector") ==
+                    "^:fullscreen /template/ ContentPresenter#PART_TitleBarPresenter");
+        document.Descendants(av + "Style")
+                .ShouldNotContain(style =>
+                    (string?)style.Attribute("Selector") ==
+                    "^:fullscreen /template/ Panel#PART_TitleBarPresenter");
     }
 
     [Fact]
@@ -1015,6 +1024,10 @@ public class WindowResizeArtifactTests
             var logoPresenter = title.Descendants().Single(element =>
                 (string?)element.Attribute("Name") == "FullscreenLogoPresenter");
             logoPresenter.Attribute("DockPanel.Dock")?.Value.ShouldBe("Left");
+            logoPresenter.Attribute("Content")?.Value.ShouldBe(
+                "{Binding $parent[atom:Window].EffectiveFullscreenLogo}");
+            logoPresenter.Attribute("ContentTemplate")?.Value.ShouldBe(
+                "{Binding $parent[atom:Window].EffectiveFullscreenLogoTemplate}");
             var titleText = title.Descendants().Single(element =>
                 (string?)element.Attribute("Name") == "FullscreenTitleText");
             titleText.Attribute("TextWrapping")?.Value.ShouldBe("NoWrap");
