@@ -9,6 +9,9 @@
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <IncludeInPublish>false</IncludeInPublish>
+        <!-- These dependencies belong to the analyzer toolset. Do not obtain them
+             as incidental outputs of the independently hosted Build Tasks tool. -->
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
         <IsAotCompatible>false</IsAotCompatible>
         <EnableAotAnalyzer>false</EnableAotAnalyzer>

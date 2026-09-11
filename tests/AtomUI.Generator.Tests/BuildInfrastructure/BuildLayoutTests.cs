@@ -20,6 +20,7 @@ public sealed class BuildLayoutTests
         "AtomUI.Repository.props",
         "AtomUI.Repository.targets",
         "AtomUI.ThemeAssets.targets",
+        "AtomUI.Build.Tasks.Process.cs",
         "MacOSHomebrewNativeAot.targets",
         "OutputPaths.props",
         "PackageMetadata.props",
@@ -36,7 +37,8 @@ public sealed class BuildLayoutTests
         "AtomUI.LinkedRegistration.SidecarConsumer.targets",
         "AtomUI.Localization.props",
         "AtomUI.Localization.targets",
-        "AtomUI.ThemeAssets.targets"
+        "AtomUI.ThemeAssets.targets",
+        "AtomUI.Build.Tasks.Process.cs"
     ];
 
     [Fact]
@@ -57,7 +59,6 @@ public sealed class BuildLayoutTests
             "$(MSBuildThisFileDirectory)ProjectDefaults.props",
             "$(MSBuildThisFileDirectory)PackageMetadata.props",
             "$(MSBuildThisFileDirectory)OutputPaths.props",
-            "$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props",
             "$(MSBuildThisFileDirectory)AtomUI.Generator.props"
         ]);
     }
@@ -71,35 +72,6 @@ public sealed class BuildLayoutTests
             .ShouldBe(["$(MSBuildThisFileDirectory)AtomUI.Generator.targets"]);
         GetTargetNames(repositoryTargets)
             .ShouldContain("AtomUIPrepareGeneratorConsumerPackageAssets");
-    }
-
-    [Fact]
-    public void Build_Task_Shadow_Copies_Are_Not_Removed_During_Consumer_Builds()
-    {
-        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
-        var stagingTarget = repositoryTargets.Descendants("Target")
-                                              .Single(element =>
-                                                  (string?)element.Attribute("Name") ==
-                                                  "_AtomUIStageBuildTasksToolset");
-
-        stagingTarget.Descendants()
-                     .Where(element => element.Name.LocalName == "RemoveDir")
-                     .ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void Build_Task_Shadow_Copies_Are_Staged_For_Cross_Targeting_Pack_Targets()
-    {
-        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
-        var stagingTarget = repositoryTargets.Descendants("Target")
-                                              .Single(element =>
-                                                  (string?)element.Attribute("Name") ==
-                                                  "_AtomUIStageBuildTasksToolset");
-
-        ((string?)stagingTarget.Attribute("BeforeTargets")).ShouldNotBeNull()
-            .ShouldContain("AtomUIPrepareLanguageModuleAssets");
-        ((string?)stagingTarget.Attribute("Condition")).ShouldNotBeNull()
-            .ShouldNotContain("IsCrossTargetingBuild");
     }
 
     [Fact]
@@ -119,13 +91,13 @@ public sealed class BuildLayoutTests
                    .ShouldHaveSingleItem()
                    .Value.ShouldBe("buildTransitive/%(Filename)%(Extension)");
 
-        var toolAssets = repositoryProps.Descendants("AtomUIGeneratorToolAsset").ShouldHaveSingleItem();
+        var toolAssets = repositoryProps.Descendants("AtomUIGeneratorToolAsset").Last();
         var toolIncludes = ((string?)toolAssets.Attribute("Include")).ShouldNotBeNull();
-        toolIncludes.ShouldContain("AtomUI.Generator.dll");
+        toolIncludes.ShouldContain("AtomUI.Build.Tasks.runtimeconfig.json");
         toolIncludes.ShouldContain("AtomUI.Build.Tasks.dll");
         toolAssets.Elements("PackagePath")
                   .ShouldHaveSingleItem()
-                  .Value.ShouldBe("tools/netstandard2.0/%(Filename)%(Extension)");
+                  .Value.ShouldBe("tools/net10.0/%(Filename)%(Extension)");
 
         var generatorProject = XDocument.Load(GetRepoFile("src/AtomUI.Generator/AtomUI.Generator.csproj"));
         generatorProject.Descendants("ProjectReference")
@@ -177,7 +149,7 @@ public sealed class BuildLayoutTests
         ((string?)fallback.Attribute("Condition"))
             .ShouldBe("'$(AtomUIBuildTasksAssembly)' == ''");
         fallback.Value.Trim().ShouldBe(
-            "$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll");
+            "$(MSBuildThisFileDirectory)../tools/net10.0/AtomUI.Build.Tasks.dll");
 
         var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
         var featureFiles = s_expectedNuGetBuildAssets
@@ -187,7 +159,7 @@ public sealed class BuildLayoutTests
                                      .ToArray();
         usingTasks.ShouldNotBeEmpty();
         usingTasks.ShouldAllBe(element =>
-            (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)");
+            (string?)element.Attribute("AssemblyFile") == "$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll");
 
         File.Exists(Path.Combine(buildRoot, "BuildTasks.props")).ShouldBeFalse();
         var buildText = string.Join('\n', Directory.EnumerateFiles(buildRoot).Select(File.ReadAllText));
@@ -196,7 +168,7 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
-    public void NuGet_Build_Tasks_Load_From_Shadow_Copy_In_Process()
+    public void NuGet_Build_Tasks_Use_The_SDK_Source_Adapter()
     {
         var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
         var usingTasks = s_expectedNuGetBuildAssets
@@ -206,14 +178,14 @@ public sealed class BuildLayoutTests
                 .Descendants()
                 .Where(element => element.Name.LocalName == "UsingTask"))
             .Where(element =>
-                (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)")
+                (string?)element.Attribute("AssemblyFile") == "$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll")
             .ToArray();
 
         usingTasks.ShouldNotBeEmpty();
         usingTasks.ShouldAllBe(element =>
             element.Attribute("Runtime") == null);
         usingTasks.ShouldAllBe(element =>
-            element.Attribute("TaskFactory") == null);
+            (string?)element.Attribute("TaskFactory") == "RoslynCodeTaskFactory");
     }
 
     [Fact]
@@ -454,7 +426,7 @@ public sealed class BuildLayoutTests
                  .Select(Path.GetFileName)
                  .ShouldBe(s_expectedBuildFiles, ignoreOrder: true);
         Directory.EnumerateFiles(buildRoot)
-                 .All(file => Path.GetExtension(file) is ".props" or ".targets")
+                 .All(file => Path.GetExtension(file) is ".props" or ".targets" or ".cs")
                  .ShouldBeTrue();
     }
 

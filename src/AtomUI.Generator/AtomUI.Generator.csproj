@@ -24,6 +24,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all"/>
         <ProjectReference Include="../AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj"
                           ReferenceOutputAssembly="false"
+                          SkipGetTargetFrameworkProperties="true"
                           PrivateAssets="all" />
     </ItemGroup>
 

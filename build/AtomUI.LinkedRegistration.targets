@@ -30,16 +30,31 @@
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILinkedSidecar" />
     </ItemGroup>
 
-    <UsingTask TaskName="AtomUI.Build.Tasks.CollectAxamlUsageTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
-    <UsingTask TaskName="AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
-    <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
-    <UsingTask TaskName="AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
-    <UsingTask TaskName="AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+    <UsingTask TaskName="AtomUI.Build.Tasks.CollectAxamlUsageTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <Task>
+            <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)AtomUI.Build.Tasks.Process.cs" />
+        </Task>
+    </UsingTask>
+    <UsingTask TaskName="AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <Task>
+            <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)AtomUI.Build.Tasks.Process.cs" />
+        </Task>
+    </UsingTask>
+    <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <Task>
+            <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)AtomUI.Build.Tasks.Process.cs" />
+        </Task>
+    </UsingTask>
+    <UsingTask TaskName="AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <Task>
+            <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)AtomUI.Build.Tasks.Process.cs" />
+        </Task>
+    </UsingTask>
+    <UsingTask TaskName="AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <Task>
+            <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)AtomUI.Build.Tasks.Process.cs" />
+        </Task>
+    </UsingTask>
 
     <Target Name="AtomUIApplyLinkedContextToTransitiveProjectReferences"
             BeforeTargets="AssignProjectConfiguration"
@@ -79,7 +94,7 @@
                 KeepMetadata="AtomUILinkedSidecarSource"
                 Condition="Exists('%(Identity)')" />
         </ItemGroup>
-        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
+        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             SidecarCandidates="@(AtomUILinkedSidecarCandidate)"
             ReferencePaths="@(_AtomUILinkedReferencePath)"
             Condition="Exists('$(AtomUIBuildTasksAssembly)')">
@@ -95,7 +110,7 @@
             ProjectReference consumption resolves the same Registration Units as the
             NuGet-delivered Sidecar without any library-side opt-in.
         -->
-        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask
+        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             AssemblyPath="%(_AtomUILinkedExtractableReference.Identity)"
             OutputPath="$(IntermediateOutputPath)AtomUIExtractedSidecars/%(_AtomUILinkedExtractableReference.AtomUILinkedAssemblyName).atomui-link.json"
             TargetFramework="$(TargetFramework)"
@@ -113,7 +128,7 @@
                 AtomUILinkedSidecarSource="MetadataExtraction" />
             <FileWrites Include="@(_AtomUIExtractedLinkedSidecar)" />
         </ItemGroup>
-        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
+        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             SidecarCandidates="@(_AtomUILinkedSidecarCanonicalCandidate)"
             ReferencePaths="@(_AtomUILinkedReferencePath)"
             Condition="Exists('$(AtomUIBuildTasksAssembly)')">
@@ -126,14 +141,14 @@
             control-package assembly, then recover conservative PackageRoot and Entry
             evidence into a build-only Sidecar.
         -->
-        <AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask
+        <AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             ReferencePaths="@(_AtomUILinkedReferencePath)"
             CatalogSidecars="@(_AtomUICanonicalLinkedSidecar)"
             Condition="'@(_AtomUICanonicalLinkedSidecar)' != '' and Exists('$(AtomUIBuildTasksAssembly)')">
             <Output TaskParameter="ConsumerReferences"
                     ItemName="_AtomUILinkedConsumerReference" />
         </AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask>
-        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask
+        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             AssemblyPath="%(_AtomUILinkedConsumerReference.Identity)"
             OutputPath="$(IntermediateOutputPath)AtomUIRecoveredConsumerSidecars/%(_AtomUILinkedConsumerReference.AtomUILinkedAssemblyName).atomui-link.json"
             TargetFramework="$(TargetFramework)"
@@ -151,7 +166,7 @@
                 AtomUILinkedSidecarSource="MetadataExtraction" />
             <FileWrites Include="@(_AtomUIRecoveredConsumerLinkedSidecar)" />
         </ItemGroup>
-        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
+        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             SidecarCandidates="@(_AtomUILinkedSidecarFinalCandidate)"
             ReferencePaths="@(_AtomUILinkedReferencePath)"
             Condition="Exists('$(AtomUIBuildTasksAssembly)')">
@@ -174,7 +189,7 @@
         </PropertyGroup>
         <Error Condition="'$(_AtomUICollectAxamlUsage)' == 'true' and '$(_AtomUIHasAxamlUsageInput)' == 'true' and !Exists('$(AtomUIBuildTasksAssembly)')"
                Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
-        <AtomUI.Build.Tasks.CollectAxamlUsageTask AxamlFiles="@(AvaloniaXaml)"
+        <AtomUI.Build.Tasks.CollectAxamlUsageTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)" AxamlFiles="@(AvaloniaXaml)"
                                                         ProjectDirectory="$(MSBuildProjectDirectory)"
                                                         OutputPath="$(AtomUIAxamlUsageOutputPath)"
                                                         UnitRoots="@(AtomUIRegistrationUnitRoot)"
@@ -198,7 +213,7 @@
             Condition="('$(AtomUILinkedPublish)' == 'true' or '$(AtomUIEmitLinkedManifest)' == 'true') and '$(DesignTimeBuild)' != 'true' and '$(IsRoslynComponent)' != 'true' and '$(MSBuildProjectName)' != 'AtomUI.Build.Tasks' and Exists('$(TargetPath)')">
         <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
                Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
-        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask
+        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             AssemblyPath="$(TargetPath)"
             OutputPath="$(AtomUILinkedSidecarOutputPath)"
             TargetFramework="$(TargetFramework)">
@@ -266,7 +281,7 @@
             Condition="'$(AtomUILinkedPublish)' == 'true' and '$(AtomUIRegistrationPlanOwner)' == 'true'">
         <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
                Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
-        <AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask
+        <AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)"
             AssemblyPath="$(TargetPath)"
             MarkerKey="AtomUI.Linked.Plan.v1">
             <Output TaskParameter="MarkerCount"

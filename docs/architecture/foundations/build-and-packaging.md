@@ -10,6 +10,7 @@ Repository 聚合文件按确定顺序管理。
 
 ```text
 build/
+├── AtomUI.Build.Tasks.Process.cs
 ├── AtomUI.Generator.props
 ├── AtomUI.Generator.targets
 ├── AtomUI.GeneratorConsumer.targets
@@ -51,9 +52,10 @@ consumer 的 Localization props 不再伪造默认契约版本。
 `AtomUI.Repository.props` 是 Generator build assets 的唯一清单：
 
 - `@(AtomUINuGetBuildAsset)` 明确列出 Generator、Linked Registration、Localization 和 Theme Assets 的七个
-  `.props`/`.targets` 文件，并映射到 `buildTransitive/` 根目录。
-- `@(AtomUIGeneratorToolAsset)` 一次定义 Generator、Build Tasks 和任务运行所需依赖，统一进入
-  `tools/netstandard2.0/`。
+  `.props`/`.targets` 文件和共享进程适配器源码，并映射到 `buildTransitive/` 根目录。
+- `@(AtomUIGeneratorToolAsset)` 显式列出两组工具资产：Generator 及其依赖进入 `tools/netstandard2.0/`；
+  Build Tasks 可执行宿主、deps/runtimeconfig 和 Microsoft.Build.Framework 进入 `tools/net10.0/`。
+- LinkedPublish Generator 自己复制所需依赖；不得借用 Build Tasks 或上次构建残留的 DLL 完成打包。
 - `AtomUI.Generator.csproj` 与注册型产品包只能消费这两个 item，不得各自维护第二份文件清单。
 
 `OutputPaths.props` 对仓库内所有项目统一设置 `PackageOutputPath`、`OutputPath` 和 `BaseIntermediateOutputPath`。这同样
@@ -70,25 +72,30 @@ Registration、Localization 和 Theme Asset 的扁平 feature 文件。`AtomUI.L
 `buildTransitive/<PackageId>.targets`。它继续从包根导入 Generator 入口，并只在最终 `@(Analyzer)` 中没有
 `AtomUI.Generator` 时注入同包工具程序集。
 
-所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。Repository 构建将它
-指向每个项目自己的影子副本 `.artifacts/<ProjectName>/obj/<Configuration>/AtomUIBuildTasksShadow/<TargetFramework>/<ShadowKey>/AtomUI.Build.Tasks.dll`；
-影子目录的 `<ShadowKey>` 来自 `AtomUI.Build.Tasks` 构建后盖章的
-`.artifacts/bin/<Configuration>/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props`（键为编译产物的 SHA256，确定性编译保证
-无变化时键稳定），`_AtomUIStageBuildTasksToolset`（`AtomUI.Repository.targets`）在任务执行前把工具集复制到该目录，
-正常 consumer 构建只追加或复用影子副本，不删除其他键的目录。另一个已完成求值的并发构建可能仍引用旧键；若 staging
-期间清理非当前目录，会在任务延迟加载前删除其 DLL 并随机触发 `MSB4062`。旧影子副本随显式 clean 或整个输出目录清理，
-不得在普通 Build target 中回收。
-NuGet consumer 由 `AtomUI.Generator.props` 回退解析相邻 `tools/netstandard2.0/AtomUI.Build.Tasks.dll`。不得新增功能专用的 Build Tasks
-路径属性或只为该属性增加单独文件。调用 Build Tasks 的 target 必须同时按真实输入 item 门控；没有 AXAML、语言文件或
-linked registration 输入的项目不得仅因导入共享 targets 就要求任务程序集已经存在。这样可以保证直接、干净的项目构建
-不依赖解决方案项目顺序，也不会给无输入的 Debug 编译增加任务成本。
+所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。
+Repository 构建指向 `.artifacts/bin/<Configuration>/net10.0/AtomUI.Build.Tasks.dll`；NuGet consumer
+指向相邻 `tools/net10.0/AtomUI.Build.Tasks.dll`。此文件是 .NET 10 可执行构建工具，不由常驻 MSBuild 节点加载。
+构建宿主必须提供 .NET 10 SDK/runtime；产品库的 `net8.0`/`net10.0` 目标框架不因此变化。
 
-所有引用 `$(AtomUIBuildTasksAssembly)` 的 `UsingTask` 只声明 `AssemblyFile`，使用默认的进程内
-`AssemblyTaskFactory` 从影子副本加载。不得重新引入 `Runtime="NET"` 或 `TaskFactory="TaskHostFactory"`：
-.NET 10 SDK 的嵌套 publish 图里，TaskHost 可能在 `MetadataLoadContext` 生命周期结束后仍尝试跨进程回传
-MSBuild item，随机触发 `MSB4216` / `MSB4027`。文件锁隔离由上述按 ShadowKey 版本化的影子副本承担：
-重编译后的工具集落在全新目录，永不覆盖仍被活动 build node 锁定的旧副本。该约束同时适用于仓库构建和随
-NuGet 交付的 buildTransitive targets，并由 build-assets 架构测试全局守卫。
+`UsingTask` 统一使用 SDK 的 `RoslynCodeTaskFactory` 编译 `AtomUI.Build.Tasks.Process.cs` 中的薄适配器。
+适配器只收集属性、item 身份和元数据，通过临时 JSON 请求启动一次 `dotnet AtomUI.Build.Tasks.dll`。
+每次调用必须等待子进程退出，再返回结果；宿主 DLL、依赖 DLL 和任务打开的文件随进程退出释放。
+不允许把业务任务 DLL 加载回常驻节点，不维护影子副本、内容哈希目录或 TaskHostFactory 回退路径。
+进程取消终止当前 worker；请求目录在调用结束时清理，不留下常驻 worker 或仓库内临时协议文件。
+
+进程协议只传值：字符串、布尔值、整数、item 的原始身份、FullPath 与自定义元数据，以及包含代码、文件位置的
+诊断。不能跨进程传任务自定义类型或 MSBuild 对象。worker 使用显式任务分发；它不得发起嵌套项目构建。
+适配器使用 `$(DOTNET_HOST_PATH)` 选择调用方的 dotnet 宿主。新增任务或参数时同步更新适配器、分发入口与协议测试。
+协议反射只发生于不裁剪的构建工具，不进入产品程序集或 NativeAOT 应用。
+
+Generator 对 Build Tasks 的 ProjectReference 仅表达构建顺序，不引用可执行宿主的输出程序集；
+`SkipGetTargetFrameworkProperties` 避免用产品/Analyzer 的目标框架去限制构建工具的运行框架。
+包必须同时携带 worker 的 DLL、deps.json、runtimeconfig.json、Microsoft.Build.Framework.dll 和适配器源码，
+并用真实包消费构建验证清单完整性。任务宿主及其依赖不得进入产品 `lib/` 或最终应用发布目录。
+
+调用 Build Tasks 的 target 必须按真实输入 item 门控；没有 AXAML、语言文件或 linked registration 输入的项目
+不得仅因导入共享 targets 就要求工具已经存在。Windows 验证必须在同一个仍存活的 MSBuild 进程内连续执行任务、
+覆盖 DLL 并删除工具目录；仅验证一个新进程能完成单次 build，不能证明文件生命周期正确。
 
 ## Target Framework
 
@@ -118,6 +125,8 @@ AtomUI 自身版本由 `build/Versions.props` 中的 `AtomUIVersion` 管理。
 构建基础设施变更至少执行与影响面匹配的验证：
 
 ```bash
+pwsh -NoProfile -File scripts/verification/verify-build-task-isolation.ps1
+pwsh -NoProfile -File scripts/verification/verify-build-task-isolation.ps1 -BuildPackage
 dotnet test tests/AtomUI.Build.Tasks.Tests/AtomUI.Build.Tasks.Tests.csproj --framework net10.0 --no-restore
 dotnet test tests/AtomUI.Generator.Tests/AtomUI.Generator.Tests.csproj --framework net10.0 --no-restore
 dotnet pack src/AtomUI.Generator/AtomUI.Generator.csproj -c Release --no-restore

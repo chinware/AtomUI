@@ -18,8 +18,11 @@
         <CompilerVisibleItemMetadata Include="Compile" MetadataName="AtomUIRegistrationUnit" />
     </ItemGroup>
 
-    <UsingTask TaskName="AtomUI.Build.Tasks.GenerateThemeAssetWrappersTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+    <UsingTask TaskName="AtomUI.Build.Tasks.GenerateThemeAssetWrappersTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <Task>
+            <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)AtomUI.Build.Tasks.Process.cs" />
+        </Task>
+    </UsingTask>
 
     <Target Name="GenerateAtomUIThemeAssetWrappers"
             BeforeTargets="GenerateAvaloniaResources"
@@ -31,7 +34,7 @@
         </PropertyGroup>
         <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
                Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
-        <AtomUI.Build.Tasks.GenerateThemeAssetWrappersTask ThemeAssets="@(AvaloniaXaml)"
+        <AtomUI.Build.Tasks.GenerateThemeAssetWrappersTask TaskAssembly="$(AtomUIBuildTasksAssembly)" DotNetPath="$(DOTNET_HOST_PATH)" ThemeAssets="@(AvaloniaXaml)"
                                                            OutputDirectory="$(_AtomUIThemeAssetOutputDirectory)"
                                                            AssemblyName="$(AssemblyName)"
                                                            GeneratedCodePath="$(_AtomUIThemeAssetGeneratedCode)">

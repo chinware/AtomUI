@@ -73,7 +73,7 @@ public class ThemeAssetPackagingContractTests
     }
 
     [Fact]
-    public void Theme_Asset_Target_Uses_Build_Task_Instead_Of_Inline_Code()
+    public void Theme_Asset_Target_Uses_The_Shared_Process_Adapter()
     {
         var target = XDocument.Load(GetRepoFile("build/AtomUI.ThemeAssets.targets"));
         var wrapperTarget = target.Descendants()
@@ -93,13 +93,14 @@ public class ThemeAssetPackagingContractTests
         target.Descendants()
               .Where(element => element.Name.LocalName == "UsingTask")
               .ShouldAllBe(element =>
-                  (string?)element.Attribute("TaskFactory") != "RoslynCodeTaskFactory");
+                  (string?)element.Attribute("TaskFactory") == "RoslynCodeTaskFactory");
         target.Descendants("UsingTask")
               .ShouldAllBe(element =>
-                  (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)");
+                  (string?)element.Attribute("AssemblyFile") == "$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll");
         target.Descendants("Import").ShouldBeEmpty();
         target.Descendants()
-              .ShouldNotContain(element => element.Name.LocalName == "Code");
+              .Where(element => element.Name.LocalName == "Code")
+              .ShouldAllBe(element => (string?)element.Attribute("Source") == "$(MSBuildThisFileDirectory)AtomUI.Build.Tasks.Process.cs");
     }
 
     private static string GetRepoFile(string relativePath)

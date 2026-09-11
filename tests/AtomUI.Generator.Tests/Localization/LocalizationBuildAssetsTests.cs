@@ -360,7 +360,7 @@ public class LocalizationBuildAssetsTests
             ".artifacts",
             "bin",
             configuration,
-            "netstandard2.0",
+            "net10.0",
             "AtomUI.Build.Tasks.dll");
         var generatorAssembly = Path.Combine(AppContext.BaseDirectory, "AtomUI.Generator.dll");
         File.Exists(buildTasksAssembly).ShouldBeTrue();
@@ -454,7 +454,7 @@ public class LocalizationBuildAssetsTests
         foreach (var usingTask in usingTasks)
         {
             ((string?)usingTask.Attribute("AssemblyFile"))
-                .ShouldBe("$(AtomUIBuildTasksAssembly)");
+                .ShouldBe("$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll");
             usingTask.Attribute("Condition").ShouldBeNull();
         }
     }
@@ -498,9 +498,9 @@ public class LocalizationBuildAssetsTests
                    .ShouldHaveSingleItem()
                    .Value.ShouldBe("buildTransitive/%(Filename)%(Extension)");
 
-        var toolAssets = repositoryProps.Descendants("AtomUIGeneratorToolAsset").ShouldHaveSingleItem();
+        var toolAssets = repositoryProps.Descendants("AtomUIGeneratorToolAsset").First();
         var toolIncludes = ((string?)toolAssets.Attribute("Include")).ShouldNotBeNull();
-        toolIncludes.ShouldContain("AtomUI.Build.Tasks.dll");
+        repositoryProps.Descendants("AtomUIGeneratorToolAsset").Last().Attribute("Include")!.Value.ShouldContain("AtomUI.Build.Tasks.runtimeconfig.json");
         foreach (var dependency in new[]
                  {
                      "System.Reflection.Metadata.dll",

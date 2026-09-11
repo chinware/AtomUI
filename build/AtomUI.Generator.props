@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/net10.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
         <AtomUILinkedPublishGeneratorAssembly Condition="'$(AtomUILinkedPublishGeneratorAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Generator.LinkedPublish.dll</AtomUILinkedPublishGeneratorAssembly>
     </PropertyGroup>
 

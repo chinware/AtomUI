@@ -234,7 +234,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
                        .ShouldHaveSingleItem()
                        .Value.ShouldBe("buildTransitive/%(Filename)%(Extension)");
         repositoryProps.Descendants("AtomUIGeneratorToolAsset")
-                       .ShouldHaveSingleItem()
+                       .First()
                        .Elements("PackagePath")
                        .ShouldHaveSingleItem()
                        .Value.ShouldBe("tools/netstandard2.0/%(Filename)%(Extension)");
@@ -617,7 +617,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
 
         targets.Descendants("UsingTask")
                .ShouldAllBe(element =>
-                   (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)");
+                   (string?)element.Attribute("AssemblyFile") == "$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll");
         targets.Descendants("Import").ShouldBeEmpty();
     }
 
