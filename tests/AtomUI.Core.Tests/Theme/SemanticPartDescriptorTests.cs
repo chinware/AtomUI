@@ -131,6 +131,40 @@ public class SemanticPartDescriptorTests
     }
 
     [Fact]
+    public void Root_Rejects_Cross_Nested_Owners_Metadata()
+    {
+        Should.Throw<ArgumentException>(() => new SemanticPartDescriptor(
+            "root",
+            "root",
+            null,
+            typeof(Button),
+            SemanticPartCardinality.Single,
+            SemanticPartCustomization.Root,
+            null,
+            false,
+            "6.0",
+            false,
+            crossNestedOwners: true));
+    }
+
+    [Fact]
+    public void Root_Rejects_Rest_Hidden_Metadata()
+    {
+        Should.Throw<ArgumentException>(() => new SemanticPartDescriptor(
+            "root",
+            "root",
+            null,
+            typeof(Button),
+            SemanticPartCardinality.Single,
+            SemanticPartCustomization.Root,
+            null,
+            false,
+            "6.0",
+            false,
+            restHidden: true));
+    }
+
+    [Fact]
     public void Selector_And_Theme_Requires_Strongly_Typed_Theme_Metadata()
     {
         Should.Throw<ArgumentException>(() => new SemanticPartDescriptor(

@@ -58,12 +58,14 @@ public sealed class SemanticPartDescriptor
                 customization != SemanticPartCustomization.Root ||
                 theme is not null ||
                 crossVisualRoot ||
+                crossNestedOwners ||
                 runtimeCreated ||
+                restHidden ||
                 selectorRoute is not null ||
                 styleType is not null)
             {
                 throw new ArgumentException(
-                    "The root Semantic Part must use path 'root', Single cardinality, Root customization, and no selector, theme, cross-root, or runtime-created metadata.",
+                    "The root Semantic Part must use path 'root', Single cardinality, Root customization, and no selector, theme, cross-root, cross-nested, runtime-created, or rest-hidden metadata.",
                     nameof(name));
             }
         }

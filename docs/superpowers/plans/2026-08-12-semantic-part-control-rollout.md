@@ -32,9 +32,9 @@
 | `docs/superpowers/specs/2026-08-12-semantic-part-control-rollout-design.md` | 稳定的改造范围、门禁、风险模型、性能和兼容性规则。 |
 | `docs/superpowers/plans/2026-08-12-semantic-part-control-rollout.md` | 总体顺序、状态、通用执行循环和跨批次收尾。 |
 | `docs/superpowers/plans/2026-08-12-semantic-part-batch-1-basic-controls.md` | 16 个基础视觉与状态控件家族。 |
-| `docs/superpowers/plans/2026-08-12-semantic-part-batch-2-collections-containers.md` | 15 个集合、容器和导航控件家族。 |
+| `docs/superpowers/plans/2026-08-12-semantic-part-batch-2-collections-containers.md` | 16 个集合、容器和导航控件家族。 |
 | `docs/superpowers/plans/2026-08-12-semantic-part-batch-3-input-selection.md` | 15 个输入和选择控件家族。 |
-| `docs/superpowers/plans/2026-08-12-semantic-part-batch-4-hosts-windows.md` | 9 个 Popup、Overlay 和服务宿主控件家族。 |
+| `docs/superpowers/plans/2026-08-12-semantic-part-batch-4-hosts-windows.md` | 10 个 Popup、Overlay 和服务宿主控件家族。 |
 | `docs/superpowers/plans/2026-08-12-semantic-part-batch-5-high-density.md` | `NavMenu` 和 `DataGrid` 两个性能敏感控件家族。 |
 
 正式控件文档不得将这些计划作为唯一设计来源。它们应链接系统架构，并描述控件自身的当前契约。
@@ -49,7 +49,7 @@
 
 - [x] `Avatar`、`Carousel`、`Expander`、`GroupBox`、`Rate`、`Watermark`。
 - [x] `Icon`、`SplitButton`、`FlexPanel`、`Grid / Row / Col`、`TabStrip`。
-- [x] `ButtonSpinner`、`ComboBox`、`DropdownButton`、`BorderBeam`、`Splash`。
+- [x] `ButtonSpinner`、`ComboBox`、`BorderBeam`、`Splash`。
 - [x] `Menu`、`WindowTitleBar`、`Window`。
 
 逐项公开 API 证据、产品职责映射和重新评估条件以全量改造设计的“排除映射”为准。不得因 AtomUI 模板内部存在
@@ -60,12 +60,10 @@
 - [x] 第一批：基础控件，共 16 个家族。
 - [x] 第二批：集合与容器，共 16 个家族。（2026-08-27 复核：全部家族均已按用户授权提交）
 - [x] 第三批：输入与选择，共 15 个家族。（2026-09-10 复核：15 个家族全部按用户授权提交；视觉验收 NumericUpDown、Form、Transfer、AutoComplete、Cascader 已关闭，ColorPicker、Select、DatePicker 待视觉验收，Mentions、TimePicker、TreeSelect 尚无验收文档；本批次收尾测试尚未执行。）
-- [ ] 第四批：Popup 与独立宿主，共 9 个家族。（2026-09-10 复核：ImagePreviewer、InfoFlyout、ToolTip、Tour、Drawer 已按用户授权提交；Message、Modal / Dialog、Notification、PopupConfirm 未开始。）
+- [ ] 第四批：Popup 与独立宿主，共 10 个家族。（2026-09-11 范围复核：DropdownButton 正式映射上游 Dropdown 并纳入本批；ImagePreviewer、InfoFlyout、ToolTip、Tour、Drawer、DropdownButton 已按用户授权提交；Message、Modal / Dialog、Notification、PopupConfirm 未开始。）
 - [ ] 第五批：高密度控件，共 2 个家族。（未开始：NavMenu、DataGrid。）
 
-合计待改造：58 个控件家族。
-
-计划外交付：`DropdownButton` 已于 `6abaf6100` 落地独立语义契约（descriptor、`semantic-part.md`、测试与 Gallery），但[全量改造设计](../specs/2026-08-12-semantic-part-control-rollout-design.md)的排除映射仍把该控件列为不适用。两者需要用户裁决：把 `DropdownButton` 正式并入改造范围并从排除映射移除，还是回退该实现。裁决前本计划不计入该控件。
+合计待改造：59 个控件家族。
 
 ## 3. 单控件强制执行循环
 
@@ -162,11 +160,11 @@
 
 **计划：** [第四批任务清单](2026-08-12-semantic-part-batch-4-hosts-windows.md)
 
-**进度（2026-09-10 复核）：** ImagePreviewer（`08aa3e6ef`、`f32e2b258`）、InfoFlyout（`e067b12a4`）、ToolTip（`5fe34ab8a`）、Tour（`b6ee2e315`）、Drawer（`e415b81f9`）已按用户授权提交，共 5/9；Message、Modal / Dialog、Notification、PopupConfirm 未开始。已交付家族的 LLMS 生成产物在 2026-09-10 复核时补齐（Drawer、Tour 原提交遗漏 `docs/AI/generated` 重生成，且 Drawer 文档存在禁用外部项目名）。
+**进度（2026-09-11 范围复核）：** ImagePreviewer（`08aa3e6ef`、`f32e2b258`）、InfoFlyout（`e067b12a4`）、ToolTip（`5fe34ab8a`）、Tour（`b6ee2e315`）、Drawer（`e415b81f9`）、DropdownButton（`6abaf6100`）已按用户授权提交，共 6/10；Message、Modal / Dialog、Notification、PopupConfirm 未开始。已交付家族的 LLMS 生成产物在 2026-09-10 复核时补齐（Drawer、Tour 原提交遗漏 `docs/AI/generated` 重生成，且 Drawer 文档存在禁用外部项目名）。DropdownButton 以自身 public owner 直接拥有下拉命令弹层，语义契约映射上游 `Dropdown`，不映射 deprecated `Dropdown.Button`。
 
 - [ ] 每项设计获批前，必须明确 Visual root ownership 和释放路径。
 - [ ] 测试多宿主隔离、关闭/detach 清理和 Gallery `AdditionalRoots`，不得引入生产 Preview API。
-- [ ] 9 个家族全部提交后，运行 Popup/Overlay 检查和 Gallery NativeAOT publish。
+- [ ] 10 个家族全部提交后，运行 Popup/Overlay 检查和 Gallery NativeAOT publish。
 
 ### 任务 5：第五批 - 高密度控件
 
@@ -208,9 +206,9 @@ pwsh -NoLogo -NoProfile -File controlgallery/AtomUIGallery.Desktop/scripts/Publi
 
 ## 6. 全量改造收尾
 
-- [ ] 确认 58 个家族都通过各自经用户授权的提交达到 `Committed` 状态。
+- [ ] 确认 59 个家族都通过各自经用户授权的提交达到 `Committed` 状态。
 - [ ] 重新扫描 public 控件和全部叶子主题，检查未声明的 `.semantic-*`、缺少的已批准 marker，以及 Descriptor 与文档不一致。
-- [ ] 确认 20 个排除控件仍然没有通过最新稳定发布源码公开 API 准入 Gate。
+- [ ] 确认 18 个排除控件仍然没有通过最新稳定发布源码公开 API 准入 Gate。
 - [ ] 运行全部通用测试、DataGrid 测试、LLMS verify、NativeAOT publish 和 `git diff --check`。
 - [ ] 审核每个 Gallery 页面，确认保持 Examples-first 行为，并且选择 Tab 前不会实例化 Semantic Preview。
 - [ ] 输出最终兼容性与性能摘要；除非用户明确要求，否则不得额外创建 squash 或批次提交。

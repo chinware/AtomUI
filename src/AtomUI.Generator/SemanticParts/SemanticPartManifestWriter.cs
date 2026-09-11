@@ -1,6 +1,7 @@
 using System.Text;
 using AtomUI.SourceGeneration;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace AtomUI.Generator;
 
@@ -89,11 +90,11 @@ internal sealed class SemanticPartManifestWriter
         var controlType = control.ControlType.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType);
         source.AppendLine("            new global::AtomUI.Theme.Schema.ControlSemanticDescriptor(");
         source.Append("                typeof(").Append(controlType).AppendLine("),");
-        source.Append("                new global::AtomUI.Theme.Schema.ControlTokenIdentity(\"")
-              .Append(Escape(_controlCatalog))
-              .Append("\", \"")
-              .Append(Escape(control.ControlType.Name))
-              .AppendLine("\"),");
+        source.Append("                new global::AtomUI.Theme.Schema.ControlTokenIdentity(")
+              .Append(FormatStringLiteral(_controlCatalog))
+              .Append(", ")
+              .Append(FormatStringLiteral(control.ControlType.Name))
+              .AppendLine("),");
         source.AppendLine("                new global::AtomUI.Theme.Schema.SemanticPartDescriptor[]");
         source.AppendLine("                {");
         source.AppendLine("                    new global::AtomUI.Theme.Schema.SemanticPartDescriptor(");
@@ -122,9 +123,9 @@ internal sealed class SemanticPartManifestWriter
         var contractType = part.ContractType?.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType) ??
                            "global::Avalonia.Controls.Control";
         source.AppendLine("                    new global::AtomUI.Theme.Schema.SemanticPartDescriptor(");
-        source.Append("                        \"").Append(Escape(part.Name)).AppendLine("\",");
-        source.Append("                        \"").Append(Escape(part.Path)).AppendLine("\",");
-        source.Append("                        \"").Append(Escape(part.SelectorClass ?? string.Empty)).AppendLine("\",");
+        source.Append("                        ").Append(FormatStringLiteral(part.Name)).AppendLine(",");
+        source.Append("                        ").Append(FormatStringLiteral(part.Path)).AppendLine(",");
+        source.Append("                        ").Append(FormatStringLiteral(part.SelectorClass ?? string.Empty)).AppendLine(",");
         source.Append("                        typeof(").Append(contractType).AppendLine("),");
         source.Append("                        global::AtomUI.Theme.SemanticPartCardinality.")
               .Append(GetCardinalityName(part.Cardinality))
@@ -136,20 +137,20 @@ internal sealed class SemanticPartManifestWriter
         {
             var themeTargetType = part.ThemeTargetType?.ToDisplayString(
                                       GeneratorSymbolDisplay.FullyQualifiedType) ?? contractType;
-            source.Append("                        new global::AtomUI.Theme.Schema.ControlThemeSemanticPartDescriptor(\"")
-                  .Append(Escape(part.ThemePropertyName!))
-                  .Append("\", \"")
-                  .Append(Escape(themeTargetType))
-                  .AppendLine("\"),");
+            source.Append("                        new global::AtomUI.Theme.Schema.ControlThemeSemanticPartDescriptor(")
+                  .Append(FormatStringLiteral(part.ThemePropertyName!))
+                  .Append(", ")
+                  .Append(FormatStringLiteral(themeTargetType))
+                  .AppendLine("),");
         }
         else
         {
             source.AppendLine("                        null,");
         }
         source.Append("                        ").Append(part.CrossVisualRoot ? "true" : "false").AppendLine(",");
-        source.Append("                        \"").Append(Escape(part.Since ?? string.Empty)).AppendLine("\",");
+        source.Append("                        ").Append(FormatStringLiteral(part.Since ?? string.Empty)).AppendLine(",");
         source.Append("                        ").Append(part.RuntimeCreated ? "true" : "false").AppendLine(",");
-        source.Append("                        \"").Append(Escape(part.SelectorRoute ?? string.Empty)).AppendLine("\",");
+        source.Append("                        ").Append(FormatStringLiteral(part.SelectorRoute ?? string.Empty)).AppendLine(",");
         source.Append("                        typeof(global::AtomUI.Theme.Styling.")
               .Append(SemanticPartStyleContract.GetTypeName(control, part))
               .AppendLine("),");
@@ -174,12 +175,12 @@ internal sealed class SemanticPartManifestWriter
         foreach (var part in control.Parts.OrderBy(static part => part.Path, StringComparer.Ordinal))
         {
             var memberName = ToMemberName(part.Name);
-            source.Append("    internal const string ").Append(memberName).Append(" = \"")
-                  .Append(Escape(part.Name)).AppendLine("\";");
-            source.Append("    internal const string ").Append(memberName).Append("Class = \"")
-                  .Append(Escape(part.SelectorClass ?? string.Empty)).AppendLine("\";");
-            source.Append("    internal const string ").Append(memberName).Append("SelectorRoute = \"")
-                  .Append(Escape(part.SelectorRoute ?? string.Empty)).AppendLine("\";");
+            source.Append("    internal const string ").Append(memberName).Append(" = ")
+                  .Append(FormatStringLiteral(part.Name)).AppendLine(";");
+            source.Append("    internal const string ").Append(memberName).Append("Class = ")
+                  .Append(FormatStringLiteral(part.SelectorClass ?? string.Empty)).AppendLine(";");
+            source.Append("    internal const string ").Append(memberName).Append("SelectorRoute = ")
+                  .Append(FormatStringLiteral(part.SelectorRoute ?? string.Empty)).AppendLine(";");
         }
         source.AppendLine("}");
 
@@ -250,9 +251,9 @@ internal sealed class SemanticPartManifestWriter
             }
             else if (token.StartsWith(".", StringComparison.Ordinal))
             {
-                source.Append("            .Class(\"")
-                      .Append(Escape(token.Substring(1)))
-                      .AppendLine("\")");
+                source.Append("            .Class(")
+                      .Append(FormatStringLiteral(token.Substring(1)))
+                      .AppendLine(")");
             }
             else
             {
@@ -289,8 +290,8 @@ internal sealed class SemanticPartManifestWriter
         };
     }
 
-    private static string Escape(string value)
+    private static string FormatStringLiteral(string value)
     {
-        return value.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        return SymbolDisplay.FormatLiteral(value, quote: true);
     }
 }

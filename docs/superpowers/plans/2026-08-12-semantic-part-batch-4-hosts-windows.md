@@ -2,7 +2,7 @@
 
 > **供智能体执行者使用：** 使用 `superpowers:executing-plans` 在当前会话中执行，不得使用 subagent。每个控件修改源码前都必须明确 Visual root ownership 并获得批准。
 
-**目标：** 为 9 个具有 Ant Design 6.6.0 稳定发布源码公开 Semantic DOM 对应 API 的 Popup、Overlay 和服务宿主控件家族建立 Semantic Part 契约，并覆盖完整生命周期与多 root 隔离。
+**目标：** 为 10 个具有 Ant Design 6.6.0 稳定发布源码公开 Semantic DOM 对应 API 的 Popup、Overlay 和服务宿主控件家族建立 Semantic Part 契约，并覆盖完整生命周期与多 root 隔离。
 
 **架构：** 每个生产 owner 通过现有 host/session 生命周期公开 selector Part。Gallery 可以提供由示例显式拥有的 additional root，但生产控件不得引入 Preview API、全局 root registry 或运行时搜索。服务型控件使用真实 owner 边界。
 
@@ -90,7 +90,20 @@
 - [x] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
 - [x] **强制停止：** 保持 Drawer 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
-### 任务 6：Message
+### 任务 6：DropdownButton
+
+**控件文档：** `docs/controls/desktop/navigation/dropdown-button/overview.md`、`docs/controls/desktop/navigation/dropdown-button/implementation.md`、`docs/controls/desktop/navigation/dropdown-button/semantic-part.md`
+
+**证据范围：** `src/AtomUI.Desktop.Controls/DropdownButton/**/*.cs`、`src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButton*Theme.axaml`、共享 MenuFlyout / MenuItem marker 注入路径；测试 `tests/AtomUI.Desktop.Controls.Tests/DropdownButton`；Gallery `controlgallery/AtomUIGallery/ShowCases/Navigation/DropdownButton`。
+
+**风险类型：** MenuFlyout 跨视觉根、子菜单嵌套视觉根、运行时 MenuItem 容器、共享菜单节点的 owner 隔离。
+
+- [x] **Gate A 设计审核：** 将 AtomUI `DropdownButton` 作为直接拥有下拉命令弹层的 public owner 映射到上游 `Dropdown`，不映射 deprecated `Dropdown.Button` 的 split-trigger 组合；确认触发侧不发布 Part，上游弹层 `root` 映射为 `popup.root`，菜单项区域由同一 owner 的运行时 marker 承载。
+- [x] 完成 `overview.md`、`implementation.md` 与 `semantic-part.md`，记录 `popup.root` / `itemTitle` / `item` / `itemContent` / `itemIcon` 的 route、cardinality、跨根与嵌套 owner 边界。
+- [x] **Gate B 实现与验证：** `DropdownButtonSemanticPartTests` 覆盖 descriptor、marker 注入、顶层与嵌套菜单项、owner-scoped Style 命中、打开/关闭/重开和 pinned-open 生命周期；Gallery 页面与高亮测试覆盖全部公开 Part。
+- [x] **已授权提交：** `6abaf6100` 已交付 descriptor、控件文档、运行时 marker、测试与 Gallery 示例。
+
+### 任务 7：Message
 
 **控件文档：** `docs/controls/desktop/feedback/message/overview.md`, `docs/controls/desktop/feedback/message/implementation.md`
 
@@ -104,7 +117,7 @@
 - [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
 - [ ] **强制停止：** 保持 Message 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
-### 任务 7：Modal / Dialog
+### 任务 8：Modal / Dialog
 
 **控件文档：** `docs/controls/desktop/feedback/modal/overview.md`、`docs/controls/desktop/feedback/modal/implementation.md`；只有已批准的 Part 模型改变稳定的尺寸契约时，才更新现有 `host-sizing-design.md`。
 
@@ -118,7 +131,7 @@
 - [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
 - [ ] **强制停止：** 保持 Modal / Dialog 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
-### 任务 8：Notification
+### 任务 9：Notification
 
 **控件文档：** `docs/controls/desktop/feedback/notification/overview.md`, `docs/controls/desktop/feedback/notification/implementation.md`
 
@@ -132,7 +145,7 @@
 - [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
 - [ ] **强制停止：** 保持 Notification 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
-### 任务 9：PopupConfirm
+### 任务 10：PopupConfirm
 
 **控件文档：** `docs/controls/desktop/feedback/popup-confirm/overview.md`, `docs/controls/desktop/feedback/popup-confirm/implementation.md`
 
@@ -148,9 +161,9 @@
 
 ## 批次收尾
 
-> 2026-09-10 复核：ImagePreviewer、InfoFlyout、ToolTip、Tour、Drawer 五个家族的单项任务框已置为已完成（均已按用户授权提交）。Message、Modal / Dialog、Notification、PopupConfirm 四个家族未开始，本批次仍未收尾。
+> 2026-09-11 范围复核：ImagePreviewer、InfoFlyout、ToolTip、Tour、Drawer、DropdownButton 六个家族的单项任务框已置为已完成（均已按用户授权提交）。Message、Modal / Dialog、Notification、PopupConfirm 四个家族未开始，本批次仍未收尾。
 
-- [ ] 确认 9 个控件家族分别拥有用户授权的独立提交。
+- [ ] 确认 10 个控件家族分别拥有用户授权的独立提交。
 - [ ] 运行完整 Desktop Controls、Generator、GalleryBase 和 Gallery 测试，并执行 Popup/Overlay 生命周期筛选。
 - [ ] 运行 LLMS verify、Gallery NativeAOT publish、适用的平台冒烟检查和 `git diff --check`。
 - [ ] 更新总计划清单，不创建批次提交。

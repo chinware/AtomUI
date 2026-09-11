@@ -82,7 +82,7 @@ steps switch table tabs tag time-picker timeline tooltip tour transfer tree tree
 
 ### 2.3 AtomUI 纳入映射
 
-下表覆盖 58 个准入家族，其中 `Button` 已完成，其余 57 个进入五个实施批次。映射只证明“允许进入 Gate A”，不预先
+下表覆盖 60 个准入家族，其中 `Button` 已完成，其余 59 个进入五个实施批次。映射只证明“允许进入 Gate A”，不预先
 承诺具体 Part 名称或数量；每个 Part 仍必须从 AtomUI 自身源码、主题和生命周期事实中设计。
 
 | AtomUI 控件家族 | Ant Design 6.6.0 公开 owner | 结论 |
@@ -135,6 +135,7 @@ steps switch table tabs tag time-picker timeline tooltip tour transfer tree tree
 | `Transfer` | `Transfer` | Batch 3 |
 | `TreeSelect` | `TreeSelect` | Batch 3 |
 | `Upload` | `Upload` | Batch 3 |
+| `DropdownButton` | `Dropdown` | Batch 4；AtomUI owner 直接拥有 `DropdownFlyout` / `MenuFlyout` 命令弹层，映射上游 `Dropdown` 的弹层 Semantic DOM，不映射 deprecated `Dropdown.Button` 的 split-trigger 组合结构 |
 | `ImagePreviewer` | `Image`、`Image.PreviewGroup` | Batch 4 |
 | `InfoFlyout` | `Popover` | Batch 4 |
 | `ToolTip` | `Tooltip` | Batch 4 |
@@ -166,7 +167,6 @@ steps switch table tabs tag time-picker timeline tooltip tour transfer tree tree
 | `TabStrip` | Ant Design 只在 `Tabs` owner 上公开 API，没有独立 `TabStrip` owner。 | 新稳定版出现独立公开 owner。 |
 | `ButtonSpinner` | Ant Design 没有职责直接对应的公开 Semantic DOM owner；`InputNumber` 的 handle 是其内部区域。 | 新稳定版出现独立 spinner owner。 |
 | `ComboBox` | Ant Design 没有公开 `ComboBox` 组件；`Select` 的 internal combobox mode 不能作为公开 owner。 | 新稳定版出现公开 ComboBox owner。 |
-| `DropdownButton` | deprecated `Dropdown.Button` 虽在类型上继承 `DropdownProps`，实现没有消费调用方传入的 Semantic DOM 值（与 `SplitButton` 行同源证据）。弹层菜单区域的语义 API 属于 `Dropdown` owner（见 `SplitButton` 行）；AtomUI 侧其 `MenuFlyout` 弹层内的菜单项语义由 `NavMenu → Menu`（第五批）承载。 | 稳定版为该 owner 提供独立并实际消费的 API。 |
 | `BorderBeam` | Ant Design 稳定版没有该公开组件或对应 Semantic DOM API。 | 稳定版出现职责直接对应的公开 owner。 |
 | `Splash` | Ant Design 稳定版没有职责直接对应的公开 Semantic DOM owner。 | 新稳定版出现对应公开 owner。 |
 | `Menu` | AtomUI `Menu` 是桌面命令、ContextMenu 与 MenuFlyout 家族；Ant Design `Menu` 是页面/模块导航，直接对应 AtomUI `NavMenu`。 | Ant Design 出现职责对应桌面命令菜单的独立公开 owner。 |
@@ -188,8 +188,10 @@ owner、public child control、internal presenter、item container、runtime-cre
   但作为独立文档叶子另行审核其搜索按钮和 decorated box 契约。
 - `Modal / Dialog` 包含 `Dialog`、`DialogSurface`、Overlay host、Window host、header、resizer 和 button box。
 - `DataGrid` 包含 grid、row、cell、header、presenter、filter flyout 和虚拟化/回收路径。
-- `SplitButton`、`DropdownButton` 等组合控件即使复用已支持的 Button，也不能继承准入资格；公开 owner 必须独立通过
+- `SplitButton` 等组合控件即使复用已支持的 Button，也不能继承准入资格；公开 owner 必须独立通过
   2.1 的 Gate。
+- `DropdownButton` 虽复用 Button 与 MenuFlyout 基础设施，仍以自己的 public owner 直接拥有下拉命令弹层，并已独立通过
+  2.1 的 Gate；其语义契约映射上游 `Dropdown`，不借用 deprecated `Dropdown.Button` 的组合 owner 资格。
 
 同一家族的 descriptor 与模板 marker 必须一起审核和实现，不能让父控件与其容器、Popup 或派生模板在不同 commit 中短暂
 形成不完整公共契约。
@@ -442,9 +444,9 @@ git diff --check
 | 批次 | 数量 | 目标 | 主要风险 |
 | --- | ---: | --- | --- |
 | Batch 1 | 16 | 基础视觉与状态控件，建立可复用审核节奏。 | 派生主题、尺寸、adorner、状态替代节点。 |
-| Batch 2 | 15 | 集合、容器与导航结构。 | container、runtime-created、虚拟化、多重 cardinality。 |
+| Batch 2 | 16 | 集合、容器与导航结构。 | container、runtime-created、虚拟化、多重 cardinality。 |
 | Batch 3 | 15 | 输入、选择与日期/时间类控件。 | SizeType、Popup、内部 editor、候选项容器。 |
-| Batch 4 | 9 | Popup、Overlay 与服务宿主。 | 跨视觉根、session 生命周期、多宿主隔离。 |
+| Batch 4 | 10 | Popup、Overlay 与服务宿主。 | 跨视觉根、session 生命周期、多宿主隔离。 |
 | Batch 5 | 2 | 高密度复合控件。 | 大量 container、Popup、虚拟化和性能。 |
 
 批次表达审核顺序，不构成批量提交边界。始终一次只推进一个控件家族，并在 Gate A 与 Gate B 后等待用户确认。

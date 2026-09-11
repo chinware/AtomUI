@@ -62,6 +62,38 @@ public class SemanticPartGeneratorTests
     }
 
     [Fact]
+    public void Escapes_Control_Characters_In_Since_Metadata()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace Demo;
+
+            [SemanticPart(
+                "content",
+                SelectorClass = "semantic-content",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                SelectorRoute = "> .semantic-content",
+                Since = "6.0\n\t\u0001")]
+            public partial class EscapedSinceOwner : Control
+            {
+            }
+            """;
+
+        var outputCompilation = RunGenerator(source, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        outputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                         .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                         .ShouldBeEmpty();
+
+        var manifest = GetGeneratedSource(outputCompilation, "GeneratedSemanticPartManifest.g.cs");
+        manifest.ShouldContain("\"6.0\\n\\t\\u0001\",");
+    }
+
+    [Fact]
     public void Generates_Public_Semantic_Style_Types_With_Owner_And_Fluent_Route()
     {
         var outputCompilation = RunGenerator(ButtonSource, out var diagnostics, ButtonTheme);
@@ -114,9 +146,9 @@ public class SemanticPartGeneratorTests
 
         var output = RunGenerator(source, out var diagnostics);
 
-        diagnostics.Count(static diagnostic => diagnostic.Id == "ATOMUIGEN030").ShouldBe(2);
+        diagnostics.Count(static diagnostic => diagnostic.Id == "ATOMUIGEN037").ShouldBe(2);
         diagnostics.ShouldAllBe(diagnostic =>
-            diagnostic.Id != "ATOMUIGEN030" ||
+            diagnostic.Id != "ATOMUIGEN037" ||
             diagnostic.GetMessage().Contains(
                 "AtomUI.Theme.Styling.CollisionOwnerFooBarStyle",
                 StringComparison.Ordinal));
@@ -161,7 +193,7 @@ public class SemanticPartGeneratorTests
 
         var output = RunGenerator(source, out var diagnostics);
 
-        diagnostics.Count(static diagnostic => diagnostic.Id == "ATOMUIGEN030").ShouldBe(2);
+        diagnostics.Count(static diagnostic => diagnostic.Id == "ATOMUIGEN037").ShouldBe(2);
         HasGeneratedSource(output, "RepeatedContentStyle.g.cs").ShouldBeFalse();
     }
 
@@ -197,7 +229,7 @@ public class SemanticPartGeneratorTests
         var output = RunGenerator(source, out var diagnostics);
 
         diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUIGEN030" &&
+            diagnostic.Id == "ATOMUIGEN037" &&
             diagnostic.GetMessage().Contains("existing source type", StringComparison.Ordinal));
         HasGeneratedSource(output, "OccupiedContentStyle.g.cs").ShouldBeFalse();
     }
@@ -219,7 +251,7 @@ public class SemanticPartGeneratorTests
             ButtonTheme);
 
         diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUIGEN030" &&
+            diagnostic.Id == "ATOMUIGEN037" &&
             diagnostic.GetMessage().Contains("Referenced.Semantic.Styles", StringComparison.Ordinal));
         HasGeneratedSource(output, "ButtonIconStyle.g.cs").ShouldBeFalse();
         HasGeneratedSource(output, "ButtonContentStyle.g.cs").ShouldBeFalse();
@@ -347,7 +379,7 @@ public class SemanticPartGeneratorTests
         _ = RunGenerator(source, out var diagnostics);
 
         diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUIGEN020" &&
+            diagnostic.Id == "ATOMUIGEN027" &&
             diagnostic.GetMessage().Contains("SelectorRoute", StringComparison.Ordinal));
     }
 
@@ -415,7 +447,7 @@ public class SemanticPartGeneratorTests
         _ = RunGenerator(source, out var diagnostics);
 
         diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUIGEN020" &&
+            diagnostic.Id == "ATOMUIGEN027" &&
             diagnostic.GetMessage().Contains("SelectorRoute", StringComparison.Ordinal));
     }
 
@@ -494,7 +526,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, theme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN029");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN036");
     }
 
     [Fact]
@@ -560,8 +592,8 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN020");
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN021");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN027");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN028");
     }
 
     [Fact]
@@ -586,7 +618,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme);
 
-        diagnostics.Count(diagnostic => diagnostic.Id == "ATOMUIGEN020").ShouldBeGreaterThanOrEqualTo(2);
+        diagnostics.Count(diagnostic => diagnostic.Id == "ATOMUIGEN027").ShouldBeGreaterThanOrEqualTo(2);
     }
 
     [Fact]
@@ -611,7 +643,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN020");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN027");
     }
 
     [Fact]
@@ -748,7 +780,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme, actionTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN023");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN030");
     }
 
     [Fact]
@@ -846,9 +878,9 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN022");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN029");
         diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUIGEN024" && diagnostic.Severity == DiagnosticSeverity.Warning);
+            diagnostic.Id == "ATOMUIGEN031" && diagnostic.Severity == DiagnosticSeverity.Warning);
     }
 
     [Fact]
@@ -873,7 +905,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN020");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN027");
     }
 
     [Fact]
@@ -900,7 +932,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme);
 
-        var diagnostic = diagnostics.Single(diagnostic => diagnostic.Id == "ATOMUIGEN023");
+        var diagnostic = diagnostics.Single(diagnostic => diagnostic.Id == "ATOMUIGEN030");
         diagnostic.GetMessage().ShouldContain("public getter and setter");
     }
 
@@ -929,7 +961,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN023");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN030");
     }
 
     [Fact]
@@ -957,7 +989,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, ButtonTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN023");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN030");
     }
 
     [Fact]
@@ -994,8 +1026,8 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(ButtonSource, out var diagnostics, missingMarkerTheme, incompatibleTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN025");
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN026");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN032");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN033");
     }
 
     [Fact]
@@ -1164,7 +1196,7 @@ public class SemanticPartGeneratorTests
         _ = RunGenerator(source, out var diagnostics, derivedTheme, baseTheme);
 
         diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUIGEN025" &&
+            diagnostic.Id == "ATOMUIGEN032" &&
             diagnostic.GetMessage().Contains("DerivedButtonTheme.axaml", StringComparison.Ordinal));
         diagnostics.ShouldNotContain(diagnostic =>
             diagnostic.GetMessage().Contains("BaseButtonTheme.axaml", StringComparison.Ordinal));
@@ -1218,7 +1250,7 @@ public class SemanticPartGeneratorTests
         _ = RunGenerator(source, out var diagnostics, derivedTheme, baseTheme);
 
         diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUIGEN025" &&
+            diagnostic.Id == "ATOMUIGEN032" &&
             diagnostic.GetMessage().Contains("BaseButtonTheme.axaml#1", StringComparison.Ordinal));
     }
 
@@ -1382,7 +1414,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, derivedTheme, baseTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN027");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN034");
     }
 
     [Fact]
@@ -1429,7 +1461,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, theme);
 
-        var templateDiagnostics = diagnostics.Where(diagnostic => diagnostic.Id == "ATOMUIGEN025").ToArray();
+        var templateDiagnostics = diagnostics.Where(diagnostic => diagnostic.Id == "ATOMUIGEN032").ToArray();
         templateDiagnostics.Length.ShouldBe(2);
         templateDiagnostics.ShouldContain(diagnostic => diagnostic.GetMessage().Contains(
             "Button/Themes/ButtonVariants.axaml#1",
@@ -1567,7 +1599,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, theme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN028");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN035");
     }
 
     [Fact]
@@ -1789,7 +1821,7 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, hostTheme, inputTheme, tagTheme);
 
-        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN025");
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN032");
     }
 
     private static CSharpCompilation RunGenerator(
@@ -2071,6 +2103,7 @@ public class SemanticPartGeneratorTests
                 public string? ThemePropertyName { get; set; }
                 public bool CrossVisualRoot { get; set; }
                 public bool CrossNestedOwners { get; set; }
+                public bool RestHidden { get; set; }
                 public string? Since { get; set; }
                 public bool RuntimeCreated { get; set; }
             }
@@ -2196,7 +2229,8 @@ public class SemanticPartGeneratorTests
                     bool runtimeCreated,
                     string? selectorRoute = null,
                     System.Type? styleType = null,
-                    bool crossNestedOwners = false)
+                    bool crossNestedOwners = false,
+                    bool restHidden = false)
                 {
                 }
             }

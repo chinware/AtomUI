@@ -117,7 +117,7 @@ Type name:     <ControlName><PartPathPascalCase>Style
 生成器不得使用正则表达式替代 AXAML 结构分析，也不得依赖只用于聚合的 `*Themes.axaml` 推断模板完整性。
 
 `Classes.semantic-*` 只有静态 `true` 才构成有效 marker。`False`、Binding 或其他动态值不能表示稳定模板契约；生成器
-对已声明 Part 报告 `ATOMUIGEN029`，并把该节点排除在 cardinality、类型兼容和节点冲突校验之外。字面量 `Classes`
+对已声明 Part 报告 `ATOMUIGEN036`，并把该节点排除在 cardinality、类型兼容和节点冲突校验之外。字面量 `Classes`
 形式继续用于兼容既有或第三方模板，但 AtomUI 自有模板统一使用 class property 形式。
 
 ### 2.3 Semantic Part Theme 资产
@@ -360,7 +360,7 @@ recycle 和 owner 切换后的实际 marker。
 1. 从路由中首个嵌套边界操作符前的锚点类，在宿主模板中定位嵌套控件节点并解析其类型；
 2. 在锚点类型基类链对应的主题资产中收集该部件 `SelectorClass` 的静态 marker——若嵌套控件经 `StyleKeyOverride`
    消费基类主题，只统计最派生主题，避免重复计数；
-3. 校验 marker 数量满足 Cardinality（`ATOMUIGEN025`）且元素类型兼容 `ContractType`（`ATOMUIGEN026`）。
+3. 校验 marker 数量满足 Cardinality（`ATOMUIGEN032`）且元素类型兼容 `ContractType`（`ATOMUIGEN033`）。
 
 未声明 `CrossNestedOwners` 的部件即使路由含 `>>`（如 NumericUpDown prefix，marker 仍在宿主模板内），继续按宿主
 模板校验。`RuntimeCreated` 部件不参与本节校验，沿用 4.5 的豁免规则。
@@ -371,21 +371,21 @@ recycle 和 owner 切换后的实际 marker。
 
 | ID | Severity | 触发条件 |
 | --- | --- | --- |
-| `ATOMUIGEN020` | Error | Control/Part 声明形态、名称、path、class、route、cardinality 或 customization 非法。 |
-| `ATOMUIGEN021` | Error | 同一 Control 中 Part name、path 或 selector class 重复。 |
-| `ATOMUIGEN022` | Error | `ContractType` 不是 public `StyledElement`。 |
-| `ATOMUIGEN023` | Error | `SelectorAndTheme` 的 public get/set `ControlTheme` 属性契约非法。 |
-| `ATOMUIGEN024` | Warning | Part 未声明 `Since`。 |
-| `ATOMUIGEN025` | Error | 某个模板的 marker 数量不满足 `Single`、`Optional` 或 `Multiple`。 |
-| `ATOMUIGEN026` | Error | marker 节点类型不能赋值给 `ContractType`。 |
-| `ATOMUIGEN027` | Error | Control 声明了静态 Part，但没有适用的可分析 ControlTemplate。 |
-| `ATOMUIGEN028` | Error | 同一模板节点同时声明了多个 Semantic Part marker。 |
-| `ATOMUIGEN029` | Error | 已声明 Part 的 `Classes.semantic-*` marker 不是静态 `true`。 |
-| `ATOMUIGEN030` | Error | 生成 Style 的完整 CLR identity 与另一生成候选、当前程序集已有类型或 canonical XML namespace 下可见的引用程序集 public 类型冲突。 |
+| `ATOMUIGEN027` | Error | Control/Part 声明形态、名称、path、class、route、cardinality 或 customization 非法。 |
+| `ATOMUIGEN028` | Error | 同一 Control 中 Part name、path 或 selector class 重复。 |
+| `ATOMUIGEN029` | Error | `ContractType` 不是 public `StyledElement`。 |
+| `ATOMUIGEN030` | Error | `SelectorAndTheme` 的 public get/set `ControlTheme` 属性契约非法。 |
+| `ATOMUIGEN031` | Warning | Part 未声明 `Since`。 |
+| `ATOMUIGEN032` | Error | 某个模板的 marker 数量不满足 `Single`、`Optional` 或 `Multiple`。 |
+| `ATOMUIGEN033` | Error | marker 节点类型不能赋值给 `ContractType`。 |
+| `ATOMUIGEN034` | Error | Control 声明了静态 Part，但没有适用的可分析 ControlTemplate。 |
+| `ATOMUIGEN035` | Error | 同一模板节点同时声明了多个 Semantic Part marker。 |
+| `ATOMUIGEN036` | Error | 已声明 Part 的 `Classes.semantic-*` marker 不是静态 `true`。 |
+| `ATOMUIGEN037` | Error | 生成 Style 的完整 CLR identity 与另一生成候选、当前程序集已有类型或 canonical XML namespace 下可见的引用程序集 public 类型冲突。 |
 
 生成 Style 的完整 CLR identity（程序集、namespace、type name）必须在当前 compilation 和可见 AtomUI Control 包中唯一。
 同一 XML namespace 下出现不可区分的 public Style type、同一 owner 内生成名称冲突，或已有用户类型占用生成 identity 时，
-生成器必须报告 `ATOMUIGEN030` 并阻断受影响 Control 的 Semantic manifest、常量和 Style 输出；不能静默改名、覆盖或生成
+生成器必须报告 `ATOMUIGEN037` 并阻断受影响 Control 的 Semantic manifest、常量和 Style 输出；不能静默改名、覆盖或生成
 第二个 alias。引用程序集只有同时通过 canonical XML namespace 导出同名 public 类型时才构成 AXAML identity 冲突；
 未公开类型或未映射到 canonical XML namespace 的同名 CLR 类型不误报。
 
@@ -460,7 +460,7 @@ public VisualTree API 查找已实例化 `.semantic-*` marker；该查找只属�
 7. Popup、runtime-created Part、显式 route 和 item container 元数据。
 8. 旧 Core 引用下保持四参数 package registration 的兼容路径。
 9. 包级注册、生成 Style、XML namespace 映射、生成顺序与 NativeAOT 友好输出。
-10. 静态 class property marker、字面量兼容 marker，以及 false/dynamic marker 的 `ATOMUIGEN029` 诊断。
-11. 静态 Part 默认 route、RuntimeCreated 缺失 route、非法 route token 和 route 末尾 class 不一致的 `ATOMUIGEN020` 诊断。
+10. 静态 class property marker、字面量兼容 marker，以及 false/dynamic marker 的 `ATOMUIGEN036` 诊断。
+11. 静态 Part 默认 route、RuntimeCreated 缺失 route、非法 route token 和 route 末尾 class 不一致的 `ATOMUIGEN027` 诊断。
 12. `Nesting()`、多段 `/template/`、`Child()` 的 Fluent Selector 生成结果，以及 owner selector 由外层 Style 提供的约束。
 13. `x:SetterTargetType` 显式保留、StyleType identity 冲突和 canonical XML namespace 去重。
