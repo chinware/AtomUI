@@ -348,11 +348,11 @@ public class SliderShowCasePageTests
         zhCn["SemanticRailDescription"].ShouldBe("背景轨道元素，设置绝对定位、背景色、圆角和过渡动画样式");
         zhCn["SemanticHandleDescription"].ShouldBe(
             "滑块控制点元素，设置绝对定位、尺寸、轮廓线、用户选择、背景色、边框阴影、圆角、光标样式和过渡动画");
-        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义 Semantic Part 样式");
+        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义语义结构的样式");
 
         var zhTw = XliffTestDocument.Read(
             "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh-TW.xlf");
-        zhTw["SemanticPartStyleTitle"].ShouldBe("自定義 Semantic Part 樣式");
+        zhTw["SemanticPartStyleTitle"].ShouldBe("自訂語義結構的樣式");
         zhTw["SemanticRootDescription"].ShouldBe("根元素，設定相對定位、高度、邊距、內邊距、游標樣式和觸控事件控制");
 
         var enUs = XliffTestDocument.Read(
@@ -361,7 +361,7 @@ public class SliderShowCasePageTests
 
         var ptBr = XliffTestDocument.Read(
             "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/pt-BR.xlf");
-        ptBr["SemanticPartStyleTitle"].ShouldBe("Personalizar estilo de Semantic Part");
+        ptBr["SemanticPartStyleTitle"].ShouldBe("Estilo personalizado de Semantic Part");
     }
 
     private static Border FindPart(AtomSlider owner, string semanticClass)

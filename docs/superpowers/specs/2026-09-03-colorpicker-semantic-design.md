@@ -48,7 +48,7 @@
 1. `GalleryShowCaseHost.SemanticPartsContentTemplate` + `SemanticPartPreview`：预览打开状态 ColorPicker
    （钉住弹层、箭头、showText），五个 `SemanticPartDescription` 文案逐字复刻 antd
    `components/color-picker/demo/_semantic.tsx` 的 cn/en 描述，翻译 zh-TW/pt-BR。
-2. 新 showcase item「自定义语义结构样式」复刻 antd `components/color-picker/demo/style-class.tsx`：
+2. 新 showcase item「自定义语义结构的样式」复刻 antd `components/color-picker/demo/style-class.tsx`：
    - 实例一：`DefaultValue=#1677ff`、`IsArrowVisible=False`、root 圆角 = BorderRadius token、
      `popup.root` 白色 1px 边框（#FFFFFF）；
    - 实例二：`DefaultValue=#722ed1`、`SizeType=Large`、`IsArrowVisible=False`、`popup.root` 紫色 1px 边框

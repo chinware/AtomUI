@@ -226,7 +226,7 @@ SourceKey：`line-edit-otp-ant-design`
 </StackPanel>
 ```
 
-### 自定义语义化结构样式
+### 自定义语义结构的样式
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:853`
 

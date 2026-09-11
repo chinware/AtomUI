@@ -717,8 +717,8 @@
     </unit>
     <unit id="StyleClassTitle">
       <segment>
-        <source>Customize semantic structure styles</source>
-        <target state="translated">Personalizar estilos de estrutura semântica</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
       </segment>
     </unit>
     <unit id="VariantsDescription">

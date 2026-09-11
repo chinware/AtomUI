@@ -1,6 +1,6 @@
 # Message 桌面版架构设计
 
-本文档定义 `Message` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Message 桌面版实现原理](implementation.md)，Message Token 的专项设计见 [Message Token 设计](token.md)，设计和契约变化记录见 [Message Changelog](changelog.md)。
+本文档定义 `Message` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Message 桌面版实现原理](implementation.md)，公共 Semantic Part 契约见 [Message Semantic Part 契约](semantic-part.md)，Message Token 的专项设计见 [Message Token 设计](token.md)，设计和契约变化记录见 [Message Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -50,6 +50,10 @@ Message 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 - 类型：`Message`、`MessageCard`、`WindowMessageManager`。
 - 枚举：`MessageType`。
+
+Semantic Part owner 为两个 public Control：`MessageCard`（单条消息卡片）与 `WindowMessageManager`（服务型消息宿主）。
+两个 owner 各自公开独立 descriptor，完整 Part 表、selector、`ContractType`、cardinality、节点映射与定制边界见
+[Message Semantic Part 契约](semantic-part.md)。
 
 稳定 template part：
 
@@ -151,15 +155,28 @@ Message 的视觉选项通过 public API 归一为 theme variables、伪类或�
 - [Message Token 设计](token.md)
 - [Message Changelog](changelog.md)
 
-LLMS 语义区域：
+Semantic Parts 摘要（完整契约见 [Message Semantic Part 契约](semantic-part.md)）：
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Message` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Owner | Part | Style Type | ContractType | 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `MessageCard` | `root` | 不适用（root） | `MessageCard` | owner 本身（表面投影 `Border#PART_Frame`） | 单条消息项根：内容、状态、关闭与进出场动效；对应上游 notice root。 | stable since 6.0 |
+| `MessageCard` | `wrapper` | `MessageCardWrapperStyle` | `DockPanel` | `DockPanel#PART_HeaderContainer` | 图标与标题的包裹布局；对应上游 notice wrapper。 | stable since 6.0 |
+| `MessageCard` | `icon` | `MessageCardIconStyle` | `IconPresenter` | `IconPresenter#PART_IconContent` | 状态图标尺寸与画刷；对应上游 notice icon。 | stable since 6.0 |
+| `MessageCard` | `title` | `MessageCardTitleStyle` | `Avalonia.Controls.SelectableTextBlock` | `SelectableTextBlock#PART_Message` | 消息文本颜色、字号、行高；对应上游 notice title。 | stable since 6.0 |
+| `WindowMessageManager` | `root` | 不适用（root） | `WindowMessageManager` | owner 本身（宿主层覆盖层；无宿主时为内联实例） | 消息列表根：定位、层级、队列、超时与宿主生命周期；对应上游 list。 | stable since 6.0 |
+| `WindowMessageManager` | `listContent` | `WindowMessageManagerListContentStyle` | `ReversibleStackPanel` | `ReversibleStackPanel#PART_Items` | notice 排列方向、顺序与对齐；对应上游 listContent。 | stable since 6.0 |
+
+定制与兼容性摘要：
+
+- 定制入口是生成的强类型 Semantic Style（`MessageCardWrapperStyle` / `MessageCardIconStyle` /
+  `MessageCardTitleStyle` / `WindowMessageManagerListContentStyle`），以 owner-scoped 外层 `Style` 嵌套使用，
+  并显式声明 `x:SetterTargetType`。应用不手写 `/template/ .semantic-*` route，也不依赖 `PART_*`。
+- `root` 由 owner 侧普通 Setter 或 owner API 定制，不生成 Semantic Style 类型。
+- `.semantic-*` marker 只在 owner 自身 `ControlTheme` 中静态声明；AtomUI 内置主题不使用 `.semantic-*` 实现默认视觉。
+- 删除或重命名 Part、修改 selector class、收窄 `ContractType`、改变 cardinality，或让任一内置模板缺少 marker，
+  均属于公共主题契约变更（见 [系统架构兼容性表](../../../../architecture/systems/theming/semantic-parts.md)）。
+- 行为、关闭状态机、队列与宿主层装卸不属于 Semantic Part；`Message` / `IMessage` / `IMessageManager` /
+  `MessageCardToken` 不持有 descriptor。
 
 LLMS 导出来源：
 

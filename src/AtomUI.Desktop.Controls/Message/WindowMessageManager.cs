@@ -11,7 +11,7 @@ using Avalonia.Threading;
 namespace AtomUI.Desktop.Controls;
 
 [TemplatePart("PART_Items", typeof(Panel))]
-public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAwareControl, IDisposable
+public partial class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAwareControl, IDisposable
 {
     #region 公共属性定义
 
@@ -71,12 +71,23 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     private int _hostLayerRetryCount;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
+    /// Initializes a new instance of the <see cref="WindowMessageManager" /> class without a host.
+    /// The manager is not installed into any layer; it renders inline wherever the caller places it,
+    /// which is the AtomUI equivalent of rendering a message list in a local container instead of the
+    /// window feedback layer. This also makes the control declaratively usable from XAML, mirroring
+    /// <see cref="WindowNotificationManager" />.
     /// </summary>
-    /// <param name="host">The TopLevel that will host the control.</param>
-    public WindowMessageManager(TopLevel? host)
+    public WindowMessageManager()
     {
+    }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WindowMessageManager" /> class.
+    /// </summary>
+    /// <param name="host">The TopLevel that will host the control. Pass <c>null</c> to skip installing
+    /// the manager into a TopLevel layer; the manager then renders inline wherever the caller places it.</param>
+    public WindowMessageManager(TopLevel? host) : this()
+    {
         if (host is not null)
         {
             _topLevel = host;
@@ -106,7 +117,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     }
 
     /// <summary>
-    /// Shows a Notification
+    /// Shows a Message
     /// </summary>
     /// <param name="message">the content of the message</param>
     /// <param name="classes">style classes to apply</param>

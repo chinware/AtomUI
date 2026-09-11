@@ -232,7 +232,7 @@
     <unit id="SemanticPartStyleTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">自訂 Semantic Part 樣式</target>
+        <target state="translated">自訂語義結構的樣式</target>
       </segment>
     </unit>
     <unit id="SemanticRootDescription">

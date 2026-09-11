@@ -536,7 +536,7 @@ public class StepsShowCasePageTests
         zhCn["SemanticItemSectionDescription"].ShouldBe("每个步骤项的内容区，组合标题、副标题与详情，设置布局与对齐方式。");
         zhCn["SemanticItemContentDescription"].ShouldBe("每个步骤项的内容区域，设置文本样式和最大宽度。");
         zhCn["SemanticItemRailDescription"].ShouldBe("每个步骤项的连接线，设置宽度、颜色和状态变体。");
-        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义 Semantic Part 样式");
+        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义语义结构的样式");
         zhCn["SemanticPartStyleDescription"].ShouldBe(
             "通过生成的 Semantic Part 样式定制 root 与 item 各部件：root 使用虚线描边、图标使用圆角、内容使用斜体，导航类型下 root 使用专属边框色。");
 
@@ -551,7 +551,7 @@ public class StepsShowCasePageTests
         zhTw["SemanticItemSectionDescription"].ShouldBe("每個步驟項目的內容區，組合標題、副標題與詳情，設定版面配置與對齊方式。");
         zhTw["SemanticItemContentDescription"].ShouldBe("每個步驟項目的內容區域，設定文字樣式和最大寬度。");
         zhTw["SemanticItemRailDescription"].ShouldBe("每個步驟項目的連接線，設定寬度、顏色和狀態變體。");
-        zhTw["SemanticPartStyleTitle"].ShouldBe("自定義 Semantic Part 樣式");
+        zhTw["SemanticPartStyleTitle"].ShouldBe("自訂語義結構的樣式");
         zhTw["SemanticPartStyleDescription"].ShouldBe(
             "透過生成的 Semantic Part 樣式自訂 root 與 item 各部件：root 使用虛線描邊、圖示使用圓角、內容使用斜體，導航類型下 root 使用專屬邊框色。");
 
@@ -599,7 +599,7 @@ public class StepsShowCasePageTests
             "Região de conteúdo de cada item, com estilos de texto e largura máxima.");
         ptBr["SemanticItemRailDescription"].ShouldBe(
             "Trilho conector de cada item, com largura, cor e variantes de estado.");
-        ptBr["SemanticPartStyleTitle"].ShouldBe("Personalizar estilo de Semantic Part");
+        ptBr["SemanticPartStyleTitle"].ShouldBe("Estilo personalizado de Semantic Part");
         ptBr["SemanticPartStyleDescription"].ShouldBe(
             "Personalize o root e as partes do item por meio dos estilos de Semantic Part gerados: contorno tracejado no root, ícones arredondados, conteúdo em itálico e uma cor de borda do root específica para navegação.");
     }

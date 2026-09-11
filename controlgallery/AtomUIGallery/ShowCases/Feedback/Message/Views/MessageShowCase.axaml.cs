@@ -4,6 +4,8 @@ using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUIGallery.ShowCases.Message;
 
@@ -131,5 +133,26 @@ public partial class MessageShowCase : GalleryReactiveUserControl<MessageViewMod
             MaxItems = 10
         };
         return _messageManager;
+    }
+
+    // manager 只通过 Show(IMessage) 接收消息，没有声明式 items 入口；语义预览舞台在首次加载时
+    // 注入一条常驻消息（expiration = Zero），让 listContent 与卡片在预览期间一直可解析、可高亮。
+    // 这是示例数据播种，不是用代码改写语义部件属性（部件定制一律走生成的专用 Style）。
+    // Loaded 在每次重新挂载时都会触发，用实例引用去重，避免同一 manager 播种多条消息。
+    private WindowMessageManager? _seededSemanticPreviewManager;
+
+    private void HandleSemanticPreviewOwnerLoaded(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not WindowMessageManager manager ||
+            ReferenceEquals(_seededSemanticPreviewManager, manager))
+        {
+            return;
+        }
+
+        _seededSemanticPreviewManager = manager;
+        manager.Show(new AtomUIMessage(
+            type: MessageType.Information,
+            content: Lang(MessageShowCaseLangResourceKind.P2MessageInformation, "This is an information message."),
+            expiration: TimeSpan.Zero));
     }
 }

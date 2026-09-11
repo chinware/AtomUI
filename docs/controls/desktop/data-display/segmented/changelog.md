@@ -20,7 +20,7 @@
   - 生成 `SegmentedItemStyle` / `SegmentedIconStyle` / `SegmentedLabelStyle` owner-scoped 语义样式类。
 - Gallery
   - ShowCase 迁移到 `GalleryShowCaseHost`，新增 Semantic Parts 预览（单个 preview 同时承载横向 + 纵向两个 Segmented，
-    悬停 `root` / `item` / `icon` / `label` 卡片跨两个控件同时高亮）与自定义 Semantic Part 样式示例
+    悬停 `root` / `item` / `icon` / `label` 卡片跨两个控件同时高亮）与自定义语义结构的样式示例
     （`segmented-semantic-part`，含横向与纵向两个实例）。
 - Docs
   - 新增 [Segmented Semantic Part 契约](semantic-part.md)，定义四个 Part 的 Selector、类型、数量语义、尺寸基线与

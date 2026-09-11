@@ -555,8 +555,8 @@
     </unit>
     <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Custom semantic dom styling</source>
-        <target state="translated">自訂語義化結構樣式</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自訂語義結構的樣式</target>
       </segment>
     </unit>
     <unit id="SemanticPasswordClearDescription">

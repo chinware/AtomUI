@@ -132,7 +132,7 @@ Gallery key：`ExamplesContent` / item `1`
 </StackPanel>
 ```
 
-### 自定义语义结构样式
+### 自定义语义结构的样式
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml:476`
 

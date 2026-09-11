@@ -53,6 +53,10 @@ Message 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 - 类型：`Message`、`MessageCard`、`WindowMessageManager`。
 - 枚举：`MessageType`。
 
+Semantic Part owner 为两个 public Control：`MessageCard`（单条消息卡片）与 `WindowMessageManager`（服务型消息宿主）。
+两个 owner 各自公开独立 descriptor，完整 Part 表、selector、`ContractType`、cardinality、节点映射与定制边界见
+[Message Semantic Part 契约](semantic-part.md)。
+
 稳定 template part：
 
 | Template Part | 类型 | 职责 |
@@ -78,7 +82,7 @@ Message 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:105`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -88,7 +92,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 其他消息类型
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:46`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:116`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -103,7 +107,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 带加载指示器的消息
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:61`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:131`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -113,7 +117,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 回调
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:72`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:142`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -190,12 +194,14 @@ Message Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - `src/AtomUI.Desktop.Controls/Message/IMessageManager.cs`
 - `src/AtomUI.Desktop.Controls/Message/Message.cs`
 - `src/AtomUI.Desktop.Controls/Message/MessageCard.cs`
+- `src/AtomUI.Desktop.Controls/Message/MessageCard.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Message/MessageCardPseudoClass.cs`
 - `src/AtomUI.Desktop.Controls/Message/MessageToken.cs`
 - `src/AtomUI.Desktop.Controls/Message/MessageType.cs`
 - `src/AtomUI.Desktop.Controls/Message/Themes/MessageCardTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Message/Themes/WindowMessageManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Message/WindowMessageManager.cs`
+- `src/AtomUI.Desktop.Controls/Message/WindowMessageManager.SemanticParts.cs`
 - `src/AtomUI.Core/MotionScene/MotionExecutionState.cs`
 
 职责边界：
@@ -209,6 +215,7 @@ Message Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 
 - 源设计文档：`docs/controls/desktop/feedback/message/overview.md`
 - 实现文档：`docs/controls/desktop/feedback/message/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/feedback/message/semantic-part.md`
 - Token 文档：`docs/controls/desktop/feedback/message/token.md`
 - 变更记录：`docs/controls/desktop/feedback/message/changelog.md`
 - 语义结构：`./semantic-cn.md`

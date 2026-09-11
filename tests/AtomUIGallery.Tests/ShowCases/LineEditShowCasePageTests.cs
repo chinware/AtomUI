@@ -190,7 +190,7 @@ public class LineEditShowCasePageTests
             source.ShouldNotContain(staleCaption);
             english.ShouldNotContain($"unit id=\"{staleCaption}\"");
         }
-        english.ShouldContain("<source>Custom semantic dom styling</source>");
+        english.ShouldContain("<source>Custom Semantic Part styling</source>");
 
         foreach (var caption in new[]
                  {

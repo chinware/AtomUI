@@ -514,7 +514,7 @@
     <unit id="StyleClassTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">自訂語義部件樣式</target>
+        <target state="translated">自訂語義結構的樣式</target>
       </segment>
     </unit>
   </file>

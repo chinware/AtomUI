@@ -25,7 +25,7 @@
   - Paint the `Filled` variant background across the full border box (`AddOnDecoratedBoxTheme.axaml` switches the content frame to `OuterBorderEdge` for `StyleVariant=Filled`): the variant keeps a 1px transparent border as height compensation, so the previous `InnerBorderEdge` fill rendered 2px shorter than the `Outlined` frame (30px instead of 32px at Middle). The fix applies to every control sharing `AddOnDecoratedBox` (Cascader, Select, LineEdit, AutoComplete, date/time pickers).
 - Gallery
   - Add the Cascader Semantic Parts tab with a pinned-open preview and localized part descriptions; migrate the showcase host to `GalleryShowCaseHost` per the standard Semantic Part page model.
-  - Add the "Customize semantic structure styles" example (aligned with the upstream semantic styling demo): object-style and variant-conditioned Cascader part styles covering prefix / placeholder / popup root / popup list item.
+  - Add the "Custom Semantic Part styling" example (aligned with the upstream semantic styling demo): object-style and variant-conditioned Cascader part styles covering prefix / placeholder / popup root / popup list item.
 - Tests
   - Add `CascaderSemanticPartTests` and `CascaderPinnedPopupTests` covering descriptor shape, template marker inventory, generated style hits, popup part resolution and marker stability across reopen and source reset.
   - Add `AddOnDecoratedBoxVariantTests` asserting the `Filled` frame paints `OuterBorderEdge` while `Outlined` keeps `InnerBorderEdge`, and both variants stay 32px tall at Middle.

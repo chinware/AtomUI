@@ -288,7 +288,7 @@ public class PaginationShowCasePageTests
         zhCn["SemanticRootDescription"].ShouldBe("根元素，设置 flex 布局、对齐方式、换行和列表样式");
         zhCn["SemanticItemDescription"].ShouldBe("页码元素，设置尺寸、内边距、边框、背景色、悬停态和激活态样式");
         zhCn["SemanticInfoDescription"].ShouldBe("信息元素，设置页码信息文本的字体、颜色和对齐样式");
-        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义 Semantic Part 样式");
+        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义语义结构的样式");
         zhCn["SemanticPartStyleDescription"].ShouldBe(
             "通过生成的 Semantic Part 样式定制 root 与 item：root 使用虚线描边、item 使用圆角，item 背景仅在小尺寸下生效。");
 
@@ -297,7 +297,7 @@ public class PaginationShowCasePageTests
         zhTw["SemanticRootDescription"].ShouldBe("根元素，設定 flex 佈局、對齊方式、換行和列表樣式");
         zhTw["SemanticItemDescription"].ShouldBe("頁碼元素，設定尺寸、內邊距、邊框、背景色、懸停態和啟動態樣式");
         zhTw["SemanticInfoDescription"].ShouldBe("資訊元素，設定頁碼資訊文字的字型、顏色與對齊樣式");
-        zhTw["SemanticPartStyleTitle"].ShouldBe("自定義 Semantic Part 樣式");
+        zhTw["SemanticPartStyleTitle"].ShouldBe("自訂語義結構的樣式");
         zhTw["SemanticPartStyleDescription"].ShouldBe(
             "透過生成的 Semantic Part 樣式自訂 root 與 item：root 使用虛線描邊、item 使用圓角，item 背景僅在小尺寸下生效。");
 
@@ -320,7 +320,7 @@ public class PaginationShowCasePageTests
             "Elemento de item, define tamanho, preenchimento, borda, cor de fundo, estado de foco e estado ativo");
         ptBr["SemanticInfoDescription"].ShouldBe(
             "Elemento de info, define estilos de fonte, cor e alinhamento para o texto de informação da página");
-        ptBr["SemanticPartStyleTitle"].ShouldBe("Personalizar estilo de Semantic Part");
+        ptBr["SemanticPartStyleTitle"].ShouldBe("Estilo personalizado de Semantic Part");
         ptBr["SemanticPartStyleDescription"].ShouldBe(
             "Personalize root e item por meio dos estilos de Semantic Part gerados: contorno tracejado no root, cantos arredondados nos itens e fundos de item aplicados somente no tamanho small.");
     }

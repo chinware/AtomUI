@@ -520,7 +520,7 @@
     <unit id="SemanticPartStyleTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">Personalizar estilo de Semantic Part</target>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
       </segment>
     </unit>
     <unit id="SemanticRootDescription">

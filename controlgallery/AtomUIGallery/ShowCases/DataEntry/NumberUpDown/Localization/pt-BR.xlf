@@ -250,7 +250,7 @@
     <unit id="SemanticPartStyleTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">Estilização personalizada de Partes Semânticas</target>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
       </segment>
     </unit>
     <unit id="SemanticPrefixDescription">

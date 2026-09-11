@@ -1617,8 +1617,8 @@
     </unit>
     <unit id="SemanticStylingTitle">
       <segment>
-        <source>Custom semantic styling</source>
-        <target state="translated">Estilo semântico personalizado</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
       </segment>
     </unit>
     <unit id="TimeRelatedControlsDescription">

@@ -23,7 +23,7 @@
   - 修复遮罩 padding 环被裁剪不显示的问题：移除 `ImagePreviewerCoverTheme` 的 `ClipToBounds=True` Setter，并在 `ImagePreviewerCover` 静态构造 `ClipToBoundsProperty.OverrideDefaultValue(false)`（Avalonia `TemplatedControl` 类级默认值为 `true`，属合成层裁剪，会把负 Margin 遮罩裁回 cover 内区且不体现在布局 Bounds 上）；`#Mask` 与 cover 模板 border/loading/error presenter 的圆角改经 `OwnerCornerRadius` 中继直接跟随 owner `CornerRadius`——遮罩以负 Margin 越过 owner padding，无法被 owner 的圆角裁剪覆盖，圆角需直接涂在遮罩上以对齐上游 root `overflow:hidden + border-radius` 的视觉效果。
   - `image` 部件新增封面图片圆角能力：`ImagePreviewRenderer` 暴露 `CornerRadius`（AddOwner `Border.CornerRadiusProperty`）并把 `RoundRectGeometryBuilder` WinUI 关键点圆角几何（与 `DashedBorder.ClipContentToCornerRadius` 同算法）设到子 `Image` 的 `Clip` 属性——渲染管线遍历每个 Visual 时应用其 `Clip`，Image 只渲染一次且带裁剪；不得在 `Render` override 里 `PushGeometryClip` 包着 `image.Render` 手绘（子 Image 是 VisualChild，渲染器在父 `Render` 后还会独立遍历 VisualChildren 再画一遍无裁剪的 Image，覆盖手绘结果）。内置主题不设默认值（对齐上游默认 image 无圆角），经生成 `ImagePreviewerImageStyle` 由用户 Semantic Style 定制（`x:SetterTargetType="atom:ImagePreviewRenderer"`，Setter 属性名必须写限定名 `Property="Border.CornerRadius"`，否则经 internal 渲染器类型字段解析在运行时抛 `FieldAccessException`）。
 - Gallery
-  - 「自定义 Semantic Part 样式」示例对齐上游 `style-class.tsx`：并排两个 160 宽 `ImagePreviewer`，`root` 经 owner 属性表达
+  - 「自定义语义结构的样式」示例对齐上游 `style-class.tsx`：并排两个 160 宽 `ImagePreviewer`，`root` 经 owner 属性表达
     padding 4 + 圆角 8 + 裁剪，右侧再加常驻 2px `#A594F9` 边框（经上游三张截图逐像素核对，边框在常态与 hover 态均常驻，
     hover 变化的是 `cover` 遮罩 0.3 淡入）；`image` 的 `borderRadius: 4` 经生成 `ImagePreviewerImageStyle` 落到
     `ImagePreviewRenderer.CornerRadius`；右侧 `filter: grayscale(50%)` 因无等价属性，仍通过 ViewModel 以
@@ -40,7 +40,7 @@
   - 在 native dialog 内容根包裹 Panel 上注入 `popup.root` marker；overlay 宿主模板根改为纯 `popup.root` 容器，遮罩背景迁移为独立的 `popup.mask` 子元素，并新增 `popup.close` 关闭按钮。
   - native dialog 保持独立 `Window`/TopLevel：owner 作用域 Semantic Style 仅在 overlay 宿主（与 owner 同 TopLevel）命中，dialog 内预览视觉继续经 host 契约（owner 属性/Token 中继与 App 级 `ImageViewer` 主题）定制。
 - Gallery
-  - ImagePreviewer ShowCase 迁移到 `GalleryShowCaseHost`：Semantic Preview 列出全部 9 个 Part 并新增「自定义 Semantic Part 样式」示例；`root`/`image`/`cover` 在 owner 模板内高亮，`popup.*` 因宿主 internal 且无公开访问器仅列出描述。
+  - ImagePreviewer ShowCase 迁移到 `GalleryShowCaseHost`：Semantic Preview 列出全部 9 个 Part 并新增「自定义语义结构的样式」示例；`root`/`image`/`cover` 在 owner 模板内高亮，`popup.*` 因宿主 internal 且无公开访问器仅列出描述。
 - Design
   - Define the formal ImagePreviewer loading architecture around `ImageSourceKey -> ImageSourceVersion -> ImageContentId -> ImageDecodeKey`, so source addresses no longer act as content identities.
   - Separate source snapshots, validated encoded content and decoded content into application-owned stores while keeping Previewer collection and cache lifecycles independent.

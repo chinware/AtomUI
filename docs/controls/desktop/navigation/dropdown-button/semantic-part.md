@@ -191,7 +191,7 @@ marker，容器回收复用时 marker 保持不变；`itemTitle` 随分组菜单
 不生成 Style 类型，owner 级 Setter 写在外层普通 Style 上。
 
 推荐写法（owner 嵌套 Style + 语义 class，与 Gallery
-`ShowCases/Navigation/DropdownButton` 的「自定义语义结构样式」示例一致；AtomUI 类型在 `x:SetterTargetType` 中
+`ShowCases/Navigation/DropdownButton` 的「自定义语义结构的样式」示例一致；AtomUI 类型在 `x:SetterTargetType` 中
 带 `atom:` 前缀，Avalonia 类型不带前缀）：
 
 ```xml

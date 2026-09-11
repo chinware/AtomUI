@@ -168,7 +168,7 @@ Gallery key：`ExamplesContent` / item `1`
 </Grid>
 ```
 
-### 自定义 Semantic Part 样式
+### 自定义语义结构的样式
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:360`
 

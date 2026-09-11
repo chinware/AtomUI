@@ -291,8 +291,8 @@
     </unit>
     <unit id="StyleClassTitle">
       <segment>
-        <source>Customize semantic structure styles</source>
-        <target state="translated">自定义语义结构的样式和类</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自定义语义结构的样式</target>
       </segment>
     </unit>
     <unit id="UncertainCategoryDescription">

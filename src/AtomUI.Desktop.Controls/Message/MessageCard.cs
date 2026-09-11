@@ -18,7 +18,7 @@ namespace AtomUI.Desktop.Controls;
     MessageCardPseudoClass.Success, 
     MessageCardPseudoClass.Warning, 
     MessageCardPseudoClass.Loading)]
-public class MessageCard : TemplatedControl, IMotionAwareControl
+public partial class MessageCard : TemplatedControl, IMotionAwareControl
 {
     internal const double AnimationMaxOffsetY = 100d;
 

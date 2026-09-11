@@ -235,13 +235,13 @@ public class SplitterShowCasePageTests
         zhCn["SemanticRootDescription"].ShouldBe("根容器元素，沿分割方向排列面板与拖动条。");
         zhCn["SemanticPanelDescription"].ShouldBe("携带 semantic-panel 类的面板容器元素，具有可调整的尺寸与裁剪的内容。");
         zhCn["SemanticDraggerDescription"].ShouldBe("携带 semantic-dragger 类的拖动条元素，用于调整相邻面板的尺寸。");
-        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义 Semantic Part 样式");
+        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义语义结构的样式");
         zhCn["SemanticPartStyleDescription"].ShouldBe(
             "对齐 Ant Design style-class 示例：通过生成的 Semantic Part 样式自定义 root 背景与拖动条，并为 root 添加虚线边框。");
 
         var zhTw = XliffTestDocument.Read(
             "controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Localization/zh-TW.xlf");
-        zhTw["SemanticPartStyleTitle"].ShouldBe("自定義 Semantic Part 樣式");
+        zhTw["SemanticPartStyleTitle"].ShouldBe("自訂語義結構的樣式");
         zhTw["SemanticPartStyleDescription"].ShouldBe(
             "對齊 Ant Design style-class 範例：透過生成的 Semantic Part 樣式自訂 root 背景與拖動條，並為 root 加上虛線邊框。");
 
@@ -253,7 +253,7 @@ public class SplitterShowCasePageTests
 
         var ptBr = XliffTestDocument.Read(
             "controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Localization/pt-BR.xlf");
-        ptBr["SemanticPartStyleTitle"].ShouldBe("Personalizar estilo de Semantic Part");
+        ptBr["SemanticPartStyleTitle"].ShouldBe("Estilo personalizado de Semantic Part");
         ptBr["SemanticPartStyleDescription"].ShouldBe(
             "Espelha o demo style-class do Ant Design: personalize o fundo do root e a barra de arrasto por meio dos estilos de Semantic Part gerados e contorne o root com uma borda tracejada.");
     }

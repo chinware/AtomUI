@@ -368,7 +368,7 @@ public class TabControlShowCasePageTests
         zhCn["SemanticIconDescription"].ShouldBe("图标元素，设置页签图标的尺寸与间距样式");
         zhCn["SemanticCloseDescription"].ShouldBe("关闭元素，设置关闭按钮的尺寸与颜色样式");
         zhCn["SemanticIndicatorDescription"].ShouldBe("指示条元素，设置选中页签墨条的颜色样式");
-        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义 Semantic Part 样式");
+        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义语义结构的样式");
 
         var zhTw = XliffTestDocument.Read(
             "controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Localization/zh-TW.xlf");
@@ -379,7 +379,7 @@ public class TabControlShowCasePageTests
         zhTw["SemanticIconDescription"].ShouldBe("圖示元素，設定頁籤圖示的尺寸與間距樣式");
         zhTw["SemanticCloseDescription"].ShouldBe("關閉元素，設定關閉按鈕的尺寸與顏色樣式");
         zhTw["SemanticIndicatorDescription"].ShouldBe("指示條元素，設定選中頁籤墨條的顏色樣式");
-        zhTw["SemanticPartStyleTitle"].ShouldBe("自定義 Semantic Part 樣式");
+        zhTw["SemanticPartStyleTitle"].ShouldBe("自訂語義結構的樣式");
 
         var enUs = XliffTestDocument.Read(
             "controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Localization/en-US.xlf");
@@ -414,7 +414,7 @@ public class TabControlShowCasePageTests
             "Elemento de fechamento, define tamanho e estilos de cor para o botão de fechar");
         ptBr["SemanticIndicatorDescription"].ShouldBe(
             "Elemento indicador, define estilos de cor para a barra de tinta da aba selecionada");
-        ptBr["SemanticPartStyleTitle"].ShouldBe("Personalizar estilo de Semantic Part");
+        ptBr["SemanticPartStyleTitle"].ShouldBe("Estilo personalizado de Semantic Part");
     }
 
     private static void AssertSolidColor(IBrush? actual, string expected)

@@ -10,12 +10,15 @@
                                          ClipToBounds="False">
                     <Border Name="PART_Frame">
                         <DockPanel Name="PART_HeaderContainer"
+                                   Classes.semantic-wrapper="True"
                                    LastChildFill="True">
                             <atom:IconPresenter Name="PART_IconContent"
+                                                Classes.semantic-icon="True"
                                                 DockPanel.Dock="Left"
                                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                                 Icon="{TemplateBinding Icon}" />
                             <SelectableTextBlock Name="PART_Message"
+                                                 Classes.semantic-title="True"
                                                  Text="{TemplateBinding Message}" />
                         </DockPanel>
                     </Border>

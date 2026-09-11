@@ -320,7 +320,7 @@ suffix 区默认前景色为 `ColorTextQuaternary`，下拉指示箭头（Select
 `https://atomui.net`）。`root` 不生成 Style 类型，owner 级 Setter 写在外层普通 Style 上。
 
 推荐写法（owner 嵌套 Style + 语义 class，与 Gallery
-`ShowCases/DataEntry/Cascader` 的「自定义语义结构样式」示例一致）：
+`ShowCases/DataEntry/Cascader` 的「自定义语义结构的样式」示例一致）：
 
 ```xml
 <StackPanel.Styles>

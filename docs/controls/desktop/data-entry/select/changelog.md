@@ -25,7 +25,7 @@
   - Resolve `PopupFrame` from `Popup.Child` at point of use instead of caching it in a field: template re-application in a pinned-open state inflates a fresh `Popup` whose static frame becomes the new `Popup.Child`, so a cached reference previously pointed at the stale frame and rejected the candidate list as "already has a parent".
 - Gallery
   - Add the Select Semantic Parts tab with a pinned-open preview and localized part descriptions; migrate the showcase host to `GalleryShowCaseHost` per the standard Semantic Part page model.
-  - Add the "Customize semantic structure styles" example (aligned with the upstream semantic styling demo): object-style and variant-conditioned Select part styles covering prefix / placeholder / suffix / popup root / popup list item.
+  - Add the "Custom Semantic Part styling" example (aligned with the upstream semantic styling demo): object-style and variant-conditioned Select part styles covering prefix / placeholder / suffix / popup root / popup list item.
 - Tests
   - Add `SelectSemanticPartTests` covering descriptor shape, template marker inventory, default-theme non-consumption, generated style hits, tag part style hits, inline prefix presentation and popup part marker exposure.
   - Update `SelectShowCasePageTests` and `SelectShowCaseExamples.snapshot` for the migrated host, added example and semantic preview template.

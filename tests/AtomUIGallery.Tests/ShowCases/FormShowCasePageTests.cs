@@ -188,7 +188,7 @@ public class FormShowCasePageTests
         var source  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
         var english = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Localization/en-US.xlf");
 
-        // Mirrors the upstream "Custom semantic dom styling" demo, rendered as the
+        // Mirrors the upstream "Custom Semantic Part styling" demo, rendered as the
         // LAST ShowCaseItem of the Examples list: two card forms sharing
         // Username/Email/Submit+reset content, the second one on the filled
         // variant with a blue root border and blue labels.
@@ -231,7 +231,7 @@ public class FormShowCasePageTests
         source.ShouldContain("FormShowCaseLangResource SemanticStyleUsernamePlaceholder");
         source.ShouldContain("FormShowCaseLangResource SemanticStyleEmailPlaceholder");
 
-        english.ShouldContain("Custom semantic styling");
+        english.ShouldContain("Custom Semantic Part styling");
         english.ShouldContain("You can customize the semantic style of Form by passing objects/functions through `classNames` and `styles`.");
         english.ShouldNotContain("semantic dom");
         english.ShouldContain("Please enter username!");

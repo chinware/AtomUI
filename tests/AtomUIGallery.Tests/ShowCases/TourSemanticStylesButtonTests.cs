@@ -16,7 +16,7 @@ using TourShowCaseViewModel = AtomUIGallery.ShowCases.Tour.TourViewModel;
 
 namespace AtomUIGallery.Tests.ShowCases;
 
-// 锁定「语义节点样式」示例的函数样式按钮定制形态：
+// 锁定「自定义语义结构的样式」示例的函数样式按钮定制形态：
 // 对齐上游 style-class demo 的 btnProps（prev 紫底白字 / next 白底紫描边紫字），
 // 同时锁定用户全局约束的“专用 Style 声明式形态”——禁止退化为代码回退。
 public class TourSemanticStylesButtonTests

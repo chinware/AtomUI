@@ -223,7 +223,7 @@ Gallery 仅列出描述、不参与高亮；触发区部件（`root`/`image`/`co
 （如 `ImagePreviewerPopupMaskStyle`、`ImageGroupPreviewerImageStyle`，命名空间 `AtomUI.Theme.Styling`，AXAML 命名空间
 `https://atomui.net`）。`root` 不生成 Style 类型，owner 级 Setter 写在外层普通 Style 上。
 
-推荐写法（Gallery ImagePreviewer「自定义 Semantic Part 样式」示例一致，对齐上游 `style-class.tsx` 的 object/function
+推荐写法（Gallery ImagePreviewer「自定义语义结构的样式」示例一致，对齐上游 `style-class.tsx` 的 object/function
 styles 示例）。上游该示例自定义 `root` 与 `image`：`root`（padding 4 / borderRadius 8 / overflow hidden，右侧再加
 常驻 2px `#A594F9` 边框，`transition: all 0.3s ease`）与 `image`（`borderRadius: 4`，右侧 `filter: grayscale(50%)`）。
 经对上游示例三张截图逐像素核对：边框在常态与 hover 态均常驻显示，hover 变化的是 `cover` 遮罩（`rgba(0,0,0,0.3)`

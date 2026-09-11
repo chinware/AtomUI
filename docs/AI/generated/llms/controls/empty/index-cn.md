@@ -112,7 +112,7 @@ Gallery key：`ExamplesContent` / item `3`
 <atom:Empty PresetImage="Default" IsDescriptionVisible="False" />
 ```
 
-### 自定义 Semantic Part 样式
+### 自定义语义结构的样式
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:134`
 

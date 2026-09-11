@@ -163,5 +163,53 @@
         <target state="translated">示例</target>
       </segment>
     </unit>
+    <unit id="SemanticIconDescription">
+      <segment>
+        <source>The status icon of the message card. Customize its size, brush and line height.</source>
+        <target state="translated">消息卡片的状态图标元素，可定制尺寸、画刷和行高。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticListContentDescription">
+      <segment>
+        <source>The notice arrangement container of the message list. Customize its direction, order and alignment.</source>
+        <target state="translated">消息列表的 notice 排列容器，可定制方向、顺序和对齐。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticListRootDescription">
+      <segment>
+        <source>The message list root. It hosts the cards, queue, timeout and host layer lifecycle.</source>
+        <target state="translated">消息列表根元素，承载卡片、队列、超时和宿主层生命周期。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>Customize Message parts with the generated semantic style classes.</source>
+        <target state="translated">使用生成的语义样式类定制 Message 各部件。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自定义语义结构的样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticRootDescription">
+      <segment>
+        <source>The message card root. It hosts the content, type, close state and enter/leave motion.</source>
+        <target state="translated">消息卡片根元素，承载内容、类型、关闭状态和进出场动效。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticTitleDescription">
+      <segment>
+        <source>The message text element. Customize its color, font size, line height and wrapping.</source>
+        <target state="translated">消息文本元素，可定制文本颜色、字号、行高和换行。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticWrapperDescription">
+      <segment>
+        <source>The wrapping element for the icon and title. Customize the layout, alignment and gap.</source>
+        <target state="translated">图标与标题的包裹元素，可定制布局、间距和对齐。</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

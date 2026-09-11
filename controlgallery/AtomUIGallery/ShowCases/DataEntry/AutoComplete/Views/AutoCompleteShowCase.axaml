@@ -311,7 +311,7 @@
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
-                <!-- 10. 自定义语义结构的样式和类 -->
+                <!-- 10. 自定义语义结构的样式 -->
                 <gallery:ShowCaseItem Title="{gallery:AutoCompleteShowCaseLangResource StyleClassTitle}"
                                       Description="{gallery:AutoCompleteShowCaseLangResource StyleClassDescription}"
                                       SourceKey="auto-complete-semantic-part"

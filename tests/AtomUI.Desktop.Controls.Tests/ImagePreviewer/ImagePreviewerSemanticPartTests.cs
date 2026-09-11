@@ -174,7 +174,7 @@ public class ImagePreviewerSemanticPartTests
     [Fact]
     public void Generated_Image_Style_Carries_Image_CornerRadius_To_The_Renderer()
     {
-        // Gallery「自定义 Semantic Part 样式」对齐上游 styles.image 的 borderRadius: 4。
+        // Gallery「自定义语义结构的样式」对齐上游 styles.image 的 borderRadius: 4。
         var owner = new AtomUIPreviewer
         {
             Width = 200,

@@ -250,7 +250,7 @@
     <unit id="SemanticPartStyleTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">自定义语义部件样式</target>
+        <target state="translated">自定义语义结构的样式</target>
       </segment>
     </unit>
     <unit id="SemanticPrefixDescription">

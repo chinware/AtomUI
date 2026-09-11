@@ -249,8 +249,8 @@
     </unit>
     <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Semantic Part styles</source>
-        <target state="translated">语义部件样式</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自定义语义结构的样式</target>
       </segment>
     </unit>
     <unit id="SemanticRootDescription">

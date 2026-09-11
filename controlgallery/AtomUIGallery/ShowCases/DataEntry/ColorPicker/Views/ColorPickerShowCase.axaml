@@ -330,7 +330,7 @@
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>
-                <!-- 自定义语义结构样式（精确复刻 antd style-class.tsx 示例） -->
+                <!-- 自定义语义结构的样式（精确复刻 antd style-class.tsx 示例） -->
                 <gallery:ShowCaseItem Title="{gallery:ColorPickerShowCaseLangResource StyleClassTitle}"
                                       Description="{gallery:ColorPickerShowCaseLangResource StyleClassDescription}"
                                       SourceKey="colorpicker-semantic-part"

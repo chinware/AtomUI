@@ -133,7 +133,7 @@ public class MasonryShowCasePageTests
         item.ShouldContain("ColumnCount=\"3\"");
         item.ShouldNotContain("Selector=\".semantic-item\"");
         item.ShouldNotContain("> .semantic-item");
-        localization.ShouldContain("<source>Custom semantic dom styling</source>");
+        localization.ShouldContain("<source>Custom Semantic Part styling</source>");
         localization.ShouldContain(
             "<source>You can customize the semantic dom style of Masonry by passing objects/functions through `classNames` and `styles`.</source>");
         localization.ShouldContain("<source>classNames and styles Object</source>");

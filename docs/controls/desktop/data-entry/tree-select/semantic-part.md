@@ -330,7 +330,7 @@ ContractType=`Tag`）承转主题链完成校验。弹层三部件位于 owner �
 Setter 写在外层普通 Style 上。
 
 推荐写法（owner 嵌套 Style + 语义 class，与 Gallery
-`ShowCases/DataEntry/TreeSelect` 的「自定义语义结构样式」示例一致，对齐上游 object / function styles 示例）：
+`ShowCases/DataEntry/TreeSelect` 的「自定义语义结构的样式」示例一致，对齐上游 object / function styles 示例）：
 
 ```xml
 <StackPanel.Styles>

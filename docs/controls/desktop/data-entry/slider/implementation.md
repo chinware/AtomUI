@@ -176,6 +176,6 @@ Tooltip 文本和 placement 由 Slider 在模板应用、thumb 数量变化、�
 - `SliderBehaviorTests`：纯值计算、有限性、排序、重复值、disabled boundary、整体 offset、动态 thumb 创建/回收、templated parent、motion 同步、pointer capture 和 fractional pointer 布局。
 - `SliderSemanticPartTests`：descriptor 字段、rail / tracks / track / handle marker 数量与生命周期、`/template/ .semantic-*` 路由命中、元素几何与既有 rail / segment / range 几何一致、`IsIncluded` / `IsRangeMode` / `RangeValues` 快照 / `DisabledHandles` / orientation 切换下 marker 稳定性、单值模式 `TracksBrush` 对齐行为、元素不可命中测试与主题静态 marker 断言。
 - `RemainingFormValueBindingTests`：单值与 Range Form 值和数据验证。
-- `AtomUIGallery.Tests` Slider 页面测试：稳定 Showcase、绑定、禁用指定 handle、多点组合结构、Semantic Part 预览与自定义 Semantic Part 样式示例。
+- `AtomUIGallery.Tests` Slider 页面测试：稳定 Showcase、绑定、禁用指定 handle、多点组合结构、Semantic Part 预览与自定义语义结构的样式示例。
 - Gallery 走查：horizontal / vertical、reverse、marks、tick、Light / Dark、多点组合、禁用指定滑块，以及 100% / 125% / 150% 缩放下的 thumb 平滑度与边框清晰度。
 - 文档验证：运行 LLMS generate / verify、目标测试、Gallery build 和 `git diff --check`。

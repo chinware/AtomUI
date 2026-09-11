@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.Message"
              x:DataType="vm:MessageViewModel">
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
-        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
-            <gallery:GalleryStickyTabsHost.Header>
+        <gallery:GalleryShowCaseHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryShowCaseHost.Header>
                 <gallery:GalleryShowCaseHeader
                     Title="Message"
                     Category="{gallery:MessageShowCaseLangResource ComponentCategory}"
@@ -17,8 +17,78 @@
                     Namespace="AtomUI.Desktop.Controls"
                     Package="AtomUI.Desktop.Controls"
                     BaseClass="WindowMessageManager" />
-            </gallery:GalleryStickyTabsHost.Header>
+            </gallery:GalleryShowCaseHost.Header>
 
+            <gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
+                <DataTemplate x:DataType="vm:MessageViewModel">
+                    <!-- Message 有两个 public owner：消息列表宿主与单条消息卡片，因此提供两个独立 Preview，
+                         不把它们拼成虚拟 descriptor。manager 演示对齐上游语义 demo 把 list 改为内联
+                         relative 容器的做法：以无宿主实例渲染在舞台内，list 的定位/层叠语义退化为普通流。 -->
+                    <ScrollContentPresenter>
+                        <StackPanel Spacing="24">
+                            <gallery:SemanticPartPreview Name="MessageManagerSemanticPreview"
+                                                         Title="WindowMessageManager"
+                                                         SemanticOwner="{Binding #MessageManagerSemanticOwner}"
+                                                         SemanticOwnerType="{x:Type atom:WindowMessageManager}">
+                                <gallery:SemanticPartPreview.PreviewContent>
+                                    <Border MinHeight="160"
+                                            Background="{atom:SharedTokenResource ColorFillAlter}"
+                                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                            BorderThickness="1"
+                                            CornerRadius="{atom:SharedTokenResource BorderRadiusLG}"
+                                            Padding="16">
+                                        <!-- 无宿主 manager 拉伸铺满舞台；root 高亮 = 列表宿主本身。
+                                             manager 没有声明式消息入口，示例数据由 Loaded 时调用 Show() 播种。 -->
+                                        <atom:WindowMessageManager Name="MessageManagerSemanticOwner"
+                                                                   MaxItems="3"
+                                                                   IsMotionEnabled="False"
+                                                                   Loaded="HandleSemanticPreviewOwnerLoaded" />
+                                    </Border>
+                                </gallery:SemanticPartPreview.PreviewContent>
+                                <gallery:SemanticPartPreview.PartDescriptions>
+                                    <gallery:SemanticPartDescription Path="root"
+                                                                     Description="{gallery:MessageShowCaseLangResource SemanticListRootDescription}" />
+                                    <gallery:SemanticPartDescription Path="listContent"
+                                                                     Description="{gallery:MessageShowCaseLangResource SemanticListContentDescription}" />
+                                </gallery:SemanticPartPreview.PartDescriptions>
+                            </gallery:SemanticPartPreview>
+
+                            <gallery:SemanticPartPreview Name="MessageCardSemanticPreview"
+                                                         Title="MessageCard"
+                                                         SemanticOwner="{Binding #MessageCardSemanticOwner}"
+                                                         SemanticOwnerType="{x:Type atom:MessageCard}">
+                                <gallery:SemanticPartPreview.PreviewContent>
+                                    <Border Background="{atom:SharedTokenResource ColorFillAlter}"
+                                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                            BorderThickness="1"
+                                            CornerRadius="{atom:SharedTokenResource BorderRadiusLG}"
+                                            Padding="24">
+                                        <StackPanel Spacing="16">
+                                            <atom:MessageCard Name="MessageCardSemanticOwner"
+                                                              MessageType="Success"
+                                                              Message="Deployment completed"
+                                                              IsMotionEnabled="False" />
+                                            <atom:MessageCard MessageType="Information"
+                                                              Message="This is an information message."
+                                                              IsMotionEnabled="False" />
+                                        </StackPanel>
+                                    </Border>
+                                </gallery:SemanticPartPreview.PreviewContent>
+                                <gallery:SemanticPartPreview.PartDescriptions>
+                                    <gallery:SemanticPartDescription Path="root"
+                                                                     Description="{gallery:MessageShowCaseLangResource SemanticRootDescription}" />
+                                    <gallery:SemanticPartDescription Path="wrapper"
+                                                                     Description="{gallery:MessageShowCaseLangResource SemanticWrapperDescription}" />
+                                    <gallery:SemanticPartDescription Path="icon"
+                                                                     Description="{gallery:MessageShowCaseLangResource SemanticIconDescription}" />
+                                    <gallery:SemanticPartDescription Path="title"
+                                                                     Description="{gallery:MessageShowCaseLangResource SemanticTitleDescription}" />
+                                </gallery:SemanticPartPreview.PartDescriptions>
+                            </gallery:SemanticPartPreview>
+                        </StackPanel>
+                    </ScrollContentPresenter>
+                </DataTemplate>
+            </gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
 
             <gallery:ShowCasePanel Name="ExamplesContent"
                                    IsScrollEnabled="False"
@@ -73,7 +143,47 @@
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:MessageShowCaseLangResource SemanticPartStyleTitle}"
+                    Description="{gallery:MessageShowCaseLangResource SemanticPartStyleDescription}"
+                    SourceKey="message-semantic-part"
+                    BadgeText="v6.0"
+                    Span="Full"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MessageViewModel">
+                            <StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Stretch"
+                                        Spacing="16">
+                                <StackPanel.Styles>
+                                    <!-- 语义部件唯一定制入口：生成的专用 Style 类，owner 作用域外层 Style 嵌套使用。 -->
+                                    <Style Selector="atom|MessageCard.semantic-card-demo">
+                                        <atom:MessageCardWrapperStyle x:SetterTargetType="DockPanel">
+                                            <Setter Property="TextElement.FontWeight" Value="Medium" />
+                                        </atom:MessageCardWrapperStyle>
+                                        <atom:MessageCardIconStyle x:SetterTargetType="atom:IconPresenter">
+                                            <Setter Property="Width" Value="18" />
+                                            <Setter Property="Height" Value="18" />
+                                        </atom:MessageCardIconStyle>
+                                        <atom:MessageCardTitleStyle x:SetterTargetType="SelectableTextBlock">
+                                            <Setter Property="Foreground" Value="#1890FF" />
+                                        </atom:MessageCardTitleStyle>
+                                    </Style>
+                                </StackPanel.Styles>
+
+                                <atom:MessageCard Classes="semantic-card-demo"
+                                                  MessageType="Success"
+                                                  Message="Styled by generated semantic part styles"
+                                                  IsMotionEnabled="False" />
+                                <atom:MessageCard MessageType="Information"
+                                                  Message="Default card for comparison"
+                                                  IsMotionEnabled="False" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
             </gallery:ShowCasePanel>
-        </gallery:GalleryStickyTabsHost>
+        </gallery:GalleryShowCaseHost>
     </Grid>
 </UserControl>

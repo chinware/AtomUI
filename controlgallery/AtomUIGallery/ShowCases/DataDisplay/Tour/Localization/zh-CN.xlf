@@ -370,7 +370,7 @@
     <unit id="SemanticStylesTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">语义节点样式</target>
+        <target state="translated">自定义语义结构的样式</target>
       </segment>
     </unit>
   </file>

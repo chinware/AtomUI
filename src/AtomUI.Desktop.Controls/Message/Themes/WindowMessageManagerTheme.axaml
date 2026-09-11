@@ -6,7 +6,8 @@
     <ControlTheme x:Key="{x:Type atom:WindowMessageManager}" TargetType="atom:WindowMessageManager">
         <Setter Property="Template">
             <ControlTemplate>
-                <ReversibleStackPanel Name="PART_Items" />
+                <ReversibleStackPanel Name="PART_Items"
+                                      Classes.semantic-list-content="True" />
             </ControlTemplate>
         </Setter>
 

@@ -29,7 +29,7 @@
 - Gallery
   - Add the ColorPicker Semantic Parts tab with a pinned-open preview and localized part descriptions (en-US / zh-CN / zh-TW / pt-BR); migrate the showcase host to `GalleryShowCaseHost` per the standard Semantic Part page model.
   - Wrap the Semantic Parts pinned-open preview in a `MinHeight="600"` panel so the pinned popup expands downward instead of flipping up over the Examples/Semantic Parts tabs.
-  - Add the "Customize semantic structure styles" example replicating the upstream `style-class` demo: two pickers (`#1677ff` middle, `#722ed1` large, arrow hidden) styled through `ColorPickerPopupRootStyle` with white and purple popup borders plus the shared border-radius root style.
+  - Add the "Custom Semantic Part styling" example replicating the upstream `style-class` demo: two pickers (`#1677ff` middle, `#722ed1` large, arrow hidden) styled through `ColorPickerPopupRootStyle` with white and purple popup borders plus the shared border-radius root style.
 - Tests
   - Add `ColorPickerSemanticPartTests` covering the descriptor shape for both controls, the template marker inventory, the guard against semantic selectors in default themes, the public pinned-open API surface, and generated-style hits across trigger and overlay popup targets.
   - Migrate `ColorPickerShowCaseExamples.snapshot` to the shared count + SHA256 format used by the other showcase snapshots.

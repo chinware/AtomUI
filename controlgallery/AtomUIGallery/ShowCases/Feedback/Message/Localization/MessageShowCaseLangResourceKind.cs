@@ -31,5 +31,13 @@ public enum MessageShowCaseLangResourceKind
     P2MessageWarning,
     P2MessageError,
     P2MessageActionInProgress,
-    P2MessageLoadingFinished
+    P2MessageLoadingFinished,
+    SemanticIconDescription,
+    SemanticListContentDescription,
+    SemanticListRootDescription,
+    SemanticPartStyleDescription,
+    SemanticPartStyleTitle,
+    SemanticRootDescription,
+    SemanticTitleDescription,
+    SemanticWrapperDescription
 }

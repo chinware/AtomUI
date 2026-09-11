@@ -223,7 +223,7 @@ public class BreadcrumbShowCasePageTests
         zhCn["SemanticPartRootDescription"].ShouldBe("根元素，包含文字颜色、字体大小、图标尺寸等基础样式，内部使用 flex 布局的有序列表");
         zhCn["SemanticPartItemDescription"].ShouldBe("Item 元素，包含文字颜色、链接的颜色变化、悬浮效果、内边距、圆角、高度、外边距等样式");
         zhCn["SemanticPartSeparatorDescription"].ShouldBe("分隔符元素，包含分隔符的外边距和颜色样式");
-        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义 Semantic Part 样式");
+        zhCn["SemanticPartStyleTitle"].ShouldBe("自定义语义结构的样式");
         zhCn["SemanticPartStyleDescription"].ShouldBe(
             "对齐 Ant Design 的 style-class demo：通过生成的 Semantic Part 样式定制根边框、条目颜色与分隔符颜色。");
         zhCn["P2StyleItemAntDesign"].ShouldBe("Ant Design");
@@ -235,7 +235,7 @@ public class BreadcrumbShowCasePageTests
         zhTw["SemanticPartRootDescription"].ShouldBe("根元素，包含文字顏色、字體大小、圖示尺寸等基礎樣式，內部使用 flex 佈局的有序列表");
         zhTw["SemanticPartItemDescription"].ShouldBe("Item 元素，包含文字顏色、連結的顏色變化、懸浮效果、內邊距、圓角、高度、外邊距等樣式");
         zhTw["SemanticPartSeparatorDescription"].ShouldBe("分隔符元素，包含分隔符的外邊距和顏色樣式");
-        zhTw["SemanticPartStyleTitle"].ShouldBe("自訂 Semantic Part 樣式");
+        zhTw["SemanticPartStyleTitle"].ShouldBe("自訂語義結構的樣式");
         zhTw["SemanticPartStyleDescription"].ShouldBe(
             "對齊 Ant Design 的 style-class demo：透過生成的 Semantic Part 樣式自訂根邊框、項目顏色與分隔符顏色。");
         zhTw["P2StyleItemAntDesign"].ShouldBe("Ant Design");
@@ -263,7 +263,7 @@ public class BreadcrumbShowCasePageTests
         ptBr["SemanticPartItemDescription"].ShouldBe(
             "Elemento de item com cor de texto, transições de cor do link, efeitos de hover, preenchimento, raio da borda, altura e estilos de margem");
         ptBr["SemanticPartSeparatorDescription"].ShouldBe("Elemento separador com estilos de margem e cor para o divisor");
-        ptBr["SemanticPartStyleTitle"].ShouldBe("Personalizar estilo de Semantic Part");
+        ptBr["SemanticPartStyleTitle"].ShouldBe("Estilo personalizado de Semantic Part");
         ptBr["SemanticPartStyleDescription"].ShouldBe(
             "Espelha o demo style-class do Ant Design: personalize a borda da raiz, a cor do item e a cor do separador por meio dos estilos Semantic Part gerados.");
         ptBr["P2StyleItemAntDesign"].ShouldBe("Ant Design");

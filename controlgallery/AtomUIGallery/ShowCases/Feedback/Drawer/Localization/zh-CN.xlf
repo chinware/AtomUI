@@ -471,8 +471,8 @@
     </unit>
     <unit id="SemanticStylesTitle">
       <segment>
-        <source>Semantic Styles</source>
-        <target state="translated">语义样式</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自定义语义结构的样式</target>
       </segment>
     </unit>
     <unit id="SemanticTitleDescription">

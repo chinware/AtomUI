@@ -326,7 +326,7 @@ marker），路由经 owner 模板的 `.semantic-popup-root` 锚点加第二段 
 ## 4. Selector 用法
 
 生成的 Semantic Style 类型位于命名空间 `AtomUI.Theme.Styling`（AXAML 命名空间 `https://atomui.net`）。`root`
-不生成 Style 类型，owner 级 Setter 写在外层普通 Style 上。推荐写法与 Gallery Tour「语义节点样式」示例一致
+不生成 Style 类型，owner 级 Setter 写在外层普通 Style 上。推荐写法与 Gallery Tour「自定义语义结构的样式」示例一致
 （对齐上游 `style-class.tsx` 的 object/function styles 示例）：
 
 ```xml

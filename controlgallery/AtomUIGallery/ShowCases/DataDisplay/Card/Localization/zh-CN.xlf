@@ -376,7 +376,7 @@
     <unit id="SemanticPartStyleTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">自定义 Semantic Part 样式</target>
+        <target state="translated">自定义语义结构的样式</target>
       </segment>
     </unit>
     <unit id="SimpleCardDescription">

@@ -471,8 +471,8 @@
     </unit>
     <unit id="SemanticStylesTitle">
       <segment>
-        <source>Semantic Styles</source>
-        <target state="translated">Estilos semânticos</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
       </segment>
     </unit>
     <unit id="SemanticTitleDescription">

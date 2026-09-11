@@ -28,7 +28,7 @@
 3. `AbstractColorPicker.IsPopupPinnedOpen` 由 internal 提升为 public：纯可见性变更，无行为变化
    （置 true 钉住并自动打开弹层）。
 4. `ColorPickerShowCase.axaml` 宿主从 `GalleryStickyTabsHost` 迁移到 `GalleryShowCaseHost` 并新增
-   Semantic Parts 页签与「自定义语义结构样式」示例（示例内容为新增，既有 12 个 demo 未改动）。
+   Semantic Parts 页签与「自定义语义结构的样式」示例（示例内容为新增，既有 12 个 demo 未改动）。
 
 ColorPicker / GradientColorPicker 公开的语义部件：`root`、`body`、`content`、`description`、
 `popup.root`（与 Ant Design 官方语义 API 对齐）。
@@ -49,11 +49,11 @@ ColorPicker 页面。主题浅色（默认）。
 | 1.5 | Hover/Pin `description` | 高亮紧贴触发器文本（#1677FF 字样），不覆盖色块 | 1 张 |
 | 1.6 | Hover/Pin `popup.root` | 高亮罩住弹层根容器（含箭头区域的整个浮层） | 1 张 |
 
-### 步骤 2：自定义语义结构样式示例（复刻 antd style-class）
+### 步骤 2：自定义语义结构的样式示例（复刻 antd style-class）
 
 | # | 操作 | 预期现象 | 截图 |
 | --- | --- | --- | --- |
-| 2.1 | 找到 "自定义语义结构样式" 示例（Examples 面板最后一个 item） | 两个取色器：上 #1677FF（Middle）、下 #722ED1（Large，整体更大），均无下拉箭头，圆角为默认 BorderRadius | 1 张（未展开态） |
+| 2.1 | 找到 "自定义语义结构的样式" 示例（Examples 面板最后一个 item） | 两个取色器：上 #1677FF（Middle）、下 #722ED1（Large，整体更大），均无下拉箭头，圆角为默认 BorderRadius | 1 张（未展开态） |
 | 2.2 | 点击上方取色器展开弹层 | 弹层四周出现 **白色 1px 边框**（#FFFFFF，在阴影与浅色背景下呈亮边）；箭头不显示；面板功能正常 | 1 张（展开态） |
 | 2.3 | 关闭后点击下方取色器展开弹层 | 弹层四周出现 **紫色 1px 边框**（#722ED1）；其余同上 | 1 张（展开态） |
 | 2.4 | 对照同页其他取色器（如 Basic 示例）展开弹层 | 未样式化的弹层无边框、有箭头——确认语义样式未泄漏到其他实例 | 1 张 |

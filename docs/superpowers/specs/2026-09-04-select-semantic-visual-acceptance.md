@@ -33,11 +33,11 @@ Data Entry（数据录入）→ Select 页面。
 | 1.1 | 点击页面顶部 "Semantic Parts" 页签 | 页面切换到语义预览：出现一个带 `prefix` 文字的多选 Select，预选两个标签，候选弹层钉住常开，页面其余区域无遮罩阻挡（light-dismiss 遮罩被抑制） | 全景 |
 | 1.2 | 在预览右侧部件列表中逐个选中 13 个 Part（root / prefix / content / placeholder / input / suffix / clear / item / itemContent / itemRemove / popup.root / popup.list / popup.listItem） | 每个 Part 都有对应高亮框；`popup.root` / `popup.list` / `popup.listItem` 在钉住弹层上高亮，`item` / `itemContent` / `itemRemove` 在预选标签上高亮 | 逐部件或分组 |
 
-### 步骤 2：Customize semantic structure styles 示例
+### 步骤 2：Custom Semantic Part styling 示例
 
 | # | 操作 | 预期现象 | 截图 |
 | --- | --- | --- | --- |
-| 2.1 | 滚动到 "自定义语义结构样式" 示例 | 出现两个带 `prefix` 的 Select：上方 Outlined（object styles）、下方 Filled（function styles） | 全景 |
+| 2.1 | 滚动到 "自定义语义结构的样式" 示例 | 出现两个带 `prefix` 的 Select：上方 Outlined（object styles）、下方 Filled（function styles） | 全景 |
 | 2.2 | 观察 Outlined 控件 | prefix 文字为 `#BFBFBF` 浅灰；无选中时占位符文字为 `#1890FF` 蓝色 | 局部 |
 | 2.3 | 观察 Filled 控件 | 后缀箭头为 `#1890FF` 蓝色；两个控件等高（Middle 32px），Filled 灰底铺满圆角框上下无白边 | 局部 |
 | 2.4 | 点击打开 Outlined 控件弹层 | 弹层外框为 `#1890FF` 蓝色 1px 边框；候选项文字为 `#272727` 深色 | 弹层展开 |
