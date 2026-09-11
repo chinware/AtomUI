@@ -6,6 +6,29 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.9
+
+`2026-09-11`
+
+- 破坏性变更
+  - Build：AtomUI MSBuild 任务改为通过 SDK 编译器适配器在单次运行的 .NET 进程中执行，不再从影子副本进程内加载 `AtomUI.Build.Tasks`。构建工具以 `net10.0` 程序集交付，因此消费方项目需要使用 .NET 10 SDK 构建；原有的进程内加载入口和影子目录结构不再保留。产品库目标框架不变。
+- DataGrid
+  - 修复单选行在行之间切换时需要点击两次的问题。#461
+  - 修复排序后回收单元格泄漏排序状态的问题。#462
+  - 修复动态设置右冻结列数量不生效的问题。
+- Motion、Collapse、Expander 与 NavMenu
+  - 以共享执行器统一内容展开与收起动效：同步驱动完整高度与透明度插值、稳定内容裁剪、反转连续性，并由单一执行所有者和单一时钟驱动。修复手风琴在展开收起与快速切换分支时的闪烁和抖动。
+- Window 与 ImagePreviewer
+  - 修复全屏标题栏 Logo 重复挂载导致的崩溃。
+  - 修复 ImagePreviewer 预览窗口标题栏按钮无法点击的问题；Windows 标题栏 AddOn 按钮与开关按钮几何对齐托管 caption button，同时保留 Linux/macOS 视觉。
+- Avatar 与图片加载
+  - 通过新增的 `SvgConformanceMode` 选项支持含重复 id 的安全本地 SVG 资源：`Compatible`（默认）容忍重复 id，`Strict` 将其判定为 `InvalidImageData`。
+  - 将文字测量、缩放与居中移入模板，修复 Avatar 在短文本、临界宽度和超长文本下的文字居中问题。
+- BorderBeam
+  - 新增 `Count` 属性，在单一动画时钟和 Presenter 内绘制多条等距光束。
+  - 修复未设置 `Outset` 时的默认边框几何，使流光贴合内容边界。
+  - 补充多光束、悬停触发光束与自定义容器 Gallery 示例。
+
 ## 6.1.8
 
 `2026-09-08`

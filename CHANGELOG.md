@@ -4,6 +4,29 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.9
+
+`2026-09-11`
+
+- Breaking Changes
+  - Build: AtomUI MSBuild tasks now run through the SDK compiler adapter in single-use .NET processes instead of loading `AtomUI.Build.Tasks` in-process from a shadow copy. The build tools ship as `net10.0` assemblies, so consuming projects must build with the .NET 10 SDK; the previous in-process entry points and shadow-directory layout are removed. Product target frameworks are unchanged.
+- DataGrid
+  - Fix single-row selection needing a second click when switching between rows. #461
+  - Fix recycled cells leaking sort state after sorting. #462
+  - Fix dynamically changing the right frozen column count not taking effect.
+- Motion, Collapse, Expander and NavMenu
+  - Unify content expand/collapse motion over a shared animator: full-height and opacity interpolation, stable content clipping, reversal continuity and a single execution owner with one clock. Fix accordion flicker and jitter during expand/collapse and rapid branch switching.
+- Window and ImagePreviewer
+  - Fix a crash caused by mounting the fullscreen title-bar logo twice.
+  - Fix ImagePreviewer title-bar buttons not being clickable, and align the Windows title-bar AddOn button and toggle geometry with managed caption buttons while keeping Linux/macOS visuals.
+- Avatar and Image Loading
+  - Support safe local SVG resources with duplicate ids through the new `SvgConformanceMode` option: `Compatible` (default) tolerates duplicate ids, while `Strict` rejects them as `InvalidImageData`.
+  - Fix Avatar text centering for short, boundary-width and long labels by moving text measurement, downscaling and centering into the template.
+- BorderBeam
+  - Add the `Count` property to draw multiple equidistant beams from one animation clock and presenter.
+  - Fix the default border geometry so the beam hugs the content boundary when `Outset` is not set.
+  - Add Gallery examples for multiple beams, hover-triggered beams and custom containers.
+
 ## 6.1.8
 
 `2026-09-08`

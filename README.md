@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.8-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.9-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-stars-shield]][github-stars-link]
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
@@ -69,18 +69,18 @@ requests are welcome.
 
 #### Requirements
 
-.NET 8 or later (development supports .NET 10)<br>
+.NET 8 or later (the .NET 10 SDK is required to build AtomUI MSBuild integration)<br>
 Avalonia 12.1.2<br>
 Windows, macOS and Linux<br>
 
 #### Latest Release Notes
 
-AtomUI 6.1.8 reworks DataGrid around a range-based `IDataGridSource` with immutable query and selection state,
-replaces the image-source model with a closed `ImageSource` hierarchy and independent cache policies, and requires
-concrete `[ControlDesignToken]` types to be sealed. It also adds `Window.IsTitleVisible`, tightens NavMenu activation,
-fixes Select-family multi-select spacing, and improves NativeAOT linked-registration closure for trimmed applications.
-This release contains breaking DataGrid, image-loading and theme-token API changes; review the
-[Changelog](./CHANGELOG.md) before upgrading.
+AtomUI 6.1.9 fixes DataGrid single-row switching, recycled-cell sort-state leakage and dynamic right frozen
+column updates, and unifies content expand/collapse motion across Collapse, Expander and NavMenu to remove
+accordion flicker and jitter. It also adds the BorderBeam `Count` property and the image-loading
+`SvgConformanceMode` option, improves Avatar text centering, and stabilizes the Windows title-bar buttons and
+ImagePreviewer. AtomUI build tools now ship as `net10.0` assemblies and require the .NET 10 SDK to build
+consuming projects; review the [Changelog](./CHANGELOG.md) before upgrading.
 
 #### Incubator
 
@@ -135,10 +135,10 @@ The packages we have released are as follows:
 | AtomUI.Generator                    | Source generators for custom controls, tokens and localization             |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.8
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.8
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.8
-dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.8
+dotnet add package AtomUI.Desktop.Controls --version 6.1.9
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.9
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.9
+dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.9
 ```
 
 You can also install the packages from your IDE's NuGet package manager. In Rider, open:
@@ -166,10 +166,10 @@ Search for "AtomUI" and install the packages your project needs.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.8"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.8"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.8"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.8"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.9"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.9"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.9"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.9"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
