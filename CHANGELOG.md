@@ -9,7 +9,7 @@ All notable changes to AtomUI are documented in this file.
 `2026-09-11`
 
 - Breaking Changes
-  - Build: AtomUI MSBuild tasks now run through the SDK compiler adapter in single-use .NET processes instead of loading `AtomUI.Build.Tasks` in-process from a shadow copy. The build tools ship as `net10.0` assemblies, so consuming projects must build with the .NET 10 SDK; the previous in-process entry points and shadow-directory layout are removed. Product target frameworks are unchanged.
+  - Build: AtomUI MSBuild tasks now run through the SDK compiler adapter in single-use .NET processes instead of loading `AtomUI.Build.Tasks` in-process from a shadow copy. The build tools ship as `net10.0` assemblies, so consuming projects must build with the .NET 10 SDK; the previous in-process entry points and shadow-directory layout are removed. Product target frameworks are unchanged. See [6.1.9 API change examples](docs/releases/6.1.9-api-changes.md).
 - DataGrid
   - Fix single-row selection needing a second click when switching between rows. #461
   - Fix recycled cells leaking sort state after sorting. #462
